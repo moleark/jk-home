@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { Controller, Page, nav } from 'tonva-tools';
 import { VHome } from './vHome';
-import { HttpChannel } from 'tonva-tools/dist/net/httpChannel';
+import { HttpChannel, httpGet } from 'tonva-tools/dist/net/httpChannel';
+import { __await } from 'tslib';
+import { VNews } from './vNews';
 
 export interface Dir {
     caption: string;
@@ -37,14 +39,10 @@ export class CHome extends Controller {
         ]
 
         try {
-        var document = [
-            { Id: 1, Title: 'a' },
-            { Id: 2, Title: 'bbb' },
-            { Id: 3, Title: 'a]c\\' },
-            { Id: 4, Title: 'eee' },
-        ]; //  await this.httpChannel.get("/Document/GetHisotoryNews?page=0");
-        console.log(document);
-        this.newsItems = document;//.Documents;
+            let res = await fetch("http://localhost:11887/webapi/Document/GetHisotoryNews?page=0");
+            let doc = await res.json();
+            console.log(doc);
+            this.newsItems = doc.Documents;
         }
         catch (err) {
             console.error(err);
@@ -54,5 +52,12 @@ export class CHome extends Controller {
 
     showDir(dir: Dir) {
         nav.push(<Page>{dir.caption}</Page>);
+    }
+
+    async showNews(news: News){
+
+        let res = await fetch("http://localhost:11887/webapi/Document/News/" + news.Id);
+        let doc = await res.json();
+        this.showVPage(VNews, doc);
     }
 }
