@@ -1,7 +1,9 @@
-import { AppUI } from "C:/Users/ligsh/tonva/tonva-react-usql/dist";
-import { VHome } from 'src/home/VHome';
+import { AppUI, CApp } from "tonva-react-usql";
+import { VHome } from 'home/VHome';
+import { CCartApp } from 'home/CCartApp';
 
 const ui: AppUI = {
+    CApp: CCartApp,
     main: VHome,
     usqs: {
 

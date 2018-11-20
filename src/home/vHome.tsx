@@ -47,11 +47,9 @@ class PageProducts extends PageItems<any> {
 
 export class VHome extends VPage<CCartApp> {
 
-    cUsq: CUsq;
     pageProducts: PageProducts;
     async showEntry(param?: any) {
-        this.cUsq = this.controller.getCUsq(usqCartName);
-        let product = this.cUsq.getTuid("product");
+        let product = this.controller.cUsq.tuid("product");
         this.pageProducts = new PageProducts(product);
         this.openPage(this.page);
     }
@@ -65,9 +63,7 @@ export class VHome extends VPage<CCartApp> {
     }
 
     private onProductClick = async (item: any) => {
-
-        let cproduct = new CProduct(this.cUsq, undefined);
-        cproduct.start(item.id);
+        this.controller.cProduct.start(item.id);
     }
 
     private onScrollBottom = async () => {
@@ -76,9 +72,10 @@ export class VHome extends VPage<CCartApp> {
     }
 
     private page = observer(() => {
+        let header = <SearchBox className="w-100" onSearch={this.onSearch} />;
+        let right = this.controller.cCart.renderCartLabel();
+        return <Page header={header} onScrollBottom={this.onScrollBottom} right={right}>
 
-        return <Page header={false} onScrollBottom={this.onScrollBottom}>
-            <SearchBox onSearch={this.onSearch} />
             <List items={this.pageProducts} item={{ render: this.productRow, onClick: this.onProductClick }} />
             <div className="row">
                 <div className="col-sm-12">

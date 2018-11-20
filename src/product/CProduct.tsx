@@ -1,32 +1,32 @@
 import * as React from 'react';
-import { Controller } from 'tonva-tools';
 import { CUsq, ControllerUsq, Action, Map } from 'tonva-react-usql';
 import { VProduct } from './VProduct';
 import * as _ from 'lodash';
+import { CCartApp } from 'home/CCartApp';
 
+/**
+ *
+ */
 export class CProduct extends ControllerUsq {
+
+    cApp: CCartApp;
+
+    constructor(cApp: CCartApp, cUsq: CUsq, res: any) {
+        super(cUsq, res);
+        this.cApp = cApp;
+    }
 
 
     protected async internalStart(param: any) {
 
-        let productEntity = this.cUsq.getTuid('product');
+        let productEntity = this.cApp.cUsq.tuid('product');
         let productData = await productEntity.load(param);
 
-        let priceMap = this.cUsq.getMap('price');
+        let priceMap = this.cApp.cUsq.map('price');
         let prices = (await priceMap.query({ _product: param })).ret;
-        productData.pack.forEach((x: any) => {
-            _.assign(x, _.filter(prices, (y) => y.pack.id === x.id && y.salesregion.id === 1)[0]);
-            _.assign(x, {quantity: 1});
+        productData.pack.forEach((pack: any) => {
+            _.assign(pack, _.filter(prices, (y) => y.pack.id === pack.id && y.salesregion.id === 1)[0]);
         });
         this.showVPage(VProduct, productData);
-    }
-
-    async AddToCart(pack: any, quantity: number) {
-
-        console.log(pack);
-        console.log(quantity);
-        let cSetCartAction = this.cUsq.cFromName('action', 'setCart');
-
-        await (cSetCartAction.entity as Action).submit({ date: Date.now(), product: pack.owner, pack: pack.id, price: 10, quantity: quantity });
     }
 }
