@@ -1,41 +1,24 @@
 import * as React from 'react';
-import { VPage, Page, nav, PageItems, Controller } from 'tonva-tools';
+import { VPage, Page, PageItems } from 'tonva-tools';
 import { List, SearchBox } from 'tonva-react-form';
-import { CUsq, TuidMain, CTuid, Tuid, CTuidMain, ControllerUsq } from 'tonva-react-usql';
-import { observable } from 'mobx';
+import { TuidMain, tv } from 'tonva-react-usql';
 import { observer } from 'mobx-react';
-import { CProduct } from '../product';
 import { CCartApp } from './CCartApp';
-
-const usqCartName = '百灵威系统工程部/cart';
-const sectionClass = "my-3 p-3 bg-white";
 
 class PageProducts extends PageItems<any> {
 
-    private productEntity: TuidMain;
+    private productTuid: TuidMain;
 
-    constructor(productEntity: TuidMain) {
+    constructor(productTuid: TuidMain) {
         super();
         this.pageSize = 3;
-        this.productEntity = productEntity;
+        this.productTuid = productTuid;
     }
 
     protected async load(param: any, pageStart: any, pageSize: number): Promise<any[]> {
         let { key } = param;
         if (pageStart === undefined) pageStart = 0;
-        /*
-
-        let ret = [
-            { id: 1, description: "(4-Oxo-6,7-dihydro-4H,5H-cyclopenta[4,5]thieno-[2,3-d]pyrimidin-3-yl)-acetic acid, 97%" },
-            { id: 2, description: "(1-Naphthylmethyl)triphenylphosphonium chloride, 98% " },
-            { id: 3, description: "(4-Oxo-6,7-dihydro-4H,5H-cyclopenta[4,5]thieno-[2,3-d]pyrimidin-3-yl)-acetic acid, 97%" },
-            { id: 4, description: "(1-Naphthylmethyl)triphenylphosphonium chloride, 98% " },
-        ];
-        if (pageStart === undefined) pageStart = 0;
-        for (let r of ret) r.id = ++pageStart;
-        return ret;
-        */
-        let ret = await this.productEntity.search(param.key, pageStart, pageSize);
+        let ret = await this.productTuid.search(param.key, pageStart, pageSize);
         return ret;
     }
 
@@ -49,8 +32,8 @@ export class VHome extends VPage<CCartApp> {
 
     pageProducts: PageProducts;
     async showEntry(param?: any) {
-        let product = this.controller.cUsq.tuid("product");
-        this.pageProducts = new PageProducts(product);
+        let productTuid = this.controller.cUsq.tuid("product");
+        this.pageProducts = new PageProducts(productTuid);
         this.openPage(this.page);
     }
 
@@ -58,12 +41,13 @@ export class VHome extends VPage<CCartApp> {
         this.pageProducts.first({ key: key });
     }
 
-    private productRow = (item: any, index: number) => {
-        return <div className="px-3 py-2">{JSON.stringify(item)}</div>
+    private productRow = (product: any, index: number) => {
+        return <div className="px-3 py-2">{tv(product)}</div>
     }
 
-    private onProductClick = async (item: any) => {
-        this.controller.cProduct.start(item.id);
+    private onProductClick = async (product: any) => {
+        let { cProduct } = this.controller;
+        cProduct.start(product.id);
     }
 
     private onScrollBottom = async () => {
@@ -72,24 +56,10 @@ export class VHome extends VPage<CCartApp> {
     }
 
     private page = observer(() => {
-        let header = <SearchBox className="w-100" onSearch={this.onSearch} />;
+        let header = <SearchBox className="ml-1 mr-2 w-100" onSearch={this.onSearch} placeholder="搜索商品" />;
         let right = this.controller.cCart.renderCartLabel();
         return <Page header={header} onScrollBottom={this.onScrollBottom} right={right}>
-
             <List items={this.pageProducts} item={{ render: this.productRow, onClick: this.onProductClick }} />
-            <div className="row">
-                <div className="col-sm-12">
-                    <form className="form-inline">
-                        <label className="sr-only" htmlFor="searchBox">Search</label>
-                        <div className="input-group mb-2 mr-sm-2">
-                            <input type="input" id="searchBox" className="form-control" placeholder="search" />
-                            <div className="input-group-prepend">
-                                <button type="button" className="input-group-text" onClick={undefined}>Search</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
         </Page>;
     })
 }

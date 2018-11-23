@@ -3,11 +3,13 @@ import { View } from 'tonva-tools';
 import { CCart } from './CCart';
 
 export class VCartLabel extends View<CCart> {
-
+    private showCart = async () => {
+        await this.controller.start();
+    }
     render(param: any): JSX.Element {
         return <div>
-            <button className="btn btn-info" onClick={this.controller.navigateToCart}>
-                Cart: <span className="badge badge-light">{this.controller.count}</span>
+            <button className="btn btn-info btn-sm" onClick={this.showCart}>
+                Cart: <span className="badge badge-light">{this.controller.sum.count}</span>
             </button>
         </div>
     };
