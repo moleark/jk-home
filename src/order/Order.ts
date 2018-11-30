@@ -6,19 +6,19 @@ export class Order {
     organization: BoxId;
     person: BoxId;
 
-    @observable deliveryAddress: BoxId;
-    invoiceAddress: BoxId;
+    @observable deliveryContact: BoxId;
+    invoiceContact: BoxId;
     @observable products: OrderItem[] = [];
 }
 
 export class OrderItem {
 
-    porduct: BoxId;
+    product: BoxId;
     pack: BoxId;
 
     @observable price: number;
     @observable quantity: number;
-    @computed get Amount() {
+    @computed get amount() {
         return this.price * this.quantity;
     }
 }

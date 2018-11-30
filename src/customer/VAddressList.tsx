@@ -27,13 +27,8 @@ export class VAddressList extends VPage<CPerson> {
     private page = () => {
 
         let { person, addresses, onAddressEdit } = this.controller;
-        return <Page>
-            <List items={addresses} item={{ render: this.onAddressRender }} />
-            <div className="row">
-                <div className="col-12">
-                    <button type="button" className="btn btn-primary" onClick={() => onAddressEdit()} >添加新地址</button>
-                </div>
-            </div>
+        return <Page footer={<button type="button" className="btn btn-primary w-100" onClick={() => onAddressEdit()} >添加新地址</button>}>
+            <List items={addresses} item={{ render: this.onAddressRender }} none="你还没有设置收货地址，请添加新地址" />
         </Page>
     }
 }

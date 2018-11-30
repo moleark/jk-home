@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { VPage, Page } from 'tonva-tools';
 import { CProduct } from './CProduct';
-import { List, LMR, FA } from 'tonva-react-form';
+import { List, LMR, FA, SearchBox } from 'tonva-react-form';
 import { tv, BoxId } from 'tonva-react-usql';
 import { observer } from 'mobx-react';
 
@@ -24,6 +24,7 @@ export class VProduct extends VPage<CProduct> {
             let packRow: PackRow = {
                 pack: pr.pack,
                 retail: pr.retail,
+                vipPrice: pr.vipPrice,
             } as any;
             let packId = pr.pack.id;
             coll[packId] = packRow;
@@ -44,9 +45,6 @@ export class VProduct extends VPage<CProduct> {
 
     private inputRef = (input: HTMLInputElement | null, packRow: PackRow) => {
         if (input === null) return;
-        // let i = this.inputs[pack.id];
-        // if (i === undefined) input.value = '1';
-        //this.inputs[pack.id] = input;
         packRow.input = input;
     }
 
@@ -55,15 +53,23 @@ export class VProduct extends VPage<CProduct> {
         let right = <>
             <input
                 className="text-center"
+                style={{width: "60px"}}
                 ref={(input) => this.inputRef(input, packRow)}
                 type="number"
                 defaultValue="1" />
-            <button type="button" onClick={() => this.onProductPackClicked(packRow)}><FA name="cart-plus" /></button>
-            <button type="button" className="btn btn-light"><FA name="heart" /></button>
+            <button type="button"
+                className="btn btn-light"
+                onClick={() => this.onProductPackClicked(packRow)}>
+                <FA name="cart-plus" className="text-info" />
+            </button>
+            <button type="button" className="btn btn-light"><FA name="heart-o" className="text-danger small" /></button>
         </>
-        return <LMR right={right}>
-            {tv(pack)}
-            {retail}
+        return <LMR className="pt-3" right={right}>
+            <div className="row">
+                <div className="col-2">{pack.obj.name}</div>
+                <div className="col-2">{retail}</div>
+                <div className="col-2">{retail}</div>
+            </div>
         </LMR>
     };
 
@@ -79,14 +85,19 @@ export class VProduct extends VPage<CProduct> {
     private page = observer(() => {
 
         let { cApp, product } = this.controller;
+        let header = this.controller.cApp.cHome.renderSearchHeader();
         let cartLabel = cApp.cCart.renderCartLabel();
-        return <Page right={cartLabel}>
-            <div className="row">
-                <div className="col-sm-12">{tv(product)}</div>
-                <div className="col-sm-12">
-                    <List items={this.packRows} item={{ render: this.onProductPackRender }} />
-                </div>
-            </div>
+        let listHeader = <div className="row">
+            <div className="col-2">SKU</div>
+            <div className="col-2">price</div>
+            <div className="col-2">viprpice</div>
+            <div className="col-2">viprpice</div>
+            <div className="col-2">viprpice</div>
+            <div className="col-2">viprpice</div>
+        </div>
+        return <Page header={header} right={cartLabel}>
+            <div className="px-2 py-2 bg-white">{tv(product)}</div>
+            <List items={this.packRows} item={{ render: this.onProductPackRender }} header={listHeader} className="px-2 bg-white" />
         </Page>
     })
 }

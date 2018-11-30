@@ -116,19 +116,6 @@ export class CCart extends ControllerUsq {
     }
 
     /**
-     * 导航到CheckOut界面
-     */
-    checkOut = async () => {
-
-        let { cOrder } = this.cApp;
-        let selectCartItem = this.cartData.filter((element) => element.checked);
-        if (!selectCartItem || selectCartItem.length === 0) {
-            return;
-        }
-        await cOrder.start(selectCartItem);
-    }
-
-    /**
      *
      * 显示购物车图标
      */
@@ -142,5 +129,18 @@ export class CCart extends ControllerUsq {
     navigateToCart = () => {
 
         this.showVPage(VCart);
+    }
+
+    /**
+     * 导航到CheckOut界面
+     */
+    checkOut = async () => {
+
+        let { cOrder } = this.cApp;
+        let selectCartItem = this.cartData.filter((element) => element.checked);
+        if (!selectCartItem || selectCartItem.length === 0) {
+            return;
+        }
+        await cOrder.start(selectCartItem);
     }
 }

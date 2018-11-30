@@ -4,6 +4,7 @@ import { CCart } from './CCart';
 import { List, LMR, FA } from 'tonva-react-form';
 import { tv } from 'tonva-react-usql';
 import { observer } from 'mobx-react';
+import { Product } from 'product/Product';
 
 export class VCart extends VPage<CCart> {
 
@@ -43,10 +44,46 @@ export class VCart extends VPage<CCart> {
         await this.controller.updateQuantity(item, Number(input.value));
     }
 
+    private renderProduct = (product: any) => <strong>{product.description}</strong>
+    private renderPack = (pack: any) => <>{pack.name}</>
+    private renderItem = (item: any) => {
+        return <div className="row">
+            <div className="col-3">
+                <img src="favicon.ico" alt={item.product.obj.description} />
+            </div>
+            <div className="col-9">
+                <div className="row">
+                    <div className="col-12">
+                        {tv(item.product, this.renderProduct)}
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-3">{item.pack.obj.name}</div>
+                    <div className="col-3"><strong className="text-danger">{item.price}</strong></div>
+                    <div className="col-6 text-right">
+                        <FA name="minus-circle" />
+                        <span className="px-4 bg-light">{item.quantity}</span>
+                        <FA name="plus-circle" />
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-12">货期</div>
+                </div>
+            </div>
+        </div>
+    }
+
     private onCartItemRender = (item: any) => {
         let { product, pack, isDeleted } = item;
-        let prod = <>{tv(product)}{tv(pack)}</>;
-        let input = <input className="text-center" ref={(input) => this.mapInputRef(input, item)} type="number" onChange={() => this.updateQuantity(item)} disabled={isDeleted} />;
+        let prod = <>
+            {tv(item, this.renderItem)}
+        </>;
+        let input = <input
+            className="text-center"
+            style={{ width: "60px" }}
+            ref={(input) => this.mapInputRef(input, item)}
+            type="number"
+            onChange={() => this.updateQuantity(item)} disabled={isDeleted} />;
         let onClick, btnContent;
         let mid;
         if (isDeleted === true) {
@@ -62,9 +99,12 @@ export class VCart extends VPage<CCart> {
             btnContent = <FA name="trash-o" />;
         }
         let button = <button className="btn btn-light" type="button" onClick={onClick}>{btnContent}</button>;
-        return <LMR className="px-3 py-2"
-            left={<input className="mr-3" type="checkbox" ref={(input) => this.mapCheckBox(input, item)} onChange={() => this.updateChecked(item)} disabled={isDeleted} />}
-            right={<>{input} {button}</>}>
+        return <LMR className="px-2 py-2"
+            left={<input className="mr-3"
+                type="checkbox"
+                ref={(input) => this.mapCheckBox(input, item)}
+                onChange={() => this.updateChecked(item)} disabled={isDeleted} />}
+            right={<>{button}</>}>
             {mid}
         </LMR>;
     }
@@ -76,20 +116,17 @@ export class VCart extends VPage<CCart> {
         let content = amount > 0 ?
             <>{check} ({amount} 元)</> :
             <>{check}</>;
-        return <button className="w-25 btn btn-success m-3" type="button" onClick={checkOut} disabled={amount <= 0}>
+        return <button className="btn btn-success w-100" type="button" onClick={checkOut} disabled={amount <= 0}>
             {content}
         </button>;
     });
 
     private page = () => {
         let { cartData: cart } = this.controller;
-        return <Page header="购物车">
+        return <Page header="购物车" footer={<this.CheckOutButton />}>
             <div className="row">
                 <div className="col-12">
                     <List items={cart} item={{ render: this.onCartItemRender }} />
-                </div>
-                <div className="col-12 text-center">
-                    <this.CheckOutButton />
                 </div>
             </div>
         </Page>
