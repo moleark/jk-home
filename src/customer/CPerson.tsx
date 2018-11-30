@@ -2,6 +2,7 @@ import * as React from 'react';
 import { ControllerUsq, TuidMain, Map, CTuidEdit, CUsq } from 'tonva-react-usql';
 import { VAddressList } from './VAddressList';
 import { CCartApp } from 'home/CCartApp';
+import { VContact } from './VContact';
 
 export class CPerson extends ControllerUsq {
 
@@ -36,17 +37,27 @@ export class CPerson extends ControllerUsq {
         this.showVPage(VAddressList);
     }
 
-    onAddressEdit = async (address?: any) => {
-        let id = await this.cContactEdit.call(address && address.id);
-        await this.deliveryContactMap.add({ _person: this.personId, arr1: [{ _address: id }] });
+    onContactEdit = async (contact?: any) => {
+        // let id = await this.cContactEdit.call(address && address.id);
+        // await this.deliveryContactMap.add({ _person: this.personId, arr1: [{ _address: id }] });
         // let { cContact } = this.cApp;
         // cContact.start();
+        this.contactTuid = this.cUsq.tuid("contact")
+        this.showVPage(VContact);
     }
 
-    onAddressSelected = (address: any) => {
+    saveContact = async (contact: any) => {
+
+        // await this.contactTuid.save(0, contact);
+        // await this.deliveryContactMap.add({ _person: this.person.id, _contact: contact.id });
+        // this.onContactSelected(contact);
+        this.closePage(2);
+    }
+
+    onContactSelected = (contact: any) => {
 
         let { cOrder } = this.cApp;
-        cOrder.setAddress(address);
+        cOrder.setContact(contact);
         this.backPage();
     }
 }

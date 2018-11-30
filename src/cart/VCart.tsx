@@ -44,6 +44,17 @@ export class VCart extends VPage<CCart> {
         await this.controller.updateQuantity(item, Number(input.value));
     }
 
+    private minusQuantity = async (item: any) => {
+
+        if (item.quantity > 1)
+            await this.controller.updateQuantity(item, item.quantity - 1);
+    }
+
+    private plusQuantity = async (item: any) => {
+
+        await this.controller.updateQuantity(item, item.quantity + 1);
+    }
+
     private renderProduct = (product: any) => <strong>{product.description}</strong>
     private renderPack = (pack: any) => <>{pack.name}</>
     private renderItem = (item: any) => {
@@ -58,12 +69,12 @@ export class VCart extends VPage<CCart> {
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-3">{item.pack.obj.name}</div>
+                    <div className="col-3">{tv(item.pack, this.renderPack)}</div>
                     <div className="col-3"><strong className="text-danger">{item.price}</strong></div>
-                    <div className="col-6 text-right">
-                        <FA name="minus-circle" />
+                    <div className="col-6 text-right d-flex">
+                        <div onClick={() => this.minusQuantity(item)}><FA name="minus-circle" /></div>
                         <span className="px-4 bg-light">{item.quantity}</span>
-                        <FA name="plus-circle" />
+                        <div onClick={() => this.plusQuantity(item)}><FA name="plus-circle" /></div>
                     </div>
                 </div>
                 <div className="row">

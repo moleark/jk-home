@@ -36,15 +36,15 @@ export class COrder extends ControllerUsq {
 
         this.orderData.person = await this.personTuid.load(this.user.id);
 
-        let addressArr = await this.consigneeContactMap.table({ _person: this.user.id });
-        if (addressArr) {
-            let addressWapper = addressArr.find((element: any) => {
+        let contactArr = await this.consigneeContactMap.table({ _person: this.user.id });
+        if (contactArr) {
+            let contactWapper = contactArr.find((element: any) => {
                 if (element.isDefault === true)
                     return element;
             });
-            if (!addressWapper)
-                addressWapper = addressArr[0];
-            this.setAddress(addressWapper && addressWapper.address);
+            if (!contactWapper)
+                contactWapper = contactArr[0];
+            this.setContact(contactWapper && contactWapper.address);
         }
 
         if (cartItem !== undefined) {
@@ -59,7 +59,7 @@ export class COrder extends ControllerUsq {
         }
     }
 
-    setAddress = (contactBox: any) => {
+    setContact = (contactBox: any) => {
 
         this.orderData.deliveryContact = contactBox;
     }
@@ -67,14 +67,14 @@ export class COrder extends ControllerUsq {
     submitOrder = async () => {
 
         if (!this.orderData.deliveryContact) {
-            this.openAddressList();
+            this.openContactList();
             return;
         }
         await this.orderSheet.loadSchema();
         await this.orderSheet.save("", this.orderData);
     }
 
-    openAddressList = () => {
+    openContactList = () => {
 
         let cPerson = new CPerson(this.cApp, this.cUsq, undefined);
         cPerson.start(this.user.id);

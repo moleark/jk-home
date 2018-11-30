@@ -11,14 +11,14 @@ export class VAddressList extends VPage<CPerson> {
         this.openPage(this.page);
     }
 
-    private onAddressRender = (item: any) => {
-        let { onAddressEdit, onAddressSelected } = this.controller;
+    private onContactRender = (contactWapper: any) => {
+        let { onContactEdit, onContactSelected } = this.controller;
         return <div className="row">
-            <div className="col-10" onClick={() => onAddressSelected(item.address)}>
-                {tv(item.address)}
+            <div className="col-10" onClick={() => onContactSelected(contactWapper.address)}>
+                {tv(contactWapper.address)}
             </div>
             <div className="col-2">
-                <button type="button" className="btn btn-primary" onClick={() => onAddressEdit(item.address)}>edit</button>
+                <button type="button" className="btn btn-primary" onClick={() => onContactEdit(contactWapper.address)}>edit</button>
             </div>
         </div>
     }
@@ -26,9 +26,9 @@ export class VAddressList extends VPage<CPerson> {
 
     private page = () => {
 
-        let { person, addresses, onAddressEdit } = this.controller;
-        return <Page footer={<button type="button" className="btn btn-primary w-100" onClick={() => onAddressEdit()} >添加新地址</button>}>
-            <List items={addresses} item={{ render: this.onAddressRender }} none="你还没有设置收货地址，请添加新地址" />
+        let { person, addresses, onContactEdit } = this.controller;
+        return <Page footer={<button type="button" className="btn btn-primary w-100" onClick={() => onContactEdit()} >添加新地址</button>}>
+            <List items={addresses} item={{ render: this.onContactRender }} none="你还没有设置收货地址，请添加新地址" />
         </Page>
     }
 }

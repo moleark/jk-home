@@ -39,7 +39,6 @@ export class CProduct extends ControllerUsq {
     private productTuid: TuidMain;
     packTuid: TuidDiv;
     private productChemicalMap: Map;
-    // private priceMap: Map;
     private getPriceQuery: Query;
 
     product: any;
@@ -56,7 +55,6 @@ export class CProduct extends ControllerUsq {
         this.productTuid = this.cUsq.tuid('product');
         this.packTuid = this.productTuid.divs['pack'];
         this.productChemicalMap = this.cUsq.map('productChemical');
-        // this.priceMap = this.cUsq.map('price');
         this.getPriceQuery = this.cUsq.query('getprice');
     }
 
@@ -69,7 +67,6 @@ export class CProduct extends ControllerUsq {
 
         this.product = await this.productTuid.load(productId);
         this.productChemical = await this.productChemicalMap.obj({ _product: productId });
-        // this.prices = await this.priceMap.table({ _product: id, _salesregion: 1 });
         let priceQueryCritiria: any = { product: productId, salesRegion: 1 }
         if (this.isLogined) {
             priceQueryCritiria.person = this.user.id;

@@ -13,6 +13,6 @@ export class VSearchHeader extends View<CHome> {
 
     render(param: any) {
 
-       return <SearchBox className="mx-1 my-1 w-100" onSearch={this.onSearch} placeholder="搜索商品" />
+       return <SearchBox className="mx-1 my-1 w-100" onSearch={this.onSearch} placeholder="Search product name, CAS, MDL etc." />
     }
 }

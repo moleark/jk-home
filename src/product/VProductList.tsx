@@ -14,13 +14,13 @@ export class VProductList extends VPage<CProduct> {
         this.openPage(this.page);
     }
 
-    private renderChemical = (chemical: any) => {
+    private renderChemical = (chemical: any, purity: string) => {
 
         return <>
             <div className="col-4 col-md-2 text-muted">CAS:</div>
             <div className="col-8 col-md-4">{chemical.CAS}</div>
             <div className="col-4 col-md-2 text-muted">纯度:</div>
-            <div className="col-8 col-md-4">{chemical.purity}</div>
+            <div className="col-8 col-md-4">{purity}</div>
             <div className="col-4 col-md-2 text-muted">分子式:</div>
             <div className="col-8 col-md-4">{chemical.molecularFomula}</div>
             <div className="col-4 col-md-2 text-muted">分子量:</div>
@@ -48,7 +48,7 @@ export class VProductList extends VPage<CProduct> {
                     </div>
                     <div className="col-9">
                         <div className="row">
-                            {tv(product.chemical, this.renderChemical)}
+                            {tv(product.chemical, this.renderChemical, product.purity)}
                             <div className="col-4 col-md-2 text-muted">产品编号:</div>
                             <div className="col-8 col-md-4">{product.origin}</div>
                             {tv(product.brand, this.renderBrand)}

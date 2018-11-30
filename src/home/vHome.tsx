@@ -23,12 +23,6 @@ export class VHome extends VPage<CCartApp> {
         </section>
     }
 
-    private onSearch = async (key: string) => {
-
-        let { cProduct } = this.controller;
-        cProduct.start(key);
-    }
-
     private page = observer(() => {
 
         let { cHome, cProductCategory} = this.controller;
@@ -37,7 +31,7 @@ export class VHome extends VPage<CCartApp> {
         let { homeSections } = cHome;
         return <Page header={false}>
             {siteHeader}
-            <SearchBox className="mx-1 my-1" onSearch={this.onSearch} placeholder="搜索商品" />
+            {cHome.renderSearchHeader()}
             {rootCategoryList}
         </Page>;
     })

@@ -15,16 +15,17 @@ export class VRootCategory extends View<CProductCategory> {
     private onRootCategoryRender = (categoryBox: any, index: number) => {
 
         let { category, children } = categoryBox;
-        let left = <div className="h4 text-danger cursor-pointer" onClick={() => this.catClick(categoryBox)}>{category.obj.name}</div>;
+        let left = <div className="h4">{category.obj.name}</div>;
         return <div className="row bg-light py-2">
             <div className="col-12">
-                <LMR left={left} right="更多..." className="px-3" />
+                <LMR left={left} right="更多..." className="px-3 cursor-pointer" onClick={() => this.catClick(categoryBox)} />
             </div>
             <div className="col-12">
-                <div className="row mx-3 text-success cussor-pointer">
+                <div className="row mx-3 cussor-pointer">
                     {children && children.map((childrenWapper: any) => {
                         return <div className="col-12 col-md-4 py-2" onClick={() => this.catClick(childrenWapper)}>
                             {childrenWapper.category.obj.name}
+                            <hr className="my-1"/>
                         </div>
                     })}
                 </div>
