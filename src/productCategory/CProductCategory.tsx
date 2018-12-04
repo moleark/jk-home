@@ -4,8 +4,9 @@ import { observable } from 'mobx';
 import { VRootCategory } from './VRootCategory';
 import { VCategory } from './VCategory';
 import { CCartApp } from 'home/CCartApp';
+import { Controller } from 'tonva-tools';
 
-export class CProductCategory extends ControllerUsq {
+export class CProductCategory extends Controller {
 
     cApp: CCartApp;
     categories: any[];
@@ -13,16 +14,17 @@ export class CProductCategory extends ControllerUsq {
     categoryTuid: Tuid;
     categoryTreeMap: Map;
 
-    constructor(cApp: CCartApp, cUsq: CUsq, res: any) {
-        super(cUsq, res);
+    constructor(cApp: CCartApp, res: any) {
+        super(res);
 
         this.cApp = cApp;
-        this.categoryTuid = this.cUsq.tuid("productCategory");
-        this.categoryTreeMap = this.cUsq.map("productCategoryTree");
+        let { cUsqProduct } = this.cApp;
+        this.categoryTuid = cUsqProduct.tuid("productCategory");
+        this.categoryTreeMap = cUsqProduct.map("productCategoryTree");
     }
 
     async internalStart(param: any) {
-        this.rootCategories = await this.categoryTreeMap.table({ _parent: 0 });
+        this.rootCategories = await this.categoryTreeMap.table({ parent: 0 });
         this.rootCategories.forEach(async element => {
             if (!element.isleaf) {
                 element.children = await this.getCategoryChildren(element.category.id);
@@ -36,7 +38,7 @@ export class CProductCategory extends ControllerUsq {
 
     async getCategoryChildren(categoryId: number) {
 
-        return await this.categoryTreeMap.table({ _parent: categoryId });
+        return await this.categoryTreeMap.table({ parent: categoryId });
     }
 
     async openMainPage(categoryWaper: any) {

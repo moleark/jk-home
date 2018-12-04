@@ -9,8 +9,8 @@ export class VHome extends VPage<CCartApp> {
     async showEntry(param?: any) {
 
         let { cHome } = this.controller;
-        let { homeSections } = cHome;
-        await homeSections.first({ key: "" });
+        // let { homeSections } = cHome;
+        // await homeSections.first({ key: "" });
 
         this.openPage(this.page);
     }
@@ -25,10 +25,10 @@ export class VHome extends VPage<CCartApp> {
 
     private page = observer(() => {
 
-        let { cHome, cProductCategory} = this.controller;
+        let { cHome, cProductCategory } = this.controller;
         let siteHeader = cHome.renderSiteHeader();
         let rootCategoryList = cProductCategory.renderRootList();
-        let { homeSections } = cHome;
+        // let { homeSections } = cHome;
         return <Page header={false}>
             {siteHeader}
             {cHome.renderSearchHeader()}

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ControllerUsq, CApp, CUsq, TuidMain } from 'tonva-react-usql';
 import { VSiteHeader } from './VSiteHeader';
 import { CCartApp } from './CCartApp';
-import { PageItems } from 'tonva-tools';
+import { PageItems, Controller } from 'tonva-tools';
 import { VSearchHeader } from './VSearchHeader';
 
 class HomeSections extends PageItems<any> {
@@ -27,18 +27,18 @@ class HomeSections extends PageItems<any> {
     }
 }
 
-export class CHome extends ControllerUsq {
+export class CHome extends Controller {
 
     cApp: CCartApp;
     homeSections: HomeSections;
     sectionTuid: TuidMain;
 
-    constructor(cApp: CCartApp, cUsq: CUsq, res: any) {
-        super(cUsq, res);
+    constructor(cApp: CCartApp, res: any) {
+        super(res);
 
         this.cApp = cApp;
-        this.sectionTuid = this.cUsq.tuid("section");
-        this.homeSections = new HomeSections(this.sectionTuid);
+        // this.sectionTuid = this.cUsq.tuid("section");
+        // this.homeSections = new HomeSections(this.sectionTuid);
     }
 
     async internalStart(param: any) {

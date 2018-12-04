@@ -5,8 +5,10 @@ import { CCartApp } from 'home/CCartApp';
 import { observable, computed } from 'mobx';
 import { VCart } from './VCart';
 import * as _ from 'lodash';
+import { Controller } from 'tonva-tools';
+import { VCartToBePurchased } from './VCartToBePurchased';
 
-export class CCart extends ControllerUsq {
+export class CCart extends Controller {
 
     cApp: CCartApp;
 
@@ -27,14 +29,15 @@ export class CCart extends ControllerUsq {
         }, { count: 0, amount: 0 });
     }
 
-    constructor(cApp: CCartApp, cUsq: CUsq, res: any) {
-        super(cUsq, res);
+    constructor(cApp: CCartApp, res: any) {
+        super(res);
 
         this.cApp = cApp;
-        this.addToCartAction = this.cUsq.action('addtocart');
-        this.getCartQuery = this.cApp.cUsq.query('getcart')
-        this.setCartAction = this.cUsq.action('setcart');
-        this.removeFromCartAction = this.cUsq.action('removefromcart');
+        let { cUsqOrder } = this.cApp;
+        this.addToCartAction = cUsqOrder.action('addtocart');
+        this.getCartQuery = cUsqOrder.query('getcart')
+        this.setCartAction = cUsqOrder.action('setcart');
+        this.removeFromCartAction = cUsqOrder.action('removefromcart');
     }
 
     async load() {
@@ -121,6 +124,10 @@ export class CCart extends ControllerUsq {
      */
     renderCartLabel() {
         return this.renderView(VCartLabel);
+    }
+
+    renderCartToBePurchased() {
+        return this.renderView(VCartToBePurchased);
     }
 
     /**

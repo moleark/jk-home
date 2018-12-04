@@ -53,7 +53,7 @@ export class VProduct extends VPage<CProduct> {
         let right = <>
             <input
                 className="text-center"
-                style={{width: "60px"}}
+                style={{ width: "60px" }}
                 ref={(input) => this.inputRef(input, packRow)}
                 type="number"
                 defaultValue="1" />

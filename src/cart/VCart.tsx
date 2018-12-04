@@ -12,7 +12,6 @@ export class VCart extends VPage<CCart> {
     private checkBoxs: { [packId: number]: HTMLInputElement } = {}
 
     private mapInputRef = (input: HTMLInputElement | null, item: any) => {
-
         if (input === null) return;
         input.value = item.quantity;
         return this.inputRefs[item.pack.id] = input;

@@ -6,8 +6,9 @@ import { Order, OrderItem } from './Order';
 import { CPerson } from 'customer/CPerson';
 import { observable } from 'mobx';
 import * as _ from 'lodash';
+import { Controller } from 'tonva-tools';
 
-export class COrder extends ControllerUsq {
+export class COrder extends Controller {
 
     cApp: CCartApp;
 
@@ -16,13 +17,14 @@ export class COrder extends ControllerUsq {
     private consigneeContactMap: Map;
     private orderSheet: Sheet;
 
-    constructor(cApp: CCartApp, cUsq: CUsq, res: any) {
-        super(cUsq, res);
+    constructor(cApp: CCartApp, res: any) {
+        super(res);
         this.cApp = cApp;
 
-        this.personTuid = this.cUsq.tuid('person');
-        this.consigneeContactMap = this.cUsq.map('personConsigneeContact');
-        this.orderSheet = this.cUsq.sheet('order');
+        let { cUsqCustomer, cUsqOrder } = this.cApp;
+        this.personTuid = cUsqCustomer.tuid('person');
+        this.consigneeContactMap = cUsqCustomer.map('personConsigneeContact');
+        this.orderSheet = cUsqOrder.sheet('order');
     }
 
     protected async internalStart(param: any) {
@@ -36,7 +38,7 @@ export class COrder extends ControllerUsq {
 
         this.orderData.person = await this.personTuid.load(this.user.id);
 
-        let contactArr = await this.consigneeContactMap.table({ _person: this.user.id });
+        let contactArr = await this.consigneeContactMap.table({ person: this.user.id });
         if (contactArr) {
             let contactWapper = contactArr.find((element: any) => {
                 if (element.isDefault === true)
@@ -45,17 +47,6 @@ export class COrder extends ControllerUsq {
             if (!contactWapper)
                 contactWapper = contactArr[0];
             this.setContact(contactWapper && contactWapper.address);
-        }
-
-        if (cartItem !== undefined) {
-            this.orderData.products = cartItem.map((element: any, index: number) => {
-                var item = new OrderItem();
-                item.product = element.pack.obj.$owner;
-                item.pack = element.pack;
-                item.price = element.price;
-                item.quantity = element.quantity;
-                return item;
-            });
         }
     }
 
@@ -76,7 +67,7 @@ export class COrder extends ControllerUsq {
 
     openContactList = () => {
 
-        let cPerson = new CPerson(this.cApp, this.cUsq, undefined);
+        let cPerson = new CPerson(this.cApp, undefined);
         cPerson.start(this.user.id);
     }
 }
