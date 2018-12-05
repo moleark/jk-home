@@ -40,18 +40,19 @@ export class CProduct extends Controller {
     packTuid: TuidDiv;
     private productChemicalMap: Map;
     private priceMap: Map;
-    // private getPriceQuery: Query;
     private getCustomerDiscount: Query;
+    private getInventoryAllocationQuery: Query;
+    private getFutureDeliveryTime: Query;
 
-    product: any;
-    productChemical: any;
-    prices: any[];
+    private product: any;
+    private productChemical: any;
+    private prices: any[];
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
         this.cApp = cApp;
 
-        let { cUsqProduct, cUsqCustomerDiscount } = this.cApp;
+        let { cUsqProduct, cUsqCustomerDiscount, cUsqWarehouse } = this.cApp;
         let searchProductQuery = cUsqProduct.query("searchProduct");
         this.pageProducts = new PageProducts(searchProductQuery);
 
@@ -59,8 +60,9 @@ export class CProduct extends Controller {
         this.packTuid = this.productTuid.divs['pack'];
         this.productChemicalMap = cUsqProduct.map('productChemical');
         this.priceMap = cUsqProduct.map('price');
-        // this.getPriceQuery = cUsqProduct.query('getprice');
         this.getCustomerDiscount = cUsqCustomerDiscount.query("getdiscount");
+        this.getInventoryAllocationQuery = cUsqWarehouse.query("getInventoryAllocation");
+        this.getFutureDeliveryTime = cUsqProduct.query("getFutureDeliveryTime");
     }
 
     protected async internalStart(param: any) {
@@ -72,6 +74,9 @@ export class CProduct extends Controller {
 
         this.product = await this.productTuid.load(productId);
         this.productChemical = await this.productChemicalMap.obj({ product: productId });
+        if (this.productChemical) {
+            this.product.chemical = this.productChemical.chemical;
+        }
         /*
         let priceQueryCritiria: any = { product: productId, salesRegion: 1 }
         if (this.isLogined) {
@@ -86,7 +91,21 @@ export class CProduct extends Controller {
             discount = discountSetting && discountSetting[0] && discountSetting[0].discount;
         }
         this.prices.forEach(element => element.vipprice = element.price * (1 - discount));
-        this.showVPage(VProduct);
+        this.product.prices = this.prices;
+        this.showVPage(VProduct, this.product);
+    }
+
+    getDeliveryTimeDescription = async (product: any, pack: any, salesRegion: any) => {
+
+        let allocation = await this.getInventoryAllocationQuery.table({ product: product, pack: pack, salesRegion: salesRegion });
+        if (allocation.length > 0) {
+            return allocation[0].deliveryTimeDescription;
+        } else {
+            let futureDeliveryTime = await this.getFutureDeliveryTime.table({ product: product, salesRegion: salesRegion });
+            if (futureDeliveryTime.length > 0) {
+                return futureDeliveryTime[0].deliveyTimeDescription;
+            }
+        }
     }
 
 }

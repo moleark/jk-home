@@ -6,7 +6,6 @@ import { observable, computed } from 'mobx';
 import { VCart } from './VCart';
 import * as _ from 'lodash';
 import { Controller } from 'tonva-tools';
-import { VCartToBePurchased } from './VCartToBePurchased';
 
 export class CCart extends Controller {
 
@@ -124,18 +123,6 @@ export class CCart extends Controller {
      */
     renderCartLabel() {
         return this.renderView(VCartLabel);
-    }
-
-    renderCartToBePurchased() {
-        return this.renderView(VCartToBePurchased);
-    }
-
-    /**
-     * 导航到购物车界面
-     */
-    navigateToCart = () => {
-
-        this.showVPage(VCart);
     }
 
     /**

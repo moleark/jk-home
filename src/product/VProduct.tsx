@@ -15,12 +15,12 @@ interface PackRow {
 export class VProduct extends VPage<CProduct> {
     private packRows: PackRow[];
 
-    async showEntry(param: any) {
+    async showEntry(product: any) {
 
-        let { packTuid, prices, product } = this.controller;
+        let { packTuid } = this.controller;
         this.packRows = [];
         let coll: { [packId: number]: PackRow } = {};
-        for (let pr of prices) {
+        for (let pr of product.prices) {
             let packRow: PackRow = {
                 pack: pr.pack,
                 retail: pr.retail,
@@ -40,7 +40,7 @@ export class VProduct extends VPage<CProduct> {
             }
         }
 
-        this.openPage(this.page);
+        this.openPage(this.page, product);
     }
 
     private inputRef = (input: HTMLInputElement | null, packRow: PackRow) => {
@@ -82,22 +82,69 @@ export class VProduct extends VPage<CProduct> {
         await cCart.AddToCart(pack, Number(input.value), retail);
     }
 
-    private page = observer(() => {
+    private page = observer((product: any) => {
 
-        let { cApp, product } = this.controller;
+        let { cApp } = this.controller;
         let header = this.controller.cApp.cHome.renderSearchHeader();
         let cartLabel = cApp.cCart.renderCartLabel();
-        let listHeader = <div className="row">
-            <div className="col-2">SKU</div>
-            <div className="col-2">price</div>
-            <div className="col-2">viprpice</div>
-            <div className="col-2">viprpice</div>
-            <div className="col-2">viprpice</div>
-            <div className="col-2">viprpice</div>
-        </div>
+        let listHeader = <LMR className="pt-3" right="quantity  cart  favorite">
+            <div className="row">
+                <div className="col-2">SKU</div>
+                <div className="col-2">price</div>
+                <div className="col-2">vipPrice</div>
+            </div>
+        </LMR>
         return <Page header={header} right={cartLabel}>
-            <div className="px-2 py-2 bg-white">{tv(product)}</div>
+            <div className="px-2 py-2 bg-white">{tv(product, this.productRow)}</div>
             <List items={this.packRows} item={{ render: this.onProductPackRender }} header={listHeader} className="px-2 bg-white" />
         </Page>
     })
+
+
+
+    private renderChemical = (chemical: any, purity: string) => {
+
+        return <>
+            <div className="col-4 col-md-2 text-muted">CAS:</div>
+            <div className="col-8 col-md-4">{chemical.CAS}</div>
+            <div className="col-4 col-md-2 text-muted">纯度:</div>
+            <div className="col-8 col-md-4">{purity}</div>
+            <div className="col-4 col-md-2 text-muted">分子式:</div>
+            <div className="col-8 col-md-4">{chemical.molecularFomula}</div>
+            <div className="col-4 col-md-2 text-muted">分子量:</div>
+            <div className="col-8 col-md-4">{chemical.molecularWeight}</div>
+        </>
+    }
+
+    private renderBrand = (brand: any) => {
+        return <>
+            <div className="col-4 col-md-2 text-muted">品牌:</div>
+            <div className="col-8 col-md-4">{brand.name}</div>
+        </>
+    }
+
+    private productRow = (product: any, index: number) => {
+
+        return <div className="row d-flex">
+            <div className="col-12">
+                <div className="row py-2">
+                    <div className="col-12"><strong>{product.description}</strong></div>
+                </div>
+                <div className="row">
+                    <div className="col-3">
+                        <img src="favicon.ico" alt="structure" />
+                    </div>
+                    <div className="col-9">
+                        <div className="row">
+                            {tv(product.chemical, this.renderChemical, product.purity)}
+                            <div className="col-4 col-md-2 text-muted">产品编号:</div>
+                            <div className="col-8 col-md-4">{product.origin}</div>
+                            {tv(product.brand, this.renderBrand)}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
 }

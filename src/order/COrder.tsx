@@ -48,6 +48,17 @@ export class COrder extends Controller {
                 contactWapper = contactArr[0];
             this.setContact(contactWapper && contactWapper.address);
         }
+
+        if (cartItem !== undefined) {
+            this.orderData.products = cartItem.map((element: any, index: number) => {
+                var item = new OrderItem();
+                item.product = element.pack.obj.$owner;
+                item.pack = element.pack;
+                item.price = element.price;
+                item.quantity = element.quantity;
+                return item;
+            });
+        }
     }
 
     setContact = (contactBox: any) => {

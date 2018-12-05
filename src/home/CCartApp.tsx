@@ -20,6 +20,7 @@ export class CCartApp extends CApp {
     cUsqCommon: CUsq;
     cUsqCustomer: CUsq;
     cUsqCustomerDiscount: CUsq;
+    cUsqWarehouse: CUsq;
 
     cHome: CHome;
     cCart: CCart;
@@ -36,6 +37,7 @@ export class CCartApp extends CApp {
         this.cUsqCommon = this.getCUsq(consts.usqCommon);
         this.cUsqCustomer = this.getCUsq(consts.usqCustomer);
         this.cUsqCustomerDiscount = this.getCUsq(consts.usqCustomerDiscount);
+        this.cUsqWarehouse = this.getCUsq(consts.usqWarehouse);
 
         this.cProductCategory = new CProductCategory(this, undefined);
         this.cCart = new CCart(this, undefined);

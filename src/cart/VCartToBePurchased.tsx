@@ -33,9 +33,7 @@ export class VCartToBePurchased extends View<CCart> {
         </div>
     }
 
-    render(param: any) {
-        let { cartData: cart } = this.controller;
-        let selectCartItem = cart.filter((element) => element.checked);
-        return <List items={selectCartItem} item={{ render: this.onCartItemRender }} />
+    render(selectedCartItem: any) {
+        return <List items={selectedCartItem} item={{ render: this.onCartItemRender }} />
     }
 }
