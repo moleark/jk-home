@@ -44,7 +44,7 @@ export class CProduct extends Controller {
     private getInventoryAllocationQuery: Query;
     private getFutureDeliveryTime: Query;
 
-    private product: any;
+    product: any;
     private productChemical: any;
     private prices: any[];
 
@@ -76,6 +76,7 @@ export class CProduct extends Controller {
         this.productChemical = await this.productChemicalMap.obj({ product: productId });
         if (this.productChemical) {
             this.product.chemical = this.productChemical.chemical;
+            this.product.purity = this.productChemical.purity;
         }
         /*
         let priceQueryCritiria: any = { product: productId, salesRegion: 1 }

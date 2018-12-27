@@ -131,7 +131,7 @@ export class CCart extends Controller {
     checkOut = async () => {
 
         let { cOrder } = this.cApp;
-        let selectCartItem = this.cartData.filter((element) => element.checked);
+        let selectCartItem = this.cartData.filter((element) => element.checked && !(element.isDeleted === true));
         if (!selectCartItem || selectCartItem.length === 0) {
             return;
         }

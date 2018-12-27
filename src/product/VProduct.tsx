@@ -82,9 +82,9 @@ export class VProduct extends VPage<CProduct> {
         await cCart.AddToCart(pack, Number(input.value), retail);
     }
 
-    private page = observer((product: any) => {
+    private page = observer((product1: any) => {
 
-        let { cApp } = this.controller;
+        let { cApp, product } = this.controller;
         let header = this.controller.cApp.cHome.renderSearchHeader();
         let cartLabel = cApp.cCart.renderCartLabel();
         let listHeader = <LMR className="pt-3" right="quantity  cart  favorite">
@@ -95,7 +95,7 @@ export class VProduct extends VPage<CProduct> {
             </div>
         </LMR>
         return <Page header={header} right={cartLabel}>
-            <div className="px-2 py-2 bg-white">{tv(product, this.productRow)}</div>
+            <div className="px-2 py-2 bg-white">{tv(product)}</div>
             <List items={this.packRows} item={{ render: this.onProductPackRender }} header={listHeader} className="px-2 bg-white" />
         </Page>
     })

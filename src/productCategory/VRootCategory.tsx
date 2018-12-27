@@ -44,6 +44,6 @@ export class VRootCategory extends View<CProductCategory> {
 
     render(param: any): JSX.Element {
         let { rootCategories } = this.controller;
-        return <List items={rootCategories} item={{ render: this.onRootCategoryRender }} />
+        return <List items={rootCategories} item={{ render: this.onRootCategoryRender }} className="mx-1" />
     }
 }
