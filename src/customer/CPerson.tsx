@@ -9,13 +9,13 @@ export class CPerson extends Controller {
 
     private cApp: CCartApp;
 
-    private personId: number;
+    private customerId: number;
     private cContactEdit: CTuidEdit;
-    private personTuid: TuidMain;
+    private customerTuid: TuidMain;
     private contactTuid: TuidMain;
     private deliveryContactMap: Map;
 
-    person: any;
+    customer: any;
     addresses: any[] = [];
 
     constructor(cApp: CCartApp, res: any) {
@@ -23,25 +23,25 @@ export class CPerson extends Controller {
         this.cApp = cApp;
 
         let { cUsqCustomer } = this.cApp;
-        this.personTuid = cUsqCustomer.tuid('person');
-        this.contactTuid = cUsqCustomer.tuid('contact');
-        this.deliveryContactMap = cUsqCustomer.map('personConsigneeContact');
-        this.cContactEdit = cUsqCustomer.cTuidEdit(this.contactTuid);
+        this.customerTuid = cUsqCustomer.tuid('customer');
+        // this.contactTuid = cUsqCustomer.tuid('contact');
+        this.deliveryContactMap = cUsqCustomer.map('customerConsigneeContact');
+        // this.cContactEdit = cUsqCustomer.cTuidEdit(this.contactTuid);
     }
 
     async internalStart(param: any) {
 
         param = 1;
-        this.personId = param;
+        this.customerId = param;
 
-        this.person = await this.personTuid.load(this.personId);
-        this.addresses = await this.deliveryContactMap.table({ person: this.personId });
+        this.customer = await this.customerTuid.load(this.customerId);
+        this.addresses = await this.deliveryContactMap.table({ customer: this.customerId });
         this.showVPage(VAddressList);
     }
 
     onContactEdit = async (contact?: any) => {
         // let id = await this.cContactEdit.call(address && address.id);
-        // await this.deliveryContactMap.add({ person: this.personId, arr1: [{ address: id }] });
+        // await this.deliveryContactMap.add({ customer: this.customerId, arr1: [{ address: id }] });
         // let { cContact } = this.cApp;
         // cContact.start();
         let { cUsqCustomer } = this.cApp;
@@ -52,7 +52,7 @@ export class CPerson extends Controller {
     saveContact = async (contact: any) => {
 
         // await this.contactTuid.save(0, contact);
-        // await this.deliveryContactMap.add({ person: this.person.id, contact: contact.id });
+        // await this.deliveryContactMap.add({ customer: this.customer.id, contact: contact.id });
         // this.onContactSelected(contact);
         this.closePage(2);
     }

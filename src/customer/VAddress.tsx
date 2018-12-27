@@ -12,9 +12,9 @@ export class VAddress extends VPage<CPerson> {
 
     private page = (address: any) => {
 
-        let { person } = this.controller;
+        let { customer } = this.controller;
         return <Page>
-            {tv(person)}
+            {tv(customer)}
             {tv(address)}
         </Page>
     }

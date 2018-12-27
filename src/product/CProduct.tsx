@@ -56,8 +56,8 @@ export class CProduct extends Controller {
         let searchProductQuery = cUsqProduct.query("searchProduct");
         this.pageProducts = new PageProducts(searchProductQuery);
 
-        this.productTuid = cUsqProduct.tuid('product');
-        this.packTuid = this.productTuid.divs['pack'];
+        this.productTuid = cUsqProduct.tuid('productx');
+        this.packTuid = this.productTuid.divs['packx'];
         this.productChemicalMap = cUsqProduct.map('productChemical');
         this.priceMap = cUsqProduct.map('price');
         this.getCustomerDiscount = cUsqCustomerDiscount.query("getdiscount");
