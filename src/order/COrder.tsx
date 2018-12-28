@@ -13,7 +13,7 @@ export class COrder extends Controller {
     cApp: CCartApp;
 
     @observable orderData: Order = new Order();
-    private personTuid: TuidMain;
+    private customerTuid: TuidMain;
     private consigneeContactMap: Map;
     private orderSheet: Sheet;
 
@@ -22,8 +22,8 @@ export class COrder extends Controller {
         this.cApp = cApp;
 
         let { cUsqCustomer, cUsqOrder } = this.cApp;
-        this.personTuid = cUsqCustomer.tuid('person');
-        this.consigneeContactMap = cUsqCustomer.map('personConsigneeContact');
+        this.customerTuid = cUsqCustomer.tuid('customer');
+        this.consigneeContactMap = cUsqCustomer.map('customerConsigneeContact');
         this.orderSheet = cUsqOrder.sheet('order');
     }
 
@@ -36,9 +36,9 @@ export class COrder extends Controller {
 
     private createOrderFromCart = async (cartItem: any[]) => {
 
-        this.orderData.person = await this.personTuid.load(this.user.id);
+        this.orderData.customer = await this.customerTuid.load(this.user.id);
 
-        let contactArr = await this.consigneeContactMap.table({ person: this.user.id });
+        let contactArr = await this.consigneeContactMap.table({ customer: this.user.id });
         if (contactArr) {
             let contactWapper = contactArr.find((element: any) => {
                 if (element.isDefault === true)

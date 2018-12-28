@@ -1,16 +1,17 @@
 import * as React from 'react';
-import { VPage, Page } from 'tonva-tools';
+import { VPage, Page, View } from 'tonva-tools';
 import { observer } from 'mobx-react';
 import { CCartApp } from './CCartApp';
 import { List, SearchBox } from 'tonva-react-form';
+import { CHome } from './CHome';
 
 const LIGUOSHENG = 5;
 
-export class VHome extends VPage<CCartApp> {
+export class VHome extends View<CHome> {
 
     async showEntry(param?: any) {
 
-        let { cHome } = this.controller;
+        // let { cHome } = this.controller;
         // let { homeSections } = cHome;
         // await homeSections.first({ key: "" });
 
@@ -25,11 +26,19 @@ export class VHome extends VPage<CCartApp> {
         </section>
     }
 
+    render(param: any): JSX.Element {
+
+        return this.content();
+        // return this.page();
+    }
+
     private page = observer(() => {
 
+        /*
         let { cHome, cProductCategory } = this.controller;
         let siteHeader = cHome.renderSiteHeader();
         let rootCategoryList = cProductCategory.renderRootList();
+        */
 
         let { openMetaView } = this.controller;
         let viewMetaButton = <></>;
@@ -39,9 +48,16 @@ export class VHome extends VPage<CCartApp> {
 
         // let { homeSections } = cHome;
         return <Page header={false} footer={viewMetaButton}>
-            {siteHeader}
-            {cHome.renderSearchHeader()}
-            {rootCategoryList}
+            {this.content()}
         </Page>;
     })
+
+    private content = () => {
+
+        let siteHeader = this.controller.renderSiteHeader();
+        return <>{siteHeader}
+            {this.controller.renderSearchHeader()}
+            {this.controller.renderCategoryRootList()}
+        </>
+    }
 }

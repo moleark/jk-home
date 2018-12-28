@@ -61,7 +61,7 @@ export class VCreateOrder extends VPage<COrder> {
     private page = observer(() => {
 
         let { orderData, submitOrder, openContactList } = this.controller;
-        let { person, products: orderItems, deliveryContact } = orderData;
+        let { products: orderItems, deliveryContact } = orderData;
         let footer = <button type="button" className="btn btn-danger w-100" onClick={submitOrder}>提交订单</button>;
 
         let { cCart } = this.controller.cApp;

@@ -5,7 +5,7 @@ import cartUI from './cart';
 
 const ui: AppUI = {
     CApp: CCartApp,
-    main: VHome,
+    // main: VHome,
     usqs: {
         '百灵威系统工程部/cart': cartUI,
     }

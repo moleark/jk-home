@@ -4,6 +4,7 @@ import { VSiteHeader } from './VSiteHeader';
 import { CCartApp } from './CCartApp';
 import { PageItems, Controller } from 'tonva-tools';
 import { VSearchHeader } from './VSearchHeader';
+import { VHome } from './VHome';
 
 class HomeSections extends PageItems<any> {
 
@@ -45,6 +46,7 @@ export class CHome extends Controller {
 
         let { cProductCategory } = this.cApp;
         await cProductCategory.start();
+        this.showVPage(VHome);
     }
 
     renderSiteHeader = () => {
@@ -53,5 +55,18 @@ export class CHome extends Controller {
 
     renderSearchHeader = () => {
         return this.renderView(VSearchHeader);
+    }
+
+    renderCategoryRootList = () => {
+        let { cProductCategory } = this.cApp;
+        return cProductCategory.renderRootList();
+    }
+
+    renderHome = () => {
+        return this.renderView(VHome);
+    }
+
+    openMetaView = () => {
+        this.cApp.startDebug();
     }
 }

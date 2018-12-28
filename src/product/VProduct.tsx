@@ -30,7 +30,7 @@ export class VProduct extends VPage<CProduct> {
             coll[packId] = packRow;
             this.packRows.push(packRow);
         }
-        for (let pk of product.pack) {
+        for (let pk of product.packx) {
             let { id } = pk;
             let packRow = coll[id];
             if (packRow === undefined) {

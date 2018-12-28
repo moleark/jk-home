@@ -4,7 +4,7 @@ import { observable, computed } from 'mobx';
 export class Order {
 
     organization: BoxId;
-    person: BoxId;
+    customer: BoxId;
 
     @observable deliveryContact: BoxId;
     invoiceContact: BoxId;

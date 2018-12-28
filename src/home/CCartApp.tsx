@@ -9,8 +9,6 @@ import { CHome } from './CHome';
 import { CProductCategory } from 'productCategory/CProductCategory';
 import { CPerson } from 'customer/CPerson';
 import { consts } from './consts';
-import ui from 'ui';
-
 
 export class CCartApp extends CApp {
 
@@ -46,13 +44,12 @@ export class CCartApp extends CApp {
         this.cOrder = new COrder(this, undefined);
         this.cPerson = new CPerson(this, undefined);
 
-        this.clearPrevPages();
-        await this.cHome.start();
-        this.showVPage(VHome);
-        await this.cCart.load();
-    }
-
-    openMetaView = () => {
-        this.startDebug();
+        // this.clearPrevPages();
+        // await this.cHome.start();
+        // this.showVPage(VHome);
+        // await this.cCart.load();
+        cCartApp = this;
     }
 }
+
+export var cCartApp: CCartApp;

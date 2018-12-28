@@ -131,6 +131,10 @@ export class VCart extends VPage<CCart> {
         </button>;
     });
 
+    render(params: any): JSX.Element {
+        return this.page();
+    }
+
     private page = () => {
         let { cartData: cart } = this.controller;
         return <Page header="购物车" footer={<this.CheckOutButton />}>

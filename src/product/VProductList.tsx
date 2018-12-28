@@ -48,7 +48,14 @@ export class VProductList extends VPage<CProduct> {
                     </div>
                     <div className="col-9">
                         <div className="row">
-                            {tv(product.chemical, this.renderChemical, product.purity)}
+                            <div className="col-4 col-md-2 text-muted">CAS:</div>
+                            <div className="col-8 col-md-4">{product.CAS}</div>
+                            <div className="col-4 col-md-2 text-muted">纯度:</div>
+                            <div className="col-8 col-md-4">{product.purity}</div>
+                            <div className="col-4 col-md-2 text-muted">分子式:</div>
+                            <div className="col-8 col-md-4">{product.molecularFomula}</div>
+                            <div className="col-4 col-md-2 text-muted">分子量:</div>
+                            <div className="col-8 col-md-4">{product.molecularWeight}</div>
                             <div className="col-4 col-md-2 text-muted">产品编号:</div>
                             <div className="col-8 col-md-4">{product.origin}</div>
                             {tv(product.brand, this.renderBrand)}

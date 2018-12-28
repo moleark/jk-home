@@ -125,6 +125,10 @@ export class CCart extends Controller {
         return this.renderView(VCartLabel);
     }
 
+    renderCart() {
+        return this.renderView(VCart);
+    }
+
     /**
      * 导航到CheckOut界面
      */

@@ -59,7 +59,7 @@ export class CProduct extends Controller {
         this.productTuid = cUsqProduct.tuid('productx');
         this.packTuid = this.productTuid.divs['packx'];
         this.productChemicalMap = cUsqProduct.map('productChemical');
-        this.priceMap = cUsqProduct.map('price');
+        this.priceMap = cUsqProduct.map('price2');
         this.getCustomerDiscount = cUsqCustomerDiscount.query("getdiscount");
         this.getInventoryAllocationQuery = cUsqWarehouse.query("getInventoryAllocation");
         this.getFutureDeliveryTime = cUsqProduct.query("getFutureDeliveryTime");
