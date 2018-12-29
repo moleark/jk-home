@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { VPage, Page } from 'tonva-tools';
-import { CPerson } from './CPerson';
+import { CUser } from './CPerson';
 import { List } from 'tonva-react-form';
 import { tv } from 'tonva-react-usql';
 
-export class VAddressList extends VPage<CPerson> {
+export class VAddressList extends VPage<CUser> {
 
     async showEntry() {
 

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { VPage, Page } from 'tonva-tools';
-import { CPerson } from './CPerson';
+import { CUser } from './CPerson';
 
-export class VContact extends VPage<CPerson> {
+export class VContact extends VPage<CUser> {
 
     async showEntry(param: any) {
 

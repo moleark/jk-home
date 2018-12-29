@@ -5,7 +5,7 @@ import { CCartApp } from 'home/CCartApp';
 import { VContact } from './VContact';
 import { Controller } from 'tonva-tools';
 
-export class CPerson extends Controller {
+export class CUser extends Controller {
 
     private cApp: CCartApp;
 
@@ -62,5 +62,9 @@ export class CPerson extends Controller {
         let { cOrder } = this.cApp;
         cOrder.setContact(contact);
         this.backPage();
+    }
+
+    renderUser = () => {
+        return <div>Me</div>
     }
 }

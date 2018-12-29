@@ -7,8 +7,9 @@ import { VHome } from './VHome';
 import { COrder } from 'order/COrder';
 import { CHome } from './CHome';
 import { CProductCategory } from 'productCategory/CProductCategory';
-import { CPerson } from 'customer/CPerson';
+import { CUser } from 'customer/CPerson';
 import { consts } from './consts';
+import { CMember } from 'member/CMember';
 
 export class CCartApp extends CApp {
 
@@ -19,13 +20,15 @@ export class CCartApp extends CApp {
     cUsqCustomer: CUsq;
     cUsqCustomerDiscount: CUsq;
     cUsqWarehouse: CUsq;
+    cUsqMember: CUsq;
 
     cHome: CHome;
     cCart: CCart;
     cProduct: CProduct;
     cOrder: COrder;
-    cPerson: CPerson;
+    cUser: CUser;
     cProductCategory: CProductCategory;
+    cMember: CMember;
 
     protected async internalStart() {
 
@@ -36,13 +39,15 @@ export class CCartApp extends CApp {
         this.cUsqCustomer = this.getCUsq(consts.usqCustomer);
         this.cUsqCustomerDiscount = this.getCUsq(consts.usqCustomerDiscount);
         this.cUsqWarehouse = this.getCUsq(consts.usqWarehouse);
+        this.cUsqMember = this.getCUsq(consts.usqMember);
 
         this.cProductCategory = new CProductCategory(this, undefined);
         this.cCart = new CCart(this, undefined);
         this.cHome = new CHome(this, undefined);
         this.cProduct = new CProduct(this, undefined);
         this.cOrder = new COrder(this, undefined);
-        this.cPerson = new CPerson(this, undefined);
+        this.cUser = new CUser(this, undefined);
+        this.cMember = new CMember(this, undefined);
 
         // this.clearPrevPages();
         // await this.cHome.start();

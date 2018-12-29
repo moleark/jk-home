@@ -3,7 +3,7 @@ import { ControllerUsq, CUsq, TuidMain, Map, Sheet } from 'tonva-react-usql';
 import { CCartApp } from 'home/CCartApp';
 import { VCreateOrder } from './VCreateOrder';
 import { Order, OrderItem } from './Order';
-import { CPerson } from 'customer/CPerson';
+import { CUser } from 'customer/CPerson';
 import { observable } from 'mobx';
 import * as _ from 'lodash';
 import { Controller } from 'tonva-tools';
@@ -78,7 +78,7 @@ export class COrder extends Controller {
 
     openContactList = () => {
 
-        let cPerson = new CPerson(this.cApp, undefined);
+        let cPerson = new CUser(this.cApp, undefined);
         cPerson.start(this.user.id);
     }
 }
