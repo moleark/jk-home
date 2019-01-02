@@ -8,8 +8,8 @@ import { COrder } from 'order/COrder';
 import { CHome } from './CHome';
 import { CProductCategory } from 'productCategory/CProductCategory';
 import { CUser } from 'customer/CPerson';
-import { consts } from './consts';
 import { CMember } from 'member/CMember';
+import { consts } from './consts';
 
 export class CCartApp extends CApp {
 
