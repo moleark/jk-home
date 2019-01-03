@@ -61,10 +61,9 @@ export class VCreateOrder extends VPage<COrder> {
     private page = observer(() => {
 
         let { orderData, submitOrder, openContactList } = this.controller;
-        let { products: orderItems, deliveryContact } = orderData;
+        let { orderItems, deliveryContact } = orderData;
         let footer = <button type="button" className="btn btn-danger w-100" onClick={submitOrder}>提交订单</button>;
 
-        let { cCart } = this.controller.cApp;
         let chevronRight = <FA name="chevron-right" />
         return <Page header="订单预览" footer={footer}>
             <LMR right={chevronRight} onClick={openContactList} className="px-2 py-2">

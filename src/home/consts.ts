@@ -1,6 +1,5 @@
 export const consts = {
 
-    usqCart: '百灵威系统工程部/cart',
     usqOrder: '百灵威系统工程部/order',
     usqProduct: "百灵威系统工程部/product",
     usqCommon: '百灵威系统工程部/common',
@@ -8,4 +7,6 @@ export const consts = {
     usqCustomerDiscount: '百灵威系统工程部/customerDiscount',
     usqWarehouse: "百灵威系统工程部/warehouse",
     usqMember: '百灵威系统工程部/member',
+
+    appIcon: 'http://101.200.46.56/imgs/Bear-icon.png',
 }

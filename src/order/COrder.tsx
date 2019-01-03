@@ -50,7 +50,7 @@ export class COrder extends Controller {
         }
 
         if (cartItem !== undefined) {
-            this.orderData.products = cartItem.map((element: any, index: number) => {
+            this.orderData.orderItems = cartItem.map((element: any, index: number) => {
                 var item = new OrderItem();
                 item.product = element.pack.obj.$owner;
                 item.pack = element.pack;

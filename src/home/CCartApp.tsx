@@ -12,7 +12,6 @@ import { consts } from './consts';
 
 export class CCartApp extends CApp {
 
-    cUsqCart: CUsq;
     cUsqOrder: CUsq;
     cUsqProduct: CUsq;
     cUsqCommon: CUsq;
@@ -31,7 +30,6 @@ export class CCartApp extends CApp {
 
     protected async internalStart() {
 
-        this.cUsqCart = this.getCUsq(consts.usqOrder);
         this.cUsqOrder = this.getCUsq(consts.usqOrder);
         this.cUsqProduct = this.getCUsq(consts.usqProduct);
         this.cUsqCommon = this.getCUsq(consts.usqCommon);

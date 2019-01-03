@@ -85,7 +85,7 @@ export class CProduct extends Controller {
         }
         this.prices = await this.getPriceQuery.table(priceQueryCritiria);
         */
-        this.prices = await this.priceMap.table({ product: productId, salesRegion: 1 })
+        this.prices = await this.priceMap.table({ productx: productId, salesRegion: 1 })
         let discount = 0;
         if (this.isLogined) {
             let discountSetting = await this.getCustomerDiscount.table({ brand: this.product.brand.id, person: this.user.id });

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { VPage } from 'tonva-tools';
 import { CMember } from './CMember';
-import { LMR, Muted, FA } from 'tonva-react-form';
+import { LMR, Muted, FA, Media } from 'tonva-react-form';
 
 export class VMember extends VPage<CMember> {
 
@@ -15,9 +15,9 @@ export class VMember extends VPage<CMember> {
     }
 
     private content = () => {
-        let { member } = this.controller;
+        let { member, user } = this.controller;
 
-        let im = <img alt="头像"></img>
+        let im = <img src={user.icon} alt="头像"></img>
         let pointTitle = <p className="h4">我的积分</p>
         let pointDetail = <p className="small align-self-end">查看详情 <FA name="angle-right"></FA></p>
         let pointThisWeek = <><p className="h5 mb-0">0</p><Muted>本周</Muted></>
@@ -27,7 +27,7 @@ export class VMember extends VPage<CMember> {
         return <div>
             <LMR className="shadow bg-white rounded p-3 mb-1" left={im}>
                 <div>
-                    <div>{member.id}</div>
+                    <div>{user.name}</div>
                     <div>邀请码:{member.recommendationCode}</div>
                 </div>
             </LMR>
