@@ -52,7 +52,7 @@ export class CCartApp extends CApp {
         // this.clearPrevPages();
         // await this.cHome.start();
         // this.showVPage(VHome);
-        // await this.cCart.load();
+        await this.cCart.load();
         cCartApp = this;
     }
 }

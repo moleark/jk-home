@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { VPage, Page, View } from 'tonva-tools';
 import { observer } from 'mobx-react';
-import { CCartApp } from './CCartApp';
-import { List, SearchBox } from 'tonva-react-form';
 import { CHome } from './CHome';
 
 const LIGUOSHENG = 5;
@@ -10,10 +8,6 @@ const LIGUOSHENG = 5;
 export class VHome extends View<CHome> {
 
     async showEntry(param?: any) {
-
-        // let { cHome } = this.controller;
-        // let { homeSections } = cHome;
-        // await homeSections.first({ key: "" });
 
         this.openPage(this.page);
     }
@@ -28,8 +22,7 @@ export class VHome extends View<CHome> {
 
     render(param: any): JSX.Element {
 
-        return this.content();
-        // return this.page();
+        return <this.content />
     }
 
     private page = observer(() => {

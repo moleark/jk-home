@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { VPage } from 'tonva-tools';
 import { CMember } from './CMember';
-import { LMR, Muted, FA } from 'C:/Users/ligsh/tonva/tonva-react-form/dist';
-import { observer } from 'mobx-react';
+import { LMR, Muted, FA } from 'tonva-react-form';
 
 export class VMember extends VPage<CMember> {
 
@@ -15,7 +14,7 @@ export class VMember extends VPage<CMember> {
         return <this.content />;
     }
 
-    private content = observer(() => {
+    private content = () => {
         let { member } = this.controller;
         let { point } = member;
 
@@ -50,5 +49,5 @@ export class VMember extends VPage<CMember> {
                 <LMR left={pointThisWeek} right={pointAll} />
             </div>
         </div>
-    })
+    }
 }
