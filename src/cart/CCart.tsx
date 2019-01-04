@@ -55,7 +55,7 @@ export class CCart extends Controller {
      */
     async AddToCart(pack: any, quantity: number, price: number) {
 
-        let cartItem = this.cartData.find((element) => element.pack.id === pack.id);
+        let cartItem = this.cartData.find((element) => element.packx.id === pack.id);
         if (!cartItem) {
             cartItem = this.createCartItem(pack, quantity, price);
             this.cartData.push(cartItem);
@@ -63,15 +63,15 @@ export class CCart extends Controller {
             cartItem.quantity += quantity;
             cartItem.price = price;
         }
-        await this.addToCartAction.submit({ product: cartItem.product.id, pack: cartItem.pack.id, price: cartItem.price, quantity: quantity });
+        await this.addToCartAction.submit({ productx: cartItem.productx.id, packx: cartItem.packx.id, price: cartItem.price, quantity: quantity });
     }
 
     createCartItem(pack: any, quantity: number, price: number): any {
 
         let cartItem: any = {
             checked: true,
-            pack: pack,
-            product: pack.obj.$owner,
+            packx: pack,
+            productx: pack.obj.$owner,
             price: price,
             quantity: quantity,
             isDeleted: false,
@@ -82,7 +82,7 @@ export class CCart extends Controller {
 
     async updateChecked(item: any, checked: boolean) {
 
-        let existItem = this.cartData.find((element) => element.pack.id === item.pack.id);
+        let existItem = this.cartData.find((element) => element.packx.id === item.packx.id);
         if (existItem)
             existItem.checked = checked;
     }
@@ -94,7 +94,7 @@ export class CCart extends Controller {
      */
     async updateQuantity(item: any, quantity: number) {
 
-        await this.setCartAction.submit({ product: item.product.id, pack: item.pack.id, price: item.price, quantity: quantity });
+        await this.setCartAction.submit({ productx: item.product.id, packx: item.pack.id, price: item.price, quantity: quantity });
         let existItem = this.cartData.find((element) => element.pack.id === item.pack.id);
         if (existItem)
             existItem.quantity = quantity;
@@ -134,11 +134,15 @@ export class CCart extends Controller {
      */
     checkOut = async () => {
 
-        let { cOrder } = this.cApp;
-        let selectCartItem = this.cartData.filter((element) => element.checked && !(element.isDeleted === true));
-        if (!selectCartItem || selectCartItem.length === 0) {
-            return;
+        if (!this.isLogined) {
+            // 导航到登录界面
+        } else {
+            let selectCartItem = this.cartData.filter((element) => element.checked && !(element.isDeleted === true));
+            if (!selectCartItem || selectCartItem.length === 0) {
+                return;
+            }
+            let { cOrder } = this.cApp;
+            await cOrder.start(selectCartItem);
         }
-        await cOrder.start(selectCartItem);
     }
 }

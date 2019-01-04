@@ -1,41 +1,40 @@
 import * as React from 'react';
 import { ControllerUsq, TuidMain, Map, CTuidEdit, CUsq } from 'tonva-react-usql';
 import { VAddressList } from './VAddressList';
-import { CCartApp } from 'home/CCartApp';
+import { CCartApp, cCartApp } from 'home/CCartApp';
 import { VContact } from './VContact';
 import { Controller } from 'tonva-tools';
 
 export class CUser extends Controller {
 
-    private cApp: CCartApp;
+    private webUserId: number;
+    private webUserCustomerMap: Map;
+    private webUserConsigneeContactMap: Map;
 
-    private customerId: number;
-    private cContactEdit: CTuidEdit;
     private customerTuid: TuidMain;
-    private contactTuid: TuidMain;
-    private deliveryContactMap: Map;
+    private customerConsigneeContactMap: Map;
 
     customer: any;
     addresses: any[] = [];
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
-        this.cApp = cApp;
 
-        let { cUsqCustomer } = this.cApp;
+        let { cUsqWebUser, cUsqCustomer, cUsqOrder } = cCartApp;
+        // this.webUserCustomerMap = cUsqWebUser.map('webUserCustomer');
+        // this.webUserConsigneeContactMap = cUsqWebUser.map('webUserConsigneeContact');
         this.customerTuid = cUsqCustomer.tuid('customer');
-        // this.contactTuid = cUsqCustomer.tuid('contact');
-        this.deliveryContactMap = cUsqCustomer.map('customerConsigneeContact');
-        // this.cContactEdit = cUsqCustomer.cTuidEdit(this.contactTuid);
+        this.customerConsigneeContactMap = cUsqCustomer.map('customerConsigneeContact');
     }
 
     async internalStart(param: any) {
 
-        param = 1;
-        this.customerId = param;
-
-        this.customer = await this.customerTuid.load(this.customerId);
-        this.addresses = await this.deliveryContactMap.table({ customer: this.customerId });
+        let userMap = { customer: { id: 5 } }; //this.webUserCustomerMap.obj({ webUser: this.user.id });
+        if (userMap) {
+            this.addresses = await this.customerConsigneeContactMap.table({ customer: userMap.customer.id });
+        } else {
+            this.addresses = await this.webUserConsigneeContactMap.table({ webUser: this.webUserId });
+        }
         this.showVPage(VAddressList);
     }
 
@@ -44,8 +43,8 @@ export class CUser extends Controller {
         // await this.deliveryContactMap.add({ customer: this.customerId, arr1: [{ address: id }] });
         // let { cContact } = this.cApp;
         // cContact.start();
-        let { cUsqCustomer } = this.cApp;
-        this.contactTuid = cUsqCustomer.tuid("contact")
+        let { cUsqCustomer } = cCartApp;
+        // this.contactTuid = cUsqCustomer.tuid("contact")
         this.showVPage(VContact);
     }
 
@@ -59,12 +58,8 @@ export class CUser extends Controller {
 
     onContactSelected = (contact: any) => {
 
-        let { cOrder } = this.cApp;
+        let { cOrder } = cCartApp;
         cOrder.setContact(contact);
         this.backPage();
-    }
-
-    renderUser = () => {
-        return <div>Me</div>
     }
 }

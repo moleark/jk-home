@@ -15,6 +15,7 @@ export class CCartApp extends CApp {
     cUsqOrder: CUsq;
     cUsqProduct: CUsq;
     cUsqCommon: CUsq;
+    cUsqWebUser: CUsq;
     cUsqCustomer: CUsq;
     cUsqCustomerDiscount: CUsq;
     cUsqWarehouse: CUsq;
@@ -33,10 +34,13 @@ export class CCartApp extends CApp {
         this.cUsqOrder = this.getCUsq(consts.usqOrder);
         this.cUsqProduct = this.getCUsq(consts.usqProduct);
         this.cUsqCommon = this.getCUsq(consts.usqCommon);
+        // this.cUsqWebUser = this.getCUsq(consts.usqWebUser);
         this.cUsqCustomer = this.getCUsq(consts.usqCustomer);
         this.cUsqCustomerDiscount = this.getCUsq(consts.usqCustomerDiscount);
         this.cUsqWarehouse = this.getCUsq(consts.usqWarehouse);
         this.cUsqMember = this.getCUsq(consts.usqMember);
+
+        cCartApp = this;
 
         this.cProductCategory = new CProductCategory(this, undefined);
         this.cCart = new CCart(this, undefined);
@@ -46,11 +50,13 @@ export class CCartApp extends CApp {
         this.cUser = new CUser(this, undefined);
         this.cMember = new CMember(this, undefined);
 
+        if (this.isLogined) {
+
+        }
         // this.clearPrevPages();
         // await this.cHome.start();
         // this.showVPage(VHome);
         await this.cCart.load();
-        cCartApp = this;
     }
 }
 

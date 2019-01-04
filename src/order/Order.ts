@@ -3,6 +3,7 @@ import { observable, computed } from 'mobx';
 
 export class Order {
 
+    webUser: any;
     organization: BoxId;
     customer: BoxId;
 

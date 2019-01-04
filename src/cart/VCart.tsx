@@ -14,13 +14,13 @@ export class VCart extends VPage<CCart> {
     private mapInputRef = (input: HTMLInputElement | null, item: any) => {
         if (input === null) return;
         input.value = item.quantity;
-        return this.inputRefs[item.pack.id] = input;
+        return this.inputRefs[item.packx.id] = input;
     }
 
     private mapCheckBox = (input: HTMLInputElement | null, item: any) => {
         if (input === null) return;
         input.checked = item.checked || false;
-        return this.checkBoxs[item.pack.id] = input;
+        return this.checkBoxs[item.packx.id] = input;
     }
 
     async showEntry() {
@@ -30,7 +30,7 @@ export class VCart extends VPage<CCart> {
 
     private updateChecked = async (item: any) => {
 
-        let input = this.checkBoxs[item.pack.id];
+        let input = this.checkBoxs[item.packx.id];
         await this.controller.updateChecked(item, input.checked);
     }
 
@@ -39,7 +39,7 @@ export class VCart extends VPage<CCart> {
      */
     private updateQuantity = async (item: any) => {
 
-        let input = this.inputRefs[item.pack.id];
+        let input = this.inputRefs[item.packx.id];
         await this.controller.updateQuantity(item, Number(input.value));
     }
 
@@ -59,16 +59,16 @@ export class VCart extends VPage<CCart> {
     private renderItem = (item: any) => {
         return <div className="row">
             <div className="col-3">
-                <img src="favicon.ico" alt={item.product.obj.description} />
+                <img src="favicon.ico" alt={item.productx.obj.description} />
             </div>
             <div className="col-9">
                 <div className="row">
                     <div className="col-12">
-                        {tv(item.product, this.renderProduct)}
+                        {tv(item.productx, this.renderProduct)}
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-3">{tv(item.pack, this.renderPack)}</div>
+                    <div className="col-3">{tv(item.packx, this.renderPack)}</div>
                     <div className="col-3"><strong className="text-danger">{item.price}</strong></div>
                     <div className="col-6 text-right d-flex">
                         <div onClick={() => this.minusQuantity(item)}><FA name="minus-circle" /></div>
@@ -84,7 +84,7 @@ export class VCart extends VPage<CCart> {
     }
 
     private onCartItemRender = (item: any) => {
-        let { product, pack, isDeleted } = item;
+        let { isDeleted } = item;
         let prod = <>
             {tv(item, this.renderItem)}
         </>;

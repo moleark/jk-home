@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { ControllerUsq, CUsq, TuidMain, Map, Sheet } from 'tonva-react-usql';
-import { CCartApp } from 'home/CCartApp';
+import { TuidMain, Map, Sheet } from 'tonva-react-usql';
+import { CCartApp, cCartApp } from 'home/CCartApp';
 import { VCreateOrder } from './VCreateOrder';
 import { Order, OrderItem } from './Order';
 import { CUser } from 'customer/CPerson';
@@ -10,20 +10,20 @@ import { Controller } from 'tonva-tools';
 
 export class COrder extends Controller {
 
-    cApp: CCartApp;
-
     @observable orderData: Order = new Order();
-    private customerTuid: TuidMain;
-    private consigneeContactMap: Map;
+    private webUserCustomerMap: Map;
+    private webUserConsigneeContactMap: Map;
+
+    private customerConsigneeContactMap: Map;
     private orderSheet: Sheet;
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
-        this.cApp = cApp;
 
-        let { cUsqCustomer, cUsqOrder } = this.cApp;
-        this.customerTuid = cUsqCustomer.tuid('customer');
-        this.consigneeContactMap = cUsqCustomer.map('customerConsigneeContact');
+        let { cUsqWebUser, cUsqCustomer, cUsqOrder } = cCartApp;
+        // this.webUserCustomerMap = cUsqWebUser.map('webUserCustomer');
+        // this.webUserConsigneeContactMap = cUsqWebUser.map('webUserConsigneeContact');
+        this.customerConsigneeContactMap = cUsqCustomer.map('customerConsigneeContact');
         this.orderSheet = cUsqOrder.sheet('order');
     }
 
@@ -36,9 +36,16 @@ export class COrder extends Controller {
 
     private createOrderFromCart = async (cartItem: any[]) => {
 
-        this.orderData.customer = await this.customerTuid.load(this.user.id);
+        this.orderData.webUser = this.user.id;
+        let userMap = { customer: { id: 5 } }; //this.webUserCustomerMap.obj({ webUser: this.user.id });
 
-        let contactArr = await this.consigneeContactMap.table({ customer: this.user.id });
+        let contactArr: any;
+        if (userMap) {
+            contactArr = await this.customerConsigneeContactMap.table({ customer: userMap.customer.id });
+            // this.orderData.customer = userMap.customer; // await this.customerTuid.load(this.user.id);
+        } else {
+            contactArr = await this.webUserConsigneeContactMap.table({ userMap: this.user.id });
+        }
         if (contactArr) {
             let contactWapper = contactArr.find((element: any) => {
                 if (element.isDefault === true)
@@ -52,8 +59,8 @@ export class COrder extends Controller {
         if (cartItem !== undefined) {
             this.orderData.orderItems = cartItem.map((element: any, index: number) => {
                 var item = new OrderItem();
-                item.product = element.pack.obj.$owner;
-                item.pack = element.pack;
+                item.product = element.productx,
+                    item.pack = element.packx;
                 item.price = element.price;
                 item.quantity = element.quantity;
                 return item;
@@ -78,7 +85,7 @@ export class COrder extends Controller {
 
     openContactList = () => {
 
-        let cPerson = new CUser(this.cApp, undefined);
-        cPerson.start(this.user.id);
+        let cPerson = new CUser(cCartApp, undefined);
+        cPerson.start();
     }
 }
