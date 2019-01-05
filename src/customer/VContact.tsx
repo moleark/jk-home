@@ -11,6 +11,7 @@ const schema: Schema = [
     { name: 'email', type: 'string', required: false },
     { name: 'address', type: 'id', required: true },
     { name: 'addressString', type: 'string', required: true },
+    { name: 'submit', type: 'submit' },
 ]
 
 const uiSchema: UiSchema = {
@@ -44,7 +45,7 @@ export class VContact extends VPage<CUser> {
         let footer = <button type="button" className="btn btn-primary w-100" onClick={this.saveContact}>保存并使用</button>
         return <Page header="添加收货人" footer={footer}>
             <div className="App-container container text-left">
-                <Form schema={schema} uiSchema={uiSchema} onButtonClick={this.saveContact2} />
+                <Form schema={schema} uiSchema={uiSchema} onButtonClick={this.saveContact2} fieldLabelSize={3} className="my-3" />
             </div>
         </Page>
     }

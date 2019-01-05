@@ -21,8 +21,8 @@ export class COrder extends Controller {
         super(res);
 
         let { cUsqWebUser, cUsqCustomer, cUsqOrder } = cCartApp;
-        // this.webUserCustomerMap = cUsqWebUser.map('webUserCustomer');
-        // this.webUserConsigneeContactMap = cUsqWebUser.map('webUserConsigneeContact');
+        this.webUserCustomerMap = cUsqWebUser.map('webUserCustomer');
+        this.webUserConsigneeContactMap = cUsqWebUser.map('webUserConsigneeContact');
         this.customerConsigneeContactMap = cUsqCustomer.map('customerConsigneeContact');
         this.orderSheet = cUsqOrder.sheet('order');
     }
@@ -37,12 +37,12 @@ export class COrder extends Controller {
     private createOrderFromCart = async (cartItem: any[]) => {
 
         this.orderData.webUser = this.user.id;
-        let userMap = { customer: { id: 5 } }; //this.webUserCustomerMap.obj({ webUser: this.user.id });
+        let userMap: any = this.webUserCustomerMap.obj({ webUser: this.user.id });
 
         let contactArr: any;
         if (userMap) {
             contactArr = await this.customerConsigneeContactMap.table({ customer: userMap.customer.id });
-            // this.orderData.customer = userMap.customer; // await this.customerTuid.load(this.user.id);
+            this.orderData.customer = userMap.customer;
         } else {
             contactArr = await this.webUserConsigneeContactMap.table({ userMap: this.user.id });
         }
@@ -59,8 +59,8 @@ export class COrder extends Controller {
         if (cartItem !== undefined) {
             this.orderData.orderItems = cartItem.map((element: any, index: number) => {
                 var item = new OrderItem();
-                item.product = element.productx,
-                    item.pack = element.packx;
+                item.product = element.product,
+                    item.pack = element.pack;
                 item.price = element.price;
                 item.quantity = element.quantity;
                 return item;

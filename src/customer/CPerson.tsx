@@ -21,15 +21,15 @@ export class CUser extends Controller {
         super(res);
 
         let { cUsqWebUser, cUsqCustomer, cUsqOrder } = cCartApp;
-        // this.webUserCustomerMap = cUsqWebUser.map('webUserCustomer');
-        // this.webUserConsigneeContactMap = cUsqWebUser.map('webUserConsigneeContact');
+        this.webUserCustomerMap = cUsqWebUser.map('webUserCustomer');
+        this.webUserConsigneeContactMap = cUsqWebUser.map('webUserConsigneeContact');
         this.customerTuid = cUsqCustomer.tuid('customer');
         this.customerConsigneeContactMap = cUsqCustomer.map('customerConsigneeContact');
     }
 
     async internalStart(param: any) {
 
-        let userMap = { customer: { id: 5 } }; //this.webUserCustomerMap.obj({ webUser: this.user.id });
+        let userMap: any = this.webUserCustomerMap.obj({ webUser: this.user.id });
         if (userMap) {
             this.addresses = await this.customerConsigneeContactMap.table({ customer: userMap.customer.id });
         } else {

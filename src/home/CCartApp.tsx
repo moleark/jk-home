@@ -34,7 +34,7 @@ export class CCartApp extends CApp {
         this.cUsqOrder = this.getCUsq(consts.usqOrder);
         this.cUsqProduct = this.getCUsq(consts.usqProduct);
         this.cUsqCommon = this.getCUsq(consts.usqCommon);
-        // this.cUsqWebUser = this.getCUsq(consts.usqWebUser);
+        this.cUsqWebUser = this.getCUsq(consts.usqWebUser);
         this.cUsqCustomer = this.getCUsq(consts.usqCustomer);
         this.cUsqCustomerDiscount = this.getCUsq(consts.usqCustomerDiscount);
         this.cUsqWarehouse = this.getCUsq(consts.usqWarehouse);

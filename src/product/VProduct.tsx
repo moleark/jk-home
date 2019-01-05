@@ -22,11 +22,11 @@ export class VProduct extends VPage<CProduct> {
         let coll: { [packId: number]: PackRow } = {};
         for (let pr of product.prices) {
             let packRow: PackRow = {
-                pack: pr.packx,
+                pack: pr.pack,
                 retail: pr.retail,
                 vipPrice: pr.vipPrice,
             } as any;
-            let packId = pr.packx.id;
+            let packId = pr.pack.id;
             coll[packId] = packRow;
             this.packRows.push(packRow);
         }
