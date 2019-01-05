@@ -37,10 +37,10 @@ export class COrder extends Controller {
     private createOrderFromCart = async (cartItem: any[]) => {
 
         this.orderData.webUser = this.user.id;
-        let userMap: any = this.webUserCustomerMap.obj({ webUser: this.user.id });
+        let userMap: any = await this.webUserCustomerMap.obj({ webUser: this.user.id });
 
         let contactArr: any;
-        if (userMap) {
+        if (userMap !== undefined) {
             contactArr = await this.customerConsigneeContactMap.table({ customer: userMap.customer.id });
             this.orderData.customer = userMap.customer;
         } else {

@@ -29,8 +29,8 @@ export class CUser extends Controller {
 
     async internalStart(param: any) {
 
-        let userMap: any = this.webUserCustomerMap.obj({ webUser: this.user.id });
-        if (userMap) {
+        let userMap: any = await this.webUserCustomerMap.obj({ webUser: this.user.id });
+        if (userMap !== undefined) {
             this.addresses = await this.customerConsigneeContactMap.table({ customer: userMap.customer.id });
         } else {
             this.addresses = await this.webUserConsigneeContactMap.table({ webUser: this.webUserId });
