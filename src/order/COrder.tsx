@@ -37,23 +37,27 @@ export class COrder extends Controller {
     private createOrderFromCart = async (cartItem: any[]) => {
 
         this.orderData.webUser = this.user.id;
-        let userMap: any = await this.webUserCustomerMap.obj({ webUser: this.user.id });
 
-        let contactArr: any;
-        if (userMap !== undefined) {
-            contactArr = await this.customerConsigneeContactMap.table({ customer: userMap.customer.id });
-            this.orderData.customer = userMap.customer;
-        } else {
-            contactArr = await this.webUserConsigneeContactMap.table({ userMap: this.user.id });
-        }
-        if (contactArr) {
-            let contactWapper = contactArr.find((element: any) => {
-                if (element.isDefault === true)
-                    return element;
-            });
-            if (!contactWapper)
-                contactWapper = contactArr[0];
-            this.setContact(contactWapper && contactWapper.address);
+        if (this.orderData.deliveryContact === undefined) {
+            let userMap: any = await this.webUserCustomerMap.obj({ webUser: this.user.id });
+
+            let contactArr: any;
+            if (userMap !== undefined) {
+                contactArr = await this.customerConsigneeContactMap.table({ customer: userMap.customer.id });
+                this.orderData.customer = userMap.customer;
+            } else {
+                contactArr = await this.webUserConsigneeContactMap.table({ webUser: this.user.id });
+                console.log(contactArr);
+            }
+            if (contactArr && contactArr.length > 0) {
+                let contactWapper = contactArr.find((element: any) => {
+                    if (element.isDefault === true)
+                        return element;
+                });
+                if (!contactWapper)
+                    contactWapper = contactArr[0];
+                this.setContact(contactWapper.contact.obj);
+            }
         }
 
         if (cartItem !== undefined) {
@@ -70,7 +74,7 @@ export class COrder extends Controller {
 
     setContact = (contactBox: any) => {
 
-        this.orderData.deliveryContact = contactBox;
+        this.orderData.deliveryContact = {...contactBox};
     }
 
     submitOrder = async () => {
@@ -85,7 +89,6 @@ export class COrder extends Controller {
 
     openContactList = () => {
 
-        let cPerson = new CUser(cCartApp, undefined);
-        cPerson.start();
+        cCartApp.cUser.start();
     }
 }

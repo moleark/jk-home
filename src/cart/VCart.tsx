@@ -71,9 +71,9 @@ export class VCart extends VPage<CCart> {
                     <div className="col-3">{tv(item.pack, this.renderPack)}</div>
                     <div className="col-3"><strong className="text-danger">{item.price}</strong></div>
                     <div className="col-6 text-right d-flex">
-                        <div onClick={() => this.minusQuantity(item)}><FA name="minus-circle" /></div>
+                        <div onClick={() => this.minusQuantity(item)}><FA name="minus-circle text-success" /></div>
                         <span className="px-4 bg-light">{item.quantity}</span>
-                        <div onClick={() => this.plusQuantity(item)}><FA name="plus-circle" /></div>
+                        <div onClick={() => this.plusQuantity(item)}><FA name="plus-circle text-success" /></div>
                     </div>
                 </div>
                 <div className="row">

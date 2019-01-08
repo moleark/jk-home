@@ -7,7 +7,7 @@ export class Order {
     organization: BoxId;
     customer: BoxId;
 
-    @observable deliveryContact: BoxId;
+    @observable deliveryContact: any = {};
     invoiceContact: BoxId;
     @observable orderItems: OrderItem[] = [];
 }

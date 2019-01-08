@@ -67,7 +67,7 @@ export class VCreateOrder extends VPage<COrder> {
         let chevronRight = <FA name="chevron-right" />
         return <Page header="订单预览" footer={footer}>
             <LMR right={chevronRight} onClick={openContactList} className="px-2 py-2">
-                {tv(deliveryContact, this.renderDeliveryContact, undefined, this.nullContact)}
+                {JSON.stringify(deliveryContact)}
             </LMR>
             <List items={orderItems} item={{ render: this.renderOrderItem, className: "px-2" }} />
         </Page>
