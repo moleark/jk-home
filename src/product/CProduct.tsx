@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { CUsq, ControllerUsq, Map, TuidDiv, TuidMain, Query } from 'tonva-react-usql';
+import { Map, TuidDiv, TuidMain, Query } from 'tonva-react-usql';
 import { VProduct } from './VProduct';
 import * as _ from 'lodash';
-import { CCartApp } from 'home/CCartApp';
+import { CCartApp, cCartApp } from 'home/CCartApp';
 import { PageItems, Controller } from 'tonva-tools';
 import { VProductList } from './VProductList';
 
@@ -34,7 +34,6 @@ class PageProducts extends PageItems<any> {
  */
 export class CProduct extends Controller {
 
-    cApp: CCartApp;
     pageProducts: PageProducts;
     private productTuid: TuidMain;
     packTuid: TuidDiv;
@@ -50,9 +49,8 @@ export class CProduct extends Controller {
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
-        this.cApp = cApp;
 
-        let { cUsqProduct, cUsqCustomerDiscount, cUsqWarehouse } = this.cApp;
+        let { cUsqProduct, cUsqCustomerDiscount, cUsqWarehouse } = cCartApp;
         let searchProductQuery = cUsqProduct.query("searchProduct");
         this.pageProducts = new PageProducts(searchProductQuery);
 
@@ -78,20 +76,15 @@ export class CProduct extends Controller {
             this.product.chemical = this.productChemical.chemical;
             this.product.purity = this.productChemical.purity;
         }
-        /*
-        let priceQueryCritiria: any = { product: productId, salesRegion: 1 }
-        if (this.isLogined) {
-            priceQueryCritiria.person = this.user.id;
-        }
-        this.prices = await this.getPriceQuery.table(priceQueryCritiria);
-        */
-        this.prices = await this.priceMap.table({ product: productId, salesRegion: 1 })
+
+        let { salesRegion } = cCartApp;
+        this.prices = await this.priceMap.table({ product: productId, salesRegion: salesRegion.id })
         let discount = 0;
         if (this.isLogined) {
             let discountSetting = await this.getCustomerDiscount.table({ brand: this.product.brand.id, person: this.user.id });
             discount = discountSetting && discountSetting[0] && discountSetting[0].discount;
         }
-        this.prices.forEach(element => element.vipprice = element.price * (1 - discount));
+        this.prices.forEach(element => { element.vipprice = element.price * (1 - discount); element.currency = salesRegion.currency.obj; });
         this.product.prices = this.prices;
         this.showVPage(VProduct, this.product);
     }

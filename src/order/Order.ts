@@ -11,6 +11,11 @@ export class Order {
     invoiceContact: BoxId;
     @observable orderItems: OrderItem[] = [];
 
+    @computed get amount() {
+        return this.orderItems.reduce((pv, cv) => pv + cv.subAmount, 0);
+    };
+    currency: any;
+
     getPostData() {
         return {
             webUser: this.webUser,
@@ -22,10 +27,12 @@ export class Order {
                     pack: orderItem.pack.id,
                     price: orderItem.price,
                     quantity: orderItem.quantity,
-                    amount: orderItem.amount,
+                    subAmount: orderItem.subAmount,
                 }
             }),
-            deliveryOrderContact: this.deliveryContact.id
+            deliveryOrderContact: this.deliveryContact.id,
+            amount: this.amount,
+            currency: this.currency && this.currency.id,
         }
     }
 }
@@ -37,7 +44,7 @@ export class OrderItem {
 
     @observable price: number;
     @observable quantity: number;
-    @computed get amount() {
+    @computed get subAmount() {
         return this.price * this.quantity;
     }
 }

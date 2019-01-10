@@ -53,26 +53,30 @@ export class CCart extends Controller {
      * @param pack 要添加到购物车中的包装
      * @param quantity 要添加到购物车中包装的个数
      */
-    async AddToCart(pack: any, quantity: number, price: number) {
+    async AddToCart(pack: any, quantity: number, price: number, currency: any) {
 
         let cartItem = this.cartData.find((element) => element.pack.id === pack.id);
         if (!cartItem) {
-            cartItem = this.createCartItem(pack, quantity, price);
+            cartItem = this.createCartItem(pack, quantity, price, currency);
             this.cartData.push(cartItem);
         } else {
             cartItem.quantity += quantity;
             cartItem.price = price;
         }
-        await this.addToCartAction.submit({ product: cartItem.product.id, pack: cartItem.pack.id, price: cartItem.price, quantity: quantity });
+        await this.addToCartAction.submit({
+            product: cartItem.product.id, pack: cartItem.pack.id,
+            price: cartItem.price, currency: currency.id, quantity: quantity
+        });
     }
 
-    createCartItem(pack: any, quantity: number, price: number): any {
+    createCartItem(pack: any, quantity: number, price: number, currency: any): any {
 
         let cartItem: any = {
             checked: true,
             pack: pack,
             product: pack.obj.$owner,
             price: price,
+            currency: currency,
             quantity: quantity,
             isDeleted: false,
             createdate: Date.now()

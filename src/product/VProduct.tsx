@@ -4,12 +4,14 @@ import { CProduct } from './CProduct';
 import { List, LMR, FA, SearchBox } from 'tonva-react-form';
 import { tv, BoxId } from 'tonva-react-usql';
 import { observer } from 'mobx-react';
+import { cCartApp } from 'home/CCartApp';
 
 interface PackRow {
     pack: BoxId;
     input: HTMLInputElement;
     retail: number;
     vipPrice: number;
+    currency: any;
 }
 
 export class VProduct extends VPage<CProduct> {
@@ -25,6 +27,7 @@ export class VProduct extends VPage<CProduct> {
                 pack: pr.pack,
                 retail: pr.retail,
                 vipPrice: pr.vipPrice,
+                currency: pr.currency,
             } as any;
             let packId = pr.pack.id;
             coll[packId] = packRow;
@@ -49,7 +52,7 @@ export class VProduct extends VPage<CProduct> {
     }
 
     private onProductPackRender = (packRow: PackRow, index: number) => {
-        let { pack, retail } = packRow;
+        let { pack, retail, currency } = packRow;
         let right = <>
             <input
                 className="text-center"
@@ -67,7 +70,7 @@ export class VProduct extends VPage<CProduct> {
         return <LMR className="pt-3" right={right}>
             <div className="row">
                 <div className="col-2">{pack.obj.name}</div>
-                <div className="col-2">{retail}</div>
+                <div className="col-2">{retail}{currency && currency.name}</div>
                 <div className="col-2">{retail}</div>
             </div>
         </LMR>
@@ -75,23 +78,22 @@ export class VProduct extends VPage<CProduct> {
 
     private onProductPackClicked = async (packRow: PackRow) => {
 
-        let { pack, retail } = packRow;
-        let { cApp } = this.controller;
-        let { cCart } = cApp
+        let { pack, retail, currency } = packRow;
+        let { cCart } = cCartApp;
         let input = packRow.input;
-        await cCart.AddToCart(pack, Number(input.value), retail);
+        await cCart.AddToCart(pack, Number(input.value), retail, currency);
     }
 
     private page = observer((product1: any) => {
 
-        let { cApp, product } = this.controller;
-        let header = this.controller.cApp.cHome.renderSearchHeader();
-        let cartLabel = cApp.cCart.renderCartLabel();
+        let { product } = this.controller;
+        let header = cCartApp.cHome.renderSearchHeader();
+        let cartLabel = cCartApp.cCart.renderCartLabel();
         let listHeader = <LMR className="pt-3" right="quantity  cart  favorite">
             <div className="row">
                 <div className="col-2">SKU</div>
                 <div className="col-2">price</div>
-                <div className="col-2">vipPrice</div>
+                <div className="col-2">vip price</div>
             </div>
         </LMR>
         return <Page header={header} right={cartLabel}>

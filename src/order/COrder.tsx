@@ -61,7 +61,8 @@ export class COrder extends Controller {
             }
         }
 
-        if (cartItem !== undefined) {
+        if (cartItem !== undefined && cartItem.length > 0) {
+            this.orderData.currency = cartItem[0].currency;
             this.orderData.orderItems = cartItem.map((element: any, index: number) => {
                 var item = new OrderItem();
                 item.product = element.product,
@@ -85,6 +86,7 @@ export class COrder extends Controller {
             return;
         }
         let postOrder = this.orderData.getPostData();
+        await this.orderSheet.loadSchema();
         let result = await this.orderSheet.save("", postOrder);
         cCartApp.cCart.removeFromCart(this.orderData.orderItems);
 

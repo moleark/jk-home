@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { CApp, CUsq, startApp } from 'tonva-react-usql';
+import { CApp, CUsq } from 'tonva-react-usql';
 import { CCart } from 'cart/CCart';
 import { CProduct } from 'product';
 import { COrder } from 'order/COrder';
@@ -11,6 +11,8 @@ import { CMember } from 'member/CMember';
 import { consts } from './consts';
 
 export class CCartApp extends CApp {
+
+    salesRegion: any;
 
     cUsqOrder: CUsq;
     cUsqProduct: CUsq;
@@ -49,6 +51,13 @@ export class CCartApp extends CApp {
         this.cOrder = new COrder(this, undefined);
         this.cUser = new CUser(this, undefined);
         this.cMember = new CMember(this, undefined);
+
+        let salesRegionTuid = this.cUsqCommon.tuid('salesregion');
+        /*
+        let sr: any = await salesRegionTuid.load(1);
+        this.salesRegion = new SalesRegion(sr.id, sr.name, sr.currency);
+        */
+        this.salesRegion = await salesRegionTuid.load(1);
 
         if (this.isLogined) {
 
