@@ -7,6 +7,7 @@ import { CUser } from 'customer/CPerson';
 import { observable } from 'mobx';
 import * as _ from 'lodash';
 import { Controller } from 'tonva-tools';
+import { OrderSuccess } from './OrderSuccess';
 
 export class COrder extends Controller {
 
@@ -83,8 +84,13 @@ export class COrder extends Controller {
             this.openContactList();
             return;
         }
-        await this.orderSheet.loadSchema();
-        await this.orderSheet.save("", this.orderData);
+        let postOrder = this.orderData.getPostData();
+        let result = await this.orderSheet.save("", postOrder);
+        cCartApp.cCart.removeFromCart(this.orderData.orderItems);
+
+        // 打开订单显示界面
+        this.closePage(1);
+        this.showVPage(OrderSuccess, result);
     }
 
     openContactList = () => {

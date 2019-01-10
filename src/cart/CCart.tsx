@@ -104,17 +104,22 @@ export class CCart extends Controller {
      *
      * @param item
      */
-    private async removeFromCart() {
+    private async removeDeletedItem() {
 
         let rows = this.cartData.filter((e) => e.isDeleted === true);
         if (rows) {
-            await this.removeFromCartAction.submit({ rows: rows });
-            _.remove(this.cartData, v => v.isDeleted === true);
+            await this.removeFromCart(rows);
         }
     }
 
+    async removeFromCart(rows: any[]) {
+
+        await this.removeFromCartAction.submit({ rows: rows });
+        _.pullAllBy(this.cartData, rows, 'pack.id');
+    }
+
     protected onDispose() {
-        this.removeFromCart();
+        this.removeDeletedItem();
     }
 
     /**

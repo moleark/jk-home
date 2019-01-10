@@ -12,7 +12,7 @@ export class VCreateOrder extends VPage<COrder> {
         this.openPage(this.page);
     }
 
-    private renderDeliveryContact = (deliveryContact: any) => {
+    private RenderDeliveryContact = (deliveryContact: any) => {
         let deliveryContactRow = <div className="row">
             <div className="col-12">
                 {deliveryContact.name}{deliveryContact.mobile}<br />
@@ -67,7 +67,11 @@ export class VCreateOrder extends VPage<COrder> {
         let chevronRight = <FA name="chevron-right" />
         return <Page header="订单预览" footer={footer}>
             <LMR right={chevronRight} onClick={openContactList} className="px-2 py-2">
-                {JSON.stringify(deliveryContact)}
+                <div className="row">
+                    <div className="col-4">{deliveryContact.name}</div>
+                    <div className="col-8">{deliveryContact.mobile}</div>
+                    <div className="col-12">{deliveryContact.addressString}</div>
+                </div>
             </LMR>
             <List items={orderItems} item={{ render: this.renderOrderItem, className: "px-2" }} />
         </Page>

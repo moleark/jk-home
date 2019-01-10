@@ -67,8 +67,8 @@ export class CUser extends Controller {
 
     saveContact = async (contact: any) => {
 
-        let contactWithId = await this.contactTuid.save(0, _.pick(contact, ['name', 'organizationName', 'mobile', 'telephone', 'email', 'addressString']));
-        await this.webUserConsigneeContactMap.add({ webUser: this.user.id, contact: contactWithId.id });
+        let contactWithId = await this.contactTuid.save(undefined, contact);
+        await this.webUserConsigneeContactMap.add({ webUser: this.user.id, arr1: [{ contact: contactWithId.id }] });
         this.onContactSelected(contact);
     }
 
