@@ -4,7 +4,7 @@ import { CProduct } from './CProduct';
 import { tv } from 'tonva-react-usql';
 import { List, LMR, SearchBox } from 'tonva-react-form';
 import { observer } from 'mobx-react';
-import { cCartApp } from 'home/CCartApp';
+//import { cCartApp } from 'ui/CCartApp';
 
 export class VProductList extends VPage<CProduct> {
 
@@ -78,9 +78,9 @@ export class VProductList extends VPage<CProduct> {
 
     private page = observer(() => {
 
-        let { pageProducts } = this.controller;
-        let header = cCartApp.cHome.renderSearchHeader();
-        let cart = cCartApp.cCart.renderCartLabel();
+        let { pageProducts, cApp } = this.controller;
+        let header = cApp.cHome.renderSearchHeader();
+        let cart = cApp.cCart.renderCartLabel();
         return <Page header={header} right={cart} onScrollBottom={this.onScrollBottom}>
             <List before={''} items={pageProducts} item={{ render: this.productRow, onClick: this.onProductClick }} className="bg-white px-2" />
         </Page>

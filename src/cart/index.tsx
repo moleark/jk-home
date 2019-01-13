@@ -1,11 +1,15 @@
-import * as React from 'react';
+export { CCart } from './CCart';
+
+//import * as React from 'react';
+
+/*
 import Loadable from 'react-loadable';
 import { Loading } from 'tonva-tools';
 
 export const cartTab = () => {
     let LoadableComponent = Loadable.Map({
         loader: {
-            a: () => import('../home/CCartApp'),
+            a: () => import('../CCartApp'),
         },
         loading: Loading,
         render(loaded, props) {
@@ -15,3 +19,4 @@ export const cartTab = () => {
     });
     return <LoadableComponent />;
 }
+*/

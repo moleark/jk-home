@@ -1,7 +1,8 @@
 import * as React from 'react';
+import Loadable from 'react-loadable';
 import { Controller, Loading } from 'tonva-tools';
 import { VMember } from './VMember';
-import { CCartApp } from 'home/CCartApp';
+import { CCartApp } from 'CCartApp';
 import { Query } from 'tonva-react-usql';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
@@ -36,4 +37,19 @@ export class CMember extends Controller {
     render = observer(() => {
         return this.member === undefined ? <Loading /> : this.renderMember();
     })
+
+    tab = () => <this.render />;
+    
+    /*{
+        let LoadableComponent = Loadable({
+            loader: () => import('../CCartApp'),
+            loading: Loading,
+            render(loaded, props) {
+                let { cCartApp } = loaded;
+                cCartApp.cMember.start();
+                return <cCartApp.cMember.render />
+            }
+        });
+        return <LoadableComponent />;
+    }*/
 }

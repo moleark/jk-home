@@ -1,10 +1,11 @@
 import * as React from 'react';
-import { VPage, Page } from 'tonva-tools';
+import { VPage, Page, Form, ItemSchema, ArrSchema, NumSchema, UiSchema, UiArr, Field, StringSchema, Context, ObjectSchema } from 'tonva-tools';
 import { CProduct } from './CProduct';
 import { List, LMR, FA, SearchBox } from 'tonva-react-form';
 import { tv, BoxId } from 'tonva-react-usql';
 import { observer } from 'mobx-react';
-import { cCartApp } from 'home/CCartApp';
+import { MinusPlusWidget } from './minusPlusWidget';
+//import { cCartApp } from 'ui/CCartApp';
 
 interface PackRow {
     pack: BoxId;
@@ -14,11 +15,42 @@ interface PackRow {
     currency: any;
 }
 
+const schema:ItemSchema[] = [
+    {
+        name: 'list',
+        type: 'arr',
+        arr: [
+            {name: 'pack', type: 'object'} as ObjectSchema, 
+            {name: 'retail', type: 'number'} as NumSchema,
+            {name: 'vipPrice', type: 'number'} as NumSchema,
+            {name: 'currency', type: 'string'},
+            {name:'quantity', type: 'number'} as NumSchema
+        ]
+    } as ArrSchema
+];
+
 export class VProduct extends VPage<CProduct> {
+    private data:any;
+    private uiSchema: UiSchema;
     private packRows: PackRow[];
 
     async showEntry(product: any) {
-
+        this.uiSchema = {
+            items: {
+                list: {
+                    widget: 'arr',
+                    Templet: this.arrTemplet,
+                    items: {
+                        quantity: {
+                            widget: 'custom',
+                            className: 'text-center',
+                            WidgetClass: MinusPlusWidget,
+                            onChanged: this.onQuantityChanged
+                        }
+                    }
+                } as UiArr,
+            }
+        };
         let { packTuid } = this.controller;
         this.packRows = [];
         let coll: { [packId: number]: PackRow } = {};
@@ -42,8 +74,31 @@ export class VProduct extends VPage<CProduct> {
                 packRow.pack = packTuid.boxId(id);
             }
         }
+        this.data = {
+            list: this.packRows,
+        };
 
         this.openPage(this.page, product);
+    }
+
+    private onQuantityChanged = (context:Context, value:any, prev:any) => {
+        alert('prev='+prev + ' value=' + value);
+    }
+
+    //context:Context, name:string, value:number
+    private arrTemplet = (item: any) => {
+        //let a = context.getValue('');
+        let {pack, retail, vipPrice} = item;
+        let right = <div className="d-flex"><Field name="quantity" /></div>;
+        return <LMR className="mx-3" right={right}>
+            <div>{tv(pack, this.renderPack)}</div>
+            <div>retail:{retail} vipPrice:{vipPrice}</div>
+        </LMR>;
+    }
+
+    private renderPack = (pack:any):JSX.Element => {
+        let {radiox, radioy, unit} = pack;
+        return <>{radiox} x {radioy} {unit}</>;
     }
 
     private inputRef = (input: HTMLInputElement | null, packRow: PackRow) => {
@@ -79,16 +134,16 @@ export class VProduct extends VPage<CProduct> {
     private onProductPackClicked = async (packRow: PackRow) => {
 
         let { pack, retail, currency } = packRow;
-        let { cCart } = cCartApp;
+        let { cCart } = this.controller.cApp;
         let input = packRow.input;
-        await cCart.AddToCart(pack, Number(input.value), retail, currency);
+        await cCart.cart.AddToCart(pack, Number(input.value), retail, currency);
     }
 
     private page = observer((product1: any) => {
 
-        let { product } = this.controller;
-        let header = cCartApp.cHome.renderSearchHeader();
-        let cartLabel = cCartApp.cCart.renderCartLabel();
+        let { product, cApp } = this.controller;
+        let header = cApp.cHome.renderSearchHeader();
+        let cartLabel = cApp.cCart.renderCartLabel();
         let listHeader = <LMR className="pt-3" right="quantity  cart  favorite">
             <div className="row">
                 <div className="col-2">SKU</div>
@@ -98,6 +153,8 @@ export class VProduct extends VPage<CProduct> {
         </LMR>
         return <Page header={header} right={cartLabel}>
             <div className="px-2 py-2 bg-white">{tv(product)}</div>
+            <Form schema={schema} uiSchema={this.uiSchema} formData={this.data} />
+
             <List items={this.packRows} item={{ render: this.onProductPackRender }} header={listHeader} className="px-2 bg-white" />
         </Page>
     })

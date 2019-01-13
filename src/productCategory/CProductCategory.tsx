@@ -3,7 +3,7 @@ import { ControllerUsq, Tuid, Map, CUsq } from 'tonva-react-usql';
 import { observable } from 'mobx';
 import { VRootCategory } from './VRootCategory';
 import { VCategory } from './VCategory';
-import { CCartApp } from 'home/CCartApp';
+import { CCartApp } from 'CCartApp';
 import { Controller } from 'tonva-tools';
 
 export class CProductCategory extends Controller {

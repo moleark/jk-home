@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { ControllerUsq, TuidMain, Map, CTuidEdit, CUsq } from 'tonva-react-usql';
 import { VAddressList } from './VAddressList';
-import { CCartApp, cCartApp } from 'home/CCartApp';
+import { CCartApp } from 'CCartApp';
 import { VContact } from './VContact';
 import { Controller } from 'tonva-tools';
 import _ from 'lodash';
 
 export class CUser extends Controller {
-
+    cApp: CCartApp;
     private webUserCustomerMap: Map;
     private webUserConsigneeContactMap: Map;
 
@@ -22,8 +22,8 @@ export class CUser extends Controller {
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
-
-        let { cUsqWebUser, cUsqCustomer, cUsqOrder } = cCartApp;
+        this.cApp = cApp;
+        let { cUsqWebUser, cUsqCustomer, cUsqOrder } = cApp;
         this.webUserCustomerMap = cUsqWebUser.map('webUserCustomer');
         this.webUserConsigneeContactMap = cUsqWebUser.map('webUserConsigneeContact');
 
@@ -74,7 +74,7 @@ export class CUser extends Controller {
 
     onContactSelected = (contact: any) => {
 
-        let { cOrder } = cCartApp;
+        let { cOrder } = this.cApp;
         cOrder.setContact(contact);
         this.backPage();
     }

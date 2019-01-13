@@ -1,3 +1,4 @@
+/*
 import * as React from 'react';
 import { TabCaptionComponent} from 'tonva-tools';
 import { observable } from 'mobx';
@@ -27,3 +28,4 @@ export const faceTabs = [
         notify: notify,
     }
 });
+*/

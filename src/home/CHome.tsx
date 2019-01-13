@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ControllerUsq, CApp, CUsq, TuidMain } from 'tonva-react-usql';
 import { VSiteHeader } from './VSiteHeader';
-import { CCartApp } from './CCartApp';
+import { CCartApp } from '../CCartApp';
 import { PageItems, Controller } from 'tonva-tools';
 import { VSearchHeader } from './VSearchHeader';
 import { VHome } from './VHome';
@@ -69,4 +69,6 @@ export class CHome extends Controller {
     openMetaView = () => {
         this.cApp.startDebug();
     }
+
+    tab = () => <this.renderHome />;
 }

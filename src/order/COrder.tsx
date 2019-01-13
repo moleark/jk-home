@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { TuidMain, Map, Sheet } from 'tonva-react-usql';
-import { CCartApp, cCartApp } from 'home/CCartApp';
+import { CCartApp } from 'CCartApp';
 import { VCreateOrder } from './VCreateOrder';
 import { Order, OrderItem } from './Order';
 import { CUser } from 'customer/CPerson';
@@ -10,7 +10,7 @@ import { Controller } from 'tonva-tools';
 import { OrderSuccess } from './OrderSuccess';
 
 export class COrder extends Controller {
-
+    private cApp: CCartApp;
     @observable orderData: Order = new Order();
     private webUserCustomerMap: Map;
     private webUserConsigneeContactMap: Map;
@@ -20,8 +20,8 @@ export class COrder extends Controller {
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
-
-        let { cUsqWebUser, cUsqCustomer, cUsqOrder } = cCartApp;
+        this.cApp = cApp;
+        let { cUsqWebUser, cUsqCustomer, cUsqOrder } = cApp;
         this.webUserCustomerMap = cUsqWebUser.map('webUserCustomer');
         this.webUserConsigneeContactMap = cUsqWebUser.map('webUserConsigneeContact');
         this.customerConsigneeContactMap = cUsqCustomer.map('customerConsigneeContact');
@@ -88,7 +88,7 @@ export class COrder extends Controller {
         let postOrder = this.orderData.getPostData();
         await this.orderSheet.loadSchema();
         let result = await this.orderSheet.save("", postOrder);
-        cCartApp.cCart.removeFromCart(this.orderData.orderItems);
+        this.cApp.cCart.cart.removeFromCart(this.orderData.orderItems);
 
         // 打开订单显示界面
         this.closePage(1);
@@ -97,6 +97,6 @@ export class COrder extends Controller {
 
     openContactList = () => {
 
-        cCartApp.cUser.start();
+        this.cApp.cUser.start();
     }
 }
