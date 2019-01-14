@@ -1,20 +1,23 @@
 import * as React from 'react';
-import { ControllerUsq, CUsq, Query, Action } from 'tonva-react-usql';
+import { Query, Action, TuidMain, TuidDiv } from 'tonva-react-usql';
 import { VCartLabel } from './VCartLabel';
-import { CCartApp } from 'home/CCartApp';
+import { CCartApp, cCartApp } from 'home/CCartApp';
 import { observable, computed } from 'mobx';
 import { VCart } from './VCart';
 import * as _ from 'lodash';
 import { Controller } from 'tonva-tools';
 
-export class CCart extends Controller {
+const CARTNAMEINLOCAl: string = "cart";
 
-    cApp: CCartApp;
+export class CCart extends Controller {
 
     private addToCartAction: Action;
     private getCartQuery: Query;
     private setCartAction: Action;
     private removeFromCartAction: Action;
+    private productTuid: TuidMain;
+    private packTuid: TuidDiv;
+
     @observable cartData: any[] = [];
     @computed get sum(): any {
         return this.cartData.reduce((accumulator: any, currentValue: any) => {
@@ -31,17 +34,34 @@ export class CCart extends Controller {
     constructor(cApp: CCartApp, res: any) {
         super(res);
 
-        this.cApp = cApp;
-        let { cUsqOrder } = this.cApp;
+        let { cUsqOrder, cUsqProduct } = cCartApp;
         this.addToCartAction = cUsqOrder.action('addtocart');
         this.getCartQuery = cUsqOrder.query('getcart')
         this.setCartAction = cUsqOrder.action('setcart');
         this.removeFromCartAction = cUsqOrder.action('removefromcart');
+
+        this.productTuid = cUsqProduct.tuid('productx');
+        this.packTuid = cUsqProduct.tuidDiv('productx', 'packx');
     }
 
     async load() {
-        let cartData = await this.getCartQuery.page(undefined, 0, 100);
-        this.cartData.push(...cartData);
+
+        let cartData: any = {};
+        let { currentUser } = cCartApp;
+        if (currentUser.isLogined) {
+            cartData = await this.getCartQuery.page(undefined, 0, 100);
+        } else {
+            let cartstring = window.localStorage.getItem(CARTNAMEINLOCAl);// from localstorage
+            cartData = JSON.parse(cartstring);
+            if (cartData && cartData.length > 0) {
+                cartData.forEach(element => {
+                    element.product = this.productTuid.boxId(element.product);
+                    element.pack = this.packTuid.boxId(element.pack);
+                });
+            }
+        }
+        if (cartData)
+            this.cartData.push(...cartData);
     }
 
     protected async internalStart(param: any) {
@@ -63,10 +83,17 @@ export class CCart extends Controller {
             cartItem.quantity += quantity;
             cartItem.price = price;
         }
-        await this.addToCartAction.submit({
-            product: cartItem.product.id, pack: cartItem.pack.id,
-            price: cartItem.price, currency: currency.id, quantity: quantity
-        });
+
+        let { currentUser } = cCartApp;
+        if (currentUser.isLogined) {
+            await this.addToCartAction.submit({
+                product: cartItem.product.id, pack: cartItem.pack.id,
+                price: cartItem.price, currency: currency.id, quantity: quantity
+            });
+        } else {
+            // localstorage
+            window.localStorage.setItem(CARTNAMEINLOCAl, JSON.stringify(this.cartData));
+        }
     }
 
     createCartItem(pack: any, quantity: number, price: number, currency: any): any {
@@ -98,7 +125,13 @@ export class CCart extends Controller {
      */
     async updateQuantity(item: any, quantity: number) {
 
-        await this.setCartAction.submit({ product: item.product.id, pack: item.pack.id, price: item.price, quantity: quantity });
+        let { currentUser } = cCartApp;
+        if (currentUser.isLogined) {
+            await this.setCartAction.submit({ product: item.product.id, pack: item.pack.id, price: item.price, quantity: quantity });
+        } else {
+            // localstorage
+            window.localStorage.setItem(CARTNAMEINLOCAl, JSON.stringify(this.cartData));
+        }
         let existItem = this.cartData.find((element) => element.pack.id === item.pack.id);
         if (existItem)
             existItem.quantity = quantity;
@@ -112,7 +145,14 @@ export class CCart extends Controller {
 
         let rows = this.cartData.filter((e) => e.isDeleted === true);
         if (rows) {
-            await this.removeFromCart(rows);
+            let { currentUser } = cCartApp;
+            if (currentUser.isLogined) {
+                await this.removeFromCart(rows);
+            } else {
+                // localstorage
+                _.remove(this.cartData, (e) => e.isDeleted === true);
+                window.localStorage.setItem(CARTNAMEINLOCAl, JSON.stringify(this.cartData));
+            }
         }
     }
 
@@ -150,7 +190,7 @@ export class CCart extends Controller {
             if (!selectCartItem || selectCartItem.length === 0) {
                 return;
             }
-            let { cOrder } = this.cApp;
+            let { cOrder } = cCartApp;
             await cOrder.start(selectCartItem);
         }
     }

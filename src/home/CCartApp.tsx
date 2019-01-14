@@ -9,10 +9,12 @@ import { CProductCategory } from 'productCategory/CProductCategory';
 import { CUser } from 'customer/CPerson';
 import { CMember } from 'member/CMember';
 import { consts } from './consts';
+import { WebUser } from 'CurrentUser';
 
 export class CCartApp extends CApp {
 
     salesRegion: any;
+    currentUser: WebUser;
 
     cUsqOrder: CUsq;
     cUsqProduct: CUsq;
@@ -59,9 +61,9 @@ export class CCartApp extends CApp {
         */
         this.salesRegion = await salesRegionTuid.load(1);
 
-        if (this.isLogined) {
-
-        }
+        this.currentUser = new WebUser();
+        if (this.isLogined)
+            this.currentUser.user = this.user;
         // this.clearPrevPages();
         // await this.cHome.start();
         // this.showVPage(VHome);

@@ -77,11 +77,11 @@ export class CProduct extends Controller {
             this.product.purity = this.productChemical.purity;
         }
 
-        let { salesRegion } = cCartApp;
+        let { salesRegion, currentUser } = cCartApp;
         this.prices = await this.priceMap.table({ product: productId, salesRegion: salesRegion.id })
         let discount = 0;
-        if (this.isLogined) {
-            let discountSetting = await this.getCustomerDiscount.table({ brand: this.product.brand.id, person: this.user.id });
+        if (currentUser.hasCustomer) {
+            let discountSetting = await this.getCustomerDiscount.table({ brand: this.product.brand.id, customer: currentUser.currentCustomer.id });
             discount = discountSetting && discountSetting[0] && discountSetting[0].discount;
         }
         this.prices.forEach(element => { element.vipprice = element.price * (1 - discount); element.currency = salesRegion.currency.obj; });

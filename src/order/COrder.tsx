@@ -37,19 +37,12 @@ export class COrder extends Controller {
 
     private createOrderFromCart = async (cartItem: any[]) => {
 
-        this.orderData.webUser = this.user.id;
+        this.orderData.webUser = cCartApp.currentUser.id;
+        // this.orderData.customer = cCartApp.currentUser.currentCustomer;
 
         if (this.orderData.deliveryContact === undefined) {
-            let userMap: any = await this.webUserCustomerMap.obj({ webUser: this.user.id });
 
-            let contactArr: any;
-            if (userMap !== undefined) {
-                contactArr = await this.customerConsigneeContactMap.table({ customer: userMap.customer.id });
-                this.orderData.customer = userMap.customer;
-            } else {
-                contactArr = await this.webUserConsigneeContactMap.table({ webUser: this.user.id });
-                console.log(contactArr);
-            }
+            let contactArr: any[] = await cCartApp.currentUser.getConsigneeContacts();
             if (contactArr && contactArr.length > 0) {
                 let contactWapper = contactArr.find((element: any) => {
                     if (element.isDefault === true)
