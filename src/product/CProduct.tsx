@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Map, TuidDiv, TuidMain, Query, tv } from 'tonva-react-usql';
+import { Map, TuidDiv, TuidMain, Query, tv, BoxId } from 'tonva-react-usql';
 import { VProduct } from './VProduct';
 import * as _ from 'lodash';
 import { CCartApp } from 'CCartApp';
@@ -29,6 +29,12 @@ class PageProducts extends PageItems<any> {
     }
 }
 
+export interface PackRow {
+    pack: any;
+    input: HTMLInputElement;
+    quantity: number;
+}
+
 /**
  *
  */
@@ -46,7 +52,6 @@ export class CProduct extends Controller {
 
     product: any;
     private productChemical: any;
-    private prices: any[];
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
@@ -69,6 +74,22 @@ export class CProduct extends Controller {
         this.showVPage(VProductList, param);
     }
 
+    buildPackRows() {
+
+        let packRows = [];
+        for (let pk of this.product.packx) {
+            let packRow: PackRow = {
+                pack: pk,
+            } as any;
+            // 如果当前产品在购物车中，设置其初始的数量
+            let pr2: any = this.cApp.cCart.cart.getItem(pk.id);
+            if (pr2)
+                packRow.quantity = pr2.quantity;
+            packRows.push(packRow);
+        }
+        return packRows;
+    }
+
     showProductDetail = async (productId: number) => {
 
         this.product = await this.productTuid.load(productId);
@@ -79,14 +100,19 @@ export class CProduct extends Controller {
         }
 
         let { salesRegion, currentUser } = this.cApp;
-        this.prices = await this.priceMap.table({ product: productId, salesRegion: salesRegion.id })
+        let prices = await this.priceMap.table({ product: productId, salesRegion: salesRegion.id })
         let discount = 0;
         if (currentUser.hasCustomer) {
             let discountSetting = await this.getCustomerDiscount.table({ brand: this.product.brand.id, customer: currentUser.currentCustomer.id });
             discount = discountSetting && discountSetting[0] && discountSetting[0].discount;
         }
-        this.prices.forEach(element => { element.vipprice = element.price * (1 - discount); element.currency = salesRegion.currency.obj; });
-        this.product.prices = this.prices;
+        prices.forEach(element => { element.vipprice = element.price * (1 - discount); element.currency = salesRegion.currency.obj; });
+        this.product.packx.forEach(v => {
+            let price = prices.find(x => x.pack.id === v.id);
+            v.retail = price && price.retail;
+            v.vipPrice = price && price.vipPrice;
+            v.currency = salesRegion.currency.obj;
+        })
         this.showVPage(VProduct, this.product);
     }
 

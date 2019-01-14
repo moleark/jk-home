@@ -1,36 +1,27 @@
 import * as React from 'react';
-import { CProduct, productRow } from './CProduct';
-import { VPage, Page, Form, ItemSchema, ArrSchema, NumSchema, UiSchema, UiArr, Field, StringSchema, Context, ObjectSchema } from 'tonva-tools';
+import { CProduct, productRow, PackRow } from './CProduct';
+import { VPage, Page, Form, ItemSchema, ArrSchema, NumSchema, UiSchema, UiArr, Field, StringSchema, Context, ObjectSchema, RowContext } from 'tonva-tools';
 import { List, LMR, FA, SearchBox } from 'tonva-react-form';
 import { tv, BoxId } from 'tonva-react-usql';
 import { observer } from 'mobx-react';
 import { MinusPlusWidget } from './minusPlusWidget';
-//import { cCartApp } from 'ui/CCartApp';
 
-interface PackRow {
-    pack: BoxId;
-    input: HTMLInputElement;
-    retail: number;
-    vipPrice: number;
-    currency: any;
-}
-
-const schema:ItemSchema[] = [
+const schema: ItemSchema[] = [
     {
         name: 'list',
         type: 'arr',
         arr: [
-            {name: 'pack', type: 'object'} as ObjectSchema,
-            {name: 'retail', type: 'number'} as NumSchema,
-            {name: 'vipPrice', type: 'number'} as NumSchema,
-            {name: 'currency', type: 'string'},
-            {name:'quantity', type: 'number'} as NumSchema
+            { name: 'pack', type: 'object' } as ObjectSchema,
+            { name: 'retail', type: 'number' } as NumSchema,
+            { name: 'vipPrice', type: 'number' } as NumSchema,
+            { name: 'currency', type: 'string' },
+            { name: 'quantity', type: 'number' } as NumSchema
         ]
     } as ArrSchema
 ];
 
 export class VProduct extends VPage<CProduct> {
-    private data:any;
+    private data: any;
     private uiSchema: UiSchema;
     private packRows: PackRow[];
 
@@ -51,29 +42,8 @@ export class VProduct extends VPage<CProduct> {
                 } as UiArr,
             }
         };
-        let { packTuid } = this.controller;
-        this.packRows = [];
-        let coll: { [packId: number]: PackRow } = {};
-        for (let pr of product.prices) {
-            let packRow: PackRow = {
-                pack: pr.pack,
-                retail: pr.retail,
-                vipPrice: pr.vipPrice,
-                currency: pr.currency,
-            } as any;
-            let packId = pr.pack.id;
-            coll[packId] = packRow;
-            this.packRows.push(packRow);
-        }
-        for (let pk of product.packx) {
-            let { id } = pk;
-            let packRow = coll[id];
-            if (packRow === undefined) {
-                packRow = {} as any;
-                this.packRows.push(packRow);
-                packRow.pack = packTuid.boxId(id);
-            }
-        }
+
+        this.packRows = this.controller.buildPackRows();
         this.data = {
             list: this.packRows,
         };
@@ -81,62 +51,30 @@ export class VProduct extends VPage<CProduct> {
         this.openPage(this.page, product);
     }
 
-    private onQuantityChanged = (context:Context, value:any, prev:any) => {
-        alert('prev='+prev + ' value=' + value);
+    private onQuantityChanged = async (context: RowContext, value: any, prev: any) => {
+        let { row } = context;
+        let { data } = row;
+        let { pack } = data;
+        let { retail, currency } = pack;
+        let { cCart } = this.controller.cApp;
+        await cCart.cart.AddToCart(pack, value, retail, currency);
     }
 
     //context:Context, name:string, value:number
     private arrTemplet = (item: any) => {
         //let a = context.getValue('');
-        let {pack, retail, vipPrice} = item;
+        let { pack } = item;
+        let { retail, vipPrice } = pack;
         let right = <div className="d-flex"><Field name="quantity" /></div>;
         return <LMR className="mx-3" right={right}>
-            <div>{tv(pack, this.renderPack)}</div>
+            <div>{this.renderPack(pack)}</div>
             <div>retail:{retail} vipPrice:{vipPrice}</div>
         </LMR>;
     }
 
-    private renderPack = (pack:any):JSX.Element => {
-        let {radiox, radioy, unit} = pack;
+    private renderPack = (pack: any): JSX.Element => {
+        let { radiox, radioy, unit } = pack;
         return <>{radiox} x {radioy} {unit}</>;
-    }
-
-    private inputRef = (input: HTMLInputElement | null, packRow: PackRow) => {
-        if (input === null) return;
-        packRow.input = input;
-    }
-
-    private onProductPackRender = (packRow: PackRow, index: number) => {
-        let { pack, retail, currency } = packRow;
-        let right = <>
-            <input
-                className="text-center"
-                style={{ width: "60px" }}
-                ref={(input) => this.inputRef(input, packRow)}
-                type="number"
-                defaultValue="1" />
-            <button type="button"
-                className="btn btn-light"
-                onClick={() => this.onProductPackClicked(packRow)}>
-                <FA name="cart-plus" className="text-info" />
-            </button>
-            <button type="button" className="btn btn-light"><FA name="heart-o" className="text-danger small" /></button>
-        </>
-        return <LMR className="pt-3" right={right}>
-            <div className="row">
-                <div className="col-2">{pack.obj.name}</div>
-                <div className="col-2">{retail}{currency && currency.name}</div>
-                <div className="col-2">{retail}</div>
-            </div>
-        </LMR>
-    };
-
-    private onProductPackClicked = async (packRow: PackRow) => {
-
-        let { pack, retail, currency } = packRow;
-        let { cCart } = this.controller.cApp;
-        let input = packRow.input;
-        await cCart.cart.AddToCart(pack, Number(input.value), retail, currency);
     }
 
     private page = observer((product1: any) => {
@@ -151,11 +89,17 @@ export class VProduct extends VPage<CProduct> {
                 <div className="col-2">vip price</div>
             </div>
         </LMR>
+        let arrContainer = (label: any, content: JSX.Element) => {
+            return <div className="bg-white">{content}</div>
+        }
+        let rowContainer = (content: JSX.Element) => {
+            return <div>{content}</div>
+        }
+        let rowSeperator = <div className="border border-danger border-top"></div>
         return <Page header={header} right={cartLabel}>
             <div className="px-2 py-2 bg-white">{tv(product, productRow)}</div>
-            <Form schema={schema} uiSchema={this.uiSchema} formData={this.data} />
-
-            <List items={this.packRows} item={{ render: this.onProductPackRender }} header={listHeader} className="px-2 bg-white" />
+            <Form schema={schema} uiSchema={this.uiSchema} formData={this.data}
+                ArrContainer={arrContainer} RowContainer={rowContainer} RowSeperator={rowSeperator} />
         </Page>
     })
 }
