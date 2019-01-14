@@ -1,7 +1,9 @@
-import * as React from 'react';
-import Loadable from 'react-loadable';
-import { Loading } from 'tonva-tools';
-import { cCartApp } from './CCartApp';
+export { CHome } from './CHome';
+
+//import * as React from 'react';
+//import Loadable from 'react-loadable';
+//import { Loading } from 'tonva-tools';
+//import { cCartApp } from '../ui/CCartApp';
 
 /*
 export const homeTab = () => {
@@ -18,9 +20,11 @@ export const homeTab = () => {
     return <LoadableComponent />;
 }
 */
+/*
 export function homeTab() {
     return <>{cCartApp.cHome.renderHome()}</>;
 }
+*/
 /*
 export class homeTab extends React.Component {
     render() {

@@ -1,6 +1,5 @@
 import { UserInNav, User } from 'tonva-tools';
-import { Map, BoxId } from 'tonva-react-usql';
-import { cCartApp } from 'home/CCartApp';
+import { Map, BoxId, CUsq } from 'tonva-react-usql';
 
 export class WebUser {
 
@@ -15,8 +14,7 @@ export class WebUser {
     private webUserCustomerMap: Map;
     private webUserConsigneeContactMap: Map;
 
-    constructor() {
-        let { cUsqWebUser } = cCartApp;
+    constructor(cUsqWebUser: CUsq) {
         this.webUserCustomerMap = cUsqWebUser.map('webUserCustomer');
         this.webUserConsigneeContactMap = cUsqWebUser.map('webUserConsigneeContact');
     }
@@ -64,8 +62,8 @@ export class Customer {
     id: number;
 
     constructor(customer: BoxId) {
-        let { cUsqCustomer } = cCartApp;
-        this.consigneeContactMap = cUsqCustomer.map('customerConsigneeContact');
+        // let { cUsqCustomer } = cCartApp;
+        // this.consigneeContactMap = cUsqCustomer.map('customerConsigneeContact');
     };
 
     async getConsigneeContacts(): Promise<any[]> {

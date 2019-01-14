@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Map, TuidDiv, TuidMain, Query, tv } from 'tonva-react-usql';
 import { VProduct } from './VProduct';
 import * as _ from 'lodash';
-import { CCartApp, cCartApp } from 'home/CCartApp';
+import { CCartApp } from 'CCartApp';
 import { PageItems, Controller } from 'tonva-tools';
 import { VProductList } from './VProductList';
 
@@ -33,6 +33,7 @@ class PageProducts extends PageItems<any> {
  *
  */
 export class CProduct extends Controller {
+    cApp: CCartApp;
 
     pageProducts: PageProducts;
     private productTuid: TuidMain;
@@ -49,8 +50,8 @@ export class CProduct extends Controller {
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
-
-        let { cUsqProduct, cUsqCustomerDiscount, cUsqWarehouse } = cCartApp;
+        this.cApp = cApp;
+        let { cUsqProduct, cUsqCustomerDiscount, cUsqWarehouse } = cApp;
         let searchProductQuery = cUsqProduct.query("searchProduct");
         this.pageProducts = new PageProducts(searchProductQuery);
 
@@ -77,7 +78,7 @@ export class CProduct extends Controller {
             this.product.purity = this.productChemical.purity;
         }
 
-        let { salesRegion, currentUser } = cCartApp;
+        let { salesRegion, currentUser } = this.cApp;
         this.prices = await this.priceMap.table({ product: productId, salesRegion: salesRegion.id })
         let discount = 0;
         if (currentUser.hasCustomer) {

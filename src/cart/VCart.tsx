@@ -31,7 +31,7 @@ export class VCart extends VPage<CCart> {
     private updateChecked = async (item: any) => {
 
         let input = this.checkBoxs[item.pack.id];
-        await this.controller.updateChecked(item, input.checked);
+        await this.controller.cart.updateChecked(item, input.checked);
     }
 
     /**
@@ -40,18 +40,18 @@ export class VCart extends VPage<CCart> {
     private updateQuantity = async (item: any) => {
 
         let input = this.inputRefs[item.pack.id];
-        await this.controller.updateQuantity(item, Number(input.value));
+        await this.controller.cart.updateQuantity(item, Number(input.value));
     }
 
     private minusQuantity = async (item: any) => {
 
         if (item.quantity > 1)
-            await this.controller.updateQuantity(item, item.quantity - 1);
+            await this.controller.cart.updateQuantity(item, item.quantity - 1);
     }
 
     private plusQuantity = async (item: any) => {
 
-        await this.controller.updateQuantity(item, item.quantity + 1);
+        await this.controller.cart.updateQuantity(item, item.quantity + 1);
     }
 
     private renderProduct = (product: any) => <strong>{product.description}</strong>
@@ -120,8 +120,9 @@ export class VCart extends VPage<CCart> {
     }
 
     private CheckOutButton = observer(() => {
-        let { checkOut, sum } = this.controller;
-        let { count, amount } = sum;
+        let { checkOut, cart } = this.controller;
+        //let { count, amount } = cart.sum;
+        let amount = cart.amount.get();
         let check = "去结算";
         let content = amount > 0 ?
             <>{check} ({amount} 元)</> :
@@ -136,11 +137,11 @@ export class VCart extends VPage<CCart> {
     }
 
     private page = () => {
-        let { cartData: cart } = this.controller;
+        let { cart } = this.controller;
         return <Page header="购物车" footer={<this.CheckOutButton />}>
             <div className="row">
                 <div className="col-12">
-                    <List items={cart} item={{ render: this.onCartItemRender }} />
+                    <List items={cart.items} item={{ render: this.onCartItemRender }} />
                 </div>
             </div>
         </Page>

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { TuidMain, Map, Sheet } from 'tonva-react-usql';
-import { CCartApp, cCartApp } from 'home/CCartApp';
+import { CCartApp } from 'CCartApp';
 import { VCreateOrder } from './VCreateOrder';
 import { Order, OrderItem } from './Order';
 import { CUser } from 'customer/CPerson';
@@ -10,7 +10,7 @@ import { Controller } from 'tonva-tools';
 import { OrderSuccess } from './OrderSuccess';
 
 export class COrder extends Controller {
-
+    private cApp: CCartApp;
     @observable orderData: Order = new Order();
     private webUserCustomerMap: Map;
     private webUserConsigneeContactMap: Map;
@@ -20,8 +20,8 @@ export class COrder extends Controller {
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
-
-        let { cUsqWebUser, cUsqCustomer, cUsqOrder } = cCartApp;
+        this.cApp = cApp;
+        let { cUsqWebUser, cUsqCustomer, cUsqOrder } = cApp;
         this.webUserCustomerMap = cUsqWebUser.map('webUserCustomer');
         this.webUserConsigneeContactMap = cUsqWebUser.map('webUserConsigneeContact');
         this.customerConsigneeContactMap = cUsqCustomer.map('customerConsigneeContact');
@@ -37,12 +37,12 @@ export class COrder extends Controller {
 
     private createOrderFromCart = async (cartItem: any[]) => {
 
-        this.orderData.webUser = cCartApp.currentUser.id;
+        this.orderData.webUser = this.cApp.currentUser.id;
         // this.orderData.customer = cCartApp.currentUser.currentCustomer;
 
         if (this.orderData.deliveryContact === undefined) {
 
-            let contactArr: any[] = await cCartApp.currentUser.getConsigneeContacts();
+            let contactArr: any[] = await this.cApp.currentUser.getConsigneeContacts();
             if (contactArr && contactArr.length > 0) {
                 let contactWapper = contactArr.find((element: any) => {
                     if (element.isDefault === true)
@@ -82,7 +82,7 @@ export class COrder extends Controller {
         await this.orderSheet.loadSchema();
         let result: any = await this.orderSheet.save("", postOrder);
         await this.orderSheet.action(result.id, result.flow, result.state, "submit");
-        cCartApp.cCart.removeFromCart(this.orderData.orderItems);
+        this.cApp.cCart.cart.removeFromCart(this.orderData.orderItems);
 
         // 打开订单显示界面
         this.closePage(1);
@@ -91,6 +91,6 @@ export class COrder extends Controller {
 
     openContactList = () => {
 
-        cCartApp.cUser.start();
+        this.cApp.cUser.start();
     }
 }

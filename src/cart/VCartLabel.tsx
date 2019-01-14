@@ -15,7 +15,7 @@ export class VCartLabel extends View<CCart> {
     private content = observer(()=>{
         return <div>
             <button className="btn btn-info btn-sm" onClick={this.showCart}>
-                Cart: <span className="badge badge-light">{this.controller.sum.count}</span>
+                Cart: <span className="badge badge-light">{this.controller.cart.count.get()}</span>
             </button>
         </div>
     });

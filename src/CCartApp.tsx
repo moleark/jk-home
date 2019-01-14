@@ -4,12 +4,12 @@ import { CApp, CUsq } from 'tonva-react-usql';
 import { CCart } from 'cart/CCart';
 import { CProduct } from 'product';
 import { COrder } from 'order/COrder';
-import { CHome } from './CHome';
+import { CHome } from './home/CHome';
 import { CProductCategory } from 'productCategory/CProductCategory';
 import { CUser } from 'customer/CPerson';
 import { CMember } from 'member/CMember';
-import { consts } from './consts';
 import { WebUser } from 'CurrentUser';
+import { consts } from './home/consts';
 
 export class CCartApp extends CApp {
 
@@ -44,8 +44,6 @@ export class CCartApp extends CApp {
         this.cUsqWarehouse = this.getCUsq(consts.usqWarehouse);
         this.cUsqMember = this.getCUsq(consts.usqMember);
 
-        cCartApp = this;
-
         this.cProductCategory = new CProductCategory(this, undefined);
         this.cCart = new CCart(this, undefined);
         this.cHome = new CHome(this, undefined);
@@ -61,14 +59,13 @@ export class CCartApp extends CApp {
         */
         this.salesRegion = await salesRegionTuid.load(1);
 
-        this.currentUser = new WebUser();
+        this.currentUser = new WebUser(this.cUsqWebUser);
         if (this.isLogined)
             this.currentUser.user = this.user;
         // this.clearPrevPages();
         // await this.cHome.start();
         // this.showVPage(VHome);
-        await this.cCart.load();
+        await this.cCart.cart.load();
+        this.showVPage(this.VAppMain);
     }
 }
-
-export var cCartApp: CCartApp;
