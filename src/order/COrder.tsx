@@ -66,7 +66,7 @@ export class COrder extends Controller {
             this.orderData.orderItems = cartItem.map((element: any, index: number) => {
                 var item = new OrderItem();
                 item.product = element.product,
-                    item.pack = element.pack;
+                item.pack = element.pack;
                 item.price = element.price;
                 item.quantity = element.quantity;
                 return item;
@@ -76,7 +76,7 @@ export class COrder extends Controller {
 
     setContact = (contactBox: any) => {
 
-        this.orderData.deliveryContact = {...contactBox};
+        this.orderData.deliveryContact = { ...contactBox };
     }
 
     submitOrder = async () => {
@@ -87,7 +87,8 @@ export class COrder extends Controller {
         }
         let postOrder = this.orderData.getPostData();
         await this.orderSheet.loadSchema();
-        let result = await this.orderSheet.save("", postOrder);
+        let result: any = await this.orderSheet.save("", postOrder);
+        await this.orderSheet.action(result.id, result.flow, result.state, "submit");
         cCartApp.cCart.removeFromCart(this.orderData.orderItems);
 
         // 打开订单显示界面

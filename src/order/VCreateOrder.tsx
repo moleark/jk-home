@@ -12,11 +12,11 @@ export class VCreateOrder extends VPage<COrder> {
         this.openPage(this.page);
     }
 
-    private RenderDeliveryContact = (deliveryContact: any) => {
+    private RenderDeliveryContact = (consigneeContact: any) => {
         let deliveryContactRow = <div className="row">
             <div className="col-12">
-                {deliveryContact.name}{deliveryContact.mobile}<br />
-                {deliveryContact.address}
+                {consigneeContact.name}{consigneeContact.mobile}<br />
+                {consigneeContact.address}
             </div>
         </div>
         return deliveryContactRow;
