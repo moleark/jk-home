@@ -19,7 +19,7 @@ export class Cart {
         this.disposer = autorun(this.calcSum);
     }
     dispose() {
-        this.dispose();
+        this.disposer();
     }
     private calcSum = () => {
         let ret = this.items.reduce((accumulator: any, currentValue: any) => {
