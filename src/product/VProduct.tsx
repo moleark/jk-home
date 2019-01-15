@@ -5,6 +5,7 @@ import { List, LMR, FA, SearchBox } from 'tonva-react-form';
 import { tv, BoxId } from 'tonva-react-usql';
 import { observer } from 'mobx-react';
 import { MinusPlusWidget } from './minusPlusWidget';
+import { RowContext } from 'tonva-tools/ui/form/widgets';
 //import { cCartApp } from 'ui/CCartApp';
 
 interface PackRow {
@@ -81,8 +82,13 @@ export class VProduct extends VPage<CProduct> {
         this.openPage(this.page, product);
     }
 
-    private onQuantityChanged = (context:Context, value:any, prev:any) => {
-        alert('prev='+prev + ' value=' + value);
+    private onQuantityChanged = async (context:RowContext, value:any, prev:any) => {
+        let {row} = context;
+        let {data} = row;
+        //alert('prev='+prev + ' value=' + value);
+        let { pack, retail, currency } = data;
+        let { cCart } = this.controller.cApp;
+        await cCart.cart.AddToCart(pack, value, retail, currency);
     }
 
     //context:Context, name:string, value:number
