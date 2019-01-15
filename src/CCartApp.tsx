@@ -44,6 +44,16 @@ export class CCartApp extends CApp {
         this.cUsqWarehouse = this.getCUsq(consts.usqWarehouse);
         this.cUsqMember = this.getCUsq(consts.usqMember);
 
+        let salesRegionTuid = this.cUsqCommon.tuid('salesregion');
+        /*
+        let sr: any = await salesRegionTuid.load(1);
+        this.salesRegion = new SalesRegion(sr.id, sr.name, sr.currency);
+        */
+        this.salesRegion = await salesRegionTuid.load(1);
+        this.currentUser = new WebUser(this.cUsqWebUser);
+        if (this.isLogined)
+            this.currentUser.user = this.user;
+
         this.cProductCategory = new CProductCategory(this, undefined);
         this.cCart = new CCart(this, undefined);
         this.cHome = new CHome(this, undefined);
@@ -52,16 +62,6 @@ export class CCartApp extends CApp {
         this.cUser = new CUser(this, undefined);
         this.cMember = new CMember(this, undefined);
 
-        let salesRegionTuid = this.cUsqCommon.tuid('salesregion');
-        /*
-        let sr: any = await salesRegionTuid.load(1);
-        this.salesRegion = new SalesRegion(sr.id, sr.name, sr.currency);
-        */
-        this.salesRegion = await salesRegionTuid.load(1);
-
-        this.currentUser = new WebUser(this.cUsqWebUser);
-        if (this.isLogined)
-            this.currentUser.user = this.user;
         // this.clearPrevPages();
         // await this.cHome.start();
         // this.showVPage(VHome);
