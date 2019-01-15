@@ -1,12 +1,27 @@
 import { observable, computed, autorun, IReactionDisposer } from 'mobx';
 import _ from 'lodash';
-import { CUsq, Action, Query, TuidMain, TuidDiv } from 'tonva-react-usql';
+import { CUsq, Action, Query, TuidMain, TuidDiv, BoxId } from 'tonva-react-usql';
+
+export class CartItem {
+    pack: BoxId;
+    product: BoxId;
+    price: number;
+    currency: BoxId;
+    quantity: number;
+    checked: boolean;
+    isDeleted: boolean;
+    createdate: number;
+}
 
 export abstract class Cart {
 
+    protected productTuid: TuidMain;
+    protected packTuid: TuidDiv;
     private disposer: IReactionDisposer;
-    constructor() {
+    constructor(cUsqProduct: CUsq) {
 
+        this.productTuid = cUsqProduct.tuid('productx');
+        this.packTuid = cUsqProduct.tuidDiv('productx', 'packx');
         this.disposer = autorun(this.calcSum);
     }
 
@@ -29,16 +44,18 @@ export abstract class Cart {
         this.count.set(count);
         this.amount.set(amount);
     }
-    @observable items: any[] = [];
+    @observable items: CartItem[] = [];
     count = observable.box<number>(0);
     amount = observable.box<number>(0);
 
     abstract async load(): Promise<void>;
 
     async AddToCart(pack: any, quantity: number, price: number, currency: any) {
-        let cartItem = this.items.find((element) => element.pack.id === pack.id);
+
+        let packBox = this.packTuid.boxId(pack.id);
+        let cartItem = this.items.find((element) => element.pack.id === packBox.id);
         if (!cartItem) {
-            cartItem = this.createCartItem(pack, quantity, price, currency);
+            cartItem = this.createCartItem(packBox, quantity, price, currency);
             this.items.push(cartItem);
         } else {
             cartItem.quantity = quantity;
@@ -47,12 +64,12 @@ export abstract class Cart {
         await this.storeCart(cartItem);
     }
 
-    createCartItem(pack: any, quantity: number, price: number, currency: any): any {
+    createCartItem(packBox: BoxId, quantity: number, price: number, currency: any): any {
 
-        let cartItem: any = {
+        let cartItem: CartItem = {
             checked: true,
-            pack: pack,
-            product: pack.$owner,
+            pack: packBox,
+            product: packBox.obj.$owner,
             price: price,
             currency: currency,
             quantity: quantity,
@@ -62,23 +79,23 @@ export abstract class Cart {
         return cartItem;
     }
 
-    abstract async storeCart(cartItem: any): Promise<void>;
+    abstract async storeCart(cartItem: CartItem): Promise<void>;
 
-    async updateChecked(item: any, checked: boolean) {
+    async updateChecked(cartItem: CartItem, checked: boolean) {
 
-        let existItem = this.items.find((element) => element.pack.id === item.pack.id);
+        let existItem = this.items.find((element) => element.pack.id === cartItem.pack.id);
         if (existItem)
             existItem.checked = checked;
     }
 
     /**
      *
-     * @param item
+     * @param cartItem
      * @param quantity
      */
-    async updateQuantity(item: any, quantity: number) {
+    async updateQuantity(cartItem: CartItem, quantity: number) {
 
-        let existItem = this.items.find((element) => element.pack.id === item.pack.id);
+        let existItem = this.items.find((element) => element.pack.id === cartItem.pack.id);
         if (existItem) {
             if (quantity <= 0) {
                 this.removeFromCart([existItem]);
@@ -95,22 +112,22 @@ export abstract class Cart {
      */
     async removeDeletedItem() {
 
-        let rows = this.items.filter((e) => e.isDeleted === true);
-        if (rows) {
+        let rows: CartItem[] = this.items.filter((e) => e.isDeleted === true);
+        if (rows && rows.length > 0) {
             await this.removeFromCart(rows);
         }
     }
 
     abstract async removeFromCart(rows: any[]): Promise<void>;
 
-    getSelectItem() {
-        let selectCartItem = this.items.filter((element) => element.checked && !(element.isDeleted === true));
+    getSelectItem(): CartItem[] {
+        let selectCartItem: CartItem[] = this.items.filter((element) => element.checked && !(element.isDeleted === true));
         if (!selectCartItem || selectCartItem.length === 0) return;
         return selectCartItem;
     }
 
-    getItem(pack: number) {
-        return this.items.find(x => x.pack.id === pack);
+    getItem(packId: number): CartItem {
+        return this.items.find(x => x.pack.id === packId);
     }
 }
 
@@ -121,8 +138,8 @@ export class RemoteCart extends Cart {
     private setCartAction: Action;
     private removeFromCartAction: Action;
 
-    constructor(cUsqOrder: CUsq) {
-        super();
+    constructor(cUsqProduct: CUsq, cUsqOrder: CUsq) {
+        super(cUsqProduct);
         this.addToCartAction = cUsqOrder.action('addtocart');
         this.getCartQuery = cUsqOrder.query('getcart')
         this.setCartAction = cUsqOrder.action('setcart');
@@ -153,7 +170,7 @@ export class RemoteCart extends Cart {
      * @param pack 要添加到购物车中的包装
      * @param quantity 要添加到购物车中包装的个数
      */
-    async storeCart(cartItem: any) {
+    async storeCart(cartItem: CartItem) {
         await this.setCartAction.submit({
             product: cartItem.product.id,
             pack: cartItem.pack.id,
@@ -173,14 +190,8 @@ export class RemoteCart extends Cart {
 const LOCALCARTNAME: string = "cart";
 export class LocalCart extends Cart {
 
-    private productTuid: TuidMain;
-    private packTuid: TuidDiv;
-
     constructor(cUsqProduct: CUsq) {
-        super();
-
-        this.productTuid = cUsqProduct.tuid('productx');
-        this.packTuid = cUsqProduct.tuidDiv('productx', 'packx');
+        super(cUsqProduct);
     }
 
     async load() {
@@ -195,7 +206,7 @@ export class LocalCart extends Cart {
         }
     }
 
-    async storeCart(cartItem: any) {
+    async storeCart(cartItem: CartItem) {
         window.localStorage.setItem(LOCALCARTNAME, JSON.stringify(this.items.map(e=>{
             product: e.product.id;
             pack: e.pack.id;

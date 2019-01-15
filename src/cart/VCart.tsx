@@ -2,9 +2,10 @@ import * as React from 'react';
 import { VPage, Page } from 'tonva-tools';
 import { CCart } from './CCart';
 import { List, LMR, FA } from 'tonva-react-form';
-import { tv } from 'tonva-react-usql';
+import { tv, BoxId } from 'tonva-react-usql';
 import { observer } from 'mobx-react';
 import { Product } from 'product/Product';
+import { CartItem } from './Cart';
 
 export class VCart extends VPage<CCart> {
 
@@ -55,25 +56,27 @@ export class VCart extends VPage<CCart> {
     }
 
     private renderProduct = (product: any) => <strong>{product.description}</strong>
-    private renderPack = (pack: any) => <>{pack.name}</>
-    private renderItem = (item: any) => {
+    private renderPack = (pack: any) => {
+        return <>{(pack.radiox === 1 ? "": pack.radiox + '*') + pack.radioy + pack.unit}</>
+    }
+    private renderItem = (cartItem: CartItem) => {
         return <div className="row">
             <div className="col-3">
-                <img src="favicon.ico" alt={item.product.obj.description} />
+                <img src="favicon.ico" alt={cartItem.product.obj.description} />
             </div>
             <div className="col-9">
                 <div className="row">
                     <div className="col-12">
-                        {tv(item.product, this.renderProduct)}
+                        {tv(cartItem.product, this.renderProduct)}
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-3">{tv(item.pack, this.renderPack)}</div>
-                    <div className="col-3"><strong className="text-danger">{item.price}</strong></div>
+                    <div className="col-3">{tv(cartItem.pack, this.renderPack)}</div>
+                    <div className="col-3"><strong className="text-danger">{cartItem.price}</strong></div>
                     <div className="col-6 text-right d-flex">
-                        <div onClick={() => this.minusQuantity(item)}><FA name="minus-circle text-success" /></div>
-                        <span className="px-4 bg-light">{item.quantity}</span>
-                        <div onClick={() => this.plusQuantity(item)}><FA name="plus-circle text-success" /></div>
+                        <div onClick={() => this.minusQuantity(cartItem)}><FA name="minus-circle text-success" /></div>
+                        <span className="px-4 bg-light">{cartItem.quantity}</span>
+                        <div onClick={() => this.plusQuantity(cartItem)}><FA name="plus-circle text-success" /></div>
                     </div>
                 </div>
                 <div className="row">
@@ -83,37 +86,37 @@ export class VCart extends VPage<CCart> {
         </div>
     }
 
-    private onCartItemRender = (item: any) => {
-        let { isDeleted } = item;
+    private onCartItemRender = (cartItem: CartItem) => {
+        let { isDeleted } = cartItem;
         let prod = <>
-            {tv(item, this.renderItem)}
+            {this.renderItem(cartItem)}
         </>;
         let input = <input
             className="text-center"
             style={{ width: "60px" }}
-            ref={(input) => this.mapInputRef(input, item)}
+            ref={(input) => this.mapInputRef(input, cartItem)}
             type="number"
-            onChange={() => this.updateQuantity(item)} disabled={isDeleted} />;
+            onChange={() => this.updateQuantity(cartItem)} disabled={isDeleted} />;
         let onClick, btnContent;
         let mid;
         if (isDeleted === true) {
             mid = <del>{prod}</del>;
-            onClick = () => item.isDeleted = false;
+            onClick = () => cartItem.isDeleted = false;
             btnContent = <FA name="rotate-left" />;
         }
         else {
             mid = <div>
                 {prod}
             </div>
-            onClick = () => item.isDeleted = true;
+            onClick = () => cartItem.isDeleted = true;
             btnContent = <FA name="trash-o" />;
         }
         let button = <button className="btn btn-light" type="button" onClick={onClick}>{btnContent}</button>;
         return <LMR className="px-2 py-2"
             left={<input className="mr-3"
                 type="checkbox"
-                ref={(input) => this.mapCheckBox(input, item)}
-                onChange={() => this.updateChecked(item)} disabled={isDeleted} />}
+                ref={(input) => this.mapCheckBox(input, cartItem)}
+                onChange={() => this.updateChecked(cartItem)} disabled={isDeleted} />}
             right={<>{button}</>}>
             {mid}
         </LMR>;

@@ -40,7 +40,7 @@ export class VCreateOrder extends VPage<COrder> {
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-3">{item.pack.obj.name}</div>
+                    <div className="col-3">{tv(item.pack)}</div>
                     <div className="col-3"><strong className="text-danger">{item.price}</strong></div>
                     <div className="col-6 text-right">
                         数量: <span className="px-4 bg-light">{item.quantity}</span>

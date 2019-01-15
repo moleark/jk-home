@@ -16,7 +16,7 @@ export class CCart extends Controller {
         this.cApp = cApp;
         let { cUsqOrder, cUsqProduct, currentUser } = this.cApp;
         if (currentUser.isLogined)
-            this.cart = new RemoteCart(cUsqOrder);
+            this.cart = new RemoteCart(cUsqProduct, cUsqOrder);
         else
             this.cart = new LocalCart(cUsqProduct);
     }
