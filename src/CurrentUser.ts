@@ -54,6 +54,17 @@ export class WebUser {
         }
         return this.webUserConsigneeContactMap.table({ webUser: this.id });
     }
+
+    /*
+    async saveConsigneeContact(consigneeContact: BoxId): Promise<void> {
+
+        let contactWithId = await this.contactTuid.save(undefined, consigneeContact);
+        if(this.currentCustomer === undefined)
+            await this.webUserConsigneeContactMap.add({ webUser: this.user.id, arr1: [{ contact: contactWithId.id }] });
+        else
+            await this.currentCustomer.saveConsigneeContact(contactId: number);
+    }
+    */
 };
 
 export class Customer {

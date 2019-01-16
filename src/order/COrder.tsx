@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TuidMain, Map, Sheet } from 'tonva-react-usql';
+import { TuidMain, Map, Sheet, BoxId } from 'tonva-react-usql';
 import { CCartApp } from 'CCartApp';
 import { VCreateOrder } from './VCreateOrder';
 import { Order, OrderItem } from './Order';
@@ -40,7 +40,7 @@ export class COrder extends Controller {
         this.orderData.webUser = this.cApp.currentUser.id;
         // this.orderData.customer = cCartApp.currentUser.currentCustomer;
 
-        if (this.orderData.deliveryContact === undefined) {
+        if (this.orderData.deliveryOrderContact === undefined) {
 
             let contactArr: any[] = await this.cApp.currentUser.getConsigneeContacts();
             if (contactArr && contactArr.length > 0) {
@@ -50,7 +50,7 @@ export class COrder extends Controller {
                 });
                 if (!contactWapper)
                     contactWapper = contactArr[0];
-                this.setContact(contactWapper.contact.obj);
+                this.setContact(contactWapper.contact);
             }
         }
 
@@ -67,21 +67,21 @@ export class COrder extends Controller {
         }
     }
 
-    setContact = (contactBox: any) => {
+    setContact = (contactBox: BoxId) => {
 
-        this.orderData.deliveryContact = { ...contactBox };
+        this.orderData.deliveryOrderContact = contactBox;
     }
 
     submitOrder = async () => {
 
-        if (!this.orderData.deliveryContact) {
+        if (!this.orderData.deliveryOrderContact) {
             this.openContactList();
             return;
         }
-        let postOrder = this.orderData.getPostData();
-        await this.orderSheet.loadSchema();
-        let result: any = await this.orderSheet.save("", postOrder);
+
+        let result: any = await this.orderSheet.save("order", this.orderData);
         await this.orderSheet.action(result.id, result.flow, result.state, "submit");
+
         this.cApp.cCart.cart.removeFromCart(this.orderData.orderItems);
 
         // 打开订单显示界面

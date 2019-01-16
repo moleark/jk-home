@@ -12,11 +12,11 @@ export class VCreateOrder extends VPage<COrder> {
         this.openPage(this.page);
     }
 
-    private RenderDeliveryContact = (consigneeContact: any) => {
+    private renderDeliveryContact = (consigneeContact: any) => {
         let deliveryContactRow = <div className="row">
             <div className="col-12">
                 {consigneeContact.name}{consigneeContact.mobile}<br />
-                {consigneeContact.address}
+                {consigneeContact.addressString}
             </div>
         </div>
         return deliveryContactRow;
@@ -27,23 +27,25 @@ export class VCreateOrder extends VPage<COrder> {
     }
 
     private renderProduct = (product: any) => <strong>{product.description}</strong>
-    private renderPack = (pack: any) => <>{pack.name}</>
-    private renderItem = (item: any) => {
+    private renderPack = (pack: any) => {
+        return <>{(pack.radiox === 1 ? "" : pack.radiox + '*') + pack.radioy + pack.unit}</>
+    }
+    private renderItem = (orderItem: any) => {
         return <div className="row">
             <div className="col-3">
-                <img src="favicon.ico" alt={item.product.obj.description} />
+                <img src="favicon.ico" alt={orderItem.product.obj.description} />
             </div>
             <div className="col-9">
                 <div className="row">
                     <div className="col-12">
-                        {tv(item.product, this.renderProduct)}
+                        {tv(orderItem.product, this.renderProduct)}
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-3">{tv(item.pack)}</div>
-                    <div className="col-3"><strong className="text-danger">{item.price}</strong></div>
+                    <div className="col-3">{tv(orderItem.pack, this.renderPack)}</div>
+                    <div className="col-3"><strong className="text-danger">{orderItem.price}</strong></div>
                     <div className="col-6 text-right">
-                        数量: <span className="px-4 bg-light">{item.quantity}</span>
+                        数量: <span className="px-4 bg-light">{orderItem.quantity}</span>
                     </div>
                 </div>
                 <div className="row">
@@ -61,17 +63,13 @@ export class VCreateOrder extends VPage<COrder> {
     private page = observer(() => {
 
         let { orderData, submitOrder, openContactList } = this.controller;
-        let { orderItems, deliveryContact } = orderData;
+        let { orderItems, deliveryOrderContact: deliveryContact } = orderData;
         let footer = <button type="button" className="btn btn-danger w-100" onClick={submitOrder}>提交订单{orderData.amount}</button>;
 
         let chevronRight = <FA name="chevron-right" />
         return <Page header="订单预览" footer={footer}>
             <LMR right={chevronRight} onClick={openContactList} className="px-2 py-2">
-                <div className="row">
-                    <div className="col-4">{deliveryContact.name}</div>
-                    <div className="col-8">{deliveryContact.mobile}</div>
-                    <div className="col-12">{deliveryContact.addressString}</div>
-                </div>
+                {tv(deliveryContact, this.renderDeliveryContact, undefined, this.nullContact)}
             </LMR>
             <List items={orderItems} item={{ render: this.renderOrderItem, className: "px-2" }} />
         </Page>

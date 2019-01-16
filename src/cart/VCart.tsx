@@ -57,7 +57,7 @@ export class VCart extends VPage<CCart> {
 
     private renderProduct = (product: any) => <strong>{product.description}</strong>
     private renderPack = (pack: any) => {
-        return <>{(pack.radiox === 1 ? "": pack.radiox + '*') + pack.radioy + pack.unit}</>
+        return <>{(pack.radiox === 1 ? "" : pack.radiox + '*') + pack.radioy + pack.unit}</>
     }
     private renderItem = (cartItem: CartItem) => {
         return <div className="row">
