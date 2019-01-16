@@ -13,7 +13,8 @@ import { consts } from './home/consts';
 
 export class CCartApp extends CApp {
 
-    salesRegion: any;
+    currentSalesRegion: any;
+    currentLanguage: any;
     currentUser: WebUser;
 
     cUsqOrder: CUsq;
@@ -45,11 +46,11 @@ export class CCartApp extends CApp {
         this.cUsqMember = this.getCUsq(consts.usqMember);
 
         let salesRegionTuid = this.cUsqCommon.tuid('salesregion');
-        /*
-        let sr: any = await salesRegionTuid.load(1);
-        this.salesRegion = new SalesRegion(sr.id, sr.name, sr.currency);
-        */
-        this.salesRegion = await salesRegionTuid.load(1);
+        this.currentSalesRegion = await salesRegionTuid.load(1);
+
+        let languageTuid = this.cUsqCommon.tuid('language');
+        this.currentLanguage = await languageTuid.load(197);
+
         this.currentUser = new WebUser(this.cUsqWebUser);
         if (this.isLogined)
             this.currentUser.user = this.user;
@@ -66,6 +67,7 @@ export class CCartApp extends CApp {
         // await this.cHome.start();
         // this.showVPage(VHome);
         await this.cCart.cart.load();
+        // await this.cProductCategory.start();
         this.showVPage(this.VAppMain);
     }
 }

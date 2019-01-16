@@ -1,8 +1,8 @@
 import * as React from 'react';
 import classNames from 'classnames';
-import { UpdownWidget } from "tonva-tools/ui/form/widgets";
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
+import { UpdownWidget } from 'tonva-tools/ui/form/widgets';
 
 const keys = [107, 109, 110, 187, 189];
 
@@ -51,15 +51,15 @@ export class MinusPlusWidget extends UpdownWidget {
         let hasFocus = this.hasFocus; // document.hasFocus() && document.activeElement === this.input;
         let hasAction = this.readOnly !== true && this.disabled !== true;
         let hasValue = this.value !== NaN && this.value !== undefined && this.value > 0;
-        let minus = <i className={classNames('fa', 
-                    'fa-minus-circle', 'fa-lg', 'text-danger', 'cursor-pointer', 
+        let minus = <i className={classNames('fa',
+                    'fa-minus-circle', 'fa-lg', 'text-danger', 'cursor-pointer',
                     {invisible: !(hasFocus === true || hasAction === true && hasValue === true)})}
                 onClick={this.minusClick} />;
         let input = <input ref={input=>this.input = input}
             className={classNames(this.className, cn, 'mx-1 w-4c form-control',
                 {invisible: !(hasFocus === true || hasValue === true)})}
             type="text"
-            defaultValue={this.value} 
+            defaultValue={this.value}
             onChange={this.onInputChange}
             placeholder={this.placeholder}
             readOnly={this.readOnly}

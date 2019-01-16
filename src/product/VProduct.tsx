@@ -1,10 +1,13 @@
 import * as React from 'react';
 import { CProduct, productRow, PackRow } from './CProduct';
-import { VPage, Page, Form, ItemSchema, ArrSchema, NumSchema, UiSchema, UiArr, Field, StringSchema, Context, ObjectSchema, RowContext } from 'tonva-tools';
+import {
+    VPage, Page, Form, ItemSchema, ArrSchema, NumSchema, UiSchema, UiArr, Field,
+    StringSchema, Context, ObjectSchema, RowContext, UiCustom
+} from 'tonva-tools';
 import { List, LMR, FA, SearchBox } from 'tonva-react-form';
 import { tv, BoxId } from 'tonva-react-usql';
 import { observer } from 'mobx-react';
-import { MinusPlusWidget } from './minusPlusWidget';
+import { MinusPlusWidget } from '../tools/minusPlusWidget';
 
 const schema: ItemSchema[] = [
     {
@@ -38,7 +41,9 @@ export class VProduct extends VPage<CProduct> {
                             WidgetClass: MinusPlusWidget,
                             onChanged: this.onQuantityChanged
                         }
-                    }
+                    },
+                    ArrContainer: (label: string, content: JSX.Element) => { return <div className="bg-white">{content}</div>; },
+                    Rowseperator: (<div className="border border-danger border-top"></div>),
                 } as UiArr,
             }
         };
@@ -89,17 +94,9 @@ export class VProduct extends VPage<CProduct> {
                 <div className="col-2">vip price</div>
             </div>
         </LMR>
-        let arrContainer = (label: any, content: JSX.Element) => {
-            return <div className="bg-white">{content}</div>
-        }
-        let rowContainer = (content: JSX.Element) => {
-            return <div>{content}</div>
-        }
-        let rowSeperator = <div className="border border-danger border-top"></div>
         return <Page header={header} right={cartLabel}>
             <div className="px-2 py-2 bg-white">{tv(product, productRow)}</div>
-            <Form schema={schema} uiSchema={this.uiSchema} formData={this.data}
-                ArrContainer={arrContainer} RowContainer={rowContainer} RowSeperator={rowSeperator} />
+            <Form schema={schema} uiSchema={this.uiSchema} formData={this.data} />
         </Page>
     })
 }

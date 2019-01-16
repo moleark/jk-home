@@ -99,7 +99,7 @@ export class CProduct extends Controller {
             this.product.purity = this.productChemical.purity;
         }
 
-        let { salesRegion, currentUser } = this.cApp;
+        let { currentSalesRegion: salesRegion, currentUser } = this.cApp;
         let prices = await this.priceMap.table({ product: productId, salesRegion: salesRegion.id })
         let discount = 0;
         if (currentUser.hasCustomer) {

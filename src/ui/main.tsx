@@ -15,8 +15,8 @@ export class VHome extends VPage<CCartApp> {
     async showEntry(param?: any) {
         this.openPage(this.render);
     }
-    render = (param?:any):JSX.Element => {
-        let {cHome, cMember, cCart} = this.controller;        
+    render = (param?: any): JSX.Element => {
+        let { cHome, cMember, cCart } = this.controller;
         let faceTabs = [
             { name: 'home', label: '首页', icon: 'home', content: cHome.tab, notify: store.homeCount },
             { name: 'member', label: '会员', icon: 'vcard', content: cMember.tab },
