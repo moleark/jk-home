@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { CUsq, Action, Query } from 'tonva-react-usql';
 
 export class Cart {
-    //private cUsqOrder: CUsq;
+
     private addToCartAction: Action;
     private getCartQuery: Query;
     private setCartAction: Action;
@@ -11,16 +11,17 @@ export class Cart {
     private disposer: IReactionDisposer;
 
     constructor(cUsqOrder: CUsq) {
-        //this.cUsqOrder = cUsqOrder;
         this.addToCartAction = cUsqOrder.action('addtocart');
         this.getCartQuery = cUsqOrder.query('getcart')
         this.setCartAction = cUsqOrder.action('setcart');
         this.removeFromCartAction = cUsqOrder.action('removefromcart');
         this.disposer = autorun(this.calcSum);
     }
+
     dispose() {
         this.disposer();
     }
+
     private calcSum = () => {
         let ret = this.items.reduce((accumulator: any, currentValue: any) => {
             let { isDeleted, quantity, price, checked } = currentValue;
@@ -32,7 +33,7 @@ export class Cart {
                 amount: amount + (!(checked === true) ? 0 : quantity * price)
             };
         }, { count: 0, amount: 0 });
-        let {count, amount} = ret;
+        let { count, amount } = ret;
         this.count.set(count);
         this.amount.set(amount);
     }
@@ -74,10 +75,10 @@ export class Cart {
             cartItem.price = price;
         }
         await this.addToCartAction.submit({
-            product: cartItem.product.id, 
+            product: cartItem.product.id,
             pack: cartItem.pack.id,
-            price: cartItem.price, 
-            currency: currency && currency.id, 
+            price: cartItem.price,
+            currency: currency && currency.id,
             quantity: quantity
         });
     }
@@ -139,5 +140,9 @@ export class Cart {
         let selectCartItem = this.items.filter((element) => element.checked && !(element.isDeleted === true));
         if (!selectCartItem || selectCartItem.length === 0) return;
         return selectCartItem;
+    }
+
+    getItem(pack: number) {
+        return this.items.find(x => x.pack.id === pack);
     }
 }

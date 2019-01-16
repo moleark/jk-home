@@ -8,11 +8,13 @@ import { CHome } from './home/CHome';
 import { CProductCategory } from 'productCategory/CProductCategory';
 import { CUser } from 'customer/CPerson';
 import { CMember } from 'member/CMember';
+import { WebUser } from 'CurrentUser';
 import { consts } from './home/consts';
 
 export class CCartApp extends CApp {
 
     salesRegion: any;
+    currentUser: WebUser;
 
     cUsqOrder: CUsq;
     cUsqProduct: CUsq;
@@ -42,7 +44,6 @@ export class CCartApp extends CApp {
         this.cUsqWarehouse = this.getCUsq(consts.usqWarehouse);
         this.cUsqMember = this.getCUsq(consts.usqMember);
 
-        //cCartApp = this;
         this.cProductCategory = new CProductCategory(this, undefined);
         this.cCart = new CCart(this, undefined);
         this.cHome = new CHome(this, undefined);
@@ -58,9 +59,9 @@ export class CCartApp extends CApp {
         */
         this.salesRegion = await salesRegionTuid.load(1);
 
-        if (this.isLogined) {
-
-        }
+        this.currentUser = new WebUser(this.cUsqWebUser);
+        if (this.isLogined)
+            this.currentUser.user = this.user;
         // this.clearPrevPages();
         // await this.cHome.start();
         // this.showVPage(VHome);
@@ -68,5 +69,3 @@ export class CCartApp extends CApp {
         this.showVPage(this.VAppMain);
     }
 }
-
-// export var cCartApp: CCartApp;

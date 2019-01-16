@@ -37,19 +37,12 @@ export class COrder extends Controller {
 
     private createOrderFromCart = async (cartItem: any[]) => {
 
-        this.orderData.webUser = this.user.id;
+        this.orderData.webUser = this.cApp.currentUser.id;
+        // this.orderData.customer = cCartApp.currentUser.currentCustomer;
 
         if (this.orderData.deliveryContact === undefined) {
-            let userMap: any = await this.webUserCustomerMap.obj({ webUser: this.user.id });
 
-            let contactArr: any;
-            if (userMap !== undefined) {
-                contactArr = await this.customerConsigneeContactMap.table({ customer: userMap.customer.id });
-                this.orderData.customer = userMap.customer;
-            } else {
-                contactArr = await this.webUserConsigneeContactMap.table({ webUser: this.user.id });
-                console.log(contactArr);
-            }
+            let contactArr: any[] = await this.cApp.currentUser.getConsigneeContacts();
             if (contactArr && contactArr.length > 0) {
                 let contactWapper = contactArr.find((element: any) => {
                     if (element.isDefault === true)
@@ -66,7 +59,7 @@ export class COrder extends Controller {
             this.orderData.orderItems = cartItem.map((element: any, index: number) => {
                 var item = new OrderItem();
                 item.product = element.product,
-                    item.pack = element.pack;
+                item.pack = element.pack;
                 item.price = element.price;
                 item.quantity = element.quantity;
                 return item;
@@ -76,7 +69,7 @@ export class COrder extends Controller {
 
     setContact = (contactBox: any) => {
 
-        this.orderData.deliveryContact = {...contactBox};
+        this.orderData.deliveryContact = { ...contactBox };
     }
 
     submitOrder = async () => {
@@ -87,7 +80,8 @@ export class COrder extends Controller {
         }
         let postOrder = this.orderData.getPostData();
         await this.orderSheet.loadSchema();
-        let result = await this.orderSheet.save("", postOrder);
+        let result: any = await this.orderSheet.save("", postOrder);
+        await this.orderSheet.action(result.id, result.flow, result.state, "submit");
         this.cApp.cCart.cart.removeFromCart(this.orderData.orderItems);
 
         // 打开订单显示界面

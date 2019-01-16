@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Map, TuidDiv, TuidMain, Query } from 'tonva-react-usql';
+import { Map, TuidDiv, TuidMain, Query, tv, BoxId } from 'tonva-react-usql';
 import { VProduct } from './VProduct';
 import * as _ from 'lodash';
 import { CCartApp } from 'CCartApp';
@@ -29,6 +29,12 @@ class PageProducts extends PageItems<any> {
     }
 }
 
+export interface PackRow {
+    pack: any;
+    input: HTMLInputElement;
+    quantity: number;
+}
+
 /**
  *
  */
@@ -46,7 +52,6 @@ export class CProduct extends Controller {
 
     product: any;
     private productChemical: any;
-    private prices: any[];
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
@@ -69,6 +74,22 @@ export class CProduct extends Controller {
         this.showVPage(VProductList, param);
     }
 
+    buildPackRows() {
+
+        let packRows = [];
+        for (let pk of this.product.packx) {
+            let packRow: PackRow = {
+                pack: pk,
+            } as any;
+            // 如果当前产品在购物车中，设置其初始的数量
+            let pr2: any = this.cApp.cCart.cart.getItem(pk.id);
+            if (pr2)
+                packRow.quantity = pr2.quantity;
+            packRows.push(packRow);
+        }
+        return packRows;
+    }
+
     showProductDetail = async (productId: number) => {
 
         this.product = await this.productTuid.load(productId);
@@ -78,15 +99,20 @@ export class CProduct extends Controller {
             this.product.purity = this.productChemical.purity;
         }
 
-        let { salesRegion } = this.cApp;
-        this.prices = await this.priceMap.table({ product: productId, salesRegion: salesRegion.id })
+        let { salesRegion, currentUser } = this.cApp;
+        let prices = await this.priceMap.table({ product: productId, salesRegion: salesRegion.id })
         let discount = 0;
-        if (this.isLogined) {
-            let discountSetting = await this.getCustomerDiscount.table({ brand: this.product.brand.id, person: this.user.id });
+        if (currentUser.hasCustomer) {
+            let discountSetting = await this.getCustomerDiscount.table({ brand: this.product.brand.id, customer: currentUser.currentCustomer.id });
             discount = discountSetting && discountSetting[0] && discountSetting[0].discount;
         }
-        this.prices.forEach(element => { element.vipprice = element.price * (1 - discount); element.currency = salesRegion.currency.obj; });
-        this.product.prices = this.prices;
+        prices.forEach(element => { element.vipprice = element.price * (1 - discount); element.currency = salesRegion.currency.obj; });
+        this.product.packx.forEach(v => {
+            let price = prices.find(x => x.pack.id === v.id);
+            v.retail = price && price.retail;
+            v.vipPrice = price && price.vipPrice;
+            v.currency = salesRegion.currency.obj;
+        })
         this.showVPage(VProduct, this.product);
     }
 
@@ -103,4 +129,42 @@ export class CProduct extends Controller {
         }
     }
 
+}
+
+export function renderBrand(brand: any) {
+    return <>
+        <div className="col-4 col-md-2 text-muted">品牌:</div>
+        <div className="col-8 col-md-4">{brand.name}</div>
+    </>
+}
+
+export function productRow(product: any, index: number) {
+
+    return <div className="row d-flex">
+        <div className="col-12">
+            <div className="row py-2">
+                <div className="col-12"><strong>{product.description}</strong></div>
+            </div>
+            <div className="row">
+                <div className="col-3">
+                    <img src="favicon.ico" alt="structure" />
+                </div>
+                <div className="col-9">
+                    <div className="row">
+                        <div className="col-4 col-md-2 text-muted">CAS:</div>
+                        <div className="col-8 col-md-4">{product.CAS}</div>
+                        <div className="col-4 col-md-2 text-muted">纯度:</div>
+                        <div className="col-8 col-md-4">{product.purity}</div>
+                        <div className="col-4 col-md-2 text-muted">分子式:</div>
+                        <div className="col-8 col-md-4">{product.molecularFomula}</div>
+                        <div className="col-4 col-md-2 text-muted">分子量:</div>
+                        <div className="col-8 col-md-4">{product.molecularWeight}</div>
+                        <div className="col-4 col-md-2 text-muted">产品编号:</div>
+                        <div className="col-8 col-md-4">{product.origin}</div>
+                        {tv(product.brand, renderBrand)}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 }

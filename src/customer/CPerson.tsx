@@ -35,16 +35,10 @@ export class CUser extends Controller {
 
     async internalStart(param: any) {
 
-        this.currentUser = this.user;
+        this.currentUser = this.cApp.currentUser;
         this.currentUser.consigneeContacts = [];
 
-        let consigneeContacts;
-        let userMap: any = await this.webUserCustomerMap.obj({ webUser: this.user.id });
-        if (userMap !== undefined) {
-            consigneeContacts = await this.customerConsigneeContactMap.table({ customer: userMap.customer.id });
-        } else {
-            consigneeContacts = await this.webUserConsigneeContactMap.table({ webUser: this.user.id });
-        }
+        let consigneeContacts = await this.cApp.currentUser.getConsigneeContacts();
         if (consigneeContacts && consigneeContacts.length > 0) {
             consigneeContacts.forEach(element => {
                 this.currentUser.consigneeContacts.push(element.contact.obj);
