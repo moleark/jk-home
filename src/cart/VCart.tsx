@@ -1,10 +1,27 @@
 import * as React from 'react';
-import { VPage, Page } from 'tonva-tools';
+import { VPage, Page, Form, ObjectSchema, NumSchema, ArrSchema, UiSchema, UiArr, Field, UiCustom, RowContext } from 'tonva-tools';
 import { CCart } from './CCart';
 import { List, LMR, FA } from 'tonva-react-form';
 import { tv } from 'tonva-react-usql';
 import { observer } from 'mobx-react';
-import { Product } from 'product/Product';
+import { MinusPlusWidget } from 'tools/minusPlusWidget';
+
+const cartSchema = [
+    {
+        name: 'list', 
+        type: 'arr',
+        arr: [
+            {name: 'product', type: 'object'} as ObjectSchema,
+            {
+                name: 'packs', type: 'arr', arr: [
+                    {name: 'pack', type: 'object'} as ObjectSchema,
+                    {name: 'price', type: 'number'} as NumSchema,
+                    {name: 'quantity', type: 'number'} as NumSchema,
+                ]
+            }
+        ],
+    } as ArrSchema
+];
 
 export class VCart extends VPage<CCart> {
 
@@ -136,14 +153,129 @@ export class VCart extends VPage<CCart> {
         return this.page();
     }
 
+    private onQuantityChanged = async (context: RowContext, value: any, prev: any) => {
+        let { row } = context;
+        let { data } = row;
+        let { pack } = data;
+        let { retail, currency } = pack;
+        let { cCart } = this.controller.cApp;
+        await cCart.cart.AddToCart(pack, value, retail, currency);
+    }
+
+    private productRow = (item: any) => {
+        let {product} = item;
+        //let {discription} = product;
+        return <div className="row">
+            <div className="col-sm-6">{tv(product)}</div> 
+            <div className="col-sm-6"><Field name="packs" /></div>
+        </div>;
+    }
+
+    private packsRow = (item: any) => {
+        let {pack, quantity, price} = item;
+        //let {name} = pack;
+        return <div className="d-flex align-items-center">
+            <div className="d-flex flex-grow-1">
+                <div className="flex-grow-1">{tv(pack)}</div>
+                <div className="w-6c mr-4 text-right"><span className="text-danger h5">{price}</span>元</div>
+            </div>
+            <Field name="quantity" />
+        </div>;
+    }
+
+    private uiSchema:UiSchema = {
+        selectable: true,
+        deletable: true,
+        restorable: true,
+        items: {
+            list: {
+                widget: 'arr',
+                Templet: this.productRow,
+                ArrContainer: (label:any, content: JSX.Element) => content,
+                RowContainer: (content: JSX.Element) => <div className="p-3">{content}</div>,
+                items: {
+                    packs: {
+                        widget: 'arr',
+                        Templet: this.packsRow,
+                        selectable: false,
+                        deletable: false,
+                        ArrContainer: (label:any, content: JSX.Element) => content,
+                        RowContainer: (content: JSX.Element) => content,
+                        RowSeperator: <div className="border border-gray border-top my-3" />,
+                        items: {
+                            quantity: {
+                                widget: 'custom',
+                                className: 'text-center',
+                                WidgetClass: MinusPlusWidget,
+                                onChanged: this.onQuantityChanged
+                            }
+                        }
+                    } as UiArr
+                }
+            } as UiArr
+        }
+    }
+
+    private cartData = {
+        list: [
+            {
+                product: {discription: 'aaa'},
+                packs: [
+                    {
+                        pack: {name: '1g'},
+                        quantity: 10,
+                        price: 12.10,
+                    },
+                    {
+                        pack: {name: '10g'},
+                        quantity: 12,
+                        price: 22.10,
+                    }
+                ]
+            },
+            {
+                product: {discription: 'bbb'},
+                packs: [
+                    {
+                        pack: {name: '1g'},
+                        quantity: 13,
+                        price: 12.10,
+                    },
+                    {
+                        pack: {name: '10g'},
+                        quantity: 14,
+                        price: 22.10,
+                    }
+                ]
+            }
+        ]
+    };
+
     private page = () => {
         let { cart } = this.controller;
-        return <Page header="购物车" footer={<this.CheckOutButton />}>
+
+        let cartData = {
+            list: cart.items.map(v => {
+                return {
+                    product: v.product,
+                    packs: [{
+                        pack: v.pack,
+                        quantity: v.quantity,
+                        price: v.price,
+                    }]
+                }
+            })
+        };
+
+        return <>
+            <header className="p-3 text-center">购物车</header>
+            <Form className="bg-white" schema={cartSchema} uiSchema={this.uiSchema} formData={cartData}  />
             <div className="row">
                 <div className="col-12">
                     <List items={cart.items} item={{ render: this.onCartItemRender }} />
                 </div>
             </div>
-        </Page>
+            <footer><this.CheckOutButton /></footer>
+        </>
     }
 }

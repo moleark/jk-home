@@ -1,8 +1,8 @@
 import * as React from 'react';
 import classNames from 'classnames';
-import { UpdownWidget } from "tonva-tools/ui/form/widgets";
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
+import { UpdownWidget } from 'tonva-tools/dist/ui/form/widgets';
 
 const keys = [107, 109, 110, 187, 189];
 
