@@ -450,11 +450,11 @@ export class CUsq extends Controller /* implements Usq*/ {
         let {owner} = tuid;
         if (owner === undefined) {
             let {ui} = this.getUI<Tuid, TuidUI>(tuid);
-            return (ui && ui.inputContent) || PureJSONContent;
+            return (ui && ui.content) || PureJSONContent;
         }
         else {
             let {ui} = this.getUI<Tuid, TuidUI>(owner);
-            return (ui && ui.divs && ui.divs[tuid.name].inputContent) || PureJSONContent;
+            return (ui && ui.divs && ui.divs[tuid.name].content) || PureJSONContent;
         }
     }
 

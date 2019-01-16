@@ -41,7 +41,6 @@ export class VCart extends VPage<CCart> {
     }
 
     async showEntry() {
-
         this.openPage(this.page);
     }
 
@@ -154,12 +153,12 @@ export class VCart extends VPage<CCart> {
     }
 
     private onQuantityChanged = async (context: RowContext, value: any, prev: any) => {
-        let { row } = context;
-        let { data } = row;
-        let { pack } = data;
+        //let { row } = context;
+        let { data } = context;
+        let { product, pack } = data;
         let { retail, currency } = pack;
         let { cCart } = this.controller.cApp;
-        await cCart.cart.AddToCart(pack, value, retail, currency);
+        await cCart.cart.AddToCart(product, pack, value, retail, currency);
     }
 
     private productRow = (item: any) => {

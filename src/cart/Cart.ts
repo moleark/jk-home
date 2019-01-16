@@ -65,10 +65,10 @@ export class Cart {
      * @param pack 要添加到购物车中的包装
      * @param quantity 要添加到购物车中包装的个数
      */
-    async AddToCart(pack: any, quantity: number, price: number, currency: any) {
+    async AddToCart(product: any, pack: any, quantity: number, price: number, currency: any) {
         let cartItem = this.items.find((element) => element.pack.id === pack.id);
         if (!cartItem) {
-            cartItem = this.createCartItem(pack, quantity, price, currency);
+            cartItem = this.createCartItem(product, pack, quantity, price, currency);
             this.items.push(cartItem);
         } else {
             cartItem.quantity += quantity;
@@ -83,12 +83,12 @@ export class Cart {
         });
     }
 
-    createCartItem(pack: any, quantity: number, price: number, currency: any): any {
+    createCartItem(product: any, pack: any, quantity: number, price: number, currency: any): any {
 
         let cartItem: any = {
             checked: true,
             pack: pack,
-            product: pack.obj.$owner,
+            product: product, // pack.obj.$owner,
             price: price,
             currency: currency,
             quantity: quantity,

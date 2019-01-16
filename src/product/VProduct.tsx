@@ -53,12 +53,12 @@ export class VProduct extends VPage<CProduct> {
     }
 
     private onQuantityChanged = async (context: RowContext, value: any, prev: any) => {
-        let { row } = context;
-        let { data } = row;
-        let { pack } = data;
+        //let { row } = context;
+        let { data } = context;
+        let { product, pack } = data;
         let { retail, currency } = pack;
         let { cCart } = this.controller.cApp;
-        await cCart.cart.AddToCart(pack, value, retail, currency);
+        await cCart.cart.AddToCart(product, pack, value, retail, currency);
     }
 
     //context:Context, name:string, value:number
@@ -68,7 +68,7 @@ export class VProduct extends VPage<CProduct> {
         let { retail, vipPrice } = pack;
         let right = <div className="d-flex"><Field name="quantity" /></div>;
         return <LMR className="mx-3" right={right}>
-            <div>{this.renderPack(pack)}</div>
+            <div>{tv(pack)}</div>
             <div>retail:{retail} vipPrice:{vipPrice}</div>
         </LMR>;
     }
