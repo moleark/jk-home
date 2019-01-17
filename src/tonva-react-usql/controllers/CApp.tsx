@@ -50,17 +50,23 @@ export class CApp extends Controller {
         let app = await loadAppUsqs(this.appOwner, this.appName);
         let {id, usqs} = app;
         this.id = id;
+        let promises: PromiseLike<string>[] = [];
         for (let appUsq of usqs) {
             let {id:usqId, usqOwner, usqName, url, urlDebug, ws, access, token} = appUsq;
             let usq = usqOwner + '/' + usqName;
             let ui = this.ui && this.ui.usqs && this.ui.usqs[usq];
             let cUsq = this.newCUsq(usq, usqId, access, ui || {});
-            let retError = await cUsq.loadSchema();
+            this.cUsqCollection[usq] = cUsq;
+            promises.push(cUsq.loadSchema());
+        }
+        let results = await Promise.all(promises);
+        for (let result of results)
+        {
+            let retError = result; // await cUsq.loadSchema();
             if (retError !== undefined) {
                 retErrors.push(retError);
                 continue;
             }
-            this.cUsqCollection[usq] = cUsq;
         }
         if (retErrors.length === 0) return;
         return retErrors;

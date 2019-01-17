@@ -3,7 +3,6 @@ import _ from 'lodash';
 import { CUsq, Action, Query } from 'tonva-react-usql';
 
 export class Cart {
-
     private addToCartAction: Action;
     private getCartQuery: Query;
     private setCartAction: Action;

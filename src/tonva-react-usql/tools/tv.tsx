@@ -3,30 +3,34 @@ import { observer } from 'mobx-react';
 import { BoxId, Tuid } from "../entities";
 import { PureJSONContent } from '../controllers';
 
+type TvTemplet = (values?:any, x?:any) => JSX.Element;
+
 interface Props {
     tuidValue: number|BoxId, 
-    ui?: (values?:any, x?:any)=>JSX.Element,
+    ui?: TvTemplet,
     x?: any,
     nullUI?: ()=>JSX.Element
 }
 
-type TvTemplet = (values?:any, x?:any) => JSX.Element;
-
-function boxIdContent(bi: number|BoxId, templet:TvTemplet, x:any) {
+function boxIdContent(bi: number|BoxId, ui:TvTemplet, x:any) {
     if (typeof bi === 'number') return <>{bi}</>;
     let {id, _$tuid, _$com} = bi as BoxId;
     let t:Tuid = _$tuid;
     if (t === undefined) {
-        if (templet !== undefined) return templet(bi, x);
+        if (ui !== undefined) return ui(bi, x);
         return PureJSONContent(bi, x);
     }
-    let com = templet || _$com;
+    let com = ui || _$com;
     if (com === undefined) {
         com = bi._$com = t.getTuidContent();
     }
     let val = t.valueFromId(id);
     if (typeof val === 'number') val = {id: val};
-    if (templet !== undefined) return templet(val, x);
+    if (ui !== undefined) {
+        let ret = ui(val, x);
+        if (ret !== undefined) return ret;
+        return <>{id}</>;
+    }
     return React.createElement(com, val);
 }
 
@@ -36,20 +40,21 @@ const Tv = observer(({tuidValue, ui, x, nullUI}:Props) => {
         default:
             if (ui === undefined)
                 return <>{ttv}-{tuidValue}</>;
-            else
-                return ui(tuidValue, x);
-        case 'undefined':
-            if (nullUI === undefined) return <>null</>;
-            return nullUI();
-        case 'object':
-            if (tuidValue === null) {
-                if (nullUI === undefined) return <>null</>;
-                return nullUI();
+            else {
+                let ret = ui(tuidValue, x);
+                if (ret !== undefined) return ret;
+                return <>{tuidValue}</>;
             }
-            return boxIdContent(tuidValue, ui, x);
+        case 'undefined':
+            break;
+        case 'object':
+            if (tuidValue !== null) return boxIdContent(tuidValue, ui, x);
+            break;
         case 'number':
             return <>id...{tuidValue}</>;
-    }
+    }       
+    if (nullUI === undefined) return <>null</>;
+    return nullUI();
 });
 
 export const tv = (tuidValue:number|BoxId, ui?:TvTemplet, x?:any, nullUI?:()=>JSX.Element):JSX.Element => {
