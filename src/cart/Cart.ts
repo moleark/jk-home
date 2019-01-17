@@ -50,12 +50,15 @@ export abstract class Cart {
 
     abstract async load(): Promise<void>;
 
-    async AddToCart(pack: any, quantity: number, price: number, currency: any) {
-
-        let packBox = this.packTuid.boxId(pack.id);
-        let cartItem = this.items.find((element) => element.pack.id === packBox.id);
+    /**
+     * 添加购物车
+     * @param pack 要添加到购物车中的包装
+     * @param quantity 要添加到购物车中包装的个数
+     */
+    async AddToCart(product: any, pack: any, quantity: number, price: number, currency: any) {
+        let cartItem = this.items.find((element) => element.pack.id === pack.id);
         if (!cartItem) {
-            cartItem = this.createCartItem(packBox, quantity, price, currency);
+            cartItem = this.createCartItem(product, pack, quantity, price, currency);
             this.items.push(cartItem);
         } else {
             cartItem.quantity = quantity;
@@ -64,12 +67,12 @@ export abstract class Cart {
         await this.storeCart(cartItem);
     }
 
-    createCartItem(packBox: BoxId, quantity: number, price: number, currency: any): any {
+    createCartItem(product: any, pack: any, quantity: number, price: number, currency: any): any {
 
         let cartItem: CartItem = {
             checked: true,
-            pack: packBox,
-            product: packBox.obj.$owner,
+            pack: pack,
+            product: product, // pack.obj.$owner,
             price: price,
             currency: currency,
             quantity: quantity,

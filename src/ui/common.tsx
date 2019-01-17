@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { TuidUI } from "tonva-react-usql";
+import { TuidUI } from 'tonva-react-usql';
 
-const product: TuidUI = {
-    inputContent: (values: any) => {
+export const productUI: TuidUI = {
+    content: (values: any) => {
         let product = values;
         let left = <div>image</div>
         return <div className="row d-flex">
@@ -23,26 +23,14 @@ const product: TuidUI = {
                 </div>
             </div>
         </div>
+    },
+    divs: {
+        packx: {
+            content: (values: any) => {
+                let {radiox, radioy, unit} = values;
+                return <>{radiox} {radioy} {unit}</>;
+            }
+        }
     }
 }
 
-const address: TuidUI = {
-    inputContent: (values: any) => {
-        let {description } = values;
-        return <div>
-            {description}
-        </div>
-    }
-}
-
-const contact: TuidUI = {
-    inputContent: (values: any) => {
-        return <div>gee</div>
-    }
-}
-
-export default {
-    product: product,
-    address: address,
-    contact: contact,
-}

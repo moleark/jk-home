@@ -3,43 +3,33 @@ import { View } from 'tonva-tools';
 import { CProductCategory } from './CProductCategory';
 import { List, LMR } from 'tonva-react-form';
 import { observer } from 'mobx-react';
-import { tv } from 'tonva-react-usql';
+import { tv, BoxId } from 'tonva-react-usql';
 
 export class VRootCategory extends View<CProductCategory> {
 
-    private catClick = async (cat: any) => {
+    private categoryClick = async (categoryWapper: any) => {
 
-        await this.controller.openMainPage(cat);
+        await this.controller.openMainPage(categoryWapper);
     }
 
-    private onRootCategoryRender = (categoryBox: any, index: number) => {
-
-        let { category, children } = categoryBox;
-        let left = <div className="h4">{category.obj.name}</div>;
+    private onRootCategoryRender = (item: any, index: number) => {
+        let { productCategory, name, children } = item;
+        let left = <div className="h4">{name}</div>;
         return <div className="row bg-light py-2">
             <div className="col-12">
-                <LMR left={left} right="更多..." className="px-3 cursor-pointer" onClick={() => this.catClick(categoryBox)} />
+                <LMR left={left} right="更多..." className="px-3 cursor-pointer" onClick={() => this.categoryClick(item)} />
             </div>
             <div className="col-12">
                 <div className="row mx-3 cussor-pointer">
                     {children && children.map((childrenWapper: any) => {
-                        return <div className="col-12 col-md-4 py-2" onClick={() => this.catClick(childrenWapper)}>
-                            {childrenWapper.category.obj.name}
+                        return <div className="col-12 col-md-4 py-2" onClick={() => this.categoryClick(childrenWapper)}>
+                            {childrenWapper.name}
                             <hr className="my-1"/>
                         </div>
                     })}
                 </div>
             </div>
         </div>
-        /*
-        return <LMR left={left} right="更多..." className="bg-light px-3 py-2 align-items-end">
-            <div className="d-none d-sm-flex flex-row mx-5">
-                {children && children.map((childrenWapper: any) => {
-                    return <div className="mx-3 text-success cussor-pointer" onClick={() => this.catClick(childrenWapper)}>{childrenWapper.category.obj.name}</div>
-                })}
-            </div>
-        </LMR>
-        */
     }
 
     render(param: any): JSX.Element {

@@ -67,7 +67,7 @@ export class CCartApp extends CApp {
         // await this.cHome.start();
         // this.showVPage(VHome);
         await this.cCart.cart.load();
-        // await this.cProductCategory.start();
+        await this.cProductCategory.start();
         this.showVPage(this.VAppMain);
     }
 }
