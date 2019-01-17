@@ -92,40 +92,53 @@ export class CProduct extends Controller {
 
     showProductDetail = async (productId: number) => {
 
-        this.product = await this.productTuid.load(productId);
-        this.productChemical = await this.productChemicalMap.obj({ product: productId });
+        let { currentSalesRegion, currentUser } = this.cApp;
+        let promises: PromiseLike<any>[] = [];
+        promises.push(this.productTuid.load(productId));
+        promises.push(this.productChemicalMap.obj({ product: productId }));
+        promises.push(this.priceMap.table({ product: productId, salesRegion: currentSalesRegion.id }));
+        promises.push(this.getFutureDeliveryTimeDescription(productId, currentSalesRegion.id));
+        let results = await Promise.all(promises);
+
+        this.product = results[0];
+        this.productChemical = results[1];
         if (this.productChemical) {
             this.product.chemical = this.productChemical.chemical;
             this.product.purity = this.productChemical.purity;
         }
 
-        let { currentSalesRegion: salesRegion, currentUser } = this.cApp;
-        let prices = await this.priceMap.table({ product: productId, salesRegion: salesRegion.id })
+        let prices: any[] = results[2];
         let discount = 0;
         if (currentUser.hasCustomer) {
             let discountSetting = await this.getCustomerDiscount.table({ brand: this.product.brand.id, customer: currentUser.currentCustomer.id });
             discount = discountSetting && discountSetting[0] && discountSetting[0].discount;
         }
-        prices.forEach(element => { element.vipprice = element.price * (1 - discount); element.currency = salesRegion.currency.obj; });
+        prices.forEach(element => { element.vipprice = element.price * (1 - discount); element.currency = currentSalesRegion.currency.obj; });
+
+        for (let index = 0; index < this.product.packx.length; index++) {
+            const element = this.product.packx[index];
+            element.futureDeliveryTimeDescription = results[3];
+            element.inventoryAllocation = await this.getInventoryAllocations(this.product.id, element.id, currentSalesRegion.id);
+        }
         this.product.packx.forEach(v => {
             let price = prices.find(x => x.pack.id === v.id);
             v.retail = price && price.retail;
             v.vipPrice = price && price.vipPrice;
-            v.currency = salesRegion.currency.obj;
+            v.currency = currentSalesRegion.currency;
         })
         this.showVPage(VProduct, this.product);
     }
 
-    getDeliveryTimeDescription = async (product: any, pack: any, salesRegion: any) => {
+    getInventoryAllocations = async (productId: number, packId: number, salesRegionId: number) => {
 
-        let allocation = await this.getInventoryAllocationQuery.table({ product: product, pack: pack, salesRegion: salesRegion });
-        if (allocation.length > 0) {
-            return allocation[0].deliveryTimeDescription;
-        } else {
-            let futureDeliveryTime = await this.getFutureDeliveryTime.table({ product: product, salesRegion: salesRegion });
-            if (futureDeliveryTime.length > 0) {
-                return futureDeliveryTime[0].deliveyTimeDescription;
-            }
+        let allocation = await this.getInventoryAllocationQuery.table({ product: productId, pack: packId, salesRegion: salesRegionId });
+        return allocation;
+    }
+
+    getFutureDeliveryTimeDescription = async (productId: number, salesRegionId: number) => {
+        let futureDeliveryTime = await this.getFutureDeliveryTime.table({ product: productId, salesRegion: salesRegionId });
+        if (futureDeliveryTime.length > 0) {
+            return futureDeliveryTime[0].deliveryTimeDescription;
         }
     }
 

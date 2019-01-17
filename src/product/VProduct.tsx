@@ -69,20 +69,27 @@ export class VProduct extends VPage<CProduct> {
     private arrTemplet = (item: any) => {
         //let a = context.getValue('');
         let { pack } = item;
-        let { retail, vipPrice } = pack;
+        let { retail, vipPrice, inventoryAllocation, futureDeliveryTimeDescription } = pack;
         let right = <div className="d-flex"><Field name="quantity" /></div>;
+        let deliveryTimeUI = <></>;
+        if (inventoryAllocation.length > 0) {
+            deliveryTimeUI = inventoryAllocation.map(v => {
+                return <div>
+                    {tv(v.warehouse, (values: any) => <>{values.name}</>)}
+                    {v.deliveryTimeDescription}
+                </div>
+            });
+        } else {
+            deliveryTimeUI = <div>{futureDeliveryTimeDescription}</div>
+        }
         return <LMR className="mx-3" right={right}>
             <div>{tv(pack)}</div>
             <div>retail:{retail} vipPrice:{vipPrice}</div>
+            {deliveryTimeUI}
         </LMR>;
     }
 
-    private renderPack = (pack: any): JSX.Element => {
-        let { radiox, radioy, unit } = pack;
-        return <>{radiox} x {radioy} {unit}</>;
-    }
-
-    private page = observer((product1: any) => {
+    private page = observer(() => {
 
         let { product, cApp } = this.controller;
         let header = cApp.cHome.renderSearchHeader();

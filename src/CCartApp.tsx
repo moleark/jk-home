@@ -66,8 +66,10 @@ export class CCartApp extends CApp {
         // this.clearPrevPages();
         // await this.cHome.start();
         // this.showVPage(VHome);
-        await this.cCart.cart.load();
-        await this.cProductCategory.start();
+        let promises: PromiseLike<void>[] = [];
+        promises.push(this.cCart.cart.load());
+        promises.push(this.cProductCategory.start());
+        await Promise.all(promises);
         this.showVPage(this.VAppMain);
     }
 }
