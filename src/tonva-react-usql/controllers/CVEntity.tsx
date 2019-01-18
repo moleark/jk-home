@@ -26,7 +26,7 @@ export abstract class CEntity<T extends Entity, UI extends EntityUI> extends Con
     readonly ui: UI;
 
     protected async beforeStart():Promise<boolean> {
-        if (await super.beforeStart() === false) return false;
+        //if (await super.beforeStart() === false) return false;
         await this.entity.loadSchema();
         return true;
     }

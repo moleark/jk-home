@@ -307,8 +307,7 @@ export interface AppUsq {
     access: string;
     token: string;
 }
-console.log('CenterApi');
-console.log(CenterApi);
+
 export class CenterAppApi extends CenterApi {
     async usqs(unit:number, appOwner:string, appName:string):Promise<App> {
         return await this.get('tie/app-usqs', {unit:unit, appOwner:appOwner, appName:appName});

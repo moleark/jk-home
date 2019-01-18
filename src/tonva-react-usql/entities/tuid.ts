@@ -206,6 +206,9 @@ export abstract class Tuid extends Entity {
             this.cacheTuidFieldValues(tuidValue);
             this.afterCacheId(tuidValue);
         }
+        await this.cacheDivIds();
+    }
+    protected async cacheDivIds():Promise<void> {
     }
     async load(id:number):Promise<any> {
         if (id === undefined || id === 0) return;
@@ -331,8 +334,16 @@ export class TuidMain extends Tuid {
         }
     }
     protected getDiv(divName:string):TuidDiv {return this.divs[divName];}
+    /* 努力回避async里面的super调用，edge不兼容
     async cacheIds():Promise<void> {
         await super.cacheIds();
+        if (this.divs === undefined) return;
+        for (let i in this.divs) {
+            await this.divs[i].cacheIds();
+        }
+    }
+    */
+    protected async cacheDivIds():Promise<void> {
         if (this.divs === undefined) return;
         for (let i in this.divs) {
             await this.divs[i].cacheIds();

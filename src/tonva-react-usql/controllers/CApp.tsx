@@ -107,10 +107,8 @@ export class CApp extends Controller {
     }
 
     protected get VAppMain():TypeVPage<CApp> {return (this.ui&&this.ui.main) || VAppMain}
-
     protected async beforeStart():Promise<boolean> {
-        if (await super.beforeStart() === false) return false;
-
+        //if (await super.beforeStart() === false) return false;
         try {
             let hash = document.location.hash;
             if (hash.startsWith('#tvdebug')) {

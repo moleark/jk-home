@@ -449,9 +449,9 @@ export class Nav {
                 return;
             }
         }
-        //let device: string = this.local.device.get();
+
         let user: User = this.local.user.get();
-        if (user === undefined/* || user.guest !== device*/) {
+        if (user === undefined) {
             let {notLogined} = this.nav.props;
             if (notLogined !== undefined) {
                 await notLogined();
@@ -489,7 +489,6 @@ export class Nav {
         this.local.user.set(user);
         netToken.set(user.token);
         this.user = new UserInNav(user);
-        console.log('ws.connect() in app main frame');
         await this.showAppView();
     }
 

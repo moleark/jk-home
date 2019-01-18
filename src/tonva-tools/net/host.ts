@@ -69,7 +69,7 @@ class Host {
         let p = 0;
         for (let i in hosts) {
             let hostValue = hosts[i];
-            hostValue[p] = results[i];
+            hostValue.local = results[p];
             ++p;
         }
     }
