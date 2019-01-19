@@ -63,6 +63,7 @@ export class CApp extends Controller {
             promiseChecks.push(cUsq.entities.usqApi.checkAccess());
         }
         let results = await Promise.all(promises);
+        /*
         Promise.all(promiseChecks).then((checks) => {
             for (let c of checks) {
                 if (c === false) {
@@ -71,6 +72,7 @@ export class CApp extends Controller {
                 }
             }
         });
+        */
         for (let result of results)
         {
             let retError = result; // await cUsq.loadSchema();
