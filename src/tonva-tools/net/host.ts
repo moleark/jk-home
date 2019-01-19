@@ -42,7 +42,9 @@ class Host {
     ws: string;
 
     async start() {
-        await this.tryLocal();
+        if (isDevelopment === true) {
+            await this.tryLocal();
+        }
         let host = this.getCenterHost();
         this.url = centerUrlFromHost(host);
         this.ws = centerWsFromHost(host);
