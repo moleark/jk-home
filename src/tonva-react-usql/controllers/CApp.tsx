@@ -60,7 +60,7 @@ export class CApp extends Controller {
             let cUsq = this.newCUsq(usq, usqId, access, ui || {});
             this.cUsqCollection[usq] = cUsq;
             promises.push(cUsq.loadSchema());
-            //promiseChecks.push(cUsq.entities.usqApi.checkAccess());
+            promiseChecks.push(cUsq.entities.usqApi.checkAccess());
         }
         let results = await Promise.all(promises);
         Promise.all(promiseChecks).then((checks) => {
