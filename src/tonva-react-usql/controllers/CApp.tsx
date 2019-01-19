@@ -50,7 +50,9 @@ export class CApp extends Controller {
         let app = await loadAppUsqs(this.appOwner, this.appName);
         let {id, usqs} = app;
         this.id = id;
+
         let promises: PromiseLike<string>[] = [];
+        let promiseChecks: PromiseLike<boolean>[] = [];
         for (let appUsq of usqs) {
             let {id:usqId, usqOwner, usqName, url, urlDebug, ws, access, token} = appUsq;
             let usq = usqOwner + '/' + usqName;
@@ -58,8 +60,17 @@ export class CApp extends Controller {
             let cUsq = this.newCUsq(usq, usqId, access, ui || {});
             this.cUsqCollection[usq] = cUsq;
             promises.push(cUsq.loadSchema());
+            promiseChecks.push(cUsq.entities.usqApi.checkAccess());
         }
         let results = await Promise.all(promises);
+        Promise.all(promiseChecks).then((checks) => {
+            for (let c of checks) {
+                if (c === false) {
+                    nav.start();
+                    return;
+                }
+            }
+        });
         for (let result of results)
         {
             let retError = result; // await cUsq.loadSchema();
