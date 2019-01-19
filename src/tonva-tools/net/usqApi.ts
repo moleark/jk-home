@@ -36,15 +36,17 @@ class CacheUsqLocals {
             if (this.local === undefined) {
                 let ls = localStorage.getItem(usqLocalEntities);
                 if (ls !== null) {
-                    this.local = deserializeJson(ls);
+                    this.local = JSON.parse(ls);
                 }
             }
             if (this.local !== undefined) {
-                let {user} = this.local;
-                if (user !== loginedUserId) this.local = undefined;
+                let {user, usqs} = this.local;
+                if (user !== loginedUserId || usqs === undefined) {
+                    this.local = undefined;
+                }
                 else {
-                    for (let i in this.local.usqs) {
-                        let ul = this.local.usqs[i];
+                    for (let i in usqs) {
+                        let ul = usqs[i];
                         ul.isNet = undefined;
                     }
                 }
@@ -70,7 +72,7 @@ class CacheUsqLocals {
                     value: ret,
                     isNet: true,
                 }
-                let str = serializeJson(this.local);
+                let str = JSON.stringify(this.local);
                 localStorage.setItem(usqLocalEntities, str);
             }
             return _.cloneDeep(ret);
