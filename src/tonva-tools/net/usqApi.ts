@@ -448,8 +448,33 @@ export interface AppUsq {
 }
 
 export class CenterAppApi extends CenterApi {
+    private cachedUsqs: any;
     async usqs(unit:number, appOwner:string, appName:string):Promise<App> {
+        let ret:any;
+        let ls = localStorage.getItem('appUsqs');
+        if (ls !== null) {
+            let rLs = JSON.parse(ls);
+            let {unit:rUnit, appOwner:rAppOwner, appName:rAppName, value} = rLs;
+            if (unit === rUnit && appOwner === rAppOwner && appName === rAppName) ret = value;
+        }
+        if (ret === undefined) {
+            ret = await this.usqsPure(unit, appOwner, appName);
+            let obj = {
+                unit:unit, 
+                appOwner:appOwner, 
+                appName:appName, 
+                value: ret,
+            }
+            localStorage.setItem('appUsqs', JSON.stringify(obj));
+        }
+        return this.cachedUsqs = _.cloneDeep(ret);
+    }
+    private async usqsPure(unit:number, appOwner:string, appName:string):Promise<App> {
         return await this.get('tie/app-usqs', {unit:unit, appOwner:appOwner, appName:appName});
+    }
+    async checkUsqs(unit:number, appOwner:string, appName:string):Promise<boolean> {
+        let ret = await this.usqsPure(unit, appOwner, appName);
+        return _.isMatch(this.cachedUsqs, ret);
     }
     async unitxUsq(unit:number):Promise<AppUsq> {
         return await this.get('tie/unitx-usq', {unit:unit});
