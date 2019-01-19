@@ -21,8 +21,8 @@ export class VRootCategory extends View<CProductCategory> {
             </div>
             <div className="col-12">
                 <div className="row mx-3 cussor-pointer">
-                    {children && children.map((childrenWapper: any) => {
-                        return <div className="col-12 col-md-4 py-2" onClick={() => this.categoryClick(childrenWapper)}>
+                    {children && children.map((childrenWapper: any, index) => {
+                        return <div className="col-12 col-md-4 py-2" onClick={() => this.categoryClick(childrenWapper)} key={index}>
                             {childrenWapper.name}
                             <hr className="my-1"/>
                         </div>

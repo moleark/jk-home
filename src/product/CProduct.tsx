@@ -43,7 +43,7 @@ export class CProduct extends Controller {
 
     pageProducts: PageProducts;
     private productTuid: TuidMain;
-    packTuid: TuidDiv;
+    private packTuid: TuidDiv;
     private productChemicalMap: Map;
     private priceMap: Map;
     private getCustomerDiscount: Query;
@@ -51,7 +51,8 @@ export class CProduct extends Controller {
     private getFutureDeliveryTime: Query;
 
     product: any;
-    private productChemical: any;
+    productBox: BoxId;
+    productChemical: any;
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
@@ -63,7 +64,7 @@ export class CProduct extends Controller {
         this.productTuid = cUsqProduct.tuid('productx');
         this.packTuid = this.productTuid.divs['packx'];
         this.productChemicalMap = cUsqProduct.map('productChemical');
-        this.priceMap = cUsqProduct.map('price2');
+        this.priceMap = cUsqProduct.map('pricex');
         this.getCustomerDiscount = cUsqCustomerDiscount.query("getdiscount");
         this.getInventoryAllocationQuery = cUsqWarehouse.query("getInventoryAllocation");
         this.getFutureDeliveryTime = cUsqProduct.query("getFutureDeliveryTime");
@@ -90,14 +91,15 @@ export class CProduct extends Controller {
         return packRows;
     }
 
-    showProductDetail = async (productId: number) => {
+    showProductDetail = async (productBox: BoxId) => {
 
+        this.productBox = productBox;
         let { currentSalesRegion, currentUser } = this.cApp;
         let promises: PromiseLike<any>[] = [];
-        promises.push(this.productTuid.load(productId));
-        promises.push(this.productChemicalMap.obj({ product: productId }));
-        promises.push(this.priceMap.table({ product: productId, salesRegion: currentSalesRegion.id }));
-        promises.push(this.getFutureDeliveryTimeDescription(productId, currentSalesRegion.id));
+        promises.push(this.productTuid.load(productBox.id));
+        promises.push(this.productChemicalMap.obj({ product: productBox.id }));
+        promises.push(this.priceMap.table({ product: productBox.id, salesRegion: currentSalesRegion.id }));
+        promises.push(this.getFutureDeliveryTimeDescription(productBox.id, currentSalesRegion.id));
         let results = await Promise.all(promises);
 
         this.product = results[0];

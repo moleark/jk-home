@@ -7,7 +7,7 @@ export class Order {
     organization: BoxId;
     customer: BoxId;
 
-    @observable deliveryOrderContact: BoxId;
+    @observable shippingContact: BoxId;
     invoiceContact: BoxId;
     @observable orderItems: OrderItem[] = [];
 
@@ -27,4 +27,6 @@ export class OrderItem {
     @computed get subAmount() {
         return this.price * this.quantity;
     }
+
+
 }

@@ -3,7 +3,7 @@ import { VPage, Page, Form, Schema, UiSchema, Context } from 'tonva-tools';
 import { CUser } from './CPerson';
 
 const schema: Schema = [
-    { name: 'webUser', type: 'id', required: false },
+    { name: 'id', type: 'id', required: false },
     { name: 'name', type: 'string', required: true },
     { name: 'organizationName', type: 'string', required: true },
     { name: 'mobile', type: 'string', required: true },
@@ -17,12 +17,24 @@ const schema: Schema = [
 
 const uiSchema: UiSchema = {
     items: {
-        webUser: { visible: false },
-        name: { widget: 'text', label: '姓名' },
+        name: { widget: 'text', label: '姓名', visible: false },
         organizationName: { widget: 'text', label: '单位名称' },
         mobile: { widget: 'text', label: '手机号' },
         telephone: { widget: 'text', label: '电话' },
-        addressString: { widget: 'text', label: '详细地址' },
+        email: {
+            widget: 'email', label: 'email',
+            rules: (value: any) => {
+                if (value && !/\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/.test(value))
+                    return "email格式不正确。";
+                else
+                    return undefined;
+            }
+        },
+        address: { widget: 'id', label: 'address' },
+        addressString: {
+            widget: 'text', label: '详细地址',
+            rules: (value: any) => { if (value && value.length < 8) return "详细地址不能小于8个字符。"; else return undefined; }
+        },
         isDefault: { widget: 'checkbox', label: '作为默认地址' },
         submit: { widget: 'button', label: '提交' },
     }
@@ -30,8 +42,23 @@ const uiSchema: UiSchema = {
 
 export class VContact extends VPage<CUser> {
 
-    async showEntry(param: any) {
+    private contactData: any = {};
 
+    async showEntry(userContactData: any) {
+
+        if (userContactData.shippingContact !== undefined) {
+            let { shippingContact } = userContactData;
+            this.contactData = {
+                id: shippingContact.id,
+                name: shippingContact.name,
+                organizationName: shippingContact.organizationName,
+                mobile: shippingContact.mobile,
+                telephone: shippingContact.telephone,
+                email: shippingContact.email,
+                addressString: shippingContact.addressString,
+                isDefault: shippingContact.isDefault,
+            };
+        }
         this.openPage(this.page);
     }
 
@@ -51,7 +78,7 @@ export class VContact extends VPage<CUser> {
         let footer = <button type="button" className="btn btn-primary w-100" onClick={this.saveContact}>保存并使用</button>
         return <Page header="添加收货人" footer={footer}>
             <div className="App-container container text-left">
-                <Form schema={schema} uiSchema={uiSchema} formData={{ webUser: this.controller.user.id }}
+                <Form schema={schema} uiSchema={uiSchema} formData={this.contactData}
                     onButtonClick={this.onFormButtonClick} fieldLabelSize={3} className="my-3" />
             </div>
         </Page>

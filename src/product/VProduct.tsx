@@ -59,10 +59,11 @@ export class VProduct extends VPage<CProduct> {
     private onQuantityChanged = async (context: RowContext, value: any, prev: any) => {
         //let { row } = context;
         let { data } = context;
-        let { product, pack } = data;
+        let { pack } = data;
         let { retail, currency } = pack;
-        let { cCart } = this.controller.cApp;
-        await cCart.cart.AddToCart(product, pack, value, retail, currency);
+        let { cApp, productBox } = this.controller;
+        let { cCart } = cApp;
+        await cCart.cart.AddToCart(productBox, pack, value, retail, currency);
     }
 
     //context:Context, name:string, value:number
@@ -70,11 +71,16 @@ export class VProduct extends VPage<CProduct> {
         //let a = context.getValue('');
         let { pack } = item;
         let { retail, vipPrice, inventoryAllocation, futureDeliveryTimeDescription } = pack;
-        let right = <div className="d-flex"><Field name="quantity" /></div>;
+        let right, priceUI = <></>;
+        if (retail) {
+            right = <div className="d-flex"><Field name="quantity" /></div>;
+            priceUI = <div>retail:{retail} vipPrice:{vipPrice}</div>
+        }
+
         let deliveryTimeUI = <></>;
         if (inventoryAllocation.length > 0) {
-            deliveryTimeUI = inventoryAllocation.map(v => {
-                return <div>
+            deliveryTimeUI = inventoryAllocation.map((v, index) => {
+                return <div key={index}>
                     {tv(v.warehouse, (values: any) => <>{values.name}</>)}
                     {v.deliveryTimeDescription}
                 </div>
@@ -84,7 +90,7 @@ export class VProduct extends VPage<CProduct> {
         }
         return <LMR className="mx-3" right={right}>
             <div>{tv(pack)}</div>
-            <div>retail:{retail} vipPrice:{vipPrice}</div>
+            {priceUI}
             {deliveryTimeUI}
         </LMR>;
     }

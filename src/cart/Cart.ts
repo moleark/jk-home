@@ -174,13 +174,8 @@ export class RemoteCart extends Cart {
      * @param quantity 要添加到购物车中包装的个数
      */
     async storeCart(cartItem: CartItem) {
-        await this.setCartAction.submit({
-            product: cartItem.product.id,
-            pack: cartItem.pack.id,
-            price: cartItem.price,
-            currency: cartItem.currency && cartItem.currency.id,
-            quantity: cartItem.quantity
-        });
+
+        await this.setCartAction.submit(cartItem);
     }
 
     async removeFromCart(rows: any[]) {
@@ -210,7 +205,7 @@ export class LocalCart extends Cart {
     }
 
     async storeCart(cartItem: CartItem) {
-        window.localStorage.setItem(LOCALCARTNAME, JSON.stringify(this.items.map(e=>{
+        window.localStorage.setItem(LOCALCARTNAME, JSON.stringify(this.items.map(e => {
             product: e.product.id;
             pack: e.pack.id;
             price: e.price;

@@ -3,7 +3,6 @@ import { TuidMain, Map, Sheet, BoxId } from 'tonva-react-usql';
 import { CCartApp } from 'CCartApp';
 import { VCreateOrder } from './VCreateOrder';
 import { Order, OrderItem } from './Order';
-import { CUser } from 'customer/CPerson';
 import { observable } from 'mobx';
 import * as _ from 'lodash';
 import { Controller } from 'tonva-tools';
@@ -12,19 +11,12 @@ import { OrderSuccess } from './OrderSuccess';
 export class COrder extends Controller {
     private cApp: CCartApp;
     @observable orderData: Order = new Order();
-    private webUserCustomerMap: Map;
-    private webUserConsigneeContactMap: Map;
-
-    private customerConsigneeContactMap: Map;
     private orderSheet: Sheet;
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
         this.cApp = cApp;
-        let { cUsqWebUser, cUsqCustomer, cUsqOrder } = cApp;
-        this.webUserCustomerMap = cUsqWebUser.map('webUserCustomer');
-        this.webUserConsigneeContactMap = cUsqWebUser.map('webUserConsigneeContact');
-        this.customerConsigneeContactMap = cUsqCustomer.map('customerConsigneeContact');
+        let { cUsqOrder } = cApp;
         this.orderSheet = cUsqOrder.sheet('order');
     }
 
@@ -40,9 +32,9 @@ export class COrder extends Controller {
         this.orderData.webUser = this.cApp.currentUser.id;
         // this.orderData.customer = cCartApp.currentUser.currentCustomer;
 
-        if (this.orderData.deliveryOrderContact === undefined) {
+        if (this.orderData.shippingContact === undefined) {
 
-            let contactArr: any[] = await this.cApp.currentUser.getConsigneeContacts();
+            let contactArr: any[] = await this.cApp.currentUser.getShippingContacts();
             if (contactArr && contactArr.length > 0) {
                 let contactWapper = contactArr.find((element: any) => {
                     if (element.isDefault === true)
@@ -69,12 +61,12 @@ export class COrder extends Controller {
 
     setContact = (contactBox: BoxId) => {
 
-        this.orderData.deliveryOrderContact = contactBox;
+        this.orderData.shippingContact = contactBox;
     }
 
     submitOrder = async () => {
 
-        if (!this.orderData.deliveryOrderContact) {
+        if (!this.orderData.shippingContact) {
             this.openContactList();
             return;
         }

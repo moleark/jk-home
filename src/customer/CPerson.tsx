@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ControllerUsq, TuidMain, Map, CTuidEdit, CUsq } from 'tonva-react-usql';
+import { ControllerUsq, TuidMain, Map, CTuidEdit, CUsq, BoxId } from 'tonva-react-usql';
 import { VAddressList } from './VAddressList';
 import { CCartApp } from 'CCartApp';
 import { VContact } from './VContact';
@@ -8,61 +8,47 @@ import _ from 'lodash';
 
 export class CUser extends Controller {
     cApp: CCartApp;
-    private webUserCustomerMap: Map;
-    private webUserConsigneeContactMap: Map;
-
-    private customerTuid: TuidMain;
-    private customerConsigneeContactMap: Map;
 
     private contactTuid: TuidMain;
 
     currentUser: any;
     customer: any;
-    consigneeContacts: any[] = [];
+    userShippingContacts: any[] = [];
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
         this.cApp = cApp;
-        let { cUsqWebUser, cUsqCustomer, cUsqOrder } = cApp;
-        this.webUserCustomerMap = cUsqWebUser.map('webUserCustomer');
-        this.webUserConsigneeContactMap = cUsqWebUser.map('webUserConsigneeContact');
-
-        this.customerTuid = cUsqCustomer.tuid('customer');
-        this.customerConsigneeContactMap = cUsqCustomer.map('customerConsigneeContact');
+        let { cUsqCustomer } = cApp;
 
         this.contactTuid = cUsqCustomer.tuid('contact');
     }
 
     async internalStart(param: any) {
 
-        this.currentUser = this.cApp.currentUser;
-        this.currentUser.consigneeContacts = [];
-
-        let consigneeContacts = await this.cApp.currentUser.getConsigneeContacts();
-        if (consigneeContacts && consigneeContacts.length > 0) {
-            consigneeContacts.forEach(element => {
-                this.currentUser.consigneeContacts.push(element.contact.obj);
-            });
-        }
+        this.userShippingContacts = await this.cApp.currentUser.getShippingContacts();
         this.showVPage(VAddressList);
     }
 
     /**
      * 打开地址新建或边界界面
      */
-    onContactEdit = async (contact?: any) => {
-        // let id = await this.cContactEdit.call(address && address.id);
-        // await this.deliveryContactMap.add({ customer: this.customerId, arr1: [{ address: id }] });
-        // let { cContact } = this.cApp;
-        // cContact.start();
-        // this.contactTuid = cUsqCustomer.tuid("contact")
-        this.showVPage(VContact);
+    onContactEdit = async (userShippingContact?: any) => {
+
+        let userContactData: any = {};
+        if (userShippingContact !== undefined) {
+            userContactData.shippingContact = await this.contactTuid.load(userShippingContact.contact.id);
+        }
+        this.showVPage(VContact, userContactData);
     }
 
     saveContact = async (contact: any) => {
 
         let contactWithId = await this.contactTuid.save(undefined, contact);
-        await this.webUserConsigneeContactMap.add({ webUser: this.user.id, arr1: [{ contact: contactWithId.id }] });
+        await this.cApp.currentUser.addShippingContact(contactWithId.id);
+        if (contact.id !== undefined) {
+            this.cApp.currentUser.delShippingContact(contact.id);
+        }
+        this.backPage();
         this.onContactSelected(contact);
     }
 

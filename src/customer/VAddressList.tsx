@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { VPage, Page } from 'tonva-tools';
 import { CUser } from './CPerson';
-import { List } from 'tonva-react-form';
+import { List, LMR, FA } from 'tonva-react-form';
 import { tv } from 'tonva-react-usql';
 
 export class VAddressList extends VPage<CUser> {
@@ -11,25 +11,26 @@ export class VAddressList extends VPage<CUser> {
         this.openPage(this.page);
     }
 
-    private onContactRender = (consigneeContact: any) => {
+    private onContactRender = (userShippingContact: any) => {
+        let { contact } = userShippingContact;
         let { onContactEdit, onContactSelected } = this.controller;
-        return <div className="row">
-            <div className="col-10" onClick={() => onContactSelected(consigneeContact)}>
-                {tv(consigneeContact)}
-            </div>
-            <div className="col-2">
-                <button type="button" className="btn btn-primary" onClick={() => onContactEdit(consigneeContact)}>edit</button>
-            </div>
+        let right = <div className="p-2 cursor-pointer text-info" onClick={() => onContactEdit(userShippingContact)}>
+            <FA name="edit" />
         </div>
+        return <LMR right={right} className="px-3 py-2">
+            <div onClick={() => onContactSelected(contact)}>
+                {tv(contact)}
+            </div>
+        </LMR>
     }
 
 
     private page = () => {
 
-        let { currentUser, onContactEdit } = this.controller;
-        let { consigneeContacts } = currentUser;
-        return <Page footer={<button type="button" className="btn btn-primary w-100" onClick={() => onContactEdit()} >添加新地址</button>}>
-            <List items={consigneeContacts} item={{ render: this.onContactRender }} none="你还没有设置收货地址，请添加新地址" />
+        let { onContactEdit, userShippingContacts } = this.controller;
+        let footer = <button type="button" className="btn btn-primary w-100" onClick={() => onContactEdit()} >添加新地址</button>;
+        return <Page footer={footer} header="管理地址">
+            <List items={userShippingContacts} item={{ render: this.onContactRender }} none="你还没有设置收货地址，请添加新地址" />
         </Page>
     }
 }

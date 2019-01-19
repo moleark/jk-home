@@ -12,11 +12,11 @@ export class WebUser {
     private _user: User;
 
     private webUserCustomerMap: Map;
-    private webUserConsigneeContactMap: Map;
+    private webUserShippingContactMap: Map;
 
     constructor(cUsqWebUser: CUsq) {
         this.webUserCustomerMap = cUsqWebUser.map('webUserCustomer');
-        this.webUserConsigneeContactMap = cUsqWebUser.map('webUserConsigneeContact');
+        this.webUserShippingContactMap = cUsqWebUser.map('webUserConsigneeContact');
     }
 
     set user(user: User) {
@@ -47,12 +47,26 @@ export class WebUser {
     }
     currentCustomer: Customer;
 
-    async getConsigneeContacts(): Promise<any[]> {
+    async getShippingContacts(): Promise<any[]> {
 
         if (this.currentCustomer !== undefined) {
-            await this.currentCustomer.getConsigneeContacts()
+            await this.currentCustomer.getShippingContacts()
         }
-        return this.webUserConsigneeContactMap.table({ webUser: this.id });
+        return this.webUserShippingContactMap.table({ webUser: this.id });
+    }
+
+    async addShippingContact(contactId: number) {
+        if (this.currentCustomer !== undefined) {
+            await this.currentCustomer.addShippingContact(contactId);
+        }
+        await this.webUserShippingContactMap.add({ webUser: this.id, arr1: [{ contact: contactId }] });
+    }
+
+    async delShippingContact(contactId: number) {
+        if (this.currentCustomer !== undefined) {
+            await this.currentCustomer.delShippingContact(contactId);
+        }
+        await this.webUserShippingContactMap.del({ webUser: this.id, arr1: [{ contact: contactId }] });
     }
 
     /*
@@ -69,7 +83,7 @@ export class WebUser {
 
 export class Customer {
 
-    private consigneeContactMap: Map;
+    private shippingContactMap: Map;
     id: number;
 
     constructor(customer: BoxId) {
@@ -77,7 +91,15 @@ export class Customer {
         // this.consigneeContactMap = cUsqCustomer.map('customerConsigneeContact');
     };
 
-    async getConsigneeContacts(): Promise<any[]> {
-        return await this.consigneeContactMap.table({ customer: this.id });
+    async getShippingContacts(): Promise<any[]> {
+        return await this.shippingContactMap.table({ customer: this.id });
+    }
+
+    async addShippingContact(contactId: number) {
+        await this.shippingContactMap.add({ webUser: this.id, arr1: [{ contact: contactId }] });
+    }
+
+    async delShippingContact(contactId: number) {
+        await this.shippingContactMap.del({ webUser: this.id, arr1: [{ contact: contactId }] });
     }
 }

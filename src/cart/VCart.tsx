@@ -78,30 +78,25 @@ export class VCart extends VPage<CCart> {
         return <>{(pack.radiox === 1 ? "" : pack.radiox + '*') + pack.radioy + pack.unit}</>
     }
     private renderItem = (cartItem: CartItem) => {
-        return <div className="row">
-            <div className="col-3">
-                <img src="favicon.ico" alt={cartItem.product.obj.description} />
-            </div>
-            <div className="col-9">
-                <div className="row">
-                    <div className="col-12">
-                        {tv(cartItem.product, this.renderProduct)}
-                    </div>
+        let { product, pack, price, quantity } = cartItem;
+        let left = <img src="favicon.ico" alt="structure image" />;
+        let right = <div className="w-6c text-right">
+            <span className="text-primary">{quantity}</span>
+        </div>;
+        return <LMR left={left} right={right} className="px-3 py-2">
+            <div className="px-3">
+                <div>
+                    {tv(product, this.renderProduct)}
                 </div>
                 <div className="row">
-                    <div className="col-3">{tv(cartItem.pack, this.renderPack)}</div>
-                    <div className="col-3"><strong className="text-danger">{cartItem.price}</strong></div>
-                    <div className="col-6 text-right d-flex">
-                        <div onClick={() => this.minusQuantity(cartItem)}><FA name="minus-circle text-success" /></div>
-                        <span className="px-4 bg-light">{cartItem.quantity}</span>
-                        <div onClick={() => this.plusQuantity(cartItem)}><FA name="plus-circle text-success" /></div>
-                    </div>
+                    <div className="col-3">{tv(pack, this.renderPack)}</div>
+                    <div className="col-3"><strong className="text-danger">{price}</strong></div>
                 </div>
                 <div className="row">
                     <div className="col-12">货期</div>
                 </div>
             </div>
-        </div>
+        </LMR>
     }
 
     private onCartItemRender = (cartItem: CartItem) => {
