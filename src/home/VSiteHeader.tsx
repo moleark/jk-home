@@ -19,7 +19,7 @@ export class VSiteHeader extends View<CHome> {
             <button onClick={()=>nav.start()}>Try</button>
         </div>;*/
         return <LMR className="align-items-end pb-2 align-items-center" left={left} right={right}>
-            <div className="px-3">
+            <div className="">
                 {this.controller.renderSearchHeader('lg')}
             </div>
         </LMR>
