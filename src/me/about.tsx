@@ -13,9 +13,9 @@ export class About extends React.Component {
 
     render() {
         let right = <button className='btn btn-success btn-sm' onClick={this.showLogs}>log</button>;
-        return <Page header="关于同花" right={right}>
+        return <Page header="关于百灵威" right={right}>
             <div className='m-3'>
-                同花
+                百灵威集团
             </div>
         </Page>;
     }

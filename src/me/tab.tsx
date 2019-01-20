@@ -26,7 +26,7 @@ class Me extends React.Component {
             '',
             {
                 type: 'component',
-                component: <IconText iconClass="text-info" icon="envelope" text="关于同花" />,
+                component: <IconText iconClass="text-info" icon="envelope" text="关于百灵威" />,
                 onClick: this.about
             },
             '',
