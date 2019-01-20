@@ -5,7 +5,7 @@ import { observable } from 'mobx';
 import { meTab } from '../me';
 
 export const store = {
-    homeCount: observable.box<number>(-1),
+    //homeCount: observable.box<number>(-1),
     //cartCount: observable.box<number>(101),
 };
 
@@ -18,7 +18,7 @@ export class VHome extends VPage<CCartApp> {
     render = (param?: any): JSX.Element => {
         let { cHome, cMember, cCart } = this.controller;
         let faceTabs = [
-            { name: 'home', label: '首页', icon: 'home', content: cHome.tab, notify: store.homeCount },
+            { name: 'home', label: '首页', icon: 'home', content: cHome.tab, notify: undefined/*store.homeCount*/ },
             { name: 'member', label: '会员', icon: 'vcard', content: cMember.tab },
             { name: 'cart', label: '购物车', icon: 'shopping-cart', content: cCart.tab, notify: cCart.cart.count },
             { name: 'me', label: '我的', icon: 'user', content: meTab }

@@ -1,6 +1,7 @@
 import { observable, computed, autorun, IReactionDisposer } from 'mobx';
 import _ from 'lodash';
 import { CUsq, Action, Query, TuidMain, TuidDiv, BoxId } from 'tonva-react-usql';
+import { PackItem } from '../tools';
 
 export class CartItem {
     pack: BoxId;
@@ -15,13 +16,6 @@ export class CartItem {
     createdate: number;
 }
 
-export interface PackItem {
-    pack: BoxId;
-    price: number;
-    currency: BoxId;
-    quantity: number;
-}
-
 export interface CartProduct {
     product: BoxId;
     packs: PackItem[];
@@ -31,10 +25,15 @@ export interface CartProduct {
 }
 
 export abstract class Cart {
-
     protected productTuid: TuidMain;
     protected packTuid: TuidDiv;
     private disposer: IReactionDisposer;
+
+    //@observable items: CartItem[] = [];
+    @observable items: CartProduct[] = [];
+    count = observable.box<number>(0);
+    amount = observable.box<number>(0);
+
     constructor(cUsqProduct: CUsq) {
 
         this.productTuid = cUsqProduct.tuid('productx');
@@ -42,31 +41,33 @@ export abstract class Cart {
         this.disposer = autorun(this.calcSum);
     }
 
-    dispose() {
-        this.disposer();
-    }
-
     protected calcSum = () => {
-        let ret = this.items.reduce((accumulator: any, currentValue: any) => {
-            let { isDeleted, quantity, price, checked } = currentValue;
-            let { count, amount } = accumulator;
-            if (isDeleted === true) return accumulator;
-            if (price === Number.NaN || quantity === Number.NaN) return accumulator;
-            return {
-                count: count + quantity,
-                amount: amount + (!(checked === true) ? 0 : quantity * price)
-            };
-        }, { count: 0, amount: 0 });
-        let { count, amount } = ret;
+        let count = 0, amount = 0;
+        for (let cp of this.items) {
+            let { $isSelected, $isDeleted, packs } = cp;
+            if ($isDeleted === true) continue;
+            for (let pi of packs) {
+                let {price, quantity} = pi;
+                count += quantity;
+                if (price === Number.NaN || quantity === Number.NaN) continue;
+                if ($isSelected===true) {
+                    amount += quantity * price;
+                }
+            }
+        }
         this.count.set(count);
         this.amount.set(amount);
     }
-    //@observable items: CartItem[] = [];
-    @observable items: CartProduct[] = [];
-    count = observable.box<number>(0);
-    amount = observable.box<number>(0);
 
     abstract async load(): Promise<void>;
+
+    getQuantity(productId:number, packId:number):number {
+        let cp = this.items.find(v => v.product.id === productId);
+        if (cp === undefined) return 0;
+        let packItem = cp.packs.find(v => v.pack.id === packId);
+        if (packItem === undefined) return 0;
+        return packItem.quantity;
+    }
 
     /**
      * 添加购物车
@@ -94,18 +95,16 @@ export abstract class Cart {
             this.items.push(row);
         } else {
             let {packs} = cartItem;
-            let packItem = packs.find(v => v.pack.id === pack.id);
-            if (packItem === undefined) {
+            cartItem.$isSelected = true;
+            let piPack = packs.find(v => v.pack.id === pack.id);
+            if (piPack === undefined) {
                 packs.push(packItem);
             }
             else {
-                packItem.price = price;
-                packItem.quantity = quantity;
+                piPack.price = price;
+                piPack.quantity = quantity;
             }
-            //cartItem.packs.push.quantity = quantity;
-            //cartItem.price = price;
         }
-        //(cartItem as any).$isSelected = true;
         await this.storeCart(product, packItem);
     }
 
@@ -159,7 +158,7 @@ export abstract class Cart {
      * @param item
      */
     async removeDeletedItem() {
-        let rows: {product:BoxId, packItem:PackItem}[];
+        let rows: {product:BoxId, packItem:PackItem}[] = [];
         for (let cp of this.items) {
             let {product, packs, $isDeleted} = cp;
             for (let pi of packs) {
@@ -216,36 +215,45 @@ export abstract class Cart {
 
 export class RemoteCart extends Cart {
 
-    private addToCartAction: Action;
+    //private addToCartAction: Action;
     private getCartQuery: Query;
     private setCartAction: Action;
     private removeFromCartAction: Action;
 
     constructor(cUsqProduct: CUsq, cUsqOrder: CUsq) {
         super(cUsqProduct);
-        this.addToCartAction = cUsqOrder.action('addtocart');
+        //this.addToCartAction = cUsqOrder.action('addtocart');
         this.getCartQuery = cUsqOrder.query('getcart')
         this.setCartAction = cUsqOrder.action('setcart');
         this.removeFromCartAction = cUsqOrder.action('removefromcart');
     }
 
-    /*
-    @computed get sum(): any {
-        return this.items.reduce((accumulator: any, currentValue: any) => {
-            let { isDeleted, quantity, price, checked } = currentValue;
-            let { count, amount } = accumulator;
-            if (isDeleted === true) return accumulator;
-            if (price === Number.NaN || quantity === Number.NaN) return accumulator;
-            return {
-                count: count + quantity,
-                amount: amount + (!(checked === true) ? 0 : quantity * price)
-            };
-        }, { count: 0, amount: 0 });
-    }
-    */
     async load() {
         let cartData = await this.getCartQuery.page(undefined, 0, 100);
-        this.items.push(...cartData);
+        let cartDict:{[product:number]: CartProduct} = {};
+        let cartProducts:CartProduct[] = [];
+        for (let cd of cartData) {
+            let {product, createdate, pack, price, quantity, currency} = cd;
+            let packItem: PackItem = {
+                pack: pack,
+                price: price,
+                quantity: quantity,
+                currency: currency
+            };
+            let cpi = cartDict[product.id];
+            if (cpi === undefined) {
+                cpi = {
+                    product: product,
+                    packs: [packItem],
+                    createdate: createdate,
+                }
+                cartProducts.push(cpi);
+                cartDict[product.id] = cpi;
+                continue;
+            }
+            cpi.packs.push(packItem);
+        }
+        this.items.push(...cartProducts);
     }
 
     /**
@@ -283,7 +291,7 @@ export class LocalCart extends Cart {
 
     async load() {
         try {
-            let cartstring = window.localStorage.getItem(LOCALCARTNAME);
+            let cartstring = localStorage.getItem(LOCALCARTNAME);
             let cartData = JSON.parse(cartstring);
             if (cartData && cartData.length > 0) {
                 cartData.forEach(element => {
@@ -305,27 +313,23 @@ export class LocalCart extends Cart {
     }
 
     async storeCart(product:BoxId, packItem: PackItem) {
-        window.localStorage.setItem(LOCALCARTNAME, JSON.stringify(this.items.map(e => {
+        let items = this.items.map(e => {
             let {product, packs} = e;
-            return {            
+            return {
                 product: product.id,
                 packs: packs && packs.map(v => {
                     let {pack, price, currency, quantity} = v;
                     return {
-                        pack: pack,
+                        pack: pack.id,
                         price: price,
-                        currency: currency,
+                        currency: currency && currency.id,
                         quantity: quantity,
                     }
                 }),
-                /*
-                pack: e.pack.id;
-                price: e.price;
-                currency: e.currency && e.currency.id;
-                quantity: e.quantity
-                */
             }
-        })));
+        });
+
+        localStorage.setItem(LOCALCARTNAME, JSON.stringify(items));
     }
 
     async removeFromCart(rows: {product:BoxId, packItem:PackItem}[]) {

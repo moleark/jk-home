@@ -232,7 +232,8 @@ export abstract class Tuid extends Entity {
                 let tuidDiv = this.getDiv(name);
                 for (let row of arrValues) {
                     row._$tuid = tuidDiv;
-                    row.$owner = this.boxId(row.owner); 
+                    row.$owner = this.boxId(row.owner);
+                    tuidDiv.cacheValue(row);
                     this.cacheFieldsInValue(row, fields);
                 }
             }

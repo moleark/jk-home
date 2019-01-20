@@ -62,8 +62,7 @@ export class VProduct extends VPage<CProduct> {
     private onQuantityChanged = async (context: RowContext, value: any, prev: any) => {
         //let { row } = context;
         let { data } = context;
-        let { pack } = data;
-        let { retail, currency } = pack;
+        let { pack, retail, currency } = data;
         let { cApp } = this.controller;
         let { cCart } = cApp;
         await cCart.cart.AddToCart(this.product.id, pack, value, retail, currency);

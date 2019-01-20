@@ -68,7 +68,10 @@ export class Product {
         this.product = results[p++];
         //let {packx} = this.product;
         this.packRows = this.product.packx.map(v => {
-            return {pack: v}
+            return {
+                pack: v,
+                quantity: this.cApp.cCart.cart.getQuantity(id, v.id),
+            }
         });
 
         this.productChemical = results[p++];

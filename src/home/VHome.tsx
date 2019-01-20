@@ -48,9 +48,10 @@ export class VHome extends View<CHome> {
     private content = () => {
 
         let siteHeader = this.controller.renderSiteHeader();
-        return <>{siteHeader}
-            {this.controller.renderSearchHeader()}
+        return <>
+            {siteHeader}
             {this.controller.renderCategoryRootList()}
         </>
+        //{this.controller.renderSearchHeader()}
     }
 }

@@ -5,7 +5,7 @@ import { List, LMR, FA } from 'tonva-react-form';
 import { tv, BoxId } from 'tonva-react-usql';
 import { observer } from 'mobx-react';
 import { CartItem } from './Cart';
-import { MinusPlusWidget } from 'tools/minusPlusWidget';
+import { MinusPlusWidget, PackItem } from 'tools';
 
 const cartSchema = [
     {
@@ -154,20 +154,20 @@ export class VCart extends VPage<CCart> {
 
     private onQuantityChanged = async (context: RowContext, value: any, prev: any) => {
         //let { row } = context;
-        let { data } = context;
-        let { product, pack } = data;
-        let { retail, currency } = pack;
+        let { data, parentData } = context;
+        let { product } = parentData;
+        let { pack, price, quantity, currency } = data as PackItem;
+        //let { retail, currency } = pack;
         let { cCart } = this.controller.cApp;
-        await cCart.cart.AddToCart(product, pack, value, retail, currency);
+        await cCart.cart.AddToCart(product, pack, value, price, currency);
     }
 
     private productRow = (item: any) => {
         let { product } = item;
-        //let {discription} = product;
-        return <div className="row">
+        return <div className="pr-1"><div className="row">
             <div className="col-sm-6">{tv(product)}</div>
             <div className="col-sm-6"><Field name="packs" /></div>
-        </div>;
+        </div></div>;
     }
 
     private packsRow = (item: any) => {
@@ -191,7 +191,7 @@ export class VCart extends VPage<CCart> {
                 widget: 'arr',
                 Templet: this.productRow,
                 ArrContainer: (label: any, content: JSX.Element) => content,
-                RowContainer: (content: JSX.Element) => <div className="p-3">{content}</div>,
+                RowContainer: (content: JSX.Element) => <div className="py-3">{content}</div>,
                 items: {
                     packs: {
                         widget: 'arr',
@@ -250,7 +250,7 @@ export class VCart extends VPage<CCart> {
         ]
     };
 
-    protected cartForm = () => {
+    protected cartForm = observer(() => {
         let { cart } = this.controller;
         let cartData = {
             list: cart.items,
@@ -268,7 +268,7 @@ export class VCart extends VPage<CCart> {
             })*/
         };
         return <Form className="bg-white" schema={cartSchema} uiSchema={this.uiSchema} formData={cartData} />
-    };
+    });
 
     private empty() {
         return <div className="py-5 text-center bg-white">你的购物车空空如也</div>
@@ -285,19 +285,22 @@ export class VCart extends VPage<CCart> {
         </Page>;
     }
 
-    private tab = observer(() => {
+    private tab = () => {
         let { cart } = this.controller;
+        let header = <header className="py-2 text-center bg-info text-white align-middle">
+            <FA name="shopping-cart" size="2x"/> &nbsp; <span className="h5">购物车</span>
+        </header>;
         if (cart.items.length === 0) {
             return <>
-                <header className="p-3 text-center">购物车</header>
+                {header}
                 {this.empty()}
             </>;
         }
-        return <>
-            <header className="p-3 text-center">购物车</header>
+        return <div className="bg-white">
+            {header}
             <this.cartForm />
-            <footer><this.CheckOutButton /></footer>
-        </>
+            <footer className="m-3"><this.CheckOutButton /></footer>
+        </div>
         /*
             <div className="row">
             <div className="col-12">
@@ -305,5 +308,5 @@ export class VCart extends VPage<CCart> {
             </div>
         </div>
         */
-});
+    };
 }

@@ -51,9 +51,9 @@ export class COrder extends Controller {
             this.orderData.orderItems = cartItem.map((element: any, index: number) => {
                 var item = new OrderItem();
                 item.product = element.product,
-                item.pack = element.pack;
-                item.price = element.price;
-                item.quantity = element.quantity;
+                item.packs = element.packs;
+                //item.price = element.price;
+                //item.quantity = element.quantity;
                 return item;
             });
         }

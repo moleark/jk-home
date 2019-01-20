@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { Map, TuidDiv, TuidMain, Query, tv, BoxId } from 'tonva-react-usql';
-import { VProduct } from './VProduct';
 import * as _ from 'lodash';
-import { CCartApp } from 'CCartApp';
+import { Map, TuidDiv, TuidMain, Query, tv, BoxId } from 'tonva-react-usql';
 import { PageItems, Controller } from 'tonva-tools';
+import { CCartApp } from '../CCartApp';
+import { PackItem } from '../tools';
+import { VProduct } from './VProduct';
 import { VProductList } from './VProductList';
-import { PackItem } from 'cart/Cart';
 import { Product } from './Product';
 
 class PageProducts extends PageItems<any> {
