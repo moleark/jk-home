@@ -4,7 +4,6 @@ import { CCart } from './CCart';
 import { List, LMR, FA } from 'tonva-react-form';
 import { tv, BoxId } from 'tonva-react-usql';
 import { observer } from 'mobx-react';
-import { Product } from 'product/Product';
 import { CartItem } from './Cart';
 import { MinusPlusWidget } from 'tools/minusPlusWidget';
 
@@ -52,10 +51,10 @@ export class VCart extends VPage<CCart> {
         let input = this.checkBoxs[item.pack.id];
         await this.controller.cart.updateChecked(item, input.checked);
     }
-
     /**
      *
      */
+    /*
     private updateQuantity = async (item: any) => {
 
         let input = this.inputRefs[item.pack.id];
@@ -72,7 +71,7 @@ export class VCart extends VPage<CCart> {
 
         await this.controller.cart.updateQuantity(item, item.quantity + 1);
     }
-
+    */
     private renderProduct = (product: any) => <strong>{product.description}</strong>
     private renderPack = (pack: any) => {
         return <>{(pack.radiox === 1 ? "" : pack.radiox + '*') + pack.radioy + pack.unit}</>
@@ -98,7 +97,7 @@ export class VCart extends VPage<CCart> {
             </div>
         </LMR>
     }
-
+    /*
     private onCartItemRender = (cartItem: CartItem) => {
         let { isDeleted } = cartItem;
         let prod = <>
@@ -134,8 +133,9 @@ export class VCart extends VPage<CCart> {
             {mid}
         </LMR>;
     }
+    */
 
-    private CheckOutButton = observer(() => {
+    protected CheckOutButton = observer(() => {
         let { checkOut, cart } = this.controller;
         //let { count, amount } = cart.sum;
         let amount = cart.amount.get();
@@ -149,7 +149,7 @@ export class VCart extends VPage<CCart> {
     });
 
     render(params: any): JSX.Element {
-        return this.page();
+        return <this.tab />;
     }
 
     private onQuantityChanged = async (context: RowContext, value: any, prev: any) => {
@@ -250,12 +250,14 @@ export class VCart extends VPage<CCart> {
         ]
     };
 
-    private page = () => {
+    protected cartForm = () => {
         let { cart } = this.controller;
-
         let cartData = {
-            list: cart.items.map(v => {
+            list: cart.items,
+            /*
+            .map(v => {
                 return {
+                    $isSelected: (v as any).$isSelected,
                     product: v.product,
                     packs: [{
                         pack: v.pack,
@@ -263,18 +265,45 @@ export class VCart extends VPage<CCart> {
                         price: v.price,
                     }]
                 }
-            })
+            })*/
         };
+        return <Form className="bg-white" schema={cartSchema} uiSchema={this.uiSchema} formData={cartData} />
+    };
 
+    private empty() {
+        return <div className="py-5 text-center bg-white">你的购物车空空如也</div>
+    }
+
+    private page = (params: any): JSX.Element => {
+        let { cart } = this.controller;
+        if (cart.items.length === 0) {
+            return <Page header="购物车">{this.empty()}</Page>;
+        }
+
+        return <Page header="购物车" footer={<this.CheckOutButton />}>
+            <this.cartForm />
+        </Page>;
+    }
+
+    private tab = observer(() => {
+        let { cart } = this.controller;
+        if (cart.items.length === 0) {
+            return <>
+                <header className="p-3 text-center">购物车</header>
+                {this.empty()}
+            </>;
+        }
         return <>
             <header className="p-3 text-center">购物车</header>
-            <Form className="bg-white" schema={cartSchema} uiSchema={this.uiSchema} formData={cartData} />
-            <div className="row">
-                <div className="col-12">
-                    <List items={cart.items} item={{ render: this.onCartItemRender }} />
-                </div>
-            </div>
+            <this.cartForm />
             <footer><this.CheckOutButton /></footer>
         </>
-    }
+        /*
+            <div className="row">
+            <div className="col-12">
+                <List items={cart.items} item={{ render: this.onCartItemRender }} />
+            </div>
+        </div>
+        */
+});
 }
