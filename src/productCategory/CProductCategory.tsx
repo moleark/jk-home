@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ControllerUsq, Tuid, Map, CUsq } from 'tonva-react-usql';
+import { ControllerUsq, Tuid, Map, CUsq, Query } from 'tonva-react-usql';
 import { observable } from 'mobx';
 import { VRootCategory } from './VRootCategory';
 import { VCategory } from './VCategory';
@@ -11,24 +11,25 @@ export class CProductCategory extends Controller {
     cApp: CCartApp;
     categories: any[];
     @observable rootCategories: any[] = [];
-    categoryTuid: Tuid;
-    categoryTreeMap: Map;
+    private getRootCategoryQuery: Query;
+    private getChildrenCategoryQuery: Query;
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
 
         this.cApp = cApp;
         let { cUsqProduct } = this.cApp;
-        this.categoryTuid = cUsqProduct.tuid("productCategory");
-        this.categoryTreeMap = cUsqProduct.map("productCategoryTree");
+        this.getRootCategoryQuery = cUsqProduct.query('getRootCategory');
+        this.getChildrenCategoryQuery = cUsqProduct.query('getChildrenCategory');
     }
 
     async internalStart(param: any) {
-        this.rootCategories = await this.categoryTreeMap.table({ parent: 0 });
+        let { currentSalesRegion, currentLanguage } = this.cApp;
+        let results = await this.getRootCategoryQuery.query({ salesRegion: currentSalesRegion.id, language: currentLanguage.id });
+        this.rootCategories = results.ret;
+        let subCategory = results.sub;
         this.rootCategories.forEach(async element => {
-            if (!element.isleaf) {
-                element.children = await this.getCategoryChildren(element.category.id);
-            }
+            element.children = subCategory.filter(v => v.parent === element.productCategory.id);
         });
     }
 
@@ -36,17 +37,19 @@ export class CProductCategory extends Controller {
         return this.renderView(VRootCategory);
     };
 
-    async getCategoryChildren(categoryId: number) {
+    async getCategoryChildren(parentCategoryId: number) {
 
-        return await this.categoryTreeMap.table({ parent: categoryId });
+        return await this.getChildrenCategoryQuery.table({ parent: parentCategoryId });
     }
 
     async openMainPage(categoryWaper: any) {
 
-        if (categoryWaper.isleaf) {
-
+        let { productCategory, children } = categoryWaper;
+        if (productCategory.obj.isleaf) {
+            // 导航到产品列表界面
         } else {
-            categoryWaper.children = await this.getCategoryChildren(categoryWaper.category.id);
+            if (!children)
+                categoryWaper.children = await this.getCategoryChildren(categoryWaper.id);
             this.showVPage(VCategory, categoryWaper);
         }
     }

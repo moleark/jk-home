@@ -1,9 +1,8 @@
 import * as React from 'react';
-import { TuidMain, Map, Sheet } from 'tonva-react-usql';
+import { TuidMain, Map, Sheet, BoxId } from 'tonva-react-usql';
 import { CCartApp } from 'CCartApp';
 import { VCreateOrder } from './VCreateOrder';
 import { Order, OrderItem } from './Order';
-import { CUser } from 'customer/CPerson';
 import { observable } from 'mobx';
 import * as _ from 'lodash';
 import { Controller } from 'tonva-tools';
@@ -12,19 +11,12 @@ import { OrderSuccess } from './OrderSuccess';
 export class COrder extends Controller {
     private cApp: CCartApp;
     @observable orderData: Order = new Order();
-    private webUserCustomerMap: Map;
-    private webUserConsigneeContactMap: Map;
-
-    private customerConsigneeContactMap: Map;
     private orderSheet: Sheet;
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
         this.cApp = cApp;
-        let { cUsqWebUser, cUsqCustomer, cUsqOrder } = cApp;
-        this.webUserCustomerMap = cUsqWebUser.map('webUserCustomer');
-        this.webUserConsigneeContactMap = cUsqWebUser.map('webUserConsigneeContact');
-        this.customerConsigneeContactMap = cUsqCustomer.map('customerConsigneeContact');
+        let { cUsqOrder } = cApp;
         this.orderSheet = cUsqOrder.sheet('order');
     }
 
@@ -40,9 +32,9 @@ export class COrder extends Controller {
         this.orderData.webUser = this.cApp.currentUser.id;
         // this.orderData.customer = cCartApp.currentUser.currentCustomer;
 
-        if (this.orderData.deliveryContact === undefined) {
+        if (this.orderData.shippingContact === undefined) {
 
-            let contactArr: any[] = await this.cApp.currentUser.getConsigneeContacts();
+            let contactArr: any[] = await this.cApp.currentUser.getShippingContacts();
             if (contactArr && contactArr.length > 0) {
                 let contactWapper = contactArr.find((element: any) => {
                     if (element.isDefault === true)
@@ -50,7 +42,7 @@ export class COrder extends Controller {
                 });
                 if (!contactWapper)
                     contactWapper = contactArr[0];
-                this.setContact(contactWapper.contact.obj);
+                this.setContact(contactWapper.contact);
             }
         }
 
@@ -67,21 +59,21 @@ export class COrder extends Controller {
         }
     }
 
-    setContact = (contactBox: any) => {
+    setContact = (contactBox: BoxId) => {
 
-        this.orderData.deliveryContact = { ...contactBox };
+        this.orderData.shippingContact = contactBox;
     }
 
     submitOrder = async () => {
 
-        if (!this.orderData.deliveryContact) {
+        if (!this.orderData.shippingContact) {
             this.openContactList();
             return;
         }
-        let postOrder = this.orderData.getPostData();
-        await this.orderSheet.loadSchema();
-        let result: any = await this.orderSheet.save("", postOrder);
+
+        let result: any = await this.orderSheet.save("order", this.orderData);
         await this.orderSheet.action(result.id, result.flow, result.state, "submit");
+
         this.cApp.cCart.cart.removeFromCart(this.orderData.orderItems);
 
         // 打开订单显示界面
