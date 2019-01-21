@@ -15,7 +15,7 @@ export class VProductList extends VPage<CProduct> {
     }
 
     private onProductClick = async (product: any) => {
-        this.controller.showProductDetail(product);
+        this.controller.showProductDetail(product.id);
     }
 
     private onScrollBottom = async () => {

@@ -1,3 +1,4 @@
+/*
 export class Pack {
     id: number;
     radio: number;
@@ -6,3 +7,4 @@ export class Pack {
     retail: number;
     currency: string;
 }
+*/

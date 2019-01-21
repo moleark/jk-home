@@ -51,9 +51,9 @@ export class COrder extends Controller {
             this.orderData.orderItems = cartItem.map((element: any, index: number) => {
                 var item = new OrderItem();
                 item.product = element.product,
-                item.pack = element.pack;
-                item.price = element.price;
-                item.quantity = element.quantity;
+                item.packs = element.packs;
+                //item.price = element.price;
+                //item.quantity = element.quantity;
                 return item;
             });
         }
@@ -74,7 +74,7 @@ export class COrder extends Controller {
         let result: any = await this.orderSheet.save("order", this.orderData);
         await this.orderSheet.action(result.id, result.flow, result.state, "submit");
 
-        this.cApp.cCart.cart.removeFromCart(this.orderData.orderItems);
+        this.cApp.cCart.cart.clear(); //.removeFromCart(this.orderData.orderItems);
 
         // 打开订单显示界面
         this.closePage(1);

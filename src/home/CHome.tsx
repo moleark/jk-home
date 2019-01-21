@@ -53,8 +53,8 @@ export class CHome extends Controller {
         return this.renderView(VSiteHeader);
     }
 
-    renderSearchHeader = () => {
-        return this.renderView(VSearchHeader);
+    renderSearchHeader = (size?:string) => {
+        return this.renderView(VSearchHeader, size);
     }
 
     renderCategoryRootList = () => {

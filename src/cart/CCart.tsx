@@ -25,9 +25,8 @@ export class CCart extends Controller {
         this.showVPage(VCart);
     }
 
-
     protected onDispose() {
-        this.cart.removeDeletedItem();
+        this.cart.dispose();
     }
 
     /**

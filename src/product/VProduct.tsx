@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { CProduct, productRow, PackRow } from './CProduct';
+import { CProduct, productRow } from './CProduct';
 import {
     VPage, Page, Form, ItemSchema, ArrSchema, NumSchema, UiSchema, UiArr, Field,
     StringSchema, Context, ObjectSchema, RowContext, UiCustom
@@ -8,6 +8,7 @@ import { List, LMR, FA, SearchBox } from 'tonva-react-form';
 import { tv, BoxId } from 'tonva-react-usql';
 import { observer } from 'mobx-react';
 import { MinusPlusWidget } from '../tools/minusPlusWidget';
+import { PackRow, Product } from './Product';
 
 const schema: ItemSchema[] = [
     {
@@ -26,9 +27,11 @@ const schema: ItemSchema[] = [
 export class VProduct extends VPage<CProduct> {
     private data: any;
     private uiSchema: UiSchema;
-    private packRows: PackRow[];
+    private product: Product;
+    //private packRows: PackRow[];
 
-    async showEntry(product: any) {
+    async showEntry(product: Product) {
+        this.product = product;
         this.uiSchema = {
             items: {
                 list: {
@@ -48,29 +51,27 @@ export class VProduct extends VPage<CProduct> {
             }
         };
 
-        this.packRows = this.controller.buildPackRows();
+        //this.packRows = this.controller.buildPackRows();
         this.data = {
-            list: this.packRows,
+            list: product.packRows,
         };
 
-        this.openPage(this.page, product);
+        this.openPage(this.page);
     }
 
     private onQuantityChanged = async (context: RowContext, value: any, prev: any) => {
         //let { row } = context;
         let { data } = context;
-        let { pack } = data;
-        let { retail, currency } = pack;
-        let { cApp, productBox } = this.controller;
+        let { pack, retail, currency } = data;
+        let { cApp } = this.controller;
         let { cCart } = cApp;
-        await cCart.cart.AddToCart(productBox, pack, value, retail, currency);
+        await cCart.cart.AddToCart(this.product.id, pack, value, retail, currency);
     }
 
     //context:Context, name:string, value:number
     private arrTemplet = (item: any) => {
         //let a = context.getValue('');
-        let { pack } = item;
-        let { retail, vipPrice, inventoryAllocation, futureDeliveryTimeDescription } = pack;
+        let { pack, retail, vipPrice, inventoryAllocation, futureDeliveryTimeDescription } = item;
         let right, priceUI = <></>;
         if (retail) {
             right = <div className="d-flex"><Field name="quantity" /></div>;
@@ -78,7 +79,7 @@ export class VProduct extends VPage<CProduct> {
         }
 
         let deliveryTimeUI = <></>;
-        if (inventoryAllocation.length > 0) {
+        if (inventoryAllocation && inventoryAllocation.length > 0) {
             deliveryTimeUI = inventoryAllocation.map((v, index) => {
                 return <div key={index}>
                     {tv(v.warehouse, (values: any) => <>{values.name}</>)}
@@ -97,7 +98,8 @@ export class VProduct extends VPage<CProduct> {
 
     private page = observer(() => {
 
-        let { product, cApp } = this.controller;
+        let { cApp } = this.controller;
+        let { id } = this.product;
         let header = cApp.cHome.renderSearchHeader();
         let cartLabel = cApp.cCart.renderCartLabel();
         let listHeader = <LMR className="pt-3" right="quantity  cart  favorite">
@@ -108,7 +110,7 @@ export class VProduct extends VPage<CProduct> {
             </div>
         </LMR>
         return <Page header={header} right={cartLabel}>
-            <div className="px-2 py-2 bg-white">{tv(product, productRow)}</div>
+            <div className="px-2 py-2 bg-white">{tv(id, productRow)}</div>
             <Form schema={schema} uiSchema={this.uiSchema} formData={this.data} />
         </Page>
     })
