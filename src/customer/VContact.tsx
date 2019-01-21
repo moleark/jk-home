@@ -11,13 +11,14 @@ const schema: Schema = [
     { name: 'email', type: 'string', required: false },
     { name: 'address', type: 'id', required: false },
     { name: 'addressString', type: 'string', required: true },
-    { name: 'isDefault', type: 'integer', required: true },
+    { name: 'isDefault', type: 'boolean', required: true },
     { name: 'submit', type: 'submit' },
 ]
 
 const uiSchema: UiSchema = {
     items: {
-        name: { widget: 'text', label: '姓名', visible: false },
+        id: { visible: false },
+        name: { widget: 'text', label: '姓名' },
         organizationName: { widget: 'text', label: '单位名称' },
         mobile: { widget: 'text', label: '手机号' },
         telephone: { widget: 'text', label: '电话' },

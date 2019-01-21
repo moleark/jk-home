@@ -5,6 +5,18 @@ import { List, LMR } from 'tonva-react-form';
 import { observer } from 'mobx-react';
 import { tv, BoxId } from 'tonva-react-usql';
 
+const imgStyle: React.CSSProperties = {
+    height: "1.5rem", width: "1.5rem", opacity: 0.1,
+    marginRight: "0.5rem"
+}
+
+const subStyle: React.CSSProperties = {
+    fontSize: "0.75rem",
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+}
+
 export class VRootCategory extends View<CProductCategory> {
 
     private categoryClick = async (categoryWapper: any) => {
@@ -12,28 +24,41 @@ export class VRootCategory extends View<CProductCategory> {
         await this.controller.openMainPage(categoryWapper);
     }
 
-    private onRootCategoryRender = (item: any, index: number) => {
+    private onRootCategoryRender = (item: any) => {
         let { productCategory, name, children } = item;
-        let left = <div className="h4">{name}</div>;
-        return <div className="row bg-light py-2">
-            <div className="col-12">
-                <LMR left={left} right="更多..." className="px-3 cursor-pointer" onClick={() => this.categoryClick(item)} />
+        return <div className="bg-white mb-3" key={name}>
+            <div className="border-bottom py-3 px-3">
+                <b>{name}</b>
             </div>
-            <div className="col-12">
-                <div className="row mx-3 cussor-pointer">
-                    {children && children.map((childrenWapper: any, index) => {
-                        return <div className="col-12 col-md-4 py-2" onClick={() => this.categoryClick(childrenWapper)} key={index}>
-                            {childrenWapper.name}
-                            <hr className="my-1"/>
-                        </div>
-                    })}
+            <div className="px-3">
+                <div className="row">
+                    {children.map(v => this.onSubCategoryRender(v))}
                 </div>
             </div>
         </div>
     }
 
+    private onSubCategoryRender = (item: any) => {
+        let { name, children } = item;
+        return <div className="col-6 col-md-4 col-lg-3" onClick={() => this.categoryClick(item)} key={name}>
+            <div className="py-3">
+                <div>
+                    <img src="favicon.ico" alt="structure" style={imgStyle} />
+                    <span className="ml-1 align-middle">{name}</span>
+                </div>
+                {this.onThirdCategoryRender(children)}
+            </div>
+        </div>
+    }
+
+    private onThirdCategoryRender(items: any) {
+        return <div className="py-2 text-muted small" style={subStyle}>
+            {items.map(v => v.name).join(' / ')}
+        </div>
+    }
+
     render(param: any): JSX.Element {
         let { rootCategories } = this.controller;
-        return <List items={rootCategories} item={{ render: this.onRootCategoryRender }} className="mx-1" />
+        return <>{rootCategories.map(v => this.onRootCategoryRender(v))}</>;
     }
 }

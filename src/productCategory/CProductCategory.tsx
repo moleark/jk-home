@@ -26,10 +26,13 @@ export class CProductCategory extends Controller {
     async internalStart(param: any) {
         let { currentSalesRegion, currentLanguage } = this.cApp;
         let results = await this.getRootCategoryQuery.query({ salesRegion: currentSalesRegion.id, language: currentLanguage.id });
-        this.rootCategories = results.ret;
-        let subCategory = results.sub;
+        this.rootCategories = results.first;
+        let { secend: secendCategory, third: thirdCategory } = results;
+        secendCategory.forEach(async element => {
+            element.children = thirdCategory.filter(v => v.parent === element.productCategory.id);
+        });
         this.rootCategories.forEach(async element => {
-            element.children = subCategory.filter(v => v.parent === element.productCategory.id);
+            element.children = secendCategory.filter(v => v.parent === element.productCategory.id);
         });
     }
 
