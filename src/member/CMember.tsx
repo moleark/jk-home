@@ -11,6 +11,7 @@ export class CMember extends Controller {
 
     cApp: CCartApp;
     @observable member: any;
+    pointMap: any;
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
@@ -21,13 +22,11 @@ export class CMember extends Controller {
     protected async internalStart(param: any) {
 
         let memberTuid = this.cApp.cUsqMember.tuid('member');
-        let member = await memberTuid.load(this.user.id);
+        // this.member = await memberTuid.load(this.user.id);
 
         let getPointQuery: Query = this.cApp.cUsqMember.query('getPoint');
-        let point = await getPointQuery.obj({ member: member.id });
-        member.point = point === undefined ? 0 : point.point;
-
-        this.member = member;
+        this.pointMap = await getPointQuery.obj({ memberId: this.cApp.currentUser.id });
+        this.member = this.cApp.currentUser;
     }
 
     renderMember = () => {
@@ -38,8 +37,11 @@ export class CMember extends Controller {
         return this.member === undefined ? <Loading /> : this.renderMember();
     })
 
-    tab = () => <this.render />;
-    
+    tab = () => {
+        this.start();
+        return <this.render />;
+    }
+
     /*{
         let LoadableComponent = Loadable({
             loader: () => import('../CCartApp'),

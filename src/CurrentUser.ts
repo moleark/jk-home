@@ -13,10 +13,12 @@ export class WebUser {
 
     private webUserCustomerMap: Map;
     private webUserShippingContactMap: Map;
+    private webUserInvoiceContactMap: Map;
 
     constructor(cUsqWebUser: CUsq) {
         this.webUserCustomerMap = cUsqWebUser.map('webUserCustomer');
         this.webUserShippingContactMap = cUsqWebUser.map('webUserConsigneeContact');
+        this.webUserInvoiceContactMap = cUsqWebUser.map('webUserInvoiceContact');
     }
 
     set user(user: User) {
@@ -69,21 +71,33 @@ export class WebUser {
         await this.webUserShippingContactMap.del({ webUser: this.id, arr1: [{ contact: contactId }] });
     }
 
-    /*
-    async saveConsigneeContact(consigneeContact: BoxId): Promise<void> {
+    async getInvoiceContacts(): Promise<any[]> {
 
-        let contactWithId = await this.contactTuid.save(undefined, consigneeContact);
-        if(this.currentCustomer === undefined)
-            await this.webUserConsigneeContactMap.add({ webUser: this.user.id, arr1: [{ contact: contactWithId.id }] });
-        else
-            await this.currentCustomer.saveConsigneeContact(contactId: number);
+        if (this.currentCustomer !== undefined) {
+            await this.currentCustomer.getInvoiceContacts()
+        }
+        return this.webUserInvoiceContactMap.table({ webUser: this.id });
     }
-    */
+
+    async addInvoiceContact(contactId: number) {
+        if (this.currentCustomer !== undefined) {
+            await this.currentCustomer.addInvoiceContact(contactId);
+        }
+        await this.webUserInvoiceContactMap.add({ webUser: this.id, arr1: [{ contact: contactId }] });
+    }
+
+    async delInvoiceContact(contactId: number) {
+        if (this.currentCustomer !== undefined) {
+            await this.currentCustomer.delInvoiceContact(contactId);
+        }
+        await this.webUserInvoiceContactMap.del({ webUser: this.id, arr1: [{ contact: contactId }] });
+    }
 };
 
 export class Customer {
 
     private shippingContactMap: Map;
+    private invoiceContactMap: Map;
     id: number;
 
     constructor(customer: BoxId) {
@@ -101,5 +115,17 @@ export class Customer {
 
     async delShippingContact(contactId: number) {
         await this.shippingContactMap.del({ webUser: this.id, arr1: [{ contact: contactId }] });
+    }
+
+    async getInvoiceContacts(): Promise<any[]> {
+        return await this.invoiceContactMap.table({ customer: this.id });
+    }
+
+    async addInvoiceContact(contactId: number) {
+        await this.invoiceContactMap.add({ webUser: this.id, arr1: [{ contact: contactId }] });
+    }
+
+    async delInvoiceContact(contactId: number) {
+        await this.invoiceContactMap.del({ webUser: this.id, arr1: [{ contact: contactId }] });
     }
 }

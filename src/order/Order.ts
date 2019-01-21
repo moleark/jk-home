@@ -9,7 +9,7 @@ export class Order {
     customer: BoxId;
 
     @observable shippingContact: BoxId;
-    invoiceContact: BoxId;
+    @observable invoiceContact: BoxId;
     @observable orderItems: OrderItem[] = [];
 
     @computed get amount() {

@@ -8,6 +8,11 @@ import * as _ from 'lodash';
 import { Controller } from 'tonva-tools';
 import { OrderSuccess } from './OrderSuccess';
 
+export enum ContactType {
+    ShippingContact = "ShippingContact",
+    InvoiceContact = "InvoiceContact",
+}
+
 export class COrder extends Controller {
     private cApp: CCartApp;
     @observable orderData: Order = new Order();
@@ -42,7 +47,20 @@ export class COrder extends Controller {
                 });
                 if (!contactWapper)
                     contactWapper = contactArr[0];
-                this.setContact(contactWapper.contact);
+                this.setContact(contactWapper.contact, ContactType.ShippingContact);
+            }
+        }
+        if (this.orderData.invoiceContact === undefined) {
+
+            let contactArr: any[] = await this.cApp.currentUser.getInvoiceContacts();
+            if (contactArr && contactArr.length > 0) {
+                let contactWapper = contactArr.find((element: any) => {
+                    if (element.isDefault === true)
+                        return element;
+                });
+                if (!contactWapper)
+                    contactWapper = contactArr[0];
+                this.setContact(contactWapper.contact, ContactType.InvoiceContact);
             }
         }
 
@@ -59,15 +77,21 @@ export class COrder extends Controller {
         }
     }
 
-    setContact = (contactBox: BoxId) => {
-
-        this.orderData.shippingContact = contactBox;
+    setContact = (contactBox: BoxId, contactType: ContactType) => {
+        if(contactType === ContactType.ShippingContact)
+            this.orderData.shippingContact = contactBox;
+        else
+            this.orderData.invoiceContact = contactBox;
     }
 
     submitOrder = async () => {
 
         if (!this.orderData.shippingContact) {
-            this.openContactList();
+            this.openContactList(ContactType.ShippingContact);
+            return;
+        }
+        if(!this.orderData.invoiceContact) {
+            this.openContactList(ContactType.InvoiceContact);
             return;
         }
 
@@ -81,8 +105,8 @@ export class COrder extends Controller {
         this.showVPage(OrderSuccess, result);
     }
 
-    openContactList = () => {
+    openContactList = (contactType: ContactType) => {
 
-        this.cApp.cUser.start();
+        this.cApp.cUser.start(contactType);
     }
 }
