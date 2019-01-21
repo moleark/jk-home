@@ -26,7 +26,7 @@ export class CCart extends Controller {
     }
 
     protected onDispose() {
-        this.cart.removeDeletedItem();
+        this.cart.dispose();
     }
 
     /**

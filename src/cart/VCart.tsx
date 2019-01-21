@@ -5,7 +5,7 @@ import { List, LMR, FA } from 'tonva-react-form';
 import { tv, BoxId } from 'tonva-react-usql';
 import { observer } from 'mobx-react';
 import { CartItem } from './Cart';
-import { MinusPlusWidget, PackItem } from 'tools';
+import { MinusPlusWidget, PackItem } from '../tools';
 
 const cartSchema = [
     {
@@ -287,8 +287,8 @@ export class VCart extends VPage<CCart> {
 
     private tab = () => {
         let { cart } = this.controller;
-        let header = <header className="py-2 text-center bg-info text-white align-middle">
-            <FA name="shopping-cart" size="2x"/> &nbsp; <span className="h5">购物车</span>
+        let header = <header className="py-2 text-center bg-info text-white">
+            <FA className="align-middle" name="shopping-cart" size="2x"/> &nbsp; <span className="h5 align-middle">购物车</span>
         </header>;
         if (cart.items.length === 0) {
             return <>

@@ -41,6 +41,11 @@ export abstract class Cart {
         this.disposer = autorun(this.calcSum);
     }
 
+    dispose() {
+        this.disposer();
+        this.removeDeletedItem();
+    }
+
     protected calcSum = () => {
         let count = 0, amount = 0;
         for (let cp of this.items) {
