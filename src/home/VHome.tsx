@@ -193,8 +193,8 @@ export class VHome extends View<CHome> {
         return <>
             {siteHeader}
             {this.controller.renderCategoryRootList()}
-            {this.cats.map((v, index) => this.renderCat(v, index))}
         </>
-        //{this.controller.renderSearchHeader()}
+            //{this.cats.map((v, index) => this.renderCat(v, index))}
+            //{this.controller.renderSearchHeader()}
     }
 }

@@ -40,7 +40,7 @@ export class VRootCategory extends View<CProductCategory> {
 
     private onSubCategoryRender = (item: any) => {
         let { name, children } = item;
-        return <div className="col-6 col-md-4 col-lg-3" onClick={() => this.categoryClick(item)} key={name}>
+        return <div className="col-6 col-md-4 col-lg-3 cursor-pointer" onClick={() => this.categoryClick(item)} key={name}>
             <div className="py-3">
                 <div>
                     <img src="favicon.ico" alt="structure" style={imgStyle} />
