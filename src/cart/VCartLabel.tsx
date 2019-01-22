@@ -1,4 +1,5 @@
 import * as React from 'react';
+import classNames from 'classnames';
 import { View } from 'tonva-tools';
 import { CCart } from './CCart';
 import { observer } from 'mobx-react';
@@ -17,13 +18,20 @@ export class VCartLabel extends View<CCart> {
     private content = observer(()=>{
         let { cart } = this.controller;
         let count:any = cart.count.get();
-        let badge;
-        if (count > 0) badge=<u>{count}</u>;
-        else if (count > 99) badge =<u>99+</u>;
-        return <div className="jk-cart cursor-pointer ml-2 mr-3" onClick={this.showCart}>
+        let badge, onClick, pointer;
+        if (count > 0) {
+            onClick = this.showCart;
+            pointer = 'cursor-pointer';
+            if (count < 100) badge=<u>{count}</u>;
+            else badge =<u>99+</u>;
+        }
+        return <div className={classNames('jk-cart ml-1 mr-2', pointer)} onClick={onClick}>
             <div>
+                <span className="fa-stack">
+                    <i className="fa fa-square fa-stack-2x text-white"></i>
+                    <i className="fa fa-shopping-cart fa-stack-1x text-info"></i>
+                </span>
                 {badge}
-                <FA className="text-info" name="shopping-cart" size="2x" />
             </div>
         </div>
     });
