@@ -44,7 +44,7 @@ export class VRootCategory extends View<CProductCategory> {
             //style={{borderRight:'1px solid gray', borderBottom:'1px solid gray'}}
             onClick={() => this.categoryClick(item)}>
             <div className="pt-1 pb-1 px-2 my-1 border" 
-                //style={{marginLeft:'1px', marginRight:'1px'}}
+                style={{borderColor:'#fcfcfc'}}
                 >
                 <div>
                     <img src="favicon.ico" alt="structure" style={imgStyle} />
