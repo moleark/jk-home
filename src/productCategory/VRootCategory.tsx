@@ -1,17 +1,22 @@
 import * as React from 'react';
 import { View } from 'tonva-tools';
 import { CProductCategory } from './CProductCategory';
-import { List, LMR } from 'tonva-react-form';
-import { observer } from 'mobx-react';
-import { tv, BoxId } from 'tonva-react-usql';
+import { consts } from '../home/consts';
 
 const imgStyle: React.CSSProperties = {
-    height: "1.5rem", width: "1.5rem", opacity: 0.1,
-    marginRight: "0.5rem"
+    height: '1.5rem', width: '1.5rem',
+    marginLeft: '0.1rem',
+    marginRight: '0.3rem'
+}
+
+const titleTitle: React.CSSProperties = {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
 }
 
 const subStyle: React.CSSProperties = {
-    fontSize: "0.75rem",
+    fontSize: '0.75rem',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
@@ -27,11 +32,13 @@ export class VRootCategory extends View<CProductCategory> {
     private renderRootCategory = (item: any) => {
         let { productCategory, name, children } = item;
         return <div className="bg-white mb-3" key={name}>
-            <div className="border-bottom py-3 px-3 cursor-pointer" onClick={() => this.categoryClick(item)}>
+            <div className="py-2 px-3 cursor-pointer" onClick={() => this.categoryClick(item)}>
                 <b>{name}</b>
             </div>
-            <div className="px-3">
-                <div className="row">
+            <div className="" 
+                style={{paddingRight:'1px'}}
+                >
+                <div className="row no-gutters">
                     {children.map(v => this.renderSubCategory(v))}
                 </div>
             </div>
@@ -40,10 +47,15 @@ export class VRootCategory extends View<CProductCategory> {
 
     private renderSubCategory = (item: any) => {
         let { name, children } = item;
-        return <div className="col-6 col-md-4 col-lg-3 cursor-pointer" onClick={() => this.categoryClick(item)} key={name}>
-            <div className="py-3">
-                <div>
-                    <img src="favicon.ico" alt="structure" style={imgStyle} />
+        return <div key={name}
+            className="col-6 col-md-4 col-lg-3 cursor-pointer"
+            //style={{borderRight:'1px solid gray', borderBottom:'1px solid gray'}}
+            onClick={() => this.categoryClick(item)}>
+            <div className="pt-1 pb-1 px-2" 
+                style={{border:'1px solid #eeeeee', marginRight: '-1px', marginBottom: '-1px'}}
+                >
+                <div style={titleTitle}>
+                    <img src={consts.appIcon} alt="structure" style={imgStyle} />
                     <span className="ml-1 align-middle">{name}</span>
                 </div>
                 {this.renderThirdCategory(children)}
@@ -52,8 +64,8 @@ export class VRootCategory extends View<CProductCategory> {
     }
 
     private renderThirdCategory(items: any) {
-        return <div className="py-2 text-muted small" style={subStyle}>
-            {items.map(v => v.name).join(' / ')}
+        return <div className="py-1 text-muted small" style={subStyle}>
+            {items.length===0? <>&nbsp;</>:items.map(v => v.name).join(' / ')}
         </div>
     }
 
