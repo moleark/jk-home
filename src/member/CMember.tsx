@@ -21,12 +21,12 @@ export class CMember extends Controller {
 
     protected async internalStart(param: any) {
 
-        let memberTuid = this.cApp.cUsqMember.tuid('member');
-        // this.member = await memberTuid.load(this.user.id);
-
-        let getPointQuery: Query = this.cApp.cUsqMember.query('getPoint');
-        this.pointMap = await getPointQuery.obj({ memberId: this.cApp.currentUser.id });
-        this.member = this.cApp.currentUser;
+        let memberMap = this.cApp.cUsqMember.map('member');
+        if (this.isLogined) {
+            let getPointQuery: Query = this.cApp.cUsqMember.query('getPoint');
+            this.pointMap = await getPointQuery.obj({ memberId: this.cApp.currentUser.id });
+            this.member = await memberMap.table(this.cApp.currentUser.id);
+        }
     }
 
     renderMember = () => {

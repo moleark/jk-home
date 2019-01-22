@@ -16,6 +16,8 @@ export class VMember extends VPage<CMember> {
 
     private content = () => {
         let { cApp, member, pointMap } = this.controller;
+        if (member === undefined)
+            return <></>;
         let { currentUser } = cApp;
         let { point } = pointMap;
 
