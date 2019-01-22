@@ -67,7 +67,7 @@ export abstract class Cart {
     abstract async load(): Promise<void>;
 
     getQuantity(productId: number, packId: number): number {
-        let cp = this.items.find(v => v.product.id === productId);
+        let cp = this.items.find(v => v.product.id === productId && v.$isDeleted !== true);
         if (cp === undefined) return 0;
         let packItem = cp.packs.find(v => v.pack.id === packId);
         if (packItem === undefined) return 0;
@@ -80,6 +80,7 @@ export abstract class Cart {
      * @param quantity 要添加到购物车中包装的个数
      */
     async AddToCart(product: any, pack: any, quantity: number, price: number, currency: any) {
+        _.remove(this.items, v=>v.$isDeleted === true);
         let packItem: PackItem = {
             pack: pack,
             price: price,
@@ -101,6 +102,7 @@ export abstract class Cart {
         } else {
             let { packs } = cartItem;
             cartItem.$isSelected = true;
+            cartItem.$isDeleted = false;
             let piPack = packs.find(v => v.pack.id === pack.id);
             if (piPack === undefined) {
                 packs.push(packItem);

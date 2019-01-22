@@ -97,7 +97,7 @@ export class COrder extends Controller {
             return;
         }
 
-        let result: any = await this.orderSheet.save("order", this.orderData);
+        let result: any = await this.orderSheet.save("order", this.orderData.getDataForSave());
         await this.orderSheet.action(result.id, result.flow, result.state, "submit");
 
         this.cApp.cCart.cart.clear(); //.removeFromCart(this.orderData.orderItems);
