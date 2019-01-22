@@ -5,15 +5,18 @@ import { CCartApp } from 'CCartApp';
 import { VContact } from './VContact';
 import { Controller } from 'tonva-tools';
 import _ from 'lodash';
+import { ContactType } from 'order/COrder';
 
 export class CUser extends Controller {
     cApp: CCartApp;
 
+    contactType: ContactType;
     private contactTuid: TuidMain;
 
     currentUser: any;
     customer: any;
     userShippingContacts: any[] = [];
+    userInvoiceContacts: any[] = [];
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
@@ -23,30 +26,42 @@ export class CUser extends Controller {
         this.contactTuid = cUsqCustomer.tuid('contact');
     }
 
-    async internalStart(param: any) {
-
-        this.userShippingContacts = await this.cApp.currentUser.getShippingContacts();
+    async internalStart(contactType: ContactType) {
+        this.contactType = contactType;
+        if (contactType === ContactType.ShippingContact)
+            this.userShippingContacts = await this.cApp.currentUser.getShippingContacts();
+        else
+            this.userInvoiceContacts = await this.cApp.currentUser.getInvoiceContacts();
         this.showVPage(VAddressList);
     }
 
     /**
-     * 打开地址新建或边界界面
+     * 打开地址新建或编辑界面
      */
-    onContactEdit = async (userShippingContact?: any) => {
+    onContactEdit = async (userContact?: any) => {
 
         let userContactData: any = {};
-        if (userShippingContact !== undefined) {
-            userContactData.shippingContact = await this.contactTuid.load(userShippingContact.contact.id);
+        if (userContact !== undefined) {
+            userContactData.contact = await this.contactTuid.load(userContact.contact.id);
         }
         this.showVPage(VContact, userContactData);
     }
 
     saveContact = async (contact: any) => {
 
-        let contactWithId = await this.contactTuid.save(undefined, contact);
-        await this.cApp.currentUser.addShippingContact(contactWithId.id);
-        if (contact.id !== undefined) {
-            this.cApp.currentUser.delShippingContact(contact.id);
+        if (this.contactType === ContactType.ShippingContact) {
+            let contactWithId = await this.contactTuid.save(undefined, contact);
+            await this.cApp.currentUser.addShippingContact(contactWithId.id);
+            if (contact.id !== undefined) {
+                this.cApp.currentUser.delShippingContact(contact.id);
+            }
+        }
+        else{
+            let contactWithId = await this.contactTuid.save(undefined, contact);
+            await this.cApp.currentUser.addInvoiceContact(contactWithId.id);
+            if (contact.id !== undefined) {
+                this.cApp.currentUser.delInvoiceContact(contact.id);
+            }
         }
         this.backPage();
         this.onContactSelected(contact);
@@ -55,7 +70,7 @@ export class CUser extends Controller {
     onContactSelected = (contact: any) => {
 
         let { cOrder } = this.cApp;
-        cOrder.setContact(contact);
+        cOrder.setContact(contact, this.contactType);
         this.backPage();
     }
 }

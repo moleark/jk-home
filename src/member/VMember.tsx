@@ -15,19 +15,21 @@ export class VMember extends VPage<CMember> {
     }
 
     private content = () => {
-        let { member, user } = this.controller;
+        let { cApp, member, pointMap } = this.controller;
+        let { currentUser } = cApp;
+        let { point } = pointMap;
 
-        let im = <img src={user.icon} alt="头像"></img>
+        let im = <img src={currentUser.icon} alt="头像"></img>
         let pointTitle = <p className="h4">我的积分</p>
         let pointDetail = <p className="small align-self-end">查看详情 <FA name="angle-right"></FA></p>
         let pointThisWeek = <><p className="h5 mb-0">0</p><Muted>本周</Muted></>
-        let pointAll = <><p className="h5 mb-0">{member.point}</p><Muted>累计</Muted></>
+        let pointAll = <><p className="h5 mb-0">{point}</p><Muted>累计</Muted></>
         let fansTitle = <p className="h4">我的粉丝</p>
         let fansDetail = <p className="small align-self-end">查看详情 <FA name="angle-right"></FA></p>
         return <div>
             <LMR className="shadow bg-white rounded p-3 mb-1" left={im}>
                 <div>
-                    <div>{user.name}</div>
+                    <div>{currentUser.name}</div>
                     <div>邀请码:{member.recommendationCode}</div>
                 </div>
             </LMR>

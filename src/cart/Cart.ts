@@ -52,10 +52,10 @@ export abstract class Cart {
             let { $isSelected, $isDeleted, packs } = cp;
             if ($isDeleted === true) continue;
             for (let pi of packs) {
-                let {price, quantity} = pi;
+                let { price, quantity } = pi;
                 count += quantity;
                 if (price === Number.NaN || quantity === Number.NaN) continue;
-                if ($isSelected===true) {
+                if ($isSelected === true) {
                     amount += quantity * price;
                 }
             }
@@ -66,7 +66,7 @@ export abstract class Cart {
 
     abstract async load(): Promise<void>;
 
-    getQuantity(productId:number, packId:number):number {
+    getQuantity(productId: number, packId: number): number {
         let cp = this.items.find(v => v.product.id === productId);
         if (cp === undefined) return 0;
         let packItem = cp.packs.find(v => v.pack.id === packId);
@@ -80,7 +80,7 @@ export abstract class Cart {
      * @param quantity 要添加到购物车中包装的个数
      */
     async AddToCart(product: any, pack: any, quantity: number, price: number, currency: any) {
-        let packItem:PackItem = {
+        let packItem: PackItem = {
             pack: pack,
             price: price,
             quantity: quantity,
@@ -90,7 +90,7 @@ export abstract class Cart {
         if (!cartItem) {
             //cartItem = this.createCartItem(product, pack, quantity, price, currency);
             //this.items.push(cartItem);
-            let row:CartProduct = {
+            let row: CartProduct = {
                 product: product,
                 packs: [packItem],
                 $isSelected: true,
@@ -99,7 +99,7 @@ export abstract class Cart {
             };
             this.items.push(row);
         } else {
-            let {packs} = cartItem;
+            let { packs } = cartItem;
             cartItem.$isSelected = true;
             let piPack = packs.find(v => v.pack.id === pack.id);
             if (piPack === undefined) {
@@ -129,14 +129,14 @@ export abstract class Cart {
         return cartItem;
     }
 
-    abstract async storeCart(product:BoxId, packItem: PackItem): Promise<void>;
+    abstract async storeCart(product: BoxId, packItem: PackItem): Promise<void>;
 
     async updateChecked(cartItem: CartItem, checked: boolean) {
-/*
-        let existItem = this.items.find((element) => element.pack.id === cartItem.pack.id);
-        if (existItem)
-            existItem.checked = checked;
-*/
+        /*
+                let existItem = this.items.find((element) => element.pack.id === cartItem.pack.id);
+                if (existItem)
+                    existItem.checked = checked;
+        */
     }
 
     /**
@@ -163,9 +163,9 @@ export abstract class Cart {
      * @param item
      */
     async removeDeletedItem() {
-        let rows: {product:BoxId, packItem:PackItem}[] = [];
+        let rows: { product: BoxId, packItem: PackItem }[] = [];
         for (let cp of this.items) {
-            let {product, packs, $isDeleted} = cp;
+            let { product, packs, $isDeleted } = cp;
             for (let pi of packs) {
                 if ($isDeleted === true || pi.quantity === 0) {
                     rows.push({
@@ -179,7 +179,7 @@ export abstract class Cart {
         await this.removeFromCart(rows);
 
         for (let cp of this.items) {
-            let {packs} = cp;
+            let { packs } = cp;
             _.remove(packs, v => v.quantity === 0);
         }
         _.remove(this.items, v => v.$isDeleted === true || v.packs.length === 0);
@@ -192,7 +192,7 @@ export abstract class Cart {
         */
     }
 
-    protected abstract async removeFromCart(rows: {product:BoxId, packItem:PackItem}[]): Promise<void>;
+    protected abstract async removeFromCart(rows: { product: BoxId, packItem: PackItem }[]): Promise<void>;
 
     async clear() {
         this.items.forEach(v => v.$isDeleted = true);
@@ -206,8 +206,8 @@ export abstract class Cart {
         return selectCartItem;
         */
         return this.items.filter(v => {
-            let {$isSelected, $isDeleted} = v;
-            return $isSelected===true && v.$isDeleted!==true;
+            let { $isSelected, $isDeleted } = v;
+            return $isSelected === true && v.$isDeleted !== true;
         });
     }
 
@@ -235,10 +235,10 @@ export class RemoteCart extends Cart {
 
     async load() {
         let cartData = await this.getCartQuery.page(undefined, 0, 100);
-        let cartDict:{[product:number]: CartProduct} = {};
-        let cartProducts:CartProduct[] = [];
+        let cartDict: { [product: number]: CartProduct } = {};
+        let cartProducts: CartProduct[] = [];
         for (let cd of cartData) {
-            let {product, createdate, pack, price, quantity, currency} = cd;
+            let { product, createdate, pack, price, quantity, currency } = cd;
             let packItem: PackItem = {
                 pack: pack,
                 price: price,
@@ -266,7 +266,7 @@ export class RemoteCart extends Cart {
      * @param pack 要添加到购物车中的包装
      * @param quantity 要添加到购物车中包装的个数
      */
-    async storeCart(product:BoxId, packItem: PackItem) {
+    async storeCart(product: BoxId, packItem: PackItem) {
         let param = {
             product: product,
             ...packItem
@@ -274,9 +274,9 @@ export class RemoteCart extends Cart {
         await this.setCartAction.submit(param);
     }
 
-    async removeFromCart(rows: {product:BoxId, packItem:PackItem}[]) {
+    async removeFromCart(rows: { product: BoxId, packItem: PackItem }[]) {
         let params = rows.map(v => {
-            let {product, packItem} = v;
+            let { product, packItem } = v;
             return {
                 product: product,
                 ...packItem
@@ -300,7 +300,7 @@ export class LocalCart extends Cart {
             let cartData = JSON.parse(cartstring);
             if (cartData && cartData.length > 0) {
                 cartData.forEach(element => {
-                    let {product, packs} = element;
+                    let { product, packs } = element;
                     element.product = this.productTuid.boxId(product);
                     if (packs !== undefined) {
                         for (let p of packs) {
@@ -317,13 +317,13 @@ export class LocalCart extends Cart {
         }
     }
 
-    async storeCart(product:BoxId, packItem: PackItem) {
+    async storeCart(product: BoxId, packItem: PackItem) {
         let items = this.items.map(e => {
-            let {product, packs} = e;
+            let { product, packs } = e;
             return {
                 product: product.id,
                 packs: packs && packs.map(v => {
-                    let {pack, price, currency, quantity} = v;
+                    let { pack, price, currency, quantity } = v;
                     return {
                         pack: pack.id,
                         price: price,
@@ -337,7 +337,7 @@ export class LocalCart extends Cart {
         localStorage.setItem(LOCALCARTNAME, JSON.stringify(items));
     }
 
-    async removeFromCart(rows: {product:BoxId, packItem:PackItem}[]) {
+    async removeFromCart(rows: { product: BoxId, packItem: PackItem }[]) {
         //_.remove(this.items, (e) => e.$isDeleted === true);
         await this.storeCart(undefined, undefined);
     }

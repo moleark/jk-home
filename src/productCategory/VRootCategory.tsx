@@ -24,21 +24,21 @@ export class VRootCategory extends View<CProductCategory> {
         await this.controller.openMainPage(categoryWapper);
     }
 
-    private onRootCategoryRender = (item: any) => {
+    private renderRootCategory = (item: any) => {
         let { productCategory, name, children } = item;
         return <div className="bg-white mb-3" key={name}>
-            <div className="border-bottom py-3 px-3">
+            <div className="border-bottom py-3 px-3 cursor-pointer" onClick={() => this.categoryClick(item)}>
                 <b>{name}</b>
             </div>
             <div className="px-3">
                 <div className="row">
-                    {children.map(v => this.onSubCategoryRender(v))}
+                    {children.map(v => this.renderSubCategory(v))}
                 </div>
             </div>
         </div>
     }
 
-    private onSubCategoryRender = (item: any) => {
+    private renderSubCategory = (item: any) => {
         let { name, children } = item;
         return <div className="col-6 col-md-4 col-lg-3 cursor-pointer" onClick={() => this.categoryClick(item)} key={name}>
             <div className="py-3">
@@ -46,12 +46,12 @@ export class VRootCategory extends View<CProductCategory> {
                     <img src="favicon.ico" alt="structure" style={imgStyle} />
                     <span className="ml-1 align-middle">{name}</span>
                 </div>
-                {this.onThirdCategoryRender(children)}
+                {this.renderThirdCategory(children)}
             </div>
         </div>
     }
 
-    private onThirdCategoryRender(items: any) {
+    private renderThirdCategory(items: any) {
         return <div className="py-2 text-muted small" style={subStyle}>
             {items.map(v => v.name).join(' / ')}
         </div>
@@ -59,6 +59,6 @@ export class VRootCategory extends View<CProductCategory> {
 
     render(param: any): JSX.Element {
         let { rootCategories } = this.controller;
-        return <>{rootCategories.map(v => this.onRootCategoryRender(v))}</>;
+        return <>{rootCategories.map(v => this.renderRootCategory(v))}</>;
     }
 }

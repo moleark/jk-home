@@ -48,16 +48,16 @@ export class VContact extends VPage<CUser> {
     async showEntry(userContactData: any) {
 
         if (userContactData.shippingContact !== undefined) {
-            let { shippingContact } = userContactData;
+            let { shippingContact: contact } = userContactData;
             this.contactData = {
-                id: shippingContact.id,
-                name: shippingContact.name,
-                organizationName: shippingContact.organizationName,
-                mobile: shippingContact.mobile,
-                telephone: shippingContact.telephone,
-                email: shippingContact.email,
-                addressString: shippingContact.addressString,
-                isDefault: shippingContact.isDefault,
+                id: contact.id,
+                name: contact.name,
+                organizationName: contact.organizationName,
+                mobile: contact.mobile,
+                telephone: contact.telephone,
+                email: contact.email,
+                addressString: contact.addressString,
+                isDefault: contact.isDefault,
             };
         }
         this.openPage(this.page);

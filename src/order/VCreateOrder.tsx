@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { VPage, Page } from 'tonva-tools';
-import { COrder } from './COrder';
+import { COrder, ContactType } from './COrder';
 import { List, LMR, FA } from 'tonva-react-form';
 import { tv, BoxId } from 'tonva-react-usql';
 import { observer } from 'mobx-react';
@@ -14,7 +14,7 @@ export class VCreateOrder extends VPage<COrder> {
     }
 
     private nullContact = () => {
-        return <>请点击输入地址</>
+        return <>请点击此处输入收货地址</>
     }
 
     private renderProduct = (product: any) => <strong>{product.description}</strong>
@@ -26,7 +26,7 @@ export class VCreateOrder extends VPage<COrder> {
         let left = <img src="favicon.ico" alt="structure image" />;
         let right = <div>
             {packs.map((v) => {
-                let {pack , price, quantity} = v;
+                let { pack, price, quantity } = v;
                 return <div key={pack.id} className="d-flex">
                     <div className="w-6c text-right">{tv(pack)}</div>
                     <div className="w-6c text-right">{price}<small>元</small></div>
@@ -57,15 +57,18 @@ export class VCreateOrder extends VPage<COrder> {
     private page = observer(() => {
 
         let { orderData, submitOrder, openContactList } = this.controller;
-        let { orderItems, shippingContact } = orderData;
-        let footer = <button type="button" 
-            className="btn btn-danger w-100" 
+        let { orderItems, shippingContact, invoiceContact } = orderData;
+        let footer = <button type="button"
+            className="btn btn-danger w-100"
             onClick={submitOrder}>提交订单{orderData.amount}</button>;
 
         let chevronRight = <FA name="chevron-right" />
         return <Page header="订单预览" footer={footer}>
-            <LMR right={chevronRight} onClick={openContactList} className="px-3 py-3">
+            <LMR right={chevronRight} onClick={() => openContactList(ContactType.ShippingContact)} className="px-3 py-3">
                 {tv(shippingContact, undefined, undefined, this.nullContact)}
+            </LMR>
+            <LMR right={chevronRight} onClick={() => openContactList(ContactType.InvoiceContact)} className="px-3 py-3">
+                {tv(invoiceContact, undefined, undefined, this.nullContact)}
             </LMR>
             <List items={orderItems} item={{ render: this.renderOrderItem }} />
         </Page>
