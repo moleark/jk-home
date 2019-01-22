@@ -4,7 +4,7 @@ import { CProductCategory } from './CProductCategory';
 
 const imgStyle: React.CSSProperties = {
     height: "1.5rem", width: "1.5rem", opacity: 0.1,
-    marginRight: "0.5rem"
+    marginRight: "0.3rem"
 }
 
 const subStyle: React.CSSProperties = {
@@ -27,7 +27,7 @@ export class VRootCategory extends View<CProductCategory> {
             <div className="py-2 px-3 cursor-pointer" onClick={() => this.categoryClick(item)}>
                 <b>{name}</b>
             </div>
-            <div className="">
+            <div className="" style={{paddingLeft:'1px', paddingRight:'1px'}}>
                 <div className="row no-gutters">
                     {children.map(v => this.renderSubCategory(v))}
                 </div>
