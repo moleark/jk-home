@@ -1,9 +1,6 @@
 import * as React from 'react';
 import { View } from 'tonva-tools';
 import { CProductCategory } from './CProductCategory';
-import { List, LMR } from 'tonva-react-form';
-import { observer } from 'mobx-react';
-import { tv, BoxId } from 'tonva-react-usql';
 
 const imgStyle: React.CSSProperties = {
     height: "1.5rem", width: "1.5rem", opacity: 0.1,
@@ -26,12 +23,12 @@ export class VRootCategory extends View<CProductCategory> {
 
     private renderRootCategory = (item: any) => {
         let { productCategory, name, children } = item;
-        return <div className="bg-white mb-3" key={name}>
-            <div className="border-bottom py-3 px-3 cursor-pointer" onClick={() => this.categoryClick(item)}>
+        return <div className="bg-white mb-3 pb-1" key={name}>
+            <div className="py-2 px-3 cursor-pointer" onClick={() => this.categoryClick(item)}>
                 <b>{name}</b>
             </div>
-            <div className="px-3">
-                <div className="row">
+            <div className="px-2">
+                <div className="row no-gutters">
                     {children.map(v => this.renderSubCategory(v))}
                 </div>
             </div>
@@ -40,9 +37,12 @@ export class VRootCategory extends View<CProductCategory> {
 
     private renderSubCategory = (item: any) => {
         let { name, children } = item;
-        return <div className="col-6 col-md-4 col-lg-3 cursor-pointer" onClick={() => this.categoryClick(item)} key={name}>
-            <div className="py-3">
-                <div>
+        return <div key={name}
+            className="col-6 col-md-4 col-lg-3 cursor-pointer"
+            //style={{borderRight:'1px solid gray', borderBottom:'1px solid gray'}}
+            onClick={() => this.categoryClick(item)}>
+            <div className="pt-2 pb-1 px-2 mx-2 my-1 border">
+                <div className=" h-100">
                     <img src="favicon.ico" alt="structure" style={imgStyle} />
                     <span className="ml-1 align-middle">{name}</span>
                 </div>
@@ -53,7 +53,7 @@ export class VRootCategory extends View<CProductCategory> {
 
     private renderThirdCategory(items: any) {
         return <div className="py-2 text-muted small" style={subStyle}>
-            {items.map(v => v.name).join(' / ')}
+            {items.length===0? <>&nbsp;</>:items.map(v => v.name).join(' / ')}
         </div>
     }
 
