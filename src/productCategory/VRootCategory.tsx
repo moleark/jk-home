@@ -7,6 +7,12 @@ const imgStyle: React.CSSProperties = {
     marginRight: "0.3rem"
 }
 
+const titleTitle: React.CSSProperties = {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+}
+
 const subStyle: React.CSSProperties = {
     fontSize: "0.75rem",
     overflow: 'hidden',
@@ -46,7 +52,7 @@ export class VRootCategory extends View<CProductCategory> {
             <div className="pt-1 pb-1 px-2 my-1" 
                 style={{border:'1px solid #eeeeee'}}
                 >
-                <div>
+                <div style={titleTitle}>
                     <img src="favicon.ico" alt="structure" style={imgStyle} />
                     <span className="ml-1 align-middle">{name}</span>
                 </div>
