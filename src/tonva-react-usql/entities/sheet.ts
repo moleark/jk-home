@@ -64,6 +64,7 @@ export class Sheet extends Entity {
         }
     }*/
     async save(discription:string, data:any):Promise<any> {
+        await this.loadSchema();
         let {appId} = this.entities;
         let text = this.pack(data);
 
@@ -76,6 +77,7 @@ export class Sheet extends Entity {
         */
     }
     async action(id:number, flow:number, state:string, action:string) {
+        await this.loadSchema();
         return await this.tvApi.sheetAction(this.name, {id:id, flow:flow, state:state, action:action});
     }
     private async unpack(data:any):Promise<any> {
@@ -91,27 +93,32 @@ export class Sheet extends Entity {
         }
     }
     async getSheet(id:number):Promise<any> {
+        await this.loadSchema();
         let ret = await this.tvApi.getSheet(this.name, id);
         if (ret[0].length === 0) return await this.getArchive(id);
         return await this.unpack(ret);
     }
     async getArchive(id:number):Promise<any> {
+        await this.loadSchema();
         let ret = await this.tvApi.sheetArchive(this.name, id)
         return await this.unpack(ret);
     }
 
     async getArchives(pageStart:number, pageSize:number) {
+        await this.loadSchema();
         let ret = await this.tvApi.sheetArchives(this.name, {pageStart:pageStart, pageSize:pageSize});
         return ret;
     }
 
     async getStateSheets(state:string, pageStart:number, pageSize:number):Promise<any[]> {
+        await this.loadSchema();
         let ret = await this.tvApi.stateSheets(this.name, {state:state, pageStart:pageStart, pageSize:pageSize});
         return ret;
     }
     createPageStateItems<T>(): PageStateItems<T> {return new PageStateItems<T>(this);}
 
     async stateSheetCount():Promise<StateCount[]> {
+        await this.loadSchema();
         let ret:StateCount[] = await this.tvApi.stateSheetCount(this.name);
         return this.states.map(s => {
             let n = s.name, count = 0;

@@ -30,12 +30,12 @@ export class VRootCategory extends View<CProductCategory> {
 
     private renderRootCategory = (item: any) => {
         let { productCategory, name, children } = item;
-        return <div className="bg-white mb-3 pb-1" key={name}>
+        return <div className="bg-white mb-3 pb-3" key={name}>
             <div className="py-2 px-3 cursor-pointer" onClick={() => this.categoryClick(item)}>
                 <b>{name}</b>
             </div>
             <div className="" 
-                //style={{paddingLeft:'1px', paddingRight:'1px'}}
+                style={{paddingRight:'1px'}}
                 >
                 <div className="row no-gutters">
                     {children.map(v => this.renderSubCategory(v))}
@@ -50,8 +50,8 @@ export class VRootCategory extends View<CProductCategory> {
             className="col-6 col-md-4 col-lg-3 cursor-pointer"
             //style={{borderRight:'1px solid gray', borderBottom:'1px solid gray'}}
             onClick={() => this.categoryClick(item)}>
-            <div className="pt-1 pb-1 px-2 my-1" 
-                style={{border:'1px solid #eeeeee'}}
+            <div className="pt-1 pb-1 px-2" 
+                style={{border:'1px solid #eeeeee', marginRight: '-1px', marginBottom: '-1px'}}
                 >
                 <div style={titleTitle}>
                     <img src={consts.appIcon} alt="structure" style={imgStyle} />
