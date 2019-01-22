@@ -163,12 +163,6 @@ export class UsqApi extends ApiBase {
 
     async loadAccess():Promise<any> {
         return await localUsqs.loadAccess(this);
-        /*
-        let acc = this.access === undefined?
-            '' :
-            this.access.join('|');
-        return await this.get('access', {acc:acc});
-        */
     }
 
     async loadEntities():Promise<any> {

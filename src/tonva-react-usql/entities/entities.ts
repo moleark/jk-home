@@ -109,6 +109,7 @@ export class Entities {
 
     async loadAccess() {
         let accesses = await this.usqApi.loadAccess();
+        if (accesses === undefined) return;
         this.buildEntities(accesses);
     }
 
@@ -118,6 +119,9 @@ export class Entities {
     }
 
     private buildEntities(entities:any) {
+        if (entities === undefined) {
+            debugger;
+        }
         let {access, tuids} = entities;
         this.buildTuids(tuids);
         this.buildAccess(access);
