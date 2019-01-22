@@ -6,14 +6,15 @@ import { observer } from 'mobx-react';
 export class VCartLabel extends View<CCart> {
 
     private showCart = async () => {
-        await this.controller.start();
+        let { cApp } = this.controller;
+        cApp.showMain('cart');
     }
 
     render(param: any): JSX.Element {
         return <this.content />
     };
 
-    private content = observer(()=>{
+    private content = observer(() => {
         let { cart } = this.controller;
         return <div>
             <button className="btn btn-info btn-sm" onClick={this.showCart}>

@@ -70,6 +70,10 @@ export class CCartApp extends CApp {
         promises.push(this.cCart.cart.load());
         promises.push(this.cProductCategory.start());
         await Promise.all(promises);
-        this.showVPage(this.VAppMain);
+        this.showMain();
+    }
+
+    showMain(initTabName?: string){
+        this.showVPage(this.VAppMain, initTabName);
     }
 }

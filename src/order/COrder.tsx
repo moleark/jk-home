@@ -68,17 +68,19 @@ export class COrder extends Controller {
             this.orderData.currency = cartItem[0].currency;
             this.orderData.orderItems = cartItem.map((element: any, index: number) => {
                 var item = new OrderItem();
-                item.product = element.product,
-                item.packs = element.packs;
+                item.product = element.product;
+                item.packs = element.packs.filter(v => v.quantity > 0);
                 //item.price = element.price;
                 //item.quantity = element.quantity;
                 return item;
             });
+
+            // 运费和运费减免
         }
     }
 
     setContact = (contactBox: BoxId, contactType: ContactType) => {
-        if(contactType === ContactType.ShippingContact)
+        if (contactType === ContactType.ShippingContact)
             this.orderData.shippingContact = contactBox;
         else
             this.orderData.invoiceContact = contactBox;
@@ -90,7 +92,7 @@ export class COrder extends Controller {
             this.openContactList(ContactType.ShippingContact);
             return;
         }
-        if(!this.orderData.invoiceContact) {
+        if (!this.orderData.invoiceContact) {
             this.openContactList(ContactType.InvoiceContact);
             return;
         }
