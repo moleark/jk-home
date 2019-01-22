@@ -47,13 +47,6 @@ export class VCreateOrder extends VPage<COrder> {
         </LMR>
     }
 
-    /*
-    private renderOrderItem = (orderItem: any) => {
-        return <>
-            {tv(orderItem, this.renderItem)}<br />
-        </>
-    }
-    */
     private page = observer(() => {
 
         let { orderData, submitOrder, openContactList } = this.controller;
@@ -64,13 +57,35 @@ export class VCreateOrder extends VPage<COrder> {
 
         let chevronRight = <FA name="chevron-right" />
         return <Page header="订单预览" footer={footer}>
-            <LMR right={chevronRight} onClick={() => openContactList(ContactType.ShippingContact)} className="px-3 py-3">
-                {tv(shippingContact, undefined, undefined, this.nullContact)}
-            </LMR>
-            <LMR right={chevronRight} onClick={() => openContactList(ContactType.InvoiceContact)} className="px-3 py-3">
-                {tv(invoiceContact, undefined, undefined, this.nullContact)}
-            </LMR>
+            <div className="row px-3 py-3 bg-white mb-1" onClick={() => openContactList(ContactType.ShippingContact)}>
+                <div className="col-12 col-sm-2 text-muted">收货地址:</div>
+                <div className="col-12 col-sm-10 pl-4 pl-sm-0 d-flex">
+                    {tv(shippingContact, undefined, undefined, this.nullContact)}
+                    {chevronRight}
+                </div>
+            </div>
+            <div className="row px-3 py-3 bg-white mb-1" onClick={() => openContactList(ContactType.InvoiceContact)}>
+                <div className="col-12 col-sm-2 text-muted">发票地址:</div>
+                <div className="col-12 col-sm-10 pl-4 pl-sm-0 d-flex">
+                    {tv(invoiceContact, undefined, undefined, this.nullContact)}
+                    {chevronRight}
+                </div>
+            </div>
             <List items={orderItems} item={{ render: this.renderOrderItem }} />
         </Page>
     })
 }
+/*
+            <LMR right={chevronRight} onClick={() => openContactList(ContactType.ShippingContact)} className="px-3 py-3">
+                <div className="row">
+                    <div className="col-12 col-sm-2">收货地址</div>
+                    <div className="col-12 col-sm-10">{tv(shippingContact, undefined, undefined, this.nullContact)}</div>
+                </div>
+            </LMR>
+            <LMR right={chevronRight} onClick={() => openContactList(ContactType.InvoiceContact)} className="px-3 py-3">
+                <div className="row">
+                    <div className="col-12 col-sm-2">发票地址</div>
+                    <div className="col-12 col-sm-10">{tv(invoiceContact, undefined, undefined, this.nullContact)}</div>
+                </div>
+            </LMR>
+*/
