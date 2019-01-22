@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { View } from 'tonva-tools';
 import { CProductCategory } from './CProductCategory';
+import { consts } from '../home/consts';
 
 const imgStyle: React.CSSProperties = {
-    height: "1.5rem", width: "1.5rem", opacity: 0.1,
+    height: "1.5rem", width: "1.5rem",
     marginRight: "0.3rem"
 }
 
@@ -53,7 +54,7 @@ export class VRootCategory extends View<CProductCategory> {
                 style={{border:'1px solid #eeeeee'}}
                 >
                 <div style={titleTitle}>
-                    <img src="favicon.ico" alt="structure" style={imgStyle} />
+                    <img src={consts.appIcon} alt="structure" style={imgStyle} />
                     <span className="ml-1 align-middle">{name}</span>
                 </div>
                 {this.renderThirdCategory(children)}
