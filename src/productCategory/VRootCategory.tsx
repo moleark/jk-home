@@ -4,8 +4,9 @@ import { CProductCategory } from './CProductCategory';
 import { consts } from '../home/consts';
 
 const imgStyle: React.CSSProperties = {
-    height: "1.5rem", width: "1.5rem",
-    marginRight: "0.3rem"
+    height: '1.5rem', width: '1.5rem',
+    marginLeft: '0.1rem',
+    marginRight: '0.3rem'
 }
 
 const titleTitle: React.CSSProperties = {
@@ -15,7 +16,7 @@ const titleTitle: React.CSSProperties = {
 }
 
 const subStyle: React.CSSProperties = {
-    fontSize: "0.75rem",
+    fontSize: '0.75rem',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
@@ -30,7 +31,7 @@ export class VRootCategory extends View<CProductCategory> {
 
     private renderRootCategory = (item: any) => {
         let { productCategory, name, children } = item;
-        return <div className="bg-white mb-3 pb-3" key={name}>
+        return <div className="bg-white mb-3" key={name}>
             <div className="py-2 px-3 cursor-pointer" onClick={() => this.categoryClick(item)}>
                 <b>{name}</b>
             </div>
@@ -63,7 +64,7 @@ export class VRootCategory extends View<CProductCategory> {
     }
 
     private renderThirdCategory(items: any) {
-        return <div className="py-2 text-muted small" style={subStyle}>
+        return <div className="py-1 text-muted small" style={subStyle}>
             {items.length===0? <>&nbsp;</>:items.map(v => v.name).join(' / ')}
         </div>
     }
