@@ -27,7 +27,9 @@ export class VRootCategory extends View<CProductCategory> {
             <div className="py-2 px-3 cursor-pointer" onClick={() => this.categoryClick(item)}>
                 <b>{name}</b>
             </div>
-            <div className="" style={{paddingLeft:'1px', paddingRight:'1px'}}>
+            <div className="" 
+                //style={{paddingLeft:'1px', paddingRight:'1px'}}
+                >
                 <div className="row no-gutters">
                     {children.map(v => this.renderSubCategory(v))}
                 </div>
@@ -41,7 +43,9 @@ export class VRootCategory extends View<CProductCategory> {
             className="col-6 col-md-4 col-lg-3 cursor-pointer"
             //style={{borderRight:'1px solid gray', borderBottom:'1px solid gray'}}
             onClick={() => this.categoryClick(item)}>
-            <div className="pt-1 pb-1 px-2 my-1 border" style={{marginLeft:'1px', marginRight:'1px'}}>
+            <div className="pt-1 pb-1 px-2 my-1 border" 
+                //style={{marginLeft:'1px', marginRight:'1px'}}
+                >
                 <div>
                     <img src="favicon.ico" alt="structure" style={imgStyle} />
                     <span className="ml-1 align-middle">{name}</span>
