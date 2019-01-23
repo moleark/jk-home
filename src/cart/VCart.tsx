@@ -125,35 +125,35 @@ export class VCart extends VPage<CCart> {
         }
     }
 
-    protected cartForm = observer(() => {
+    protected cartForm = () => {
         let { cart } = this.controller;
         let cartData = {
             list: cart.items,
         };
         return <Form className="bg-white" schema={cartSchema} uiSchema={this.uiSchema} formData={cartData} />
-    });
+    };
 
     private empty() {
         return <div className="py-5 text-center bg-white">你的购物车空空如也</div>
     }
 
-    private page = (params: any): JSX.Element => {
+    private page = observer((params: any): JSX.Element => {
         let { cart } = this.controller;
-        if (cart.items.length === 0) {
+        if (cart.count.get() === 0) {
             return <Page header="购物车">{this.empty()}</Page>;
         }
 
         return <Page header="购物车" footer={<this.CheckOutButton />}>
             <this.cartForm />
         </Page>;
-    }
+    });
 
-    private tab = () => {
+    private tab = observer(() => {
         let { cart } = this.controller;
         let header = <header className="py-2 text-center bg-info text-white">
             <FA className="align-middle" name="shopping-cart" size="2x"/> &nbsp; <span className="h5 align-middle">购物车</span>
         </header>;
-        if (cart.items.length === 0) {
+        if (cart.count.get() === 0) {
             return <>
                 {header}
                 {this.empty()}
@@ -164,5 +164,5 @@ export class VCart extends VPage<CCart> {
             <this.cartForm />
             <footer className="m-3"><this.CheckOutButton /></footer>
         </div>
-    };
+    });
 }

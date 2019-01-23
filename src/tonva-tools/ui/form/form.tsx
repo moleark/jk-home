@@ -40,9 +40,9 @@ export class Form extends React.Component<FormProps> {
     readonly res?: FormRes;
     protected formContext: FormContext;
     private content: any;
-    private formData: any;
+    private inData: any;
     private disposer: IReactionDisposer;
-    @observable readonly data:any;
+    readonly data:any;
 
     readonly Container: (content:JSX.Element) => JSX.Element;
     readonly FieldContainer: (label:any, content:JSX.Element) => JSX.Element;
@@ -76,11 +76,11 @@ export class Form extends React.Component<FormProps> {
             this.itemSchemas[itemSchema.name] = itemSchema;
         }
         this.uiSchema = uiSchema;
-        this.formData = formData;
+        this.inData = formData;
         this.disposer = autorun(this.calcSelectOrDelete);
-        this.data = {};
+        this.data = observable({});
         this.initData(formData);
-        let inNode:boolean = this.props.children !== undefined || this.uiSchema && this.uiSchema.Templet !== undefined;
+        //let inNode:boolean = this.props.children !== undefined || this.uiSchema && this.uiSchema.Templet !== undefined;
         //this.formContext = new FormContext(this, inNode);
         let {children} = this.props;
         //let content:JSX.Element; //, inNode:boolean;
@@ -150,14 +150,15 @@ export class Form extends React.Component<FormProps> {
                 }
                 arr.push(r);
             }
-            data[name] = observable(arr);
+            data[name] = observable(arr, {deep: true});
             return;
         }
         data[name] = formData[name];
     }
 
     private calcSelectOrDelete = () => {
-        if (this.formData === undefined) return;
+        if (this.inData === undefined) return;
+        if (this.data === undefined) return;
         for (let itemSchema of this.schema) {
             this.arrItemOperated(itemSchema);
         }
@@ -169,6 +170,7 @@ export class Form extends React.Component<FormProps> {
         //let arrVal = this.formData[name];
         //if (arrVal === undefined) return;
         let formArrVal = this.data[name];
+        if (formArrVal === undefined) return;
         let {arr: arrItems} = itemSchema as ArrSchema;
         for (let row of formArrVal) {
             let {$source} = row;

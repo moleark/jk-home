@@ -77,48 +77,54 @@ export const ArrComponent = observer((
             let {rowKey} = rowContext;
             arrRowContexts[rowKey] = rowContext;
 
-            let selectCheck:JSX.Element, deleteIcon:JSX.Element;
-            if (selectable === true) {
-                let onClick = (evt: React.MouseEvent<HTMLInputElement>)=>{
-                    let {checked} = (evt.target as HTMLInputElement);
-                    row.$isSelected = checked;
-                    let {$source} = row;
-                    if ($source !== undefined) $source.$isSelected = checked;
-                    rowContext.removeErrors();
-                }
-                selectCheck = <div className="form-row-checkbox">
-                    <input type="checkbox" onClick={onClick} defaultChecked={row.$isSelected} />
-                </div>;
-            }
-            let isDeleted = !(row.$isDeleted===undefined || row.$isDeleted===false);
-            if (deletable === true) {
-                let icon = isDeleted? 'fa-undo' : 'fa-trash';
-                let onDelClick = () => {
-                    if (restorable === true) {
-                        row.$isDeleted = !isDeleted;
-                        let {$source} = row;
-                        if ($source !== undefined) $source.$isDeleted = !isDeleted;
+            let editContainer:any;
+            if (selectable===true || deletable===true) {
+                let Content = observer(() => {
+                    let selectCheck:JSX.Element, deleteIcon:JSX.Element;
+                    if (selectable === true) {
+                        let onClick = (evt: React.MouseEvent<HTMLInputElement>)=>{
+                            let {checked} = (evt.target as HTMLInputElement);
+                            row.$isSelected = checked;
+                            let {$source} = row;
+                            if ($source !== undefined) $source.$isSelected = checked;
+                            rowContext.removeErrors();
+                        }
+                        selectCheck = <div className="form-row-checkbox">
+                            <input type="checkbox" onClick={onClick} defaultChecked={row.$isSelected} />
+                        </div>;
                     }
-                    else {
-                        let p = data.indexOf(row);
-                        if (p>=0) data.splice(p, 1);
+                    let isDeleted = !(row.$isDeleted===undefined || row.$isDeleted===false);
+                    if (deletable === true) {
+                        let icon = isDeleted? 'fa-undo' : 'fa-trash';
+                        let onDelClick = () => {
+                            if (restorable === true) {
+                                row.$isDeleted = !isDeleted;
+                                let {$source} = row;
+                                if ($source !== undefined) $source.$isDeleted = !isDeleted;
+                            }
+                            else {
+                                let p = data.indexOf(row);
+                                if (p>=0) data.splice(p, 1);
+                            }
+                            rowContext.removeErrors();
+                        }
+                        deleteIcon = <div className="form-row-edit text-info" onClick={onDelClick}>
+                            <i className={classNames('fa', icon, 'fa-fw')} />
+                        </div>;
                     }
-                    rowContext.removeErrors();
-                }
-                deleteIcon = <div className="form-row-edit text-info" onClick={onDelClick}>
-                    <i className={classNames('fa', icon, 'fa-fw')} />
-                </div>;
+                    return <fieldset disabled={isDeleted}><div className={classNames('d-flex', {'deleted':isDeleted, 'row-selected':row.$isSelected})}>
+                        {selectCheck}<div className="flex-grow-1"><rowContext.renderErrors />{rowContent}</div>{deleteIcon}
+                    </div></fieldset>;
+                });
+                editContainer = <Content />;
             }
-            let editContainer = selectable===true || deletable===true?
-                (content:any) => <fieldset disabled={isDeleted}><div className={classNames('d-flex', {'deleted':isDeleted, 'row-selected':row.$isSelected})}>
-                    {selectCheck}<div className="flex-grow-1">{content}</div>{deleteIcon}
-                </div></fieldset>
-                :
-                (content:any) => content;
+            else {
+                editContainer = <><rowContext.renderErrors />{rowContent}</>;
+            }
 
             return <ContextContainer.Provider key={rowKey} value={rowContext}>
                 {sep}
-                {RowContainer(editContainer(<><rowContext.renderErrors />{rowContent}</>))}
+                {RowContainer(editContainer)}
             </ContextContainer.Provider>;
         })}
     </>);

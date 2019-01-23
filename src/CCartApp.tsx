@@ -37,7 +37,6 @@ export class CCartApp extends CApp {
     cMember: CMember;
 
     protected async internalStart() {
-        console.log('CCartApp.internalStart');
         this.cUsqOrder = this.getCUsq(consts.usqOrder);
         this.cUsqProduct = this.getCUsq(consts.usqProduct);
         this.cUsqCommon = this.getCUsq(consts.usqCommon);

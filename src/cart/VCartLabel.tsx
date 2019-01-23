@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import { View } from 'tonva-tools';
 import { CCart } from './CCart';
 import { observer } from 'mobx-react';
-import { FA } from 'tonva-react-form';
 
 export class VCartLabel extends View<CCart> {
 

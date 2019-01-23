@@ -1,12 +1,12 @@
 import { observable, computed, autorun, IReactionDisposer, IObservableArray } from 'mobx';
-import _ from 'lodash';
+//import _ from 'lodash';
 import { CUsq, Action, Query, TuidMain, TuidDiv, BoxId } from 'tonva-react-usql';
 import { PackItem } from '../tools';
 import { CCartApp } from 'CCartApp';
 
-export interface CartProduct {
+export class CartProduct {
     product: BoxId;
-    packs: PackItem[];
+    @observable packs: PackItem[] = [];
     $isSelected?: boolean;
     $isDeleted?: boolean;
     createdate: number;
@@ -30,7 +30,7 @@ export class Cart {
     private cartStore: CartStore;
     private disposer: IReactionDisposer;
 
-    @observable items: CartProduct[] = [];
+    items: IObservableArray<CartProduct> = observable<CartProduct>([], {deep: true});
     count = observable.box<number>(0);
     amount = observable.box<number>(0);
 
@@ -68,12 +68,14 @@ export class Cart {
     async load(): Promise<void> {
         if (this.cCartApp.isLogined === false) {
             this.cartStore = new CartLocal(this, this.cUsqProduct);
-            (this.items as IObservableArray).replace(await this.cartStore.load());
+            let items = await this.cartStore.load();
+            (this.items as IObservableArray).replace(items);
             return;
         }
         if (this.cartStore === undefined) {
             this.cartStore = new CartRemote(this, this.cUsqOrder);
-            (this.items as IObservableArray).replace(await this.cartStore.load());
+            let items = await this.cartStore.load();
+            (this.items as IObservableArray).replace(items);
             return;
         }
         let cartLocal = this.cartStore as CartLocal;
@@ -116,17 +118,16 @@ export class Cart {
         if (!cartItem) {
             //cartItem = this.createCartItem(product, pack, quantity, price, currency);
             //this.items.push(cartItem);
-            let row: CartProduct = {
-                product: product,
-                packs: [packItem],
-                $isSelected: true,
-                $isDeleted: false,
-                createdate: Date.now(),
-            };
+            let row = new CartProduct;
+            row.product = product;
+            row.packs.push(packItem),
+            row.$isSelected = true;
+            row.$isDeleted = false;
+            row.createdate = Date.now();
             this.items.push(row);
         } else {
-            let { packs } = cartItem;
             cartItem.$isSelected = true;
+            let { packs } = cartItem;
             let piPack = packs.find(v => v.pack.id === pack.id);
             if (piPack === undefined) {
                 packs.push(packItem);
@@ -165,9 +166,22 @@ export class Cart {
 
         for (let cp of this.items) {
             let { packs } = cp;
-            _.remove(packs, v => v.quantity === 0);
+            let packIndexes:number[] = [];
+            let len = packs.length;
+            for (let i=0; i<len; i++) {
+                if (packs[i].quantity === 0) packIndexes.push(i);
+            }
+            for (let i=packIndexes.length-1; i>=0; i--) packs.splice(packIndexes[i], 1);
+            //_.remove(packs, v => v.quantity === 0);
         }
-        _.remove(this.items, v => v.$isDeleted === true || v.packs.length === 0);
+        let itemIndexes:number[] = [];
+        let len = this.items.length;
+        for (let i=0; i<len; i++) {
+            let {$isDeleted, packs} = this.items[i];
+            if ($isDeleted === true || packs.length === 0) itemIndexes.push(i);
+        }
+        for (let i=itemIndexes.length-1; i>=0; i--) this.items.splice(itemIndexes[i], 1);
+        //_.remove(this.items, v => v.$isDeleted === true || v.packs.length === 0);
     }
 
     private async removeFromCart(rows: { product: BoxId, packItem: PackItem }[]): Promise<void> {
@@ -215,11 +229,12 @@ class CartRemote extends CartStore {
             };
             let cpi = cartDict[product.id];
             if (cpi === undefined) {
-                cpi = {
-                    product: product,
-                    packs: [packItem],
-                    createdate: createdate,
-                }
+                cpi = new CartProduct;
+                cpi.product = product;
+                cpi.packs.push(packItem);
+                cpi.createdate = createdate;
+                cpi.$isSelected = false;
+                cpi.$isDeleted = false;
                 cartProducts.push(cpi);
                 cartDict[product.id] = cpi;
                 continue;
@@ -274,21 +289,25 @@ class CartLocal extends CartStore {
             let cartstring = localStorage.getItem(LOCALCARTNAME);
             if (cartstring === null) return [];
             let cartData = JSON.parse(cartstring);
-            cartData.forEach(element => {
-                let { product, packs } = element;
-                element.product = this.productTuid.boxId(product);
+            let items = cartData.map(element => {
+                let cartProduct = new CartProduct;
+                let { product, packs, createdate } = element;
                 if (packs !== undefined) {
                     for (let p of packs) {
                         p.pack = this.packTuid.boxId(p.pack);
                     }
                 }
+                cartProduct.product = this.productTuid.boxId(product);
+                cartProduct.packs.push(...packs);
+                cartProduct.$isSelected = false;
+                cartProduct.$isDeleted = false;
+                cartProduct.createdate = createdate;
+                return cartProduct;
             });
-            return cartData;
-            //this.items.push(...cartData);
+            return items;
         }
         catch {
-            //localStorage.removeItem(LOCALCARTNAME);
-            //this.items.splice(0, this.items.length);
+            localStorage.removeItem(LOCALCARTNAME);
             return [];
         }
     }
@@ -310,7 +329,8 @@ class CartLocal extends CartStore {
             }
         });
 
-        localStorage.setItem(LOCALCARTNAME, JSON.stringify(items));
+        let text = JSON.stringify(items);
+        localStorage.setItem(LOCALCARTNAME, text);
     }
 
     async removeFromCart(rows: { product: BoxId, packItem: PackItem }[]) {
