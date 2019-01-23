@@ -171,8 +171,6 @@ export class CUsq extends Controller /* implements Usq*/ {
         catch(err) {
             console.error(err);
             return this.error = err;
-            //debugger;
-            //return err.message;
         }
     }
 

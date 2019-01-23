@@ -108,9 +108,15 @@ export class Entities {
     pendingArr: Pending[] = [];
 
     async loadAccess() {
-        let accesses = await this.usqApi.loadAccess();
-        if (accesses === undefined) return;
-        this.buildEntities(accesses);
+        try {
+            let accesses = await this.usqApi.loadAccess();
+            if (accesses === undefined) return;
+            this.buildEntities(accesses);
+        }
+        catch (err) {
+            let {usqOwner, usqName} = this.usqApi;
+            console.log(usqOwner + '/' + usqName + ' loadAccess error: ' + err.message);
+        }
     }
 
     async loadEntities() {
