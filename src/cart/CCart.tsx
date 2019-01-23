@@ -3,7 +3,7 @@ import { VCartLabel } from './VCartLabel';
 import { CCartApp } from 'CCartApp';
 import { VCart } from './VCart';
 import { Controller } from 'tonva-tools';
-import { Cart, RemoteCart, LocalCart } from './Cart';
+import { Cart } from './Cart';
 
 export class CCart extends Controller {
 
@@ -14,19 +14,18 @@ export class CCart extends Controller {
         super(res);
 
         this.cApp = cApp;
-        let { cUsqOrder, cUsqProduct, currentUser } = this.cApp;
+        this.cart = cApp.cart;
+        //let { cUsqOrder, cUsqProduct, currentUser } = this.cApp;
+        /*
         if (currentUser.isLogined)
-            this.cart = new RemoteCart(cUsqProduct, cUsqOrder);
+            this.cart = new CartRemote(cUsqProduct, cUsqOrder);
         else
             this.cart = new LocalCart(cUsqProduct);
+        */
     }
 
     protected async internalStart(param: any) {
         this.showVPage(VCart);
-    }
-
-    protected onDispose() {
-        this.cart.dispose();
     }
 
     /**

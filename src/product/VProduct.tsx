@@ -64,8 +64,8 @@ export class VProduct extends VPage<CProduct> {
         let { data } = context;
         let { pack, retail, currency } = data;
         let { cApp } = this.controller;
-        let { cCart } = cApp;
-        await cCart.cart.AddToCart(this.product.id, pack, value, retail, currency);
+        let { cart } = cApp;
+        await cart.AddToCart(this.product.id, pack, value, retail, currency);
     }
 
     //context:Context, name:string, value:number

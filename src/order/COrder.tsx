@@ -98,7 +98,7 @@ export class COrder extends Controller {
         let result: any = await this.orderSheet.save("order", this.orderData);
         await this.orderSheet.action(result.id, result.flow, result.state, "submit");
 
-        this.cApp.cCart.cart.clear(); //.removeFromCart(this.orderData.orderItems);
+        this.cApp.cart.clear(); //.removeFromCart(this.orderData.orderItems);
 
         // 打开订单显示界面
         this.closePage(1);

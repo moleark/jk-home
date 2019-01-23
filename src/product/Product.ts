@@ -70,7 +70,7 @@ export class Product {
         this.packRows = this.product.packx.map(v => {
             return {
                 pack: v,
-                quantity: this.cApp.cCart.cart.getQuantity(id, v.id),
+                quantity: this.cApp.cart.getQuantity(id, v.id),
             }
         });
 

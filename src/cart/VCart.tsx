@@ -4,7 +4,6 @@ import { CCart } from './CCart';
 import { List, LMR, FA } from 'tonva-react-form';
 import { tv, BoxId } from 'tonva-react-usql';
 import { observer } from 'mobx-react';
-import { CartItem } from './Cart';
 import { MinusPlusWidget, PackItem } from '../tools';
 
 const cartSchema = [
@@ -45,95 +44,6 @@ export class VCart extends VPage<CCart> {
     async showEntry() {
         this.openPage(this.page);
     }
-
-    private updateChecked = async (item: any) => {
-
-        let input = this.checkBoxs[item.pack.id];
-        await this.controller.cart.updateChecked(item, input.checked);
-    }
-    /**
-     *
-     */
-    /*
-    private updateQuantity = async (item: any) => {
-
-        let input = this.inputRefs[item.pack.id];
-        await this.controller.cart.updateQuantity(item, Number(input.value));
-    }
-
-    private minusQuantity = async (item: any) => {
-
-        if (item.quantity > 1)
-            await this.controller.cart.updateQuantity(item, item.quantity - 1);
-    }
-
-    private plusQuantity = async (item: any) => {
-
-        await this.controller.cart.updateQuantity(item, item.quantity + 1);
-    }
-    */
-    private renderProduct = (product: any) => <strong>{product.description}</strong>
-    private renderPack = (pack: any) => {
-        return <>{(pack.radiox === 1 ? "" : pack.radiox + '*') + pack.radioy + pack.unit}</>
-    }
-    private renderItem = (cartItem: CartItem) => {
-        let { product, pack, price, quantity } = cartItem;
-        let left = <img src="favicon.ico" alt="structure image" />;
-        let right = <div className="w-6c text-right">
-            <span className="text-primary">{quantity}</span>
-        </div>;
-        return <LMR left={left} right={right} className="px-3 py-2">
-            <div className="px-3">
-                <div>
-                    {tv(product, this.renderProduct)}
-                </div>
-                <div className="row">
-                    <div className="col-3">{tv(pack, this.renderPack)}</div>
-                    <div className="col-3"><strong className="text-danger">{price}</strong></div>
-                </div>
-                <div className="row">
-                    <div className="col-12">货期</div>
-                </div>
-            </div>
-        </LMR>
-    }
-    /*
-    private onCartItemRender = (cartItem: CartItem) => {
-        let { isDeleted } = cartItem;
-        let prod = <>
-            {this.renderItem(cartItem)}
-        </>;
-        let input = <input
-            className="text-center"
-            style={{ width: "60px" }}
-            ref={(input) => this.mapInputRef(input, cartItem)}
-            type="number"
-            onChange={() => this.updateQuantity(cartItem)} disabled={isDeleted} />;
-        let onClick, btnContent;
-        let mid;
-        if (isDeleted === true) {
-            mid = <del>{prod}</del>;
-            onClick = () => cartItem.isDeleted = false;
-            btnContent = <FA name="rotate-left" />;
-        }
-        else {
-            mid = <div>
-                {prod}
-            </div>
-            onClick = () => cartItem.isDeleted = true;
-            btnContent = <FA name="trash-o" />;
-        }
-        let button = <button className="btn btn-light" type="button" onClick={onClick}>{btnContent}</button>;
-        return <LMR className="px-2 py-2"
-            left={<input className="mr-3"
-                type="checkbox"
-                ref={(input) => this.mapCheckBox(input, cartItem)}
-                onChange={() => this.updateChecked(cartItem)} disabled={isDeleted} />}
-            right={<>{button}</>}>
-            {mid}
-        </LMR>;
-    }
-    */
 
     protected CheckOutButton = observer(() => {
         let { checkOut, cart } = this.controller;
@@ -215,57 +125,10 @@ export class VCart extends VPage<CCart> {
         }
     }
 
-    private cartData = {
-        list: [
-            {
-                product: { discription: 'aaa' },
-                packs: [
-                    {
-                        pack: { name: '1g' },
-                        quantity: 10,
-                        price: 12.10,
-                    },
-                    {
-                        pack: { name: '10g' },
-                        quantity: 12,
-                        price: 22.10,
-                    }
-                ]
-            },
-            {
-                product: { discription: 'bbb' },
-                packs: [
-                    {
-                        pack: { name: '1g' },
-                        quantity: 13,
-                        price: 12.10,
-                    },
-                    {
-                        pack: { name: '10g' },
-                        quantity: 14,
-                        price: 22.10,
-                    }
-                ]
-            }
-        ]
-    };
-
     protected cartForm = observer(() => {
         let { cart } = this.controller;
         let cartData = {
             list: cart.items,
-            /*
-            .map(v => {
-                return {
-                    $isSelected: (v as any).$isSelected,
-                    product: v.product,
-                    packs: [{
-                        pack: v.pack,
-                        quantity: v.quantity,
-                        price: v.price,
-                    }]
-                }
-            })*/
         };
         return <Form className="bg-white" schema={cartSchema} uiSchema={this.uiSchema} formData={cartData} />
     });
@@ -301,12 +164,5 @@ export class VCart extends VPage<CCart> {
             <this.cartForm />
             <footer className="m-3"><this.CheckOutButton /></footer>
         </div>
-        /*
-            <div className="row">
-            <div className="col-12">
-                <List items={cart.items} item={{ render: this.onCartItemRender }} />
-            </div>
-        </div>
-        */
     };
 }
