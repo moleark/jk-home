@@ -57,16 +57,7 @@ export class Product {
     async load(id: number) {
         this.id = this.productTuid.boxId(id);
         let { currentSalesRegion, currentUser } = this.cApp;
-        let promises: PromiseLike<any>[] = [];
-        promises.push(this.productTuid.load(id));
-        promises.push(this.productChemicalMap.obj({ product: id }));
-        promises.push(this.priceMap.table({ product: id, salesRegion: currentSalesRegion.id }));
-        promises.push(this.getFutureDeliveryTimeDescription(id, currentSalesRegion.id));
-        let results = await Promise.all(promises);
-
-        let p = 0;
-        this.product = results[p++];
-        //let {packx} = this.product;
+        this.product = await this.productTuid.load(id);
         this.packRows = this.product.packx.map(v => {
             return {
                 pack: v,
@@ -74,6 +65,19 @@ export class Product {
             }
         });
 
+        let promises: PromiseLike<any>[] = [];
+        promises.push(this.productChemicalMap.obj({ product: id }));
+        promises.push(this.priceMap.table({ product: id, salesRegion: currentSalesRegion.id }));
+        promises.push(this.getFutureDeliveryTimeDescription(id, currentSalesRegion.id));
+        if (currentUser.hasCustomer) {
+            promises.push(this.getCustomerDiscount.obj({ brand: this.product.brand, customer: currentUser.currentCustomer }));
+        }
+        let inventoryAllocationPromises = this.packRows.map(v => {
+            return this.getInventoryAllocationQuery.table({ product:this.product, pack:v.pack, salesRegion: currentSalesRegion });
+        });
+        promises.push(Promise.all(inventoryAllocationPromises));
+        let results = await Promise.all(promises);
+        let p = 0;
         this.productChemical = results[p++];
         if (this.productChemical) {
             this.product.chemical = this.productChemical.chemical;
@@ -81,21 +85,24 @@ export class Product {
         }
 
         let prices: any[] = results[p++];
-        let discount = 0;
-        if (currentUser.hasCustomer) {
-            let discountSetting = await this.getCustomerDiscount.obj({ brand: this.product.brand, customer: currentUser.currentCustomer });
-            discount = discountSetting && discountSetting.discount;
-        }
         prices.forEach(element => {
             element.vipprice = element.price * (1 - discount);
             element.currency = currentSalesRegion.currency;
         });
 
         let fd = results[p++];
-        for (let index = 0; index < this.packRows.length; index++) {
-            const element = this.packRows[index];
+
+        let discount = 0;
+        if (currentUser.hasCustomer) {
+            let discountSetting = results[p++];
+            discount = discountSetting && discountSetting.discount;
+        }
+
+        let allocationResults = results[p++];
+        for (let i=0; i < allocationResults.length; i++) {
+            const element = this.packRows[i];
             element.futureDeliveryTimeDescription = fd;
-            element.inventoryAllocation = await this.getInventoryAllocations(this.product.id, element.pack.id, currentSalesRegion);
+            element.inventoryAllocation = allocationResults[i];
         };
         this.packRows.forEach(v => {
             let price = prices.find(x => x.pack.id === v.pack.id);
@@ -106,12 +113,6 @@ export class Product {
             }
             v.currency = currentSalesRegion.currency;
         })
-    }
-
-    private getInventoryAllocations = async (productId: number, packId: number, salesRegionId: number) => {
-
-        let allocation = await this.getInventoryAllocationQuery.table({ product: productId, pack: packId, salesRegion: salesRegionId });
-        return allocation;
     }
 
     private getFutureDeliveryTimeDescription = async (productId: number, salesRegionId: number) => {

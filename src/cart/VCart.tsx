@@ -25,22 +25,6 @@ const cartSchema = [
 ];
 
 export class VCart extends VPage<CCart> {
-
-    private inputRefs: { [item: number]: HTMLInputElement } = {}
-    private checkBoxs: { [packId: number]: HTMLInputElement } = {}
-
-    private mapInputRef = (input: HTMLInputElement | null, item: any) => {
-        if (input === null) return;
-        input.value = item.quantity;
-        return this.inputRefs[item.pack.id] = input;
-    }
-
-    private mapCheckBox = (input: HTMLInputElement | null, item: any) => {
-        if (input === null) return;
-        input.checked = item.checked || false;
-        return this.checkBoxs[item.pack.id] = input;
-    }
-
     async showEntry() {
         this.openPage(this.page);
     }
@@ -60,16 +44,6 @@ export class VCart extends VPage<CCart> {
 
     render(params: any): JSX.Element {
         return <this.tab />;
-    }
-
-    private onQuantityChanged = async (context: RowContext, value: any, prev: any) => {
-        //let { row } = context;
-        let { data, parentData } = context;
-        let { product } = parentData;
-        let { pack, price, quantity, currency } = data as PackItem;
-        //let { retail, currency } = pack;
-        let { cCart } = this.controller.cApp;
-        await cCart.cart.AddToCart(product, pack, value, price, currency);
     }
 
     private productRow = (item: any) => {
@@ -102,6 +76,7 @@ export class VCart extends VPage<CCart> {
                 Templet: this.productRow,
                 ArrContainer: (label: any, content: JSX.Element) => content,
                 RowContainer: (content: JSX.Element) => <div className="py-3">{content}</div>,
+                //onStateChanged: this.controller.onRowStateChanged,
                 items: {
                     packs: {
                         widget: 'arr',
@@ -116,9 +91,9 @@ export class VCart extends VPage<CCart> {
                                 widget: 'custom',
                                 className: 'text-center',
                                 WidgetClass: MinusPlusWidget,
-                                onChanged: this.onQuantityChanged
+                                onChanged: this.controller.onQuantityChanged
                             }
-                        }
+                        },
                     } as UiArr
                 }
             } as UiArr
@@ -127,9 +102,7 @@ export class VCart extends VPage<CCart> {
 
     protected cartForm = () => {
         let { cart } = this.controller;
-        let cartData = {
-            list: cart.items,
-        };
+        let cartData = cart.data;
         return <Form className="bg-white" schema={cartSchema} uiSchema={this.uiSchema} formData={cartData} />
     };
 
@@ -137,12 +110,19 @@ export class VCart extends VPage<CCart> {
         return <div className="py-5 text-center bg-white">你的购物车空空如也</div>
     }
 
+    private test = () => {
+        let {cart} = this.controller;
+        let row = cart.items[0];
+        row.packs[0].quantity = row.packs[0].quantity + 1;
+    }
+
+    private testButton = () => <button onClick={()=>this.test()}>test</button>;
+
     private page = observer((params: any): JSX.Element => {
         let { cart } = this.controller;
         if (cart.count.get() === 0) {
             return <Page header="购物车">{this.empty()}</Page>;
         }
-
         return <Page header="购物车" footer={<this.CheckOutButton />}>
             <this.cartForm />
         </Page>;

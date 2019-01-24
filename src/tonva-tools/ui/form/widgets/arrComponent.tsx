@@ -4,7 +4,7 @@ import classNames from 'classnames';
 //import { ArrRow } from '../arrRow';
 import { Context, RowContext, ContextContainer } from '../context';
 import { ArrSchema } from '../schema';
-import { UiArr, TempletType } from '../uiSchema';
+import { UiArr, TempletType, RowStateChangedHandler } from '../uiSchema';
 import { Unknown } from './unknown';
 import { factory } from './factory';
 
@@ -19,6 +19,7 @@ export const ArrComponent = observer((
     let arrLabel = name;
     let Templet:TempletType;
     let selectable:boolean, deletable:boolean, restorable:boolean;
+    let onStateChanged: RowStateChangedHandler;
     let {ArrContainer, RowContainer, RowSeperator, uiSchema} = form;
     if (uiSchema !== undefined) {
         let {selectable:formSelectable, deletable:formDeletable, restorable:formRestorable} = uiSchema;
@@ -29,8 +30,10 @@ export const ArrComponent = observer((
     if (ui !== undefined) {
         let {widget:widgetType, label, 
             selectable:arrSelectable, deletable:arrDeletable, restorable:arrRestorable,
-            ArrContainer:ac, RowContainer:rc, RowSeperator:rs
+            ArrContainer:ac, RowContainer:rc, RowSeperator:rs,
+            onStateChanged: osc
         } = ui;
+        onStateChanged = osc;
         if (arrSelectable !== undefined) selectable = arrSelectable;
         if (arrDeletable !== undefined) deletable = arrDeletable;
         if (arrRestorable !== undefined) restorable = arrRestorable;
@@ -87,6 +90,7 @@ export const ArrComponent = observer((
                             row.$isSelected = checked;
                             let {$source} = row;
                             if ($source !== undefined) $source.$isSelected = checked;
+                            if (onStateChanged !== undefined) onStateChanged(rowContext, checked, undefined);
                             rowContext.removeErrors();
                         }
                         selectCheck = <div className="form-row-checkbox">
@@ -97,6 +101,7 @@ export const ArrComponent = observer((
                     if (deletable === true) {
                         let icon = isDeleted? 'fa-undo' : 'fa-trash';
                         let onDelClick = () => {
+                            if (onStateChanged !== undefined) onStateChanged(rowContext, undefined, !isDeleted);
                             if (restorable === true) {
                                 row.$isDeleted = !isDeleted;
                                 let {$source} = row;

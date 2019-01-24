@@ -2,11 +2,11 @@ import { observable, computed, autorun, IReactionDisposer, IObservableArray } fr
 //import _ from 'lodash';
 import { CUsq, Action, Query, TuidMain, TuidDiv, BoxId } from 'tonva-react-usql';
 import { PackItem } from '../tools';
-import { CCartApp } from 'CCartApp';
+import { CCartApp } from '../CCartApp';
 
-export class CartProduct {
+export interface CartProduct {
     product: BoxId;
-    @observable packs: PackItem[] = [];
+    packs: PackItem[];
     $isSelected?: boolean;
     $isDeleted?: boolean;
     createdate: number;
@@ -30,7 +30,10 @@ export class Cart {
     private cartStore: CartStore;
     private disposer: IReactionDisposer;
 
-    items: IObservableArray<CartProduct> = observable<CartProduct>([], {deep: true});
+    @observable data: any = {
+        list: observable<CartProduct>([]),
+    };
+    items: CartProduct[];
     count = observable.box<number>(0);
     amount = observable.box<number>(0);
 
@@ -39,6 +42,7 @@ export class Cart {
         let {cUsqProduct, cUsqOrder} = cCartApp;
         this.cUsqProduct = cUsqProduct;
         this.cUsqOrder = cUsqOrder;
+        this.items = this.data.list;
         this.disposer = autorun(this.calcSum);
     }
 
@@ -69,13 +73,13 @@ export class Cart {
         if (this.cCartApp.isLogined === false) {
             this.cartStore = new CartLocal(this, this.cUsqProduct);
             let items = await this.cartStore.load();
-            (this.items as IObservableArray).replace(items);
+            this.items.push(...items);
             return;
         }
         if (this.cartStore === undefined) {
             this.cartStore = new CartRemote(this, this.cUsqOrder);
             let items = await this.cartStore.load();
-            (this.items as IObservableArray).replace(items);
+            this.items.push(...items);
             return;
         }
         let cartLocal = this.cartStore as CartLocal;
@@ -95,7 +99,7 @@ export class Cart {
     }
 
     getQuantity(productId: number, packId: number): number {
-        let cp = this.items.find(v => v.product.id === productId);
+        let cp = this.items.find(v => v.$isDeleted!==true && v.product.id === productId);
         if (cp === undefined) return 0;
         let packItem = cp.packs.find(v => v.pack.id === packId);
         if (packItem === undefined) return 0;
@@ -118,16 +122,21 @@ export class Cart {
         if (!cartItem) {
             //cartItem = this.createCartItem(product, pack, quantity, price, currency);
             //this.items.push(cartItem);
-            let row = new CartProduct;
+            let row: CartProduct = {} as any;
             row.product = product;
+            row.packs = [];
             row.packs.push(packItem),
             row.$isSelected = true;
             row.$isDeleted = false;
             row.createdate = Date.now();
             this.items.push(row);
         } else {
+            let { $isDeleted, packs } = cartItem;
+            if ($isDeleted === true) {
+                cartItem.$isDeleted = false;
+                packs.splice(0);
+            }
             cartItem.$isSelected = true;
-            let { packs } = cartItem;
             let piPack = packs.find(v => v.pack.id === pack.id);
             if (piPack === undefined) {
                 packs.push(packItem);
@@ -229,8 +238,9 @@ class CartRemote extends CartStore {
             };
             let cpi = cartDict[product.id];
             if (cpi === undefined) {
-                cpi = new CartProduct;
+                cpi = {} as any; //new CartProduct;
                 cpi.product = product;
+                cpi.packs = [];
                 cpi.packs.push(packItem);
                 cpi.createdate = createdate;
                 cpi.$isSelected = false;
@@ -290,7 +300,7 @@ class CartLocal extends CartStore {
             if (cartstring === null) return [];
             let cartData = JSON.parse(cartstring);
             let items = cartData.map(element => {
-                let cartProduct = new CartProduct;
+                let cartProduct: CartProduct = {} as any;
                 let { product, packs, createdate } = element;
                 if (packs !== undefined) {
                     for (let p of packs) {
@@ -298,6 +308,7 @@ class CartLocal extends CartStore {
                     }
                 }
                 cartProduct.product = this.productTuid.boxId(product);
+                cartProduct.packs = [];
                 cartProduct.packs.push(...packs);
                 cartProduct.$isSelected = false;
                 cartProduct.$isDeleted = false;
