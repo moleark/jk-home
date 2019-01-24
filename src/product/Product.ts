@@ -1,21 +1,6 @@
 import { BoxId, TuidMain, TuidDiv, Map, Query } from 'tonva-react-usql';
 import { CCartApp } from 'CCartApp';
 
-/*
-import { Pack } from './Pack';
-
-export class Product {
-    id: number;
-
-    brandId: number;
-    brandName: string;
-
-    description: string;
-    packs: Pack[] = [];
-}
-*/
-
-
 export interface PackRow {
     pack: BoxId;
     //price: number;
