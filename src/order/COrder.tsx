@@ -36,31 +36,31 @@ export class COrder extends Controller {
 
         this.orderData.webUser = this.cApp.currentUser.id;
         // this.orderData.customer = cCartApp.currentUser.currentCustomer;
+        let defaultSetting = undefined;
 
         if (this.orderData.shippingContact === undefined) {
-
-            let contactArr: any[] = await this.cApp.currentUser.getShippingContacts();
-            if (contactArr && contactArr.length > 0) {
-                let contactWapper = contactArr.find((element: any) => {
-                    if (element.isDefault === true)
-                        return element;
-                });
-                if (!contactWapper)
-                    contactWapper = contactArr[0];
-                this.setContact(contactWapper.contact, ContactType.ShippingContact);
+            defaultSetting = this.cApp.currentUser.getSetting();
+            if (defaultSetting.defaultShippingContact) {
+                this.setContact(defaultSetting.defaultShippingContact, ContactType.ShippingContact);
+            } else {
+                let contactArr: any[] = await this.cApp.currentUser.getContacts();
+                if (contactArr && contactArr.length > 0) {
+                    this.setContact(contactArr[0].contact, ContactType.ShippingContact);
+                }
             }
         }
-        if (this.orderData.invoiceContact === undefined) {
 
-            let contactArr: any[] = await this.cApp.currentUser.getInvoiceContacts();
-            if (contactArr && contactArr.length > 0) {
-                let contactWapper = contactArr.find((element: any) => {
-                    if (element.isDefault === true)
-                        return element;
-                });
-                if (!contactWapper)
-                    contactWapper = contactArr[0];
-                this.setContact(contactWapper.contact, ContactType.InvoiceContact);
+        if (this.orderData.invoiceContact === undefined) {
+            if (defaultSetting === undefined) {
+                defaultSetting = this.cApp.currentUser.getSetting();
+            }
+            if (defaultSetting.defaultInvoiceContact) {
+                this.setContact(defaultSetting.defaultInvoiceContact, ContactType.InvoiceContact);
+            } else {
+                let contactArr: any[] = await this.cApp.currentUser.getContacts();
+                if (contactArr && contactArr.length > 0) {
+                    this.setContact(contactArr[0].contact, ContactType.InvoiceContact);
+                }
             }
         }
 

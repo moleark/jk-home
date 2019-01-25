@@ -110,7 +110,7 @@ export class VProduct extends VPage<CProduct> {
             </div>
         </LMR>
         return <Page header={header} right={cartLabel}>
-            <div className="px-2 py-2 bg-white">{tv(id, productRow)}</div>
+            <div className="px-2 py-2 bg-white mb-1">{tv(id, productRow)}</div>
             <Form schema={schema} uiSchema={this.uiSchema} formData={this.data} />
         </Page>
     })

@@ -28,11 +28,11 @@ export class VAddressList extends VPage<CUser> {
 
     private page = () => {
 
-        let { contactType, onContactEdit, userShippingContacts, userInvoiceContacts } = this.controller;
+        let { contactType, onContactEdit, userContacts } = this.controller;
         let footer = <button type="button" className="btn btn-primary w-100" onClick={() => onContactEdit()} >添加新地址</button>;
-        let contactList = <List items={userShippingContacts} item={{ render: this.onContactRender }} none="你还没有设置收货地址，请添加新地址" />;
+        let contactList = <List items={userContacts} item={{ render: this.onContactRender }} none="你还没有设置收货地址，请添加新地址" />;
         if (contactType === ContactType.InvoiceContact)
-            contactList = <List items={userInvoiceContacts} item={{ render: this.onContactRender }} none="你还没有设置发票地址，请添加新地址" />
+            contactList = <List items={userContacts} item={{ render: this.onContactRender }} none="你还没有设置发票地址，请添加新地址" />
         return <Page footer={footer} header="管理地址">
             {contactList}
         </Page>
