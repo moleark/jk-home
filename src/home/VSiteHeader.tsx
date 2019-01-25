@@ -20,7 +20,7 @@ export class VSiteHeader extends View<CHome> {
         </div>;*/
         return <LMR className="px-1 py-2 mb-3 align-items-center bg-white" left={left} right={right}>
             <div className="">
-                {this.controller.renderSearchHeader('lg')}
+                {this.controller.renderSearchHeader('md')}
             </div>
         </LMR>
         //<div className="h4 px-3 mb-0">百灵威科技</div>
