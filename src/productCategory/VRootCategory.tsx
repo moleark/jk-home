@@ -10,13 +10,13 @@ const imgStyle: React.CSSProperties = {
     marginRight: '0.3rem'
 }
 
-const titleTitle: React.CSSProperties = {
+export const titleTitle: React.CSSProperties = {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
 }
 
-const subStyle: React.CSSProperties = {
+export const subStyle: React.CSSProperties = {
     fontSize: '0.75rem',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -25,56 +25,56 @@ const subStyle: React.CSSProperties = {
 
 export class VRootCategory extends View<CProductCategory> {
 
-    private categoryClick = async (categoryWapper: any) => {
-
-        await this.controller.openMainPage(categoryWapper);
+    private categoryClick = async (categoryWapper: any, parent: any) => {
+        await this.controller.openMainPage(categoryWapper, parent);
     }
 
-    private renderRootCategory = (item: any) => {
-        let { productCategory, name, children } = item;
+    private renderRootCategory = (item: any, parent: any) => {
+        let { name, children } = item;
         return <div className="bg-white mb-3" key={name}>
-            <div className="py-2 px-3 cursor-pointer" onClick={() => this.categoryClick(item)}>
+            <div className="py-2 px-3 cursor-pointer" onClick={() => this.categoryClick(item, undefined)}>
                 <b>{name}</b>
             </div>
-            <div className="" 
-                style={{paddingRight:'1px'}}
-                >
+            <div className=""
+                style={{ paddingRight: '1px' }}
+            >
                 <div className="row no-gutters">
-                    {children.map(v => this.renderSubCategory(v))}
+                    {children.map(v => this.renderSubCategory(v, item))}
                 </div>
             </div>
         </div>
     }
 
-    private renderSubCategory = (item: any) => {
+    private renderSubCategory = (item: any, parent: any) => {
         let { name, children } = item;
         return <div key={name}
             className="col-6 col-md-4 col-lg-3 cursor-pointer"
             //style={{borderRight:'1px solid gray', borderBottom:'1px solid gray'}}
-            onClick={() => this.categoryClick(item)}>
-            <div className="pt-1 pb-1 px-2" 
-                style={{border:'1px solid #eeeeee', marginRight: '-1px', marginBottom: '-1px'}}
-                >
+            onClick={() => this.categoryClick(item, parent)}>
+            <div className="pt-1 pb-1 px-2"
+                style={{ border: '1px solid #eeeeee', marginRight: '-1px', marginBottom: '-1px' }}
+            >
                 <div style={titleTitle}>
                     <span className="ml-1 align-middle">
                         <FA name="chevron-circle-right" className="text-info" />
                         &nbsp; {name}
                     </span>
                 </div>
-                {this.renderThirdCategory(children)}
+                {renderThirdCategory(children)}
             </div>
         </div>;
         // <img src={consts.appIcon} alt="structure" style={imgStyle} />
     }
 
-    private renderThirdCategory(items: any) {
-        return <div className="py-1 text-muted small" style={subStyle}>
-            {items.length===0? <>&nbsp;</>:items.map(v => v.name).join(' / ')}
-        </div>
-    }
-
     render(param: any): JSX.Element {
-        let { rootCategories } = this.controller;
-        return <>{rootCategories.map(v => this.renderRootCategory(v))}</>;
+        let { categories } = this.controller;
+        return <>{categories.map(v => this.renderRootCategory(v, undefined))}</>;
     }
+}
+
+
+export function renderThirdCategory(items: any) {
+    return <div className="py-1 text-muted small" style={subStyle}>
+        {items.length === 0 ? <>&nbsp;</> : items.map(v => v.name).join(' / ')}
+    </div>
 }
