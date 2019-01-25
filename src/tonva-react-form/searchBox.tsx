@@ -1,5 +1,6 @@
 import * as React from 'react';
-import * as classNames from 'classnames';
+import classNames from 'classnames';
+import { observable } from 'mobx';
 
 export interface SearchBoxProps {
     className?: string;
@@ -14,35 +15,42 @@ export interface SearchBoxProps {
     onSearch: (key:string)=>Promise<void>;
 }
 
+/*
 export interface SearchBoxState {
     disabled: boolean;
-}
+}*/
 
-export class SearchBox extends React.Component<SearchBoxProps, SearchBoxState> {
+export class SearchBox extends React.Component<SearchBoxProps> { //}, SearchBoxState> {
     private input: HTMLInputElement;
-    private key: string;
+    private key: string = null;
+    @observable private disabled: boolean;
 
-    constructor(props) {
+    /*
+    constructor(props: SearchBoxProps) {
         super(props);
         this.state = {
             disabled: false,
         }
-    }
-    onChange = (evt: React.ChangeEvent<any>) => {
+    }*/
+
+    private onChange = (evt: React.ChangeEvent<any>) => {
         this.key = evt.target.value;
         if (this.key !== undefined) {
             this.key = this.key.trim();
         }
-        this.setState({disabled: !this.key});
+        this.disabled = !this.key;
+        //this.setState({disabled: !this.key});
     }
+    /*
     ref = (input: HTMLInputElement) => {
         this.input = input;
         this.key = this.props.initKey || '';
         if (input === null) return;
         input.value = this.key;
-    }
+    }*/
     onSubmit = async (evt: React.FormEvent<any>) => {
         evt.preventDefault();
+        if (this.key === null) this.key = this.props.initKey || '';
         if (!this.key) return;
         if (this.input) this.input.disabled = true;
         await this.props.onSearch(this.key);
@@ -51,29 +59,30 @@ export class SearchBox extends React.Component<SearchBoxProps, SearchBoxState> {
     render() {
         let {className, inputClassName, buttonClassName,
             label, placeholder, buttonText, maxLength, size} = this.props;
-        let inputSize;
+        let inputSize:string;
         switch (size) {
             default:
             case 'sm': inputSize = 'input-group-sm'; break;
             case 'md': inputSize = 'input-group-md'; break;
             case 'lg': inputSize = 'input-group-lg'; break;
         }
-        let lab;
+        let lab:any;
         if (label !== undefined) lab = <label className="input-group-addon">{label}</label>;
         return <form className={className} onSubmit={this.onSubmit} >
             <div className={classNames("input-group", inputSize)}>
                 {lab}
-                <input onChange={this.onChange} 
+                <input onChange={this.onChange}
                     type="text" 
                     name="key"
-                    ref={this.ref}
+                    //ref={this.ref}
                     className={classNames('form-control', inputClassName || 'border-primary')} 
                     placeholder={placeholder}
+                    defaultValue={this.props.initKey}
                     maxLength={maxLength} />
                 <div className="input-group-append">
                     <button className={classNames('btn', buttonClassName || 'btn-primary')}
                         type="submit"
-                        disabled={this.state.disabled}>
+                        disabled={this.disabled}>
                         <i className='fa fa-search' />
                         <i className="fa"/>
                         {buttonText}

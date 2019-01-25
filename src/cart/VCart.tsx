@@ -57,11 +57,11 @@ export class VCart extends VPage<CCart> {
     private packsRow = (item: any) => {
         let { pack, quantity, price } = item;
         //let {name} = pack;
-        return <div className="d-flex align-items-center">
-            <div className="d-flex flex-grow-1">
-                <div className="flex-grow-1">{tv(pack)}</div>
-                <div className="w-6c mr-4 text-right"><span className="text-danger h5">{price}</span>元</div>
-            </div>
+        //<div className="d-flex flex-grow-1">
+        //</div>
+        return <div className="d-flex align-items-center px-2">
+            <div className="flex-grow-1">{tv(pack)}</div>
+            <div className="w-6c mr-4 text-right"><span className="text-danger h5">{price}</span>元</div>
             <Field name="quantity" />
         </div>;
     }

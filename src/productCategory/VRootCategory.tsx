@@ -2,6 +2,7 @@ import * as React from 'react';
 import { View } from 'tonva-tools';
 import { CProductCategory } from './CProductCategory';
 import { consts } from '../home/consts';
+import { FA } from 'tonva-react-form';
 
 const imgStyle: React.CSSProperties = {
     height: '1.5rem', width: '1.5rem',
@@ -55,12 +56,15 @@ export class VRootCategory extends View<CProductCategory> {
                 style={{border:'1px solid #eeeeee', marginRight: '-1px', marginBottom: '-1px'}}
                 >
                 <div style={titleTitle}>
-                    <img src={consts.appIcon} alt="structure" style={imgStyle} />
-                    <span className="ml-1 align-middle">{name}</span>
+                    <span className="ml-1 align-middle">
+                        <FA name="chevron-circle-right" className="text-info" />
+                        &nbsp; {name}
+                    </span>
                 </div>
                 {this.renderThirdCategory(children)}
             </div>
-        </div>
+        </div>;
+        // <img src={consts.appIcon} alt="structure" style={imgStyle} />
     }
 
     private renderThirdCategory(items: any) {

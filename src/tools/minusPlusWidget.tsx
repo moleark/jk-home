@@ -76,7 +76,7 @@ export class MinusPlusWidget extends UpdownWidget {
         else {
             minusClick = this.minusClick;
             plusClick = this.plusClick;
-            minusColor = 'text-black-50';
+            minusColor = 'text-danger-2'; //'text-black-50';
             plusColor = 'text-danger';
         }
         let minus = <i className={classNames('fa',
