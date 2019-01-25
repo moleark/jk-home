@@ -66,18 +66,21 @@ export class MinusPlusWidget extends UpdownWidget {
         let hasFocus = this.hasFocus; // document.hasFocus() && document.activeElement === this.input;
         let hasAction = this.readOnly !== true && this.disabled !== true;
         let hasValue = this.value !== NaN && this.value !== undefined && this.value > 0;
-        let cursorPointer:string, color:string, minusClick:any, plusClick:any;
+        let cursorPointer:string, 
+            minusColor:string, minusClick:any, 
+            plusColor:string, plusClick:any;
         if (this.disabled===true) {
             cursorPointer = 'cursor-pointer';
-            color = 'text-light';
+            minusColor = plusColor = 'text-light';
         }
         else {
             minusClick = this.minusClick;
             plusClick = this.plusClick;
-            color = 'text-danger';
+            minusColor = 'text-black-50';
+            plusColor = 'text-danger';
         }
         let minus = <i className={classNames('fa',
-                    'fa-minus-circle', 'fa-lg', color, cursorPointer,
+                    'fa-minus-circle', 'fa-lg', minusColor, cursorPointer,
                     {invisible: !(hasFocus === true || hasAction === true && hasValue === true)})}
                 onClick={minusClick} />;
         let input = <input ref={this.ref}
@@ -95,12 +98,18 @@ export class MinusPlusWidget extends UpdownWidget {
             maxLength={10} />;
 
         let plus = <i className={classNames('fa fa-plus-circle fa-lg',
-            color, cursorPointer,
+            plusColor, cursorPointer,
             {invisible: !(hasAction === true)})}
             onClick={plusClick} />;
         return <div className="d-flex align-items-center">{minus}{input}{plus}
             {this.renderErrors()}
         </div>;
+        /*
+        return <div className="input-group w-6c">
+            <div className="input-group-prepend">{minus}</div>
+            {input}
+            <div className="input-group-append">{plus}</div>
+        </div>*/
     });
 
     render() {

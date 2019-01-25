@@ -3,6 +3,8 @@ import * as classNames from 'classnames';
 
 export interface SearchBoxProps {
     className?: string;
+    inputClassName?: string;
+    buttonClassName?: string;
     label?: string;
     initKey?: string;
     placeholder?: string;
@@ -47,7 +49,8 @@ export class SearchBox extends React.Component<SearchBoxProps, SearchBoxState> {
         if (this.input) this.input.disabled = false;
     }
     render() {
-        let {className, label, placeholder, buttonText, maxLength, size} = this.props;
+        let {className, inputClassName, buttonClassName,
+            label, placeholder, buttonText, maxLength, size} = this.props;
         let inputSize;
         switch (size) {
             default:
@@ -64,11 +67,11 @@ export class SearchBox extends React.Component<SearchBoxProps, SearchBoxState> {
                     type="text" 
                     name="key"
                     ref={this.ref}
-                    className="form-control" 
+                    className={classNames('form-control', inputClassName || 'border-primary')} 
                     placeholder={placeholder}
                     maxLength={maxLength} />
                 <div className="input-group-append">
-                    <button className="btn btn-primary"
+                    <button className={classNames('btn', buttonClassName || 'btn-primary')}
                         type="submit"
                         disabled={this.state.disabled}>
                         <i className='fa fa-search' />
