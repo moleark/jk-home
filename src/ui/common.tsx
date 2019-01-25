@@ -27,8 +27,10 @@ export const productUI: TuidUI = {
     divs: {
         packx: {
             content: (values: any) => {
-                let { radiox, radioy, unit } = values;
-                return <>{(radiox !== 1 ? radiox + "*" : "") + radioy + unit}</>;
+                let {radiox, radioy, unit} = values;
+                if (radioy === 0) return <>{radiox} {unit}</>;
+                if (radiox !== 1) return <>{radiox} &#2df; {radiox}{unit}</>;
+                return <>{radioy}{unit}</>;
             }
         }
     }

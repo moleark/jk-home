@@ -47,3 +47,13 @@
   justify-content: center;
   border-radius: 0.6rem;
 }
+
+.text-danger-1 {
+  color: #ffc0c0;
+}
+.text-danger-2 {
+  color: #ff8080;
+}
+.text-danger-3 {
+  color: #ff4040;
+}
