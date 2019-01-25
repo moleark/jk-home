@@ -10,8 +10,10 @@ import { CUser } from 'customer/CPerson';
 import { CMember } from 'member/CMember';
 import { WebUser } from 'CurrentUser';
 import { consts } from './home/consts';
+import { Cart } from './cart/Cart';
 
 export class CCartApp extends CApp {
+    cart: Cart;
 
     currentSalesRegion: any;
     currentLanguage: any;
@@ -35,7 +37,6 @@ export class CCartApp extends CApp {
     cMember: CMember;
 
     protected async internalStart() {
-        console.log('CCartApp.internalStart');
         this.cUsqOrder = this.getCUsq(consts.usqOrder);
         this.cUsqProduct = this.getCUsq(consts.usqProduct);
         this.cUsqCommon = this.getCUsq(consts.usqCommon);
@@ -55,6 +56,8 @@ export class CCartApp extends CApp {
         if (this.isLogined)
             this.currentUser.user = this.user;
 
+        this.cart = new Cart(this);
+
         this.cProductCategory = new CProductCategory(this, undefined);
         this.cCart = new CCart(this, undefined);
         this.cHome = new CHome(this, undefined);
@@ -67,7 +70,7 @@ export class CCartApp extends CApp {
         // await this.cHome.start();
         // this.showVPage(VHome);
         let promises: PromiseLike<void>[] = [];
-        promises.push(this.cCart.cart.load());
+        promises.push(this.cart.load());
         promises.push(this.cProductCategory.start());
         await Promise.all(promises);
         this.showMain();
@@ -75,5 +78,9 @@ export class CCartApp extends CApp {
 
     showMain(initTabName?: string){
         this.showVPage(this.VAppMain, initTabName);
+    }
+
+    protected onDispose() {
+        this.cart.dispose();
     }
 }

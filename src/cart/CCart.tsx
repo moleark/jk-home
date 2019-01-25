@@ -2,8 +2,9 @@ import * as React from 'react';
 import { VCartLabel } from './VCartLabel';
 import { CCartApp } from 'CCartApp';
 import { VCart } from './VCart';
-import { Controller } from 'tonva-tools';
-import { Cart, RemoteCart, LocalCart } from './Cart';
+import { Controller, RowContext } from 'tonva-tools';
+import { Cart } from './Cart';
+import { PackItem } from 'tools';
 
 export class CCart extends Controller {
 
@@ -14,19 +15,18 @@ export class CCart extends Controller {
         super(res);
 
         this.cApp = cApp;
-        let { cUsqOrder, cUsqProduct, currentUser } = this.cApp;
+        this.cart = cApp.cart;
+        //let { cUsqOrder, cUsqProduct, currentUser } = this.cApp;
+        /*
         if (currentUser.isLogined)
-            this.cart = new RemoteCart(cUsqProduct, cUsqOrder);
+            this.cart = new CartRemote(cUsqProduct, cUsqOrder);
         else
             this.cart = new LocalCart(cUsqProduct);
+        */
     }
 
     protected async internalStart(param: any) {
         this.showVPage(VCart);
-    }
-
-    protected onDispose() {
-        this.cart.dispose();
     }
 
     /**
@@ -39,6 +39,19 @@ export class CCart extends Controller {
 
     renderCart = () => {
         return this.renderView(VCart);
+    }
+
+    onQuantityChanged = async (context: RowContext, value: any, prev: any) => {
+        //let { row } = context;
+        let { data, parentData } = context;
+        let { product } = parentData;
+        let { pack, price, quantity, currency } = data as PackItem;
+        //let { retail, currency } = pack;
+        await this.cart.AddToCart(product, pack, value, price, currency);
+    }
+
+    onRowStateChanged = async (context: RowContext, selected: boolean, deleted: boolean) => {
+        alert('onRowStateChanged')
     }
 
     /**

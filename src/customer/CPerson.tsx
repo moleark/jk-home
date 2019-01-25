@@ -64,7 +64,7 @@ export class CUser extends Controller {
             this.cApp.currentUser.delContact(contact.id);
         }
         this.backPage();
-        this.onContactSelected(contact);
+        this.onContactSelected(contactWithId);
     }
 
     onContactSelected = (contact: any) => {
