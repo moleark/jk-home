@@ -11,7 +11,7 @@ const schema: Schema = [
     { name: 'email', type: 'string', required: false },
     { name: 'address', type: 'id', required: false },
     { name: 'addressString', type: 'string', required: true },
-    { name: 'isDefault', type: 'boolean', required: true },
+    { name: 'isDefault', type: 'boolean', required: false },
     { name: 'submit', type: 'submit' },
 ]
 
@@ -66,12 +66,6 @@ export class VContact extends VPage<CUser> {
     private saveContact = async () => {
     }
     private onFormButtonClick = async (name: string, context: Context) => {
-        /*
-        if (context.form.data.isDefault)
-            context.form.data.isDefault = 1;
-        else
-            context.form.data.isDefault = 0;
-        */
         await this.controller.saveContact(context.form.data);
     }
 

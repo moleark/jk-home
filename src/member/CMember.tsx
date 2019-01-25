@@ -11,7 +11,6 @@ export class CMember extends Controller {
 
     cApp: CCartApp;
     @observable member: any;
-    pointMap: any;
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
@@ -21,20 +20,19 @@ export class CMember extends Controller {
 
     protected async internalStart(param: any) {
 
-        let memberMap = this.cApp.cUsqMember.map('member');
+        let memberAction = this.cApp.cUsqMember.action('MemberAction');
         if (this.isLogined) {
-            let getPointQuery: Query = this.cApp.cUsqMember.query('getPoint');
-            this.pointMap = await getPointQuery.obj({ memberId: this.cApp.currentUser.id });
-            this.member = await memberMap.table(this.cApp.currentUser.id);
+            let ma = await memberAction.submit({});
+            this.member = { recommendationCode: ma.code, point: ma.point };
         }
     }
 
-    renderMember = () => {
-        return this.renderView(VMember);
-    }
-
     render = observer(() => {
-        return this.member === undefined ? <Loading /> : this.renderMember();
+        if (this.isLogined) {
+            return this.member === undefined ? <Loading /> : this.renderView(VMember);
+        } else {
+            return <div>请登录</div>;
+        }
     })
 
     tab = () => {
