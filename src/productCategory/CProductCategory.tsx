@@ -5,12 +5,13 @@ import { VRootCategory } from './VRootCategory';
 import { VCategory } from './VCategory';
 import { CCartApp } from 'CCartApp';
 import { Controller } from 'tonva-tools';
+import { buildVField } from 'tonva-react-usql/controllers/form/vField';
 
 export class CProductCategory extends Controller {
 
     cApp: CCartApp;
-    categories: any[];
-    @observable rootCategories: any[] = [];
+    // categories: any[];
+    @observable categories: any[] = [];
     private getRootCategoryQuery: Query;
     private getChildrenCategoryQuery: Query;
 
@@ -26,14 +27,10 @@ export class CProductCategory extends Controller {
     async internalStart(param: any) {
         let { currentSalesRegion, currentLanguage } = this.cApp;
         let results = await this.getRootCategoryQuery.query({ salesRegion: currentSalesRegion.id, language: currentLanguage.id });
-        this.rootCategories = results.first;
-        let { secend: secendCategory, third: thirdCategory } = results;
-        secendCategory.forEach(async element => {
-            element.children = thirdCategory.filter(v => v.parent === element.productCategory.id);
-        });
-        this.rootCategories.forEach(async element => {
-            element.children = secendCategory.filter(v => v.parent === element.productCategory.id);
-        });
+        this.categories = results.first;
+        this.categories.forEach(element => {
+            this.buildCategories(element, results.secend, results.third);
+        })
     }
 
     renderRootList = () => {
@@ -41,19 +38,26 @@ export class CProductCategory extends Controller {
     };
 
     async getCategoryChildren(parentCategoryId: number) {
-
-        return await this.getChildrenCategoryQuery.table({ parent: parentCategoryId });
+        let { currentSalesRegion, currentLanguage } = this.cApp;
+        return await this.getChildrenCategoryQuery.query({ parent: parentCategoryId, salesRegion: currentSalesRegion.id, language: currentLanguage.id });
     }
 
-    async openMainPage(categoryWaper: any) {
+    async buildCategories(categoryWapper: any, firstCategory: any, secendCategory: any) {
+        firstCategory.forEach(async element => {
+            element.children = secendCategory.filter(v => v.parent === element.productCategory.id);
+        });
+        categoryWapper.children = firstCategory.filter(v => v.parent === categoryWapper.productCategory.id);
+    }
 
-        let { productCategory, children } = categoryWaper;
-        if (productCategory.obj.isleaf) {
+    async openMainPage(categoryWaper: any, parent: any) {
+
+        let { productCategory } = categoryWaper;
+        if (productCategory.obj.isLeaf === 0) {
             // 导航到产品列表界面
         } else {
-            if (!children)
-                categoryWaper.children = await this.getCategoryChildren(categoryWaper.id);
-            this.showVPage(VCategory, categoryWaper);
+            let results = await this.getCategoryChildren(productCategory.id);
+            this.buildCategories(categoryWaper, results.first, results.secend);
+            this.showVPage(VCategory, { categoryWaper, parent });
         }
     }
 }

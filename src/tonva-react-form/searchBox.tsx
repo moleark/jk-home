@@ -4,14 +4,13 @@ import { observable } from 'mobx';
 
 export interface SearchBoxProps {
     className?: string;
-    inputClassName?: string;
-    buttonClassName?: string;
     label?: string;
     initKey?: string;
     placeholder?: string;
     buttonText?: string;
     maxLength?: number;
     size?: 'sm' | 'md' | 'lg';
+    inputClassName?: string;
     onSearch: (key:string)=>Promise<void>;
 }
 
@@ -57,7 +56,7 @@ export class SearchBox extends React.Component<SearchBoxProps> { //}, SearchBoxS
         if (this.input) this.input.disabled = false;
     }
     render() {
-        let {className, inputClassName, buttonClassName,
+        let {className, inputClassName,
             label, placeholder, buttonText, maxLength, size} = this.props;
         let inputSize:string;
         switch (size) {
@@ -72,15 +71,15 @@ export class SearchBox extends React.Component<SearchBoxProps> { //}, SearchBoxS
             <div className={classNames("input-group", inputSize)}>
                 {lab}
                 <input onChange={this.onChange}
-                    type="text" 
+                    type="text"
                     name="key"
                     //ref={this.ref}
-                    className={classNames('form-control', inputClassName || 'border-primary')} 
+                    className={classNames('form-control', inputClassName || 'border-primary')}
                     placeholder={placeholder}
                     defaultValue={this.props.initKey}
                     maxLength={maxLength} />
                 <div className="input-group-append">
-                    <button className={classNames('btn', buttonClassName || 'btn-primary')}
+                    <button className="btn btn-primary"
                         type="submit"
                         disabled={this.disabled}>
                         <i className='fa fa-search' />

@@ -15,7 +15,7 @@ export class CUser extends Controller {
 
     currentUser: any;
     customer: any;
-    userShippingContacts: any[] = [];
+    userContacts: any[] = [];
     userInvoiceContacts: any[] = [];
 
     constructor(cApp: CCartApp, res: any) {
@@ -28,10 +28,7 @@ export class CUser extends Controller {
 
     async internalStart(contactType: ContactType) {
         this.contactType = contactType;
-        if (contactType === ContactType.ShippingContact)
-            this.userShippingContacts = await this.cApp.currentUser.getShippingContacts();
-        else
-            this.userInvoiceContacts = await this.cApp.currentUser.getInvoiceContacts();
+        this.userContacts = await this.cApp.currentUser.getContacts();
         this.showVPage(VAddressList);
     }
 
@@ -43,28 +40,31 @@ export class CUser extends Controller {
         let userContactData: any = {};
         if (userContact !== undefined) {
             userContactData.contact = await this.contactTuid.load(userContact.contact.id);
+            let userSetting: any = await this.cApp.currentUser.getSetting();
+            if ((this.contactType === ContactType.ShippingContact
+                && userSetting.shippingContact && userSetting.shippingContact.id === userContact.contact.id) ||
+                (this.contactType === ContactType.InvoiceContact
+                    && userSetting.invoiceContact && userSetting.invoiceContact.id === userContact.contact.id))
+                userContactData.contact.isDefault = true;
         }
         this.showVPage(VContact, userContactData);
     }
 
     saveContact = async (contact: any) => {
 
-        if (this.contactType === ContactType.ShippingContact) {
-            let contactWithId = await this.contactTuid.save(undefined, contact);
-            await this.cApp.currentUser.addShippingContact(contactWithId.id);
-            if (contact.id !== undefined) {
-                this.cApp.currentUser.delShippingContact(contact.id);
-            }
+        let contactWithId = await this.contactTuid.save(undefined, contact);
+        await this.cApp.currentUser.addContact(contactWithId.id);
+        if (contact.isDefault === true) {
+            if (this.contactType === ContactType.ShippingContact)
+                await this.cApp.currentUser.setDefaultShippingContact(contactWithId.id);
+            else
+                await this.cApp.currentUser.setDefaultInvoiceContact(contactWithId.id);
         }
-        else{
-            let contactWithId = await this.contactTuid.save(undefined, contact);
-            await this.cApp.currentUser.addInvoiceContact(contactWithId.id);
-            if (contact.id !== undefined) {
-                this.cApp.currentUser.delInvoiceContact(contact.id);
-            }
+        if (contact.id !== undefined) {
+            this.cApp.currentUser.delContact(contact.id);
         }
         this.backPage();
-        this.onContactSelected(contact);
+        this.onContactSelected(contactWithId);
     }
 
     onContactSelected = (contact: any) => {

@@ -36,31 +36,31 @@ export class COrder extends Controller {
 
         this.orderData.webUser = this.cApp.currentUser.id;
         // this.orderData.customer = cCartApp.currentUser.currentCustomer;
+        let defaultSetting = undefined;
 
         if (this.orderData.shippingContact === undefined) {
-
-            let contactArr: any[] = await this.cApp.currentUser.getShippingContacts();
-            if (contactArr && contactArr.length > 0) {
-                let contactWapper = contactArr.find((element: any) => {
-                    if (element.isDefault === true)
-                        return element;
-                });
-                if (!contactWapper)
-                    contactWapper = contactArr[0];
-                this.setContact(contactWapper.contact, ContactType.ShippingContact);
+            defaultSetting = this.cApp.currentUser.getSetting();
+            if (defaultSetting.defaultShippingContact) {
+                this.setContact(defaultSetting.defaultShippingContact, ContactType.ShippingContact);
+            } else {
+                let contactArr: any[] = await this.cApp.currentUser.getContacts();
+                if (contactArr && contactArr.length > 0) {
+                    this.setContact(contactArr[0].contact, ContactType.ShippingContact);
+                }
             }
         }
-        if (this.orderData.invoiceContact === undefined) {
 
-            let contactArr: any[] = await this.cApp.currentUser.getInvoiceContacts();
-            if (contactArr && contactArr.length > 0) {
-                let contactWapper = contactArr.find((element: any) => {
-                    if (element.isDefault === true)
-                        return element;
-                });
-                if (!contactWapper)
-                    contactWapper = contactArr[0];
-                this.setContact(contactWapper.contact, ContactType.InvoiceContact);
+        if (this.orderData.invoiceContact === undefined) {
+            if (defaultSetting === undefined) {
+                defaultSetting = this.cApp.currentUser.getSetting();
+            }
+            if (defaultSetting.defaultInvoiceContact) {
+                this.setContact(defaultSetting.defaultInvoiceContact, ContactType.InvoiceContact);
+            } else {
+                let contactArr: any[] = await this.cApp.currentUser.getContacts();
+                if (contactArr && contactArr.length > 0) {
+                    this.setContact(contactArr[0].contact, ContactType.InvoiceContact);
+                }
             }
         }
 
@@ -68,17 +68,19 @@ export class COrder extends Controller {
             this.orderData.currency = cartItem[0].currency;
             this.orderData.orderItems = cartItem.map((element: any, index: number) => {
                 var item = new OrderItem();
-                item.product = element.product,
-                item.packs = element.packs;
+                item.product = element.product;
+                item.packs = element.packs.filter(v => v.quantity > 0);
                 //item.price = element.price;
                 //item.quantity = element.quantity;
                 return item;
             });
+
+            // 运费和运费减免
         }
     }
 
     setContact = (contactBox: BoxId, contactType: ContactType) => {
-        if(contactType === ContactType.ShippingContact)
+        if (contactType === ContactType.ShippingContact)
             this.orderData.shippingContact = contactBox;
         else
             this.orderData.invoiceContact = contactBox;
@@ -90,12 +92,12 @@ export class COrder extends Controller {
             this.openContactList(ContactType.ShippingContact);
             return;
         }
-        if(!this.orderData.invoiceContact) {
+        if (!this.orderData.invoiceContact) {
             this.openContactList(ContactType.InvoiceContact);
             return;
         }
 
-        let result: any = await this.orderSheet.save("order", this.orderData);
+        let result: any = await this.orderSheet.save("order", this.orderData.getDataForSave());
         await this.orderSheet.action(result.id, result.flow, result.state, "submit");
 
         this.cApp.cart.clear(); //.removeFromCart(this.orderData.orderItems);

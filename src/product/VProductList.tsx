@@ -29,7 +29,7 @@ export class VProductList extends VPage<CProduct> {
         let header = cApp.cHome.renderSearchHeader();
         let cart = cApp.cCart.renderCartLabel();
         return <Page header={header} right={cart} onScrollBottom={this.onScrollBottom}>
-            <List before={''} items={pageProducts} item={{ render: productRow, onClick: this.onProductClick }} className="bg-white px-2" />
+            <List before={''} items={pageProducts} item={{ render: productRow, onClick: this.onProductClick }} />
         </Page>
     });
 }
