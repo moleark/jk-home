@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
   "main.css": "./static/css/main.4c482343.chunk.css",
   "main.js": "./static/js/main.58124799.chunk.js",
   "main.js.map": "./static/js/main.58124799.chunk.js.map",
@@ -12,20 +11,6 @@
   "static/js/3.5b9341d8.chunk.js.map": "./static/js/3.5b9341d8.chunk.js.map",
   "runtime~main.js": "./static/js/runtime~main.1c27eb69.js",
   "runtime~main.js.map": "./static/js/runtime~main.1c27eb69.js.map",
-=======
-  "main.css": "./static/css/main.7ee58421.chunk.css",
-  "main.js": "./static/js/main.1d776266.chunk.js",
-  "main.js.map": "./static/js/main.1d776266.chunk.js.map",
-  "static/js/1.1f96afc3.chunk.js": "./static/js/1.1f96afc3.chunk.js",
-  "static/js/1.1f96afc3.chunk.js.map": "./static/js/1.1f96afc3.chunk.js.map",
-  "static/js/2.79e9020c.chunk.js": "./static/js/2.79e9020c.chunk.js",
-  "static/js/2.79e9020c.chunk.js.map": "./static/js/2.79e9020c.chunk.js.map",
-  "static/css/3.fb2f2d6d.chunk.css": "./static/css/3.fb2f2d6d.chunk.css",
-  "static/js/3.43448f80.chunk.js": "./static/js/3.43448f80.chunk.js",
-  "static/js/3.43448f80.chunk.js.map": "./static/js/3.43448f80.chunk.js.map",
-  "runtime~main.js": "./static/js/runtime~main.a688cca7.js",
-  "runtime~main.js.map": "./static/js/runtime~main.a688cca7.js.map",
->>>>>>> 1344d42f8f5bd88ee9dbb600b967d68796575b2d
   "static/media/font-awesome.min.css": "./static/media/fontawesome-webfont.fee66e71.woff",
   "static/media/logo.svg": "./static/media/logo.ee7cd8ed.svg",
   "static/css/main.7ee58421.chunk.css.map": "./static/css/main.7ee58421.chunk.css.map",

@@ -50,17 +50,10 @@ export class VRootCategory extends View<CProductCategory> {
         return <div key={name}
             className="col-6 col-md-4 col-lg-3 cursor-pointer"
             //style={{borderRight:'1px solid gray', borderBottom:'1px solid gray'}}
-<<<<<<< HEAD
-            onClick={() => this.categoryClick(item)}>
-            <div className="pt-1 pb-1 px-2" 
-                style={{border:'1px solid #c7f2e8'/*border border-info*/, marginRight: '-1px', marginBottom: '-1px'}}
-                >
-=======
             onClick={() => this.categoryClick(item, parent)}>
             <div className="pt-1 pb-1 px-2"
                 style={{ border: '1px solid #eeeeee', marginRight: '-1px', marginBottom: '-1px' }}
             >
->>>>>>> 1344d42f8f5bd88ee9dbb600b967d68796575b2d
                 <div style={titleTitle}>
                     <span className="ml-1 align-middle">
                         <FA name="chevron-circle-right" className="text-info" />
