@@ -2,6 +2,7 @@ import * as React from 'react';
 import { VPage, Page, View } from 'tonva-tools';
 import { observer } from 'mobx-react';
 import { CHome } from './CHome';
+import { observable } from 'mobx';
 
 const LIGUOSHENG = 5;
 
@@ -47,7 +48,7 @@ export class VHome extends View<CHome> {
     }
 
     render(param: any): JSX.Element {
-        return <this.content />
+        return <this.content a={true} b={3} />
     }
 
     private page = observer(() => {
@@ -58,15 +59,22 @@ export class VHome extends View<CHome> {
         }
 
         return <Page header={false} footer={viewMetaButton}>
-            {this.content()}
+            <this.content a={true} b={1} />
         </Page>;
     })
 
-    private content = () => {
+    @observable ct = 'dddd sdfsadf as ddd'
+
+    private content = observer(({a, b}:{a?:boolean, b?:number}) => {
+        let test:any;
+        if (a === true) {
+            test = <div className="p-3 my-3 bg-white" onClick={()=>this.ct='xxx'}>{this.ct}</div>;
+        }
         let siteHeader = this.controller.renderSiteHeader();
         return <>
             {siteHeader}
+            {test}
             {this.controller.renderCategoryRootList()}
         </>
-    }
+    });
 }

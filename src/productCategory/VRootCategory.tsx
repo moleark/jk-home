@@ -53,7 +53,7 @@ export class VRootCategory extends View<CProductCategory> {
             //style={{borderRight:'1px solid gray', borderBottom:'1px solid gray'}}
             onClick={() => this.categoryClick(item)}>
             <div className="pt-1 pb-1 px-2" 
-                style={{border:'1px solid #eeeeee', marginRight: '-1px', marginBottom: '-1px'}}
+                style={{border:'1px solid #c7f2e8'/*border border-info*/, marginRight: '-1px', marginBottom: '-1px'}}
                 >
                 <div style={titleTitle}>
                     <span className="ml-1 align-middle">

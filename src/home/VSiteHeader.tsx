@@ -18,11 +18,13 @@ export class VSiteHeader extends View<CHome> {
             {currentSalesRegion} &nbsp;
             <button onClick={()=>nav.start()}>Try</button>
         </div>;*/
-        return <LMR className="px-1 py-1 mb-3 align-items-center bg-white" left={left} right={right}>
+        return <LMR 
+            className="p-1 mb-3 align-items-center bg-white"
+            left={left} right={right}>
             <div className="">
                 {this.controller.renderSearchHeader('md')}
             </div>
         </LMR>
         //<div className="h4 px-3 mb-0">百灵威科技</div>
-        }
+    }
 }
