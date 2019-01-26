@@ -48,7 +48,7 @@ export class VHome extends View<CHome> {
     }
 
     render(param: any): JSX.Element {
-        return <this.content a={true} b={3} />
+        return <this.content />
     }
 
     private page = observer(() => {
@@ -59,21 +59,14 @@ export class VHome extends View<CHome> {
         }
 
         return <Page header={false} footer={viewMetaButton}>
-            <this.content a={true} b={1} />
+            <this.content />
         </Page>;
     })
 
-    @observable ct = 'dddd sdfsadf as ddd'
-
-    private content = observer(({a, b}:{a?:boolean, b?:number}) => {
-        let test:any;
-        if (a === true) {
-            test = <div className="p-3 my-3 bg-white" onClick={()=>this.ct='xxx'}>{this.ct}</div>;
-        }
+    private content = observer(() => {
         let siteHeader = this.controller.renderSiteHeader();
         return <>
             {siteHeader}
-            {test}
             {this.controller.renderCategoryRootList()}
         </>
     });
