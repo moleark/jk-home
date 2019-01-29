@@ -9,8 +9,6 @@ export class VProductList extends VPage<CProduct> {
 
     async showEntry(param: any) {
 
-        let key = param;
-        this.controller.pageProducts.first({ key: key });
         this.openPage(this.page);
     }
 

@@ -19,9 +19,8 @@ class PageProducts extends PageItems<any> {
     }
 
     protected async load(param: any, pageStart: any, pageSize: number): Promise<any[]> {
-        let { key } = param;
         if (pageStart === undefined) pageStart = 0;
-        let ret = await this.searchProductQuery.page({ key: key }, pageStart, pageSize);
+        let ret = await this.searchProductQuery.page(param, pageStart, pageSize);
         return ret;
     }
 
@@ -61,9 +60,6 @@ export class CProduct extends Controller {
     constructor(cApp: CCartApp, res: any) {
         super(res);
         this.cApp = cApp;
-        let { cUsqProduct, cUsqCustomerDiscount, cUsqWarehouse } = cApp;
-        let searchProductQuery = cUsqProduct.query("searchProduct");
-        this.pageProducts = new PageProducts(searchProductQuery);
 
         /*
         this.productTuid = cUsqProduct.tuid('productx');
@@ -77,11 +73,26 @@ export class CProduct extends Controller {
     }
 
     protected async internalStart(param: any) {
-
-        this.showVPage(VProductList, param);
+        this.searchByKey(param);
     }
 
-    buildPackRows():PackItem[] {
+    searchByKey(key: string) {
+        let { cUsqProduct } = this.cApp;
+        let searchProductQuery = cUsqProduct.query("searchProduct");
+        this.pageProducts = new PageProducts(searchProductQuery);
+        this.pageProducts.first({ key: key });
+        this.showVPage(VProductList);
+    }
+
+    searchByCategory(category: any) {
+        let { cUsqProduct } = this.cApp;
+        let searchProductQuery = cUsqProduct.query("searchProductByCategory");
+        this.pageProducts = new PageProducts(searchProductQuery);
+        this.pageProducts.first({ productCategory: category.id, salesRegion: this.cApp.currentSalesRegion.id });
+        this.showVPage(VProductList);
+    }
+
+    buildPackRows(): PackItem[] {
         return;
         /*
         let cardProduct = this.cApp.cCart.cart.items.find(v => v.product.id === this.product.id);

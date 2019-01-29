@@ -52,12 +52,13 @@ export class CProductCategory extends Controller {
     async openMainPage(categoryWaper: any, parent: any) {
 
         let { productCategory } = categoryWaper;
-        if (productCategory.obj.isLeaf === 0) {
-            // 导航到产品列表界面
-        } else {
-            let results = await this.getCategoryChildren(productCategory.id);
+        let results = await this.getCategoryChildren(productCategory.id);
+        if (results.first.length !== 0) {
             this.buildCategories(categoryWaper, results.first, results.secend);
             this.showVPage(VCategory, { categoryWaper, parent });
+        } else {
+            let { cProduct } = this.cApp;
+            cProduct.searchByCategory(productCategory);
         }
     }
 }
