@@ -41,12 +41,12 @@ export class Product {
 
     async load(id: number) {
         this.id = this.productTuid.boxId(id);
-        let { currentSalesRegion, currentUser } = this.cApp;
+        let { cart, currentSalesRegion, currentUser } = this.cApp;
         this.product = await this.productTuid.load(id);
         this.packRows = this.product.packx.map(v => {
             return {
                 pack: v,
-                quantity: this.cApp.cart.getQuantity(id, v.id),
+                quantity: cart.getQuantity(id, v.id),
             }
         });
 
@@ -67,6 +67,9 @@ export class Product {
         if (this.productChemical) {
             this.product.chemical = this.productChemical.chemical;
             this.product.purity = this.productChemical.purity;
+            this.product.CAS = this.productChemical.CAS;
+            this.product.molecularFomula = this.productChemical.molecularFomula;
+            this.product.molecularWeight = this.productChemical.molecularWeight;
         }
 
         let prices: any[] = results[p++];

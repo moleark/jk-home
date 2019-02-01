@@ -72,10 +72,12 @@ export class VProduct extends VPage<CProduct> {
     private arrTemplet = (item: any) => {
         //let a = context.getValue('');
         let { pack, retail, vipPrice, inventoryAllocation, futureDeliveryTimeDescription } = item;
-        let right, priceUI = <></>;
+        let right, priceUI = null;
         if (retail) {
             right = <div className="d-flex"><Field name="quantity" /></div>;
             priceUI = <div>retail:{retail} vipPrice:{vipPrice}</div>
+        }else{
+            right = <div>请询价</div>
         }
 
         let deliveryTimeUI = <></>;

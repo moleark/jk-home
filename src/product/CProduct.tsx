@@ -29,13 +29,7 @@ class PageProducts extends PageItems<any> {
         return item.id;
     }
 }
-/*
-export interface PackRow {
-    pack: any;
-    input: HTMLInputElement;
-    quantity: number;
-}
-*/
+
 /**
  *
  */
@@ -43,33 +37,11 @@ export class CProduct extends Controller {
     cApp: CCartApp;
 
     pageProducts: PageProducts;
-    /*
-    private productTuid: TuidMain;
-    private packTuid: TuidDiv;
-    private productChemicalMap: Map;
-    private priceMap: Map;
-    private getCustomerDiscount: Query;
-    private getInventoryAllocationQuery: Query;
-    private getFutureDeliveryTime: Query;
-    */
-
     product: Product;
-    //productBox: BoxId;
-    //productChemical: any;
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
         this.cApp = cApp;
-
-        /*
-        this.productTuid = cUsqProduct.tuid('productx');
-        this.packTuid = this.productTuid.divs['packx'];
-        this.productChemicalMap = cUsqProduct.map('productChemical');
-        this.priceMap = cUsqProduct.map('pricex');
-        this.getCustomerDiscount = cUsqCustomerDiscount.query("getdiscount");
-        this.getInventoryAllocationQuery = cUsqWarehouse.query("getInventoryAllocation");
-        this.getFutureDeliveryTime = cUsqProduct.query("getFutureDeliveryTime");
-        */
     }
 
     protected async internalStart(param: any) {
@@ -92,93 +64,11 @@ export class CProduct extends Controller {
         this.showVPage(VProductList);
     }
 
-    buildPackRows(): PackItem[] {
-        return;
-        /*
-        let cardProduct = this.cApp.cCart.cart.items.find(v => v.product.id === this.product.id);
-        if (cardProduct === undefined) return [];
-        return _.cloneDeep(cardProduct.packs);
-        */
-        /*
-        let packRows = [];
-        for (let pk of this.product.packx) {
-            let packRow: PackRow = {
-                pack: pk,
-            } as any;
-            // 如果当前产品在购物车中，设置其初始的数量
-            let pr2: any = this.cApp.cCart.cart.getItem(pk.id);
-            if (pr2)
-                packRow.quantity = pr2.quantity;
-            packRows.push(packRow);
-        }
-        return packRows;
-        */
-    }
-
     showProductDetail = async (id: number) => {
-        /*
-        // id: productId
-        this.productBox = this.productTuid.boxId(id);
-        let { currentSalesRegion, currentUser } = this.cApp;
-        let promises: PromiseLike<any>[] = [];
-        promises.push(this.productTuid.load(id));
-        promises.push(this.productChemicalMap.obj({ product: id }));
-        promises.push(this.priceMap.table({ product: id, salesRegion: currentSalesRegion.id }));
-        promises.push(this.getFutureDeliveryTimeDescription(id, currentSalesRegion.id));
-        let results = await Promise.all(promises);
-
-        let p = 0;
-        this.product = results[p++];
-        let {packx} = this.product;
-
-        this.productChemical = results[p++];
-        if (this.productChemical) {
-            this.product.chemical = this.productChemical.chemical;
-            this.product.purity = this.productChemical.purity;
-        }
-
-        let prices: any[] = results[p++];
-        let discount = 0;
-        if (currentUser.hasCustomer) {
-            let discountSetting = await this.getCustomerDiscount.table({ brand: this.product.brand.id, customer: currentUser.currentCustomer.id });
-            discount = discountSetting && discountSetting[0] && discountSetting[0].discount;
-        }
-        prices.forEach(element => { element.vipprice = element.price * (1 - discount); element.currency = currentSalesRegion.currency.obj; });
-
-        let fd = results[p++];
-        for (let index = 0; index < packx.length; index++) {
-            const element = this.product.packx[index];
-            element.futureDeliveryTimeDescription = fd;
-            element.inventoryAllocation = await this.getInventoryAllocations(this.product.id, element, currentSalesRegion);
-        };
-        packx.forEach(v => {
-            let price = prices.find(x => x.pack.id === v.id);
-            if (price) {
-                let {retail, vipPrice} = price;
-                v.retail = retail;
-                v.vipPrice = vipPrice;
-            }
-            v.currency = currentSalesRegion.currency;
-        })
-        */
         let product = new Product(this.cApp);
         await product.load(id);
         this.showVPage(VProduct, product);
     }
-    /*
-    getInventoryAllocations = async (productId: number, packId: number, salesRegionId: number) => {
-
-        let allocation = await this.getInventoryAllocationQuery.table({ product: productId, pack: packId, salesRegion: salesRegionId });
-        return allocation;
-    }
-
-    getFutureDeliveryTimeDescription = async (productId: number, salesRegionId: number) => {
-        let futureDeliveryTime = await this.getFutureDeliveryTime.table({ product: productId, salesRegion: salesRegionId });
-        if (futureDeliveryTime.length > 0) {
-            return futureDeliveryTime[0].deliveryTimeDescription;
-        }
-    }
-    */
 }
 
 export function renderBrand(brand: any) {
