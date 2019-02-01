@@ -2,6 +2,7 @@ import * as React from 'react';
 import { VPage, Page, View } from 'tonva-tools';
 import { observer } from 'mobx-react';
 import { CHome } from './CHome';
+import { observable } from 'mobx';
 
 const LIGUOSHENG = 5;
 
@@ -58,15 +59,15 @@ export class VHome extends View<CHome> {
         }
 
         return <Page header={false} footer={viewMetaButton}>
-            {this.content()}
+            <this.content />
         </Page>;
     })
 
-    private content = () => {
+    private content = observer(() => {
         let siteHeader = this.controller.renderSiteHeader();
         return <>
             {siteHeader}
             {this.controller.renderCategoryRootList()}
         </>
-    }
+    });
 }

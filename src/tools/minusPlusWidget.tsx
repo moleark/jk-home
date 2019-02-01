@@ -16,14 +16,17 @@ export class MinusPlusWidget extends UpdownWidget {
         return super.isValidKey(key);
     }
 
-    protected onBlur() {
-        super.onBlur();
+    protected onBlur(evt: React.FocusEvent<any>) {
+        super.onBlur(evt);
         this.hasFocus = false;
     }
 
-    protected onFocus() {
-        super.onFocus();
+    protected onFocus(evt: React.FocusEvent<any>) {
+        super.onFocus(evt);
         this.hasFocus = true;
+    }
+
+    protected onChange(evt: React.ChangeEvent<any>) {
     }
 
     private minusClick = () => {
@@ -88,13 +91,13 @@ export class MinusPlusWidget extends UpdownWidget {
                 {invisible: !(hasFocus === true || hasValue === true)})}
             type="text"
             defaultValue={this.value}
-            onChange={this.onInputChange}
+            onChange={this.onChange}
             placeholder={this.placeholder}
             readOnly={this.readOnly}
             disabled={this.disabled}
             onKeyDown = {this.onKeyDown}
-            onFocus = {()=>this.onFocus()}
-            onBlur={()=>this.onBlur()}
+            onFocus = {(evt: React.FocusEvent<any>) => this.onFocus(evt)}
+            onBlur={(evt: React.FocusEvent<any>) => this.onBlur(evt)}
             maxLength={10} />;
 
         let plus = <i className={classNames('fa fa-plus-circle fa-lg',
