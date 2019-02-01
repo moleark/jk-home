@@ -35,7 +35,7 @@ export class COrder extends Controller {
     private createOrderFromCart = async (cartItem: any[]) => {
 
         this.orderData.webUser = this.cApp.currentUser.id;
-        // this.orderData.customer = cCartApp.currentUser.currentCustomer;
+        this.orderData.customer = this.cApp.currentUser.currentCustomer.id;
         let defaultSetting = undefined;
 
         if (this.orderData.shippingContact === undefined) {

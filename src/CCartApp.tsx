@@ -52,7 +52,7 @@ export class CCartApp extends CApp {
         let languageTuid = this.cUsqCommon.tuid('language');
         this.currentLanguage = await languageTuid.load(197);
 
-        this.currentUser = new WebUser(this.cUsqWebUser);
+        this.currentUser = new WebUser(this.cUsqWebUser, this.cUsqCustomer);
         if (this.isLogined)
             this.currentUser.user = this.user;
 

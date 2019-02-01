@@ -6,7 +6,7 @@ export class Order {
 
     webUser: any;
     organization: BoxId;
-    customer: BoxId;
+    customer: any;
 
     @observable shippingContact: BoxId;
     @observable invoiceContact: BoxId;

@@ -15,10 +15,13 @@ export class WebUser {
     private webUserContactMap: Map;
     private webUserSettingMap: Map;
 
-    constructor(cUsqWebUser: CUsq) {
+    private cUsqCustomer: CUsq;
+
+    constructor(cUsqWebUser: CUsq, cUsqCustomer: CUsq) {
         this.webUserCustomerMap = cUsqWebUser.map('webUserCustomer');
         this.webUserContactMap = cUsqWebUser.map('webUserContacts');
         this.webUserSettingMap = cUsqWebUser.map('webUserSetting');
+        this.cUsqCustomer = cUsqCustomer;
     }
 
     set user(user: User) {
@@ -35,7 +38,7 @@ export class WebUser {
                 this.webUserCustomerMap.obj({ webUser: this.id })
                     .then((value) => {
                         if (value != undefined)
-                            this.currentCustomer = new Customer(value.Customer);
+                            this.currentCustomer = new Customer(value.customer, this.cUsqCustomer);
                     })
             }
         }
@@ -107,12 +110,14 @@ export class WebUser {
 export class Customer {
 
     private contactMap: Map;
-    private customerSettingMap: Map;
     id: number;
 
-    constructor(customer: BoxId) {
-        // let { cUsqCustomer } = cCartApp;
-        // this.consigneeContactMap = cUsqCustomer.map('customerConsigneeContact');
+    private customerSettingMap: Map;
+
+    constructor(customer: BoxId, cUsqCustomer: CUsq) {
+        this.id = customer.id;
+        this.contactMap = cUsqCustomer.map('customerContacts');
+        this.customerSettingMap = cUsqCustomer.map('customerSetting');
     };
 
     async getContacts(): Promise<any[]> {
@@ -120,11 +125,11 @@ export class Customer {
     }
 
     async addContact(contactId: number) {
-        await this.contactMap.add({ webUser: this.id, arr1: [{ contact: contactId }] });
+        await this.contactMap.add({ customer: this.id, arr1: [{ contact: contactId }] });
     }
 
     async delContact(contactId: number) {
-        await this.contactMap.del({ webUser: this.id, arr1: [{ contact: contactId }] });
+        await this.contactMap.del({ customer: this.id, arr1: [{ contact: contactId }] });
     }
 
     async getSetting() {
