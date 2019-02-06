@@ -45,7 +45,7 @@ export interface TextAreaFace extends FieldFaceBase, Placeholder {
 export interface TuidInputProps {
     id: number;
     //readOnly?: boolean;
-    ui: any;      // TuidUI in Tonva-react-usql
+    ui: any;
     //input: any;
     //entitiesUI: any;
     //params: any;

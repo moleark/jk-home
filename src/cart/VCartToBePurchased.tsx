@@ -2,7 +2,7 @@ import * as React from 'react';
 import { View } from 'tonva-tools';
 import { CCart } from './CCart';
 import { List } from 'tonva-react-form';
-import { tv } from 'tonva-react-usql';
+import { tv } from 'tonva-react-uq';
 
 export class VCartToBePurchased extends View<CCart> {
 

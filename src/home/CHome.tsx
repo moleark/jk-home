@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ControllerUsq, CApp, CUsq, TuidMain } from 'tonva-react-usql';
+import { ControllerUq, CApp, CUq, TuidMain } from 'tonva-react-uq';
 import { VSiteHeader } from './VSiteHeader';
 import { CCartApp } from '../CCartApp';
 import { PageItems, Controller } from 'tonva-tools';
@@ -38,8 +38,6 @@ export class CHome extends Controller {
         super(res);
 
         this.cApp = cApp;
-        // this.sectionTuid = this.cUsq.tuid("section");
-        // this.homeSections = new HomeSections(this.sectionTuid);
     }
 
     async internalStart(param: any) {

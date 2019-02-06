@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { CUser } from './CPerson';
 import { VPage, Page } from 'tonva-tools';
-import { tv } from 'tonva-react-usql';
+import { tv } from 'tonva-react-uq';
 
 export class VAddress extends VPage<CUser> {
 

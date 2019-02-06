@@ -1,4 +1,4 @@
-import { BoxId, TuidMain, TuidDiv, Map, Query } from 'tonva-react-usql';
+import { BoxId, TuidMain, TuidDiv, Map, Query } from 'tonva-react-uq';
 import { CCartApp } from 'CCartApp';
 
 export interface PackRow {
@@ -29,14 +29,14 @@ export class Product {
 
     constructor(cApp: CCartApp) {
         this.cApp = cApp;
-        let { cUsqProduct, cUsqCustomerDiscount, cUsqWarehouse } = cApp;
-        this.productTuid = cUsqProduct.tuid('productx');
+        let { cUqProduct, cUqCustomerDiscount, cUqWarehouse } = cApp;
+        this.productTuid = cUqProduct.tuid('productx');
         this.packTuid = this.productTuid.divs['packx'];
-        this.productChemicalMap = cUsqProduct.map('productChemical');
-        this.priceMap = cUsqProduct.map('pricex');
-        this.getCustomerDiscount = cUsqCustomerDiscount.query("getdiscount");
-        this.getInventoryAllocationQuery = cUsqWarehouse.query("getInventoryAllocation");
-        this.getFutureDeliveryTime = cUsqProduct.query("getFutureDeliveryTime");
+        this.productChemicalMap = cUqProduct.map('productChemical');
+        this.priceMap = cUqProduct.map('pricex');
+        this.getCustomerDiscount = cUqCustomerDiscount.query("getdiscount");
+        this.getInventoryAllocationQuery = cUqWarehouse.query("getInventoryAllocation");
+        this.getFutureDeliveryTime = cUqProduct.query("getFutureDeliveryTime");
     }
 
     async load(id: number) {

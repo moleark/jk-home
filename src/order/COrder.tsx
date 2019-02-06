@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TuidMain, Map, Sheet, BoxId } from 'tonva-react-usql';
+import { TuidMain, Map, Sheet, BoxId } from 'tonva-react-uq';
 import { CCartApp } from 'CCartApp';
 import { VCreateOrder } from './VCreateOrder';
 import { Order, OrderItem } from './Order';
@@ -21,8 +21,8 @@ export class COrder extends Controller {
     constructor(cApp: CCartApp, res: any) {
         super(res);
         this.cApp = cApp;
-        let { cUsqOrder } = cApp;
-        this.orderSheet = cUsqOrder.sheet('order');
+        let { cUqOrder } = cApp;
+        this.orderSheet = cUqOrder.sheet('order');
     }
 
     protected async internalStart(param: any) {

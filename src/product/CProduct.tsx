@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as _ from 'lodash';
-import { Map, TuidDiv, TuidMain, Query, tv, BoxId } from 'tonva-react-usql';
+import { Map, TuidDiv, TuidMain, Query, tv, BoxId } from 'tonva-react-uq';
 import { PageItems, Controller } from 'tonva-tools';
 import { CCartApp } from '../CCartApp';
 import { PackItem } from '../tools';
@@ -61,18 +61,18 @@ export class CProduct extends Controller {
     constructor(cApp: CCartApp, res: any) {
         super(res);
         this.cApp = cApp;
-        let { cUsqProduct, cUsqCustomerDiscount, cUsqWarehouse } = cApp;
-        let searchProductQuery = cUsqProduct.query("searchProduct");
+        let { cUqProduct, cUqCustomerDiscount, cUqWarehouse } = cApp;
+        let searchProductQuery = cUqProduct.query("searchProduct");
         this.pageProducts = new PageProducts(searchProductQuery);
 
         /*
-        this.productTuid = cUsqProduct.tuid('productx');
+        this.productTuid = cUqProduct.tuid('productx');
         this.packTuid = this.productTuid.divs['packx'];
-        this.productChemicalMap = cUsqProduct.map('productChemical');
-        this.priceMap = cUsqProduct.map('pricex');
-        this.getCustomerDiscount = cUsqCustomerDiscount.query("getdiscount");
-        this.getInventoryAllocationQuery = cUsqWarehouse.query("getInventoryAllocation");
-        this.getFutureDeliveryTime = cUsqProduct.query("getFutureDeliveryTime");
+        this.productChemicalMap = cUqProduct.map('productChemical');
+        this.priceMap = cUqProduct.map('pricex');
+        this.getCustomerDiscount = cUqCustomerDiscount.query("getdiscount");
+        this.getInventoryAllocationQuery = cUqWarehouse.query("getInventoryAllocation");
+        this.getFutureDeliveryTime = cUqProduct.query("getFutureDeliveryTime");
         */
     }
 

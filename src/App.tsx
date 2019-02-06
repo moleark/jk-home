@@ -2,7 +2,7 @@
 import * as React from 'react';
 import './App.css';
 import { NavView, nav, Page, Tabs } from 'tonva-tools';
-import { startApp } from 'tonva-react-usql';
+import { startApp } from 'tonva-react-uq';
 import ui from './ui';
 import { A } from 'a';
 //import { faceTabs } from 'facetabs';

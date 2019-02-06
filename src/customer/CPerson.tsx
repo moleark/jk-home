@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ControllerUsq, TuidMain, Map, CTuidEdit, CUsq, BoxId } from 'tonva-react-usql';
+import { ControllerUq, TuidMain, Map, CTuidEdit, CUq, BoxId } from 'tonva-react-uq';
 import { VAddressList } from './VAddressList';
 import { CCartApp } from 'CCartApp';
 import { VContact } from './VContact';
@@ -21,9 +21,9 @@ export class CUser extends Controller {
     constructor(cApp: CCartApp, res: any) {
         super(res);
         this.cApp = cApp;
-        let { cUsqCustomer } = cApp;
+        let { cUqCustomer } = cApp;
 
-        this.contactTuid = cUsqCustomer.tuid('contact');
+        this.contactTuid = cUqCustomer.tuid('contact');
     }
 
     async internalStart(contactType: ContactType) {

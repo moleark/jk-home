@@ -3,7 +3,7 @@ import Loadable from 'react-loadable';
 import { Controller, Loading } from 'tonva-tools';
 import { VMember } from './VMember';
 import { CCartApp } from 'CCartApp';
-import { Query } from 'tonva-react-usql';
+import { Query } from 'tonva-react-uq';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 
@@ -20,7 +20,7 @@ export class CMember extends Controller {
 
     protected async internalStart(param: any) {
 
-        let memberAction = this.cApp.cUsqMember.action('MemberAction');
+        let memberAction = this.cApp.cUqMember.action('MemberAction');
         if (this.isLogined) {
             let ma = await memberAction.submit({});
             this.member = { recommendationCode: ma.code, point: ma.point };

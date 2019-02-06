@@ -1,4 +1,4 @@
-import { BoxId } from 'tonva-react-usql';
+import { BoxId } from 'tonva-react-uq';
 
 export interface PackItem {
     pack: BoxId;

@@ -1,4 +1,4 @@
-import { BoxId } from 'tonva-react-usql';
+import { BoxId } from 'tonva-react-uq';
 import { observable, computed } from 'mobx';
 import { PackItem } from '../tools';
 

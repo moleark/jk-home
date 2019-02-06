@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { ControllerUsq, Tuid, Map, CUsq, Query } from 'tonva-react-usql';
+import { ControllerUq, Tuid, Map, CUq, Query } from 'tonva-react-uq';
 import { observable } from 'mobx';
 import { VRootCategory } from './VRootCategory';
 import { VCategory } from './VCategory';
 import { CCartApp } from 'CCartApp';
 import { Controller } from 'tonva-tools';
-import { buildVField } from 'tonva-react-usql/controllers/form/vField';
 
 export class CProductCategory extends Controller {
 
@@ -19,9 +18,9 @@ export class CProductCategory extends Controller {
         super(res);
 
         this.cApp = cApp;
-        let { cUsqProduct } = this.cApp;
-        this.getRootCategoryQuery = cUsqProduct.query('getRootCategory');
-        this.getChildrenCategoryQuery = cUsqProduct.query('getChildrenCategory');
+        let { cUqProduct } = this.cApp;
+        this.getRootCategoryQuery = cUqProduct.query('getRootCategory');
+        this.getChildrenCategoryQuery = cUqProduct.query('getChildrenCategory');
     }
 
     async internalStart(param: any) {

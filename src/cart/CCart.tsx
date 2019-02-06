@@ -16,13 +16,6 @@ export class CCart extends Controller {
 
         this.cApp = cApp;
         this.cart = cApp.cart;
-        //let { cUsqOrder, cUsqProduct, currentUser } = this.cApp;
-        /*
-        if (currentUser.isLogined)
-            this.cart = new CartRemote(cUsqProduct, cUsqOrder);
-        else
-            this.cart = new LocalCart(cUsqProduct);
-        */
     }
 
     protected async internalStart(param: any) {
