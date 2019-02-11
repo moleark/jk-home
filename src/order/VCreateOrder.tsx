@@ -2,7 +2,7 @@ import * as React from 'react';
 import { VPage, Page } from 'tonva-tools';
 import { COrder, ContactType } from './COrder';
 import { List, LMR, FA } from 'tonva-react-form';
-import { tv, BoxId } from 'tonva-react-usql';
+import { tv, BoxId } from 'tonva-react-uq';
 import { observer } from 'mobx-react';
 import { OrderItem } from './Order';
 

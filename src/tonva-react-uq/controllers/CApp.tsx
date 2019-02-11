@@ -1,15 +1,15 @@
 import * as React from 'react';
 import _ from 'lodash';
-import { Page, loadAppUsqs, nav, meInFrame, Controller, TypeVPage, VPage, resLang} from 'tonva-tools';
+import { Page, loadAppUqs, nav, meInFrame, Controller, TypeVPage, VPage, resLang} from 'tonva-tools';
 import { List, LMR, FA } from 'tonva-react-form';
-import { CUsq, EntityType, UsqUI } from './usq';
+import { CUq, EntityType, UqUI } from './uq';
 import { centerApi } from '../centerApi';
 
 export interface AppUI {
     CApp?: typeof CApp;
-    CUsq?: typeof CUsq;
+    CUq?: typeof CUq;
     main?: TypeVPage<CApp>;
-    usqs: {[usq:string]: UsqUI};
+    uqs: {[uq:string]: UqUI};
     res?: any;
 }
 
@@ -17,7 +17,7 @@ export class CApp extends Controller {
     private appOwner:string;
     private appName:string;
     private isProduction:boolean;
-    private cImportUsqs: {[usq:string]: CUsq} = {};
+    private cImportUqs: {[uq:string]: CUq} = {};
     protected ui:AppUI;
     id: number;
     appUnits:any[];
@@ -30,37 +30,37 @@ export class CApp extends Controller {
         }
         this.appOwner = parts[0];
         this.appName = parts[1];
-        this.ui = ui || {usqs:{}};
+        this.ui = ui || {uqs:{}};
         this.caption = this.res.caption || 'Tonva';
     }
     
-    readonly caption: string; // = 'View Model 版的 Usql App';    
-    cUsqCollection: {[usq:string]: CUsq} = {};
+    readonly caption: string; // = 'View Model 版的 Uq App';
+    cUqCollection: {[uq:string]: CUq} = {};
 
     async startDebug() {
         let appName = this.appOwner + '/' + this.appName;
-        let cApp = new CApp(appName, {usqs:{}} );
+        let cApp = new CApp(appName, {uqs:{}} );
         let keepNavBackButton = true;
         await cApp.start(keepNavBackButton);    
     }
 
-    protected async loadUsqs(): Promise<string[]> {
+    protected async loadUqs(): Promise<string[]> {
         let retErrors:string[] = [];
         let unit = meInFrame.unit;
-        let app = await loadAppUsqs(this.appOwner, this.appName);
-        let {id, usqs} = app;
+        let app = await loadAppUqs(this.appOwner, this.appName);
+        let {id, uqs} = app;
         this.id = id;
 
         let promises: PromiseLike<string>[] = [];
         let promiseChecks: PromiseLike<boolean>[] = [];
-        for (let appUsq of usqs) {
-            let {id:usqId, usqOwner, usqName, url, urlDebug, ws, access, token} = appUsq;
-            let usq = usqOwner + '/' + usqName;
-            let ui = this.ui && this.ui.usqs && this.ui.usqs[usq];
-            let cUsq = this.newCUsq(usq, usqId, access, ui || {});
-            this.cUsqCollection[usq] = cUsq;
-            promises.push(cUsq.loadSchema());
-            promiseChecks.push(cUsq.entities.usqApi.checkAccess());
+        for (let appUq of uqs) {
+            let {id:uqId, uqOwner, uqName, url, urlDebug, ws, access, token} = appUq;
+            let uq = uqOwner + '/' + uqName;
+            let ui = this.ui && this.ui.uqs && this.ui.uqs[uq];
+            let cUq = this.newCUq(uq, uqId, access, ui || {});
+            this.cUqCollection[uq] = cUq;
+            promises.push(cUq.loadSchema());
+            promiseChecks.push(cUq.entities.uqApi.checkAccess());
         }
         let results = await Promise.all(promises);
         Promise.all(promiseChecks).then((checks) => {
@@ -73,7 +73,7 @@ export class CApp extends Controller {
         });
         for (let result of results)
         {
-            let retError = result; // await cUsq.loadSchema();
+            let retError = result; // await cUq.loadSchema();
             if (retError !== undefined) {
                 retErrors.push(retError);
                 continue;
@@ -83,38 +83,38 @@ export class CApp extends Controller {
         return retErrors;
     }
 
-    async getImportUsq(usqOwner:string, usqName:string):Promise<CUsq> {
-        let usq = usqOwner + '/' + usqName;
-        let cUsq = this.cImportUsqs[usq];
-        if (cUsq !== undefined) return cUsq;
-        let ui = this.ui && this.ui.usqs && this.ui.usqs[usq];
-        let usqId = -1; // unknown
-        this.cImportUsqs[usq] = cUsq = this.newCUsq(usq, usqId, undefined, ui || {});
-        let retError = await cUsq.loadSchema();
+    async getImportUq(uqOwner:string, uqName:string):Promise<CUq> {
+        let uq = uqOwner + '/' + uqName;
+        let cUq = this.cImportUqs[uq];
+        if (cUq !== undefined) return cUq;
+        let ui = this.ui && this.ui.uqs && this.ui.uqs[uq];
+        let uqId = -1; // unknown
+        this.cImportUqs[uq] = cUq = this.newCUq(uq, uqId, undefined, ui || {});
+        let retError = await cUq.loadSchema();
         if (retError !== undefined) {
             console.error(retError);
             debugger;
             return;
         }
-        return cUsq;
+        return cUq;
     }
 
-    protected newCUsq(usq:string, usqId:number, access:string, ui:any) {
-        let cUsq = new (this.ui.CUsq || CUsq)(this, usq, this.id, usqId, access, ui);        
-        Object.setPrototypeOf(cUsq.x, this.x);
-        return cUsq;
+    protected newCUq(uq:string, uqId:number, access:string, ui:any) {
+        let cUq = new (this.ui.CUq || CUq)(this, uq, this.id, uqId, access, ui);        
+        Object.setPrototypeOf(cUq.x, this.x);
+        return cUq;
     }
 
-    get cUsqArr():CUsq[] {
-        let ret:CUsq[] = [];
-        for (let i in this.cUsqCollection) {
-            ret.push(this.cUsqCollection[i]);
+    get cUqArr():CUq[] {
+        let ret:CUq[] = [];
+        for (let i in this.cUqCollection) {
+            ret.push(this.cUqCollection[i]);
         }
         return ret;
     }
 
-    getCUsq(apiName:string):CUsq {
-        return this.cUsqCollection[apiName];
+    getCUq(apiName:string):CUq {
+        return this.cUqCollection[apiName];
     }
 
     protected get VAppMain():TypeVPage<CApp> {return (this.ui&&this.ui.main) || VAppMain}
@@ -132,7 +132,7 @@ export class CApp extends Controller {
             }
             let {unit} = meInFrame;
             if (this.isProduction === false && (unit===undefined || unit<=0)) {
-                let app = await loadAppUsqs(this.appOwner, this.appName);
+                let app = await loadAppUqs(this.appOwner, this.appName);
                 let {id} = app;
                 this.id = id;
                 await this.loadAppUnits();
@@ -155,11 +155,11 @@ export class CApp extends Controller {
                 }
             }
 
-            let retErrors = await this.loadUsqs();
+            let retErrors = await this.loadUqs();
             if (retErrors !== undefined) {
                 this.openPage(<Page header="ERROR">
                     <div className="m-3">
-                        <div>Load Usqs 发生错误：</div>
+                        <div>Load Uqs 发生错误：</div>
                         {retErrors.map((r, i) => <div key={i}>{r}</div>)}
                     </div>
                 </Page>);
@@ -228,26 +228,26 @@ export class CApp extends Controller {
             let action = parts[2];
             // sheet_debug 表示centerUrl是debug方式的
             if (action === 'sheet' || action === 'sheet_debug') {
-                let usqId = Number(parts[3]);
+                let uqId = Number(parts[3]);
                 let sheetTypeId = Number(parts[4]);
                 let sheetId = Number(parts[5]);
-                let cUsq = this.getCUsqFromId(usqId);
-                if (cUsq === undefined) {
-                    alert('unknown usqId: ' + usqId);
+                let cUq = this.getCUqFromId(uqId);
+                if (cUq === undefined) {
+                    alert('unknown uqId: ' + uqId);
                     return;
                 }
                 this.clearPrevPages();
-                await cUsq.navSheet(sheetTypeId, sheetId);
+                await cUq.navSheet(sheetTypeId, sheetId);
                 return;
             }
         }
         this.showVPage(this.VAppMain);
     }
 
-    private getCUsqFromId(usqId:number): CUsq {
-        for (let i in this.cUsqCollection) {
-            let cUsq = this.cUsqCollection[i];
-            if (cUsq.id === usqId) return cUsq;
+    private getCUqFromId(uqId:number): CUq {
+        for (let i in this.cUqCollection) {
+            let cUq = this.cUqCollection[i];
+            if (cUq.id === uqId) return cUq;
         }
         return;
     }
@@ -270,17 +270,6 @@ export class CApp extends Controller {
         meInFrame.unit = item.id; // 25;
         await this.start();
     }
-
-    /*
-    protected appPage = () => {
-        return <Page header={this.caption} logout={()=>{meInFrame.unit = undefined}}>
-            {this.cUsqArr.map((v,i) => <div key={i}>{v.render()}</div>)}
-        </Page>;
-    };
-    */
-    //<LMR className="px-3 py-2 my-2 bg-light"
-    //left={<FA name='cog' fixWidth={true} className="text-info mr-2 pt-1" />}
-    //onClick={this.opClick}>设置操作权限</LMR>
 
     protected selectUnitPage = () => {
         return <Page header="选择小号" logout={true}>
@@ -306,15 +295,15 @@ class VAppMain extends VPage<CApp> {
     }
 
     protected appContent = () => {
-        let {cUsqArr} = this.controller;
+        let {cUqArr} = this.controller;
         let content:any;
-        if (cUsqArr.length === 0) {
+        if (cUqArr.length === 0) {
             content = <div className="text-danger">
-                <FA name="" /> 此APP没有绑定任何的USQ
+                <FA name="" /> 此APP没有绑定任何的UQ
             </div>;
         }
         else {
-            content = cUsqArr.map((v,i) => <div key={i}>{v.render()}</div>);
+            content = cUqArr.map((v,i) => <div key={i}>{v.render()}</div>);
         }
         return <>{content}</>;
     };

@@ -1,7 +1,7 @@
-import { UsqUI, Tuid } from "tonva-react-usql";
+import { UqUI as UqUI, Tuid } from "tonva-react-uq";
 import tuid from './tuid';
 
-const usqUI: UsqUI = {
+const usqUI: UqUI = {
     tuid: tuid,
 }
 

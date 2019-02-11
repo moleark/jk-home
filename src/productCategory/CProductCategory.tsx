@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { ControllerUsq, Tuid, Map, CUsq, Query } from 'tonva-react-usql';
+import { Query } from 'tonva-react-uq';
 import { observable } from 'mobx';
 import { VRootCategory } from './VRootCategory';
 import { VCategory } from './VCategory';
 import { CCartApp } from 'CCartApp';
 import { Controller } from 'tonva-tools';
-import { buildVField } from 'tonva-react-usql/controllers/form/vField';
 
 export class CProductCategory extends Controller {
 

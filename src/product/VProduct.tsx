@@ -5,7 +5,7 @@ import {
     StringSchema, Context, ObjectSchema, RowContext, UiCustom
 } from 'tonva-tools';
 import { List, LMR, FA, SearchBox } from 'tonva-react-form';
-import { tv, BoxId } from 'tonva-react-usql';
+import { tv, BoxId } from 'tonva-react-uq';
 import { observer } from 'mobx-react';
 import { MinusPlusWidget } from '../tools/minusPlusWidget';
 import { PackRow, Product } from './Product';

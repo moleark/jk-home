@@ -26,8 +26,8 @@ export abstract class Entity {
 
     public face: any;           // 对应字段的label, placeHolder等等的中文，或者语言的翻译
 
-    protected get tvApi() {return this.entities.usqApi;}
-    async getApiFrom() {return this.entities.usqApi;}
+    protected get tvApi() {return this.entities.uqApi;}
+    async getApiFrom() {return this.entities.uqApi;}
 
     private fieldMaps: {[arr:string]: FieldMap} = {};
     fieldMap(arr?:string): FieldMap {
@@ -54,7 +54,7 @@ export abstract class Entity {
 
     public async loadSchema():Promise<void> {
         if (this.schema !== undefined) return;
-        let schema = await this.entities.usqApi.schema(this.name);
+        let schema = await this.entities.uqApi.schema(this.name);
         this.setSchema(schema);
     }
 
@@ -287,22 +287,8 @@ export abstract class Entity {
                 let id = Number(v);
                 let {_tuid} = f;
                 if (_tuid === undefined) return id;
-                console.log(this.name, 'bigint', v, 'tuid', _tuid.name);
                 _tuid.useId(id, true);
-                //let val = _tuid.valueFromId(id);
-                //return val.obj || val;
                 return _tuid.boxId(id);
-                /*
-                if (tuidKey !== undefined) {
-                    let tuid = f._tuid;
-                    if (tuid === undefined) {
-                        // 在jsonStringify中间不会出现
-                        Object.defineProperty(f, '_tuid', {value:'_tuid', writable: true});
-                        f._tuid = tuid = this.getTuid(tuidKey, tuidUrl);
-                    }
-                    tuid.useId(Number(v), true);
-                }*/
-                //return Number(v);
         }
     }
 

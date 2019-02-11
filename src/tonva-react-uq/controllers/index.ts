@@ -1,6 +1,6 @@
 export * from './CApp';
 export * from './startApp';
-export * from './usq';
+export * from './uq';
 export * from './action';
 export * from './tuid';
 export * from './sheet';
@@ -11,7 +11,7 @@ export * from './pending';
 export * from './form/viewModel';
 export * from './form';
 export * from './formUI';
-export * from './ControllerUsq';
+export * from './ControllerUq';
 export * from './CVEntity';
 export * from './link';
 export * from './icons';

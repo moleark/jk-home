@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TuidUI } from 'tonva-react-usql';
+import { TuidUI } from 'tonva-react-uq';
 
 export const productUI: TuidUI = {
     content: (values: any) => {

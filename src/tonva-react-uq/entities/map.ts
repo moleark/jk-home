@@ -18,7 +18,7 @@ export class Map extends Entity {
     keys: Field[];
     actions: MapActions = {} as any;
     queries: MapQueries = {} as any;
-    schemaFrom: {owner:string; usq:string};
+    schemaFrom: {owner:string; uq:string};
 
     setSchema(schema:any) {
         super.setSchema(schema);

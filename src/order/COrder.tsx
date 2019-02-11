@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TuidMain, Map, Sheet, BoxId } from 'tonva-react-usql';
+import { TuidMain, Map, Sheet, BoxId } from 'tonva-react-uq';
 import { CCartApp } from 'CCartApp';
 import { VCreateOrder } from './VCreateOrder';
 import { Order, OrderItem } from './Order';

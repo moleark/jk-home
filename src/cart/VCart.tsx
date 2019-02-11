@@ -2,7 +2,7 @@ import * as React from 'react';
 import { VPage, Page, Form, ObjectSchema, NumSchema, ArrSchema, UiSchema, UiArr, Field, UiCustom, RowContext } from 'tonva-tools';
 import { CCart } from './CCart';
 import { List, LMR, FA } from 'tonva-react-form';
-import { tv, BoxId } from 'tonva-react-usql';
+import { tv, BoxId } from 'tonva-react-uq';
 import { observer } from 'mobx-react';
 import { MinusPlusWidget, PackItem } from '../tools';
 

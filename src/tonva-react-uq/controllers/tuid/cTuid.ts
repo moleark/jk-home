@@ -5,7 +5,7 @@ import { TuidMain, Tuid, TuidDiv } from "../../entities";
 import { VTuidMain } from './vTuidMain';
 import { VTuidEdit } from './vTuidEdit';
 import { VTuidSelect } from './vTuidSelect';
-import { CUsq } from "../usq/cUsq";
+import { CUq } from "../uq/cUq";
 import { CLink } from "../link";
 import { VTuidInfo } from "./vTuidInfo";
 import { TuidPageItems } from "./pageItems";
@@ -30,11 +30,6 @@ export interface TuidUI extends EntityUI {
 }
 
 export abstract class CTuid<T extends Tuid> extends CEntity<T, TuidUI> {
-    /*
-    constructor(cUsq: CUsq, entity: T, ui: TuidUI, res) {
-        super(cUsq, entity, ui, res);
-    }*/
-
     PageItems:PageItems<any>;
 
     protected buildPageItems():PageItems<any> {
@@ -55,14 +50,14 @@ export abstract class CTuid<T extends Tuid> extends CEntity<T, TuidUI> {
 }
 
 export class CTuidMain extends CTuid<TuidMain> {
-    constructor(cUsq: CUsq, entity: TuidMain, ui: TuidUI, res:any) {
-        super(cUsq, entity, ui, res);
+    constructor(cUq: CUq, entity: TuidMain, ui: TuidUI, res:any) {
+        super(cUq, entity, ui, res);
         let tuid = this.entity;
         this.proxies = tuid.proxies;
         if (this.proxies !== undefined) {
             this.proxyLinks = [];
             for (let i in this.proxies) {
-                let link = this.cUsq.linkFromName('tuid', i);
+                let link = this.cUq.linkFromName('tuid', i);
                 this.proxyLinks.push(link);
             }
         }
@@ -74,20 +69,20 @@ export class CTuidMain extends CTuid<TuidMain> {
         return ret;
     }
 
-    async cUsqFrom():Promise<CUsq> {
-        return await this.entity.cUsqFrom();
+    async cUqFrom():Promise<CUq> {
+        return await this.entity.cUqFrom();
     }
     async cEditFrom(): Promise<CTuidEdit> {
-        let cUsq = await this.entity.cUsqFrom();
-        return await cUsq.cTuidEditFromName(this.entity.name);
+        let cUq = await this.entity.cUqFrom();
+        return await cUq.cTuidEditFromName(this.entity.name);
     }
     async cInfoFrom(): Promise<CTuidInfo> {
-        let cUsq = await this.entity.cUsqFrom();
-        return await cUsq.cTuidInfoFromName(this.entity.name);
+        let cUq = await this.entity.cUqFrom();
+        return await cUq.cTuidInfoFromName(this.entity.name);
     }
     async cSelectFrom(): Promise<CTuidSelect> {
-        let cUsq = await this.entity.cUsqFrom();
-        return await cUsq.cTuidSelectFromName(this.entity.name);
+        let cUq = await this.entity.cUqFrom();
+        return await cUq.cTuidSelectFromName(this.entity.name);
     }
 
     getLable(tuid:Tuid):string {
@@ -126,7 +121,7 @@ export class CTuidMain extends CTuid<TuidMain> {
             case 'edit': await this.edit(value); return;
             case 'item-changed': this.itemChanged(value); return;
             case 'info': 
-                let cTuidInfo = new CTuidInfo(this.cUsq, this.entity, this.ui, this.res);
+                let cTuidInfo = new CTuidInfo(this.cUq, this.entity, this.ui, this.res);
                 await cTuidInfo.start(value);
                 return;
         }

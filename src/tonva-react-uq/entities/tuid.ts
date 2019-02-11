@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { Entity } from './entity';
 import { Entities, Field, ArrFields } from './entities';
 import { isNumber } from 'util';
-import { CUsq, CTuidMain, CTuidEdit, CTuidInfo, CTuidSelect } from '../controllers';
+import { CUq, CTuidMain, CTuidEdit, CTuidInfo, CTuidSelect } from '../controllers';
 
 export class BoxId {
     id: number;
@@ -25,7 +25,7 @@ export abstract class Tuid extends Entity {
     idName: string;
     owner: TuidMain;                    // 用这个值来区分是不是TuidArr
     unique: string[];
-    schemaFrom: {owner:string; usq:string};
+    schemaFrom: {owner:string; uq:string};
 
     constructor(entities:Entities, name:string, typeId:number) {
         super(entities, name, typeId);
@@ -62,7 +62,7 @@ export abstract class Tuid extends Entity {
         return ret;
     }
     getTuidContent() {
-        return this.entities.cUsq.getTuidContent(this);
+        return this.entities.cUq.getTuidContent(this);
     }
     getIdFromObj(item:any):number {
         return item[this.idName];
@@ -126,8 +126,6 @@ export abstract class Tuid extends Entity {
             return;
         }
 
-        console.log('// 如果没有缓冲, 或者没有waiting');
-        // 如果没有缓冲, 或者没有waiting
         if (this.queue.length >= maxCacheSize) {
             // 缓冲已满，先去掉最不常用的
             let r = this.queue.shift();
@@ -148,7 +146,6 @@ export abstract class Tuid extends Entity {
                 this.waitingIds.splice(index, 1);
             }
         }
-        console.log('this.waitingIds.push(id)', id);
         this.waitingIds.push(id);
         this.queue.push(id);
         return;
@@ -309,13 +306,13 @@ export abstract class Tuid extends Entity {
     //    return await this.tvApi.tuidIds(this.name, idArr);
     //}
     async showInfo(id:number) {
-        await this.entities.cUsq.showTuid(this, id);
+        await this.entities.cUq.showTuid(this, id);
     }
 }
 
 export class TuidMain extends Tuid {
     get Main() {return this}
-    get usqApi() {return this.entities.usqApi};
+    get uqApi() {return this.entities.uqApi};
 
     divs: {[name:string]: TuidDiv};
     proxies: {[name:string]: TuidMain};
@@ -351,59 +348,59 @@ export class TuidMain extends Tuid {
         }
     }
 
-    async cUsqFrom(): Promise<CUsq> {
-        if (this.schemaFrom === undefined) return this.entities.cUsq;
-        let {owner, usq} = this.schemaFrom;
-        let cUsq = await this.entities.cUsq
-        let cApp = cUsq.cApp;
-        if (cApp === undefined) return cUsq;
-        let cUsqFrm = await cApp.getImportUsq(owner, usq);
-        if (cUsqFrm === undefined) {
-            console.error(`${owner}/${usq} 不存在`);
+    async cUqFrom(): Promise<CUq> {
+        if (this.schemaFrom === undefined) return this.entities.cUq;
+        let {owner, uq: uq} = this.schemaFrom;
+        let cUq = await this.entities.cUq
+        let cApp = cUq.cApp;
+        if (cApp === undefined) return cUq;
+        let cUqFrm = await cApp.getImportUq(owner, uq);
+        if (cUqFrm === undefined) {
+            console.error(`${owner}/${uq} 不存在`);
             debugger;
-            return cUsq;
+            return cUq;
         }
-        let retErrors = await cUsqFrm.loadSchema();
+        let retErrors = await cUqFrm.loadSchema();
         if (retErrors !== undefined) {
-            console.error('cUsq.loadSchema: ' + retErrors);
+            console.error('cUq.loadSchema: ' + retErrors);
             debugger;
-            return cUsq;
+            return cUq;
         }
-        return cUsqFrm;
+        return cUqFrm;
     }
 
     async getApiFrom() {
         let from = await this.from();
         if (from !== undefined) {
-            return from.entities.usqApi;
+            return from.entities.uqApi;
         }
-        return this.entities.usqApi;
+        return this.entities.uqApi;
     }
 
     async from(): Promise<TuidMain> {
-        let cUsq = await this.cUsqFrom();
-        return cUsq.tuid(this.name);
+        let cUq = await this.cUqFrom();
+        return cUq.tuid(this.name);
     }
 
     async cFrom(): Promise<CTuidMain> {
-        let cUsq = await this.cUsqFrom();
-        return cUsq.cTuidMainFromName(this.name);
+        let cUq = await this.cUqFrom();
+        return cUq.cTuidMainFromName(this.name);
     }
 
     async cEditFrom(): Promise<CTuidEdit> {
-        let cUsq = await this.cUsqFrom();
-        return cUsq.cTuidEditFromName(this.name);
+        let cUq = await this.cUqFrom();
+        return cUq.cTuidEditFromName(this.name);
     }
 
     async cInfoFrom(): Promise<CTuidInfo> {
-        let cUsq = await this.cUsqFrom();
-        return cUsq.cTuidInfoFromName(this.name);
+        let cUq = await this.cUqFrom();
+        return cUq.cTuidInfoFromName(this.name);
     }
 
     async cSelectFrom(): Promise<CTuidSelect> {
-        let cUsq = await this.cUsqFrom();
-        if (cUsq === undefined) return;
-        return cUsq.cTuidSelectFromName(this.name);
+        let cUq = await this.cUqFrom();
+        if (cUq === undefined) return;
+        return cUq.cTuidSelectFromName(this.name);
     }
 
     protected afterCacheId(tuidValue:any) {

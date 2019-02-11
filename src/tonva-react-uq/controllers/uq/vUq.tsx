@@ -3,9 +3,9 @@ import { View } from "tonva-tools";
 import { List, Muted } from "tonva-react-form";
 import { Entity } from "../../entities";
 import { CLink } from "../link";
-import { CUsq } from "./cUsq";
+import { CUq } from "./cUq";
 
-export class VUsq extends View<CUsq> {
+export class VUq extends View<CUq> {
     protected isSysVisible = false;
     protected tuidLinks: CLink[];
     protected mapLinks: CLink[];
@@ -16,9 +16,9 @@ export class VUsq extends View<CUsq> {
     protected historyLinks: CLink[];
     protected pendingLinks: CLink[];
 
-    constructor(cUsq: CUsq) {
-        super(cUsq);
-        let {tuidArr, mapArr, sheetArr, actionArr, queryArr, bookArr, historyArr, pendingArr} = cUsq.entities;
+    constructor(cUq: CUq) {
+        super(cUq);
+        let {tuidArr, mapArr, sheetArr, actionArr, queryArr, bookArr, historyArr, pendingArr} = cUq.entities;
         this.tuidLinks = tuidArr.filter(v => this.isVisible(v)).map(v => new CLink(this.controller.cTuidMain(v)));
         this.mapLinks = mapArr.filter(v => this.isVisible(v)).map(v => new CLink(this.controller.cMap(v)));
         this.sheetLinks = sheetArr.filter(v => this.isVisible(v)).map(v => new CLink(this.controller.cSheet(v)));
@@ -37,7 +37,7 @@ export class VUsq extends View<CUsq> {
     }
 
     protected view = () => {
-        let {res, usq, error} = this.controller;
+        let {res, uq, error} = this.controller;
         let linkItem = {
             render: (cLink:CLink, index:number):JSX.Element => cLink.render(), 
             onClick: undefined, 
@@ -97,7 +97,7 @@ export class VUsq extends View<CUsq> {
             );
         }
         return <>
-            <div className="px-3 py-1 small">{res.usq || usq}</div>
+            <div className="px-3 py-1 small">{res.uq || uq}</div>
             {content}
         </>;
     }

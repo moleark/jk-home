@@ -1,5 +1,5 @@
 import { UserInNav, User } from 'tonva-tools';
-import { Map, BoxId, CUsq } from 'tonva-react-usql';
+import { Map, BoxId, CUq } from 'tonva-react-uq';
 
 export class WebUser {
 
@@ -15,9 +15,9 @@ export class WebUser {
     private webUserContactMap: Map;
     private webUserSettingMap: Map;
 
-    private cUsqCustomer: CUsq;
+    private cUsqCustomer: CUq;
 
-    constructor(cUsqWebUser: CUsq, cUsqCustomer: CUsq) {
+    constructor(cUsqWebUser: CUq, cUsqCustomer: CUq) {
         this.webUserCustomerMap = cUsqWebUser.map('webUserCustomer');
         this.webUserContactMap = cUsqWebUser.map('webUserContacts');
         this.webUserSettingMap = cUsqWebUser.map('webUserSetting');
@@ -114,7 +114,7 @@ export class Customer {
 
     private customerSettingMap: Map;
 
-    constructor(customer: BoxId, cUsqCustomer: CUsq) {
+    constructor(customer: BoxId, cUsqCustomer: CUq) {
         this.id = customer.id;
         this.contactMap = cUsqCustomer.map('customerContacts');
         this.customerSettingMap = cUsqCustomer.map('customerSetting');

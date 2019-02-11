@@ -2,7 +2,7 @@ import * as React from 'react';
 import { VPage, Page } from 'tonva-tools';
 import { CUser } from './CPerson';
 import { List, LMR, FA } from 'tonva-react-form';
-import { tv } from 'tonva-react-usql';
+import { tv } from 'tonva-react-uq';
 import { ContactType } from 'order/COrder';
 
 export class VAddressList extends VPage<CUser> {

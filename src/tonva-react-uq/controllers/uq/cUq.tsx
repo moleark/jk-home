@@ -1,7 +1,7 @@
 import * as React from 'react';
 import _ from 'lodash';
-import { UsqApi, Controller, UnitxApi, meInFrame, resLang, nav } from 'tonva-tools';
-import { Entities, TuidMain, Action, Sheet, Query, Book, Map, Entity, Tuid, /*Usq, */History, Pending } from '../../entities';
+import { UqApi, Controller, UnitxApi, meInFrame, resLang, nav } from 'tonva-tools';
+import { Entities, TuidMain, Action, Sheet, Query, Book, Map, Entity, Tuid, History, Pending } from '../../entities';
 import { CLink } from '../link';
 import { CBook, BookUI } from '../book';
 import { CSheet, SheetUI } from '../sheet';
@@ -11,14 +11,14 @@ import { CTuidMain, TuidUI, CTuid, CTuidInfo, CTuidSelect, CTuidEdit, CTuidList 
 import { MapUI, CMap } from '../map';
 import { CEntity, EntityUI } from '../CVEntity';
 import { PureJSONContent } from '../form/viewModel';
-import { VUsq } from './vUsq';
+import { VUq } from './vUq';
 import { CHistory, HistoryUI } from '../history';
 import { CPending, PendingUI } from '../pending';
 import { CApp } from '../CApp';
 
 export type EntityType = 'sheet' | 'action' | 'tuid' | 'query' | 'book' | 'map' | 'history' | 'pending';
 
-export interface UsqUI {
+export interface UqUI {
     CTuidMain?: typeof CTuidMain;
     CTuidEdit?: typeof CTuidEdit;
     CTuidList?: typeof CTuidList;
@@ -48,7 +48,7 @@ function lowerPropertyName(entities: {[name:string]: EntityUI}) {
     for (let i in entities) entities[i.toLowerCase()] = entities[i];
 }
 
-export class CUsq extends Controller /* implements Usq*/ {
+export class CUq extends Controller /* implements Uq*/ {
     private ui:any;
     private CTuidMain: typeof CTuidMain;
     private CTuidEdit: typeof CTuidEdit;
@@ -64,11 +64,11 @@ export class CUsq extends Controller /* implements Usq*/ {
     private CHistory: typeof CHistory;
     private CPending: typeof CPending;
 
-    constructor(cApp:CApp, usq:string, appId:number, usqId:number, access:string, ui:UsqUI) {
+    constructor(cApp:CApp, uq:string, appId:number, uqId:number, access:string, ui:UqUI) {
         super(resLang(ui.res));
         this.cApp = cApp;
-        this.usq = usq;
-        this.id = usqId;
+        this.uq = uq;
+        this.id = uqId;
         // 每一个ui都转换成小写的key的版本
         lowerPropertyName(ui.tuid);
         lowerPropertyName(ui.sheet);
@@ -94,19 +94,19 @@ export class CUsq extends Controller /* implements Usq*/ {
         this.CPending = ui.CPending || CPending;
 
         let token = undefined;
-        let usqOwner:string, usqName:string;
-        let p = usq.split('/');
+        let uqOwner:string, uqName:string;
+        let p = uq.split('/');
         switch (p.length) {
             case 1:
-                usqOwner = '$$$';
-                usqName = p[0];
+                uqOwner = '$$$';
+                uqName = p[0];
                 break;
             case 2:
-                usqOwner = p[0];
-                usqName = p[1];
+                uqOwner = p[0];
+                uqName = p[1];
                 break;
             default:
-                console.log('usq must be usqOwner/usqName format');
+                console.log('uq must be uqOwner/uqName format');
                 return;
         }
 
@@ -121,23 +121,23 @@ export class CUsq extends Controller /* implements Usq*/ {
         else {
             acc = access.split(';').map(v => v.trim()).filter(v => v.length > 0);
         }
-        let usqApi:UsqApi;
-        if (usq === '$$$/$unitx') {
+        let uqApi:UqApi;
+        if (uq === '$$$/$unitx') {
             // 这里假定，点击home link之后，已经设置unit了
             // 调用 UnitxApi会自动搜索绑定 unitx service
-            usqApi = new UnitxApi(meInFrame.unit);
+            uqApi = new UnitxApi(meInFrame.unit);
         }
         else {
-            usqApi = new UsqApi(baseUrl, usqOwner, usqName, acc, true);
+            uqApi = new UqApi(baseUrl, uqOwner, uqName, acc, true);
         }
-        this.entities = new Entities(this, usqApi, appId);
+        this.entities = new Entities(this, uqApi, appId);
     }
 
     protected async internalStart() {
     }
 
     cApp:CApp;
-    usq: string;
+    uq: string;
     id: number;
     res: any;
     entities:Entities;
@@ -152,7 +152,7 @@ export class CUsq extends Controller /* implements Usq*/ {
         try {
             if (this.schemaLoaded === true) return;
             await this.loadEntites();
-            if (this.id === undefined) this.id = this.entities.usqId;
+            if (this.id === undefined) this.id = this.entities.uqId;
 
             for (let i in this.ui) {
                 let g = this.ui[i];
@@ -161,7 +161,7 @@ export class CUsq extends Controller /* implements Usq*/ {
                 if (collection === undefined) continue;
                 for (let j in collection) {
                     if (this.entities[i](j) === undefined) {
-                        console.warn(i + ':' + '\'' + j + '\' is not usql entity');
+                        console.warn(i + ':' + '\'' + j + '\' is not uq entity');
                     }
                 }
             }
@@ -464,10 +464,10 @@ export class CUsq extends Controller /* implements Usq*/ {
         await c.start(id);
     }
 
-    protected get VUsq():typeof VUsq {return VUsq}
+    protected get VUq():typeof VUq {return VUq}
 
     render() {
-        let v = new (this.VUsq)(this);
+        let v = new (this.VUq)(this);
         return v.render();
     }
 }

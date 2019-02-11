@@ -1,6 +1,6 @@
 import { observable, computed, autorun, IReactionDisposer, IObservableArray } from 'mobx';
 import _ from 'lodash';
-import { CUsq, Action, Query, TuidMain, TuidDiv, BoxId } from 'tonva-react-usql';
+import { CUq, Action, Query, TuidMain, TuidDiv, BoxId } from 'tonva-react-uq';
 import { PackItem } from '../tools';
 import { CCartApp } from '../CCartApp';
 
@@ -25,8 +25,8 @@ abstract class CartStore {
 
 export class Cart {
     private cCartApp: CCartApp;
-    private cUsqProduct: CUsq;
-    private cUsqOrder: CUsq;
+    private cUsqProduct: CUq;
+    private cUsqOrder: CUq;
     private cartStore: CartStore;
     private disposer: IReactionDisposer;
 
@@ -219,7 +219,7 @@ class CartRemote extends CartStore {
 
     get isLocal(): boolean { return false }
 
-    constructor(cart: Cart, cUsqOrder: CUsq) {
+    constructor(cart: Cart, cUsqOrder: CUq) {
         super(cart);
         this.getCartQuery = cUsqOrder.query('getcart')
         this.setCartAction = cUsqOrder.action('setcart');
@@ -288,7 +288,7 @@ class CartLocal extends CartStore {
     private productTuid: TuidMain;
     private packTuid: TuidDiv;
 
-    constructor(cart: Cart, cUsqProduct: CUsq) {
+    constructor(cart: Cart, cUsqProduct: CUq) {
         super(cart);
         this.productTuid = cUsqProduct.tuid('productx');
         this.packTuid = cUsqProduct.tuidDiv('productx', 'packx');

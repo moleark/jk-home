@@ -1,21 +1,21 @@
 import * as React from 'react';
 import { Controller, VPage, View } from 'tonva-tools';
 import { Entity, Field, TuidMain } from '../entities';
-import { CUsq } from './usq/cUsq';
+import { CUq } from './uq/cUq';
 import { VForm, FieldInputs, FieldCall, FormOptions, FormMode } from './form';
 import { CQuerySelect } from './query';
 import { FormUI, FieldTuidUI } from './formUI';
 import { entityIcons } from './icons';
-import { ControllerUsq } from './ControllerUsq';
+import { ControllerUq } from './ControllerUq';
 
 export interface EntityUI {
     form?: FormUI;
 }
 
-export abstract class CEntity<T extends Entity, UI extends EntityUI> extends ControllerUsq {
-    constructor(cUsq: CUsq, entity: T, ui: UI, res: any) {
-        super(cUsq, res);
-        Object.setPrototypeOf(this.x, cUsq.x);
+export abstract class CEntity<T extends Entity, UI extends EntityUI> extends ControllerUq {
+    constructor(cUq: CUq, entity: T, ui: UI, res: any) {
+        super(cUq, res);
+        Object.setPrototypeOf(this.x, cUq.x);
         let {name, typeName} = entity;
         this.entity = entity;
         this.ui = ui; // || entityUI.ui;
@@ -49,16 +49,16 @@ export abstract class CEntity<T extends Entity, UI extends EntityUI> extends Con
             arrTitleNewButton = this.res['arrTitleNewButton'];
         }
         if (none === undefined) {
-            none = this.cUsq.res['none'] || 'none';
+            none = this.cUq.res['none'] || 'none';
         }
         if (submitCaption === undefined)
-            submitCaption = this.cUsq.res['submit'] || 'Submit';
+            submitCaption = this.cUq.res['submit'] || 'Submit';
         if (arrNewCaption === undefined)
-            arrNewCaption = this.cUsq.res['arrNew'] || 'New';
+            arrNewCaption = this.cUq.res['arrNew'] || 'New';
         if (arrEditCaption === undefined)
-            arrEditCaption = this.cUsq.res['arrEdit'] || 'Edit';
+            arrEditCaption = this.cUq.res['arrEdit'] || 'Edit';
         if (arrTitleNewButton === undefined)
-        arrTitleNewButton = this.cUsq.res['arrTitleNewButton'];
+        arrTitleNewButton = this.cUq.res['arrTitleNewButton'];
         if (mode === undefined) mode = FormMode.new;
         let formUI = this.ui.form;
         let ret:FormOptions = {
@@ -106,7 +106,7 @@ export abstract class CEntity<T extends Entity, UI extends EntityUI> extends Con
             ret[name] = {
                 select: this.buildSelect(field, arr, fieldUI),
                 content: this.buildContent(field, arr),
-                placeHolder: this.cUsq.getTuidPlaceHolder(_tuid),
+                placeHolder: this.cUq.getTuidPlaceHolder(_tuid),
             };
         }
     }
@@ -114,7 +114,7 @@ export abstract class CEntity<T extends Entity, UI extends EntityUI> extends Con
     protected buildSelect(field:Field, arr:string, fieldUI: FieldTuidUI):FieldCall {
         return async (form:VForm, field:Field, values:any):Promise<any> => {
             let {_tuid, _ownerField} = field;
-            let cTuidSelect = await (_tuid as TuidMain).cSelectFrom(); // this.cUsq.cTuidSelect(_tuid);
+            let cTuidSelect = await (_tuid as TuidMain).cSelectFrom();
             let param:any = undefined;
             if (_ownerField !== undefined) param = form.getValue(_ownerField.name);
             if (fieldUI && fieldUI.autoList === true) {
@@ -135,7 +135,7 @@ export abstract class CEntity<T extends Entity, UI extends EntityUI> extends Con
     }
 
     cQuerySelect(queryName:string):CQuerySelect {
-        return this.cUsq.cQuerySelect(queryName);
+        return this.cUq.cQuerySelect(queryName);
     }
 }
 

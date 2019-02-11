@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as _ from 'lodash';
-import { Map, TuidDiv, TuidMain, Query, tv, BoxId } from 'tonva-react-usql';
+import { Map, TuidDiv, TuidMain, Query, tv, BoxId } from 'tonva-react-uq';
 import { PageItems, Controller } from 'tonva-tools';
 import { CCartApp } from '../CCartApp';
 import { PackItem } from '../tools';

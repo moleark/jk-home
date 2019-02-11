@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { CApp, CUsq } from 'tonva-react-usql';
+import { CApp, CUq } from 'tonva-react-uq';
 import { CCart } from 'cart/CCart';
 import { CProduct } from 'product';
 import { COrder } from 'order/COrder';
@@ -19,14 +19,14 @@ export class CCartApp extends CApp {
     currentLanguage: any;
     currentUser: WebUser;
 
-    cUsqOrder: CUsq;
-    cUsqProduct: CUsq;
-    cUsqCommon: CUsq;
-    cUsqWebUser: CUsq;
-    cUsqCustomer: CUsq;
-    cUsqCustomerDiscount: CUsq;
-    cUsqWarehouse: CUsq;
-    cUsqMember: CUsq;
+    cUsqOrder: CUq;
+    cUsqProduct: CUq;
+    cUsqCommon: CUq;
+    cUsqWebUser: CUq;
+    cUsqCustomer: CUq;
+    cUsqCustomerDiscount: CUq;
+    cUsqWarehouse: CUq;
+    cUsqMember: CUq;
 
     cHome: CHome;
     cCart: CCart;
@@ -37,14 +37,14 @@ export class CCartApp extends CApp {
     cMember: CMember;
 
     protected async internalStart() {
-        this.cUsqOrder = this.getCUsq(consts.usqOrder);
-        this.cUsqProduct = this.getCUsq(consts.usqProduct);
-        this.cUsqCommon = this.getCUsq(consts.usqCommon);
-        this.cUsqWebUser = this.getCUsq(consts.usqWebUser);
-        this.cUsqCustomer = this.getCUsq(consts.usqCustomer);
-        this.cUsqCustomerDiscount = this.getCUsq(consts.usqCustomerDiscount);
-        this.cUsqWarehouse = this.getCUsq(consts.usqWarehouse);
-        this.cUsqMember = this.getCUsq(consts.usqMember);
+        this.cUsqOrder = this.getCUq(consts.usqOrder);
+        this.cUsqProduct = this.getCUq(consts.usqProduct);
+        this.cUsqCommon = this.getCUq(consts.usqCommon);
+        this.cUsqWebUser = this.getCUq(consts.usqWebUser);
+        this.cUsqCustomer = this.getCUq(consts.usqCustomer);
+        this.cUsqCustomerDiscount = this.getCUq(consts.usqCustomerDiscount);
+        this.cUsqWarehouse = this.getCUq(consts.usqWarehouse);
+        this.cUsqMember = this.getCUq(consts.usqMember);
 
         let salesRegionTuid = this.cUsqCommon.tuid('salesregion');
         this.currentSalesRegion = await salesRegionTuid.load(1);

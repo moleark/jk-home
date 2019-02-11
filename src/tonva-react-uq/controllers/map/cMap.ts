@@ -118,7 +118,7 @@ export class CMap extends CEntity<Map, MapUI> {
 
     async searchOnKey(keyField:Field, param):Promise<number> {
         let {_tuid, _ownerField} = keyField;
-        let cTuidSelect = this.cUsq.cTuidSelect(_tuid);
+        let cTuidSelect = this.cUq.cTuidSelect(_tuid);
         let callParam = param;
         if (_ownerField !== undefined) {
             callParam = param[_ownerField.name];
@@ -211,7 +211,7 @@ export class CMap extends CEntity<Map, MapUI> {
     removeClick = async(item:MapItem) => {
         let keyField = this.keyFields[item.keyIndex];
         let tuid = keyField._tuid;
-        let cTuidMain = this.cUsq.cTuidMain(tuid.Main);
+        let cTuidMain = this.cUq.cTuidMain(tuid.Main);
         let label = cTuidMain.getLable(tuid);
         let confirmDelete:_.TemplateExecutor = 
             this.res.confirmDelete 

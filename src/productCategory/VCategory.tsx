@@ -2,7 +2,7 @@ import * as React from 'react';
 import { CProductCategory } from './CProductCategory';
 import { VPage, Page } from 'tonva-tools';
 import { List, FA } from 'tonva-react-form';
-import { tv } from 'tonva-react-usql';
+import { tv } from 'tonva-react-uq';
 import { titleTitle, subStyle, renderThirdCategory } from './VRootCategory';
 
 export class VCategory extends VPage<CProductCategory> {

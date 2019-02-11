@@ -1,4 +1,4 @@
-import { BoxId, TuidMain, TuidDiv, Map, Query } from 'tonva-react-usql';
+import { BoxId, TuidMain, TuidDiv, Map, Query } from 'tonva-react-uq';
 import { CCartApp } from 'CCartApp';
 
 export interface PackRow {

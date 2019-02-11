@@ -147,7 +147,7 @@ export class CSheet extends CEntity<Sheet, SheetUI> {
                 action: '$sheet',
                 msg: {
                     id: sheetId,
-                    usq: this.cUsq.id,
+                    uq: this.cUq.id,
                     state: sheetData.brief.state
                 }
             }

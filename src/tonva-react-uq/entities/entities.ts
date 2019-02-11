@@ -1,21 +1,13 @@
-//import {UsqlApi} from './usqlApi';
 import {TuidMain, Tuid} from './tuid';
 import {Action} from './action';
 import {Sheet, SheetState, SheetAction} from './sheet';
 import {Query} from './query';
 import {Book} from './book';
 import {History} from './history';
-import { UsqApi } from 'tonva-tools';
+import { UqApi } from 'tonva-tools';
 import { Map } from './map';
 import { Pending } from './pending';
-import { CUsq } from '../controllers';
-
-/*
-export interface Usq {
-    getTuidContent(tuid:Tuid): React.StatelessComponent<any>;
-    showTuid(tuid:Tuid, id:number):Promise<void>;
-}
-*/
+import { CUq } from '../controllers';
 
 export type FieldType = 'tinyint' | 'smallint' | 'int' | 'bigint' | 'dec' | 'char' | 'text' 
     | 'datetime' | 'date' | 'time';
@@ -71,14 +63,14 @@ export class Entities {
     private histories: {[name:string]: History} = {};
     private pendings: {[name:string]: Pending} = {};
     private cacheTimer: any;
-    cUsq: CUsq;
-    usqApi: UsqApi;
+    cUq: CUq;
+    uqApi: UqApi;
     appId: number;
-    usqId: number;
+    uqId: number;
 
-    constructor(cUsq: CUsq, usqApi:UsqApi, appId: number) {
-        this.cUsq = cUsq;
-        this.usqApi = usqApi;
+    constructor(cUq: CUq, uqApi:UqApi, appId: number) {
+        this.cUq = cUq;
+        this.uqApi = uqApi;
         this.appId = appId;
     }
 
@@ -108,13 +100,13 @@ export class Entities {
     pendingArr: Pending[] = [];
 
     async loadAccess() {
-        let accesses = await this.usqApi.loadAccess();
+        let accesses = await this.uqApi.loadAccess();
         if (accesses === undefined) return;
         this.buildEntities(accesses);
     }
 
     async loadEntities() {
-        let accesses = await this.usqApi.loadEntities();
+        let accesses = await this.uqApi.loadEntities();
         this.buildEntities(accesses);
     }
 
@@ -253,7 +245,7 @@ export class Entities {
         type = parts[0];
         let id = Number(parts[1]);
         switch (type) {
-            case 'usq': this.usqId = id; break;
+            case 'uq': this.uqId = id; break;
             case 'tuid': 
                 let tuid = this.newTuid(name, id);
                 tuid.sys = false;
