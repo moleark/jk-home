@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { SearchBox, List, Muted } from 'tonva-react-form';
-import { Button } from 'reactstrap';
 import { TuidMain, Entity } from '../../entities';
 import { Page } from 'tonva-tools';
 import { CLink } from '../link';
@@ -28,14 +27,14 @@ export class VTuidMain extends VEntity<TuidMain, TuidUI, CTuidMain> {
     protected get view() {
         let {label, proxyLinks, isFrom} = this.controller;
         let newButton;
-        if (isFrom === false) newButton = <Button className="ml-3" color="primary" onClick={this.onNew}>新增</Button>;
+        if (isFrom === false) newButton = <button className="btn btn-primary ml-3" onClick={this.onNew}>新增</button>;
         return () => <Page header={label}>
             {proxyLinks === undefined ?
             <>
                 <SearchBox className="w-100" onSearch={this.onSearch} placeholder={'搜索'+label} />
                 <div className='my-3'>
                     {newButton}
-                    <Button className="ml-3" color="primary" onClick={this.onList}>列表</Button>
+                    <button className="btn btn-primary ml-3" onClick={this.onList}>列表</button>
                 </div>
             </> :
             <List className="my-2"

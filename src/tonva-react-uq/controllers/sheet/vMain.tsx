@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { Button, ButtonProps, Badge } from 'reactstrap';
 import { Page } from 'tonva-tools';
 import { List, Muted, LMR } from 'tonva-react-form';
 import { VEntity } from '../CVEntity';
@@ -20,14 +19,14 @@ export class VSheetMain extends VEntity<Sheet, SheetUI, CSheet> {
     renderState = (item:any, index:number) => {
         let {state, count} = item;
         if (count === 0) return null;
-        let badge = <Badge className="ml-5 align-self-end" color="success">{count}</Badge>;
+        let badge = <span className="badge badge-success ml-5 align-self-end">{count}</span>;
         return <LMR className="px-3 py-2" left={this.controller.getStateLabel(state)} right={badge} />;
     }
 
     protected view = observer(() => {
         let list = this.controller.statesCount.filter(row=>row.count);
         let right = <button className="btn btn-outline-primary" onClick={this.archivesClick}>已归档</button>;
-        let templet;
+        let templet:any;
         if (this.isDev === true) {
             templet = <button className="btn btn-primary mr-2" color="primary" onClick={this.schemaClick}>模板</button>;
         }

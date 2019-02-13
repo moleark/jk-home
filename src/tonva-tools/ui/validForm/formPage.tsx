@@ -1,6 +1,7 @@
+/*
 import * as React from 'react';
 import {ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
-    Row, Col, Button} from 'reactstrap';
+    Row, Col, Button} from 'reactstra p';
 import {Page} from '../page';
 import {ValidForm1} from './validForm';
 import {FormSchema} from './formSchema';
@@ -55,3 +56,4 @@ export class FormPage1 extends React.Component<FormPageProps, FormPageState> {
         </Page>;
     }
 }
+*/

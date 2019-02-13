@@ -126,8 +126,6 @@ export abstract class Tuid extends Entity {
             return;
         }
 
-        console.log('// 如果没有缓冲, 或者没有waiting');
-        // 如果没有缓冲, 或者没有waiting
         if (this.queue.length >= maxCacheSize) {
             // 缓冲已满，先去掉最不常用的
             let r = this.queue.shift();
@@ -148,7 +146,6 @@ export abstract class Tuid extends Entity {
                 this.waitingIds.splice(index, 1);
             }
         }
-        console.log('this.waitingIds.push(id)', id);
         this.waitingIds.push(id);
         this.queue.push(id);
         return;
