@@ -19,7 +19,7 @@ export class VSiteHeader extends View<CHome> {
             <button onClick={()=>nav.start()}>Try</button>
         </div>;*/
         return <LMR
-            className="p-1 mb-3 align-items-center bg-white"
+            className="mb-3 align-items-center bg-white"
             left={left} right={right}>
             <div className="">
                 {this.controller.renderSearchHeader('md')}

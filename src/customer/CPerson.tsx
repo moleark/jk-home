@@ -21,9 +21,9 @@ export class CUser extends Controller {
     constructor(cApp: CCartApp, res: any) {
         super(res);
         this.cApp = cApp;
-        let { cUsqCustomer } = cApp;
+        let { cUqCustomer } = cApp;
 
-        this.contactTuid = cUsqCustomer.tuid('contact');
+        this.contactTuid = cUqCustomer.tuid('contact');
     }
 
     async internalStart(contactType: ContactType) {

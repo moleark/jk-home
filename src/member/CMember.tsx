@@ -19,7 +19,7 @@ export class CMember extends Controller {
 
     protected async internalStart(param: any) {
 
-        let memberAction = this.cApp.cUsqMember.action('MemberAction');
+        let memberAction = this.cApp.cUqMember.action('MemberAction');
         if (this.isLogined) {
             let ma = await memberAction.submit({});
             this.member = { recommendationCode: ma.code, point: ma.point };

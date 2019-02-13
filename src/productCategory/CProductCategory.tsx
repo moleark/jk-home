@@ -18,9 +18,9 @@ export class CProductCategory extends Controller {
         super(res);
 
         this.cApp = cApp;
-        let { cUsqProduct } = this.cApp;
-        this.getRootCategoryQuery = cUsqProduct.query('getRootCategory');
-        this.getChildrenCategoryQuery = cUsqProduct.query('getChildrenCategory');
+        let { cUqProduct } = this.cApp;
+        this.getRootCategoryQuery = cUqProduct.query('getRootCategory');
+        this.getChildrenCategoryQuery = cUqProduct.query('getChildrenCategory');
     }
 
     async internalStart(param: any) {

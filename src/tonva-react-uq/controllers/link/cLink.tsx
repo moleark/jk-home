@@ -31,12 +31,4 @@ export class CLink extends Link {
         </div>;
         //return React.createElement(this.view, className);
     }
-
-    protected view = (className?:string) => {
-        return <div
-            className={classNames('px-3', 'py-2', 'align-items-center', 'cursor-pointer', className)}
-            onClick={this.onClick}>
-            {this.icon} &nbsp; {this.label}
-        </div>;
-    }
 }

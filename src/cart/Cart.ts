@@ -25,8 +25,8 @@ abstract class CartStore {
 
 export class Cart {
     private cCartApp: CCartApp;
-    private cUsqProduct: CUq;
-    private cUsqOrder: CUq;
+    private cUqProduct: CUq;
+    private cUqOrder: CUq;
     private cartStore: CartStore;
     private disposer: IReactionDisposer;
 
@@ -39,9 +39,9 @@ export class Cart {
 
     constructor(cCartApp: CCartApp) {
         this.cCartApp = cCartApp;
-        let { cUsqProduct, cUsqOrder } = cCartApp;
-        this.cUsqProduct = cUsqProduct;
-        this.cUsqOrder = cUsqOrder;
+        let { cUqProduct: cUqProduct, cUqOrder: cUqOrder } = cCartApp;
+        this.cUqProduct = cUqProduct;
+        this.cUqOrder = cUqOrder;
         this.items = this.data.list;
         this.disposer = autorun(this.calcSum);
     }
@@ -71,13 +71,13 @@ export class Cart {
 
     async load(): Promise<void> {
         if (this.cCartApp.isLogined === false) {
-            this.cartStore = new CartLocal(this, this.cUsqProduct);
+            this.cartStore = new CartLocal(this, this.cUqProduct);
             let items = await this.cartStore.load();
             this.items.push(...items);
             return;
         }
         if (this.cartStore === undefined) {
-            this.cartStore = new CartRemote(this, this.cUsqOrder);
+            this.cartStore = new CartRemote(this, this.cUqOrder);
             let items = await this.cartStore.load();
             this.items.push(...items);
             return;
@@ -85,7 +85,7 @@ export class Cart {
         let cartLocal = this.cartStore as CartLocal;
         let items = this.items.splice(0, this.items.length);
         this.items.splice(0, this.items.length);
-        this.cartStore = new CartRemote(this, this.cUsqOrder);
+        this.cartStore = new CartRemote(this, this.cUqOrder);
         (this.items as IObservableArray).replace(await this.cartStore.load());
 
         for (let item of items) {
@@ -219,11 +219,11 @@ class CartRemote extends CartStore {
 
     get isLocal(): boolean { return false }
 
-    constructor(cart: Cart, cUsqOrder: CUq) {
+    constructor(cart: Cart, cUqOrder: CUq) {
         super(cart);
-        this.getCartQuery = cUsqOrder.query('getcart')
-        this.setCartAction = cUsqOrder.action('setcart');
-        this.removeFromCartAction = cUsqOrder.action('removefromcart');
+        this.getCartQuery = cUqOrder.query('getcart')
+        this.setCartAction = cUqOrder.action('setcart');
+        this.removeFromCartAction = cUqOrder.action('removefromcart');
     }
 
     async load(): Promise<CartProduct[]> {
@@ -288,10 +288,10 @@ class CartLocal extends CartStore {
     private productTuid: TuidMain;
     private packTuid: TuidDiv;
 
-    constructor(cart: Cart, cUsqProduct: CUq) {
+    constructor(cart: Cart, cUqProduct: CUq) {
         super(cart);
-        this.productTuid = cUsqProduct.tuid('productx');
-        this.packTuid = cUsqProduct.tuidDiv('productx', 'packx');
+        this.productTuid = cUqProduct.tuid('productx');
+        this.packTuid = cUqProduct.tuidDiv('productx', 'packx');
     }
 
     get isLocal(): boolean { return true }

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { FA } from 'tonva-react-form';
-import { Button } from 'reactstrap';
 import { Page } from 'tonva-tools';
 import { jsonStringify } from '../../tools';
 import { VForm } from '../form';
@@ -58,8 +57,8 @@ export class VTuidView extends VEntity<TuidMain, TuidUI, CTuidMain> {
                     <FA name='check-circle' size='lg' /> 成功提交！
                 </span>
                 <div className='mt-5'>
-                    <Button className="mr-3" color="primary" onClick={this.next}>继续录入</Button>
-                    <Button color="primary" outline={true} onClick={this.finish}>不继续</Button>
+                    <button className="btn btn-primary mr-3" onClick={this.next}>继续录入</button>
+                    <button className="btn btn-outline-primary" onClick={this.finish}>不继续</button>
                 </div>
             </div>
         </Page>);

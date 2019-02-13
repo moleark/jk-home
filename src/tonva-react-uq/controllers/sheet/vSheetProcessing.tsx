@@ -1,10 +1,7 @@
 import React from 'react';
-import classNames from 'classnames';
-import { Button } from 'reactstrap';
 import { nav, Page } from 'tonva-tools';
 import { VSheetView } from './vSheetView';
 import { SheetData } from './cSheet';
-import { FA } from 'tonva-react-form';
 
 export class VSheetProcessing extends VSheetView { 
     async showEntry(sheetData:SheetData) {

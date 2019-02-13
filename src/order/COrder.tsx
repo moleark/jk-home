@@ -21,8 +21,8 @@ export class COrder extends Controller {
     constructor(cApp: CCartApp, res: any) {
         super(res);
         this.cApp = cApp;
-        let { cUsqOrder } = cApp;
-        this.orderSheet = cUsqOrder.sheet('order');
+        let { cUqOrder } = cApp;
+        this.orderSheet = cUqOrder.sheet('order');
     }
 
     protected async internalStart(param: any) {

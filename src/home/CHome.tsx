@@ -38,8 +38,6 @@ export class CHome extends Controller {
         super(res);
 
         this.cApp = cApp;
-        // this.sectionTuid = this.cUsq.tuid("section");
-        // this.homeSections = new HomeSections(this.sectionTuid);
     }
 
     async internalStart(param: any) {
