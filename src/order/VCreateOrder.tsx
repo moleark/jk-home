@@ -8,7 +8,7 @@ import { OrderItem } from './Order';
 
 export class VCreateOrder extends VPage<COrder> {
 
-    async showEntry(param: any) {
+    async open(param: any) {
 
         this.openPage(this.page);
     }

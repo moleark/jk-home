@@ -25,7 +25,7 @@ var VSheetNew = /** @class */ (function (_super) {
         _this.view = function () { return React.createElement(Page, { header: _this.label }, _this.vForm.render()); };
         return _this;
     }
-    VSheetNew.prototype.showEntry = function (param) {
+    VSheetNew.prototype.open = function (param) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 this.vForm = this.createForm(this.onSubmit, param);

@@ -4,7 +4,6 @@ import './App.css';
 import { NavView } from 'tonva-tools';
 import { startApp } from 'tonva-react-uq';
 import ui from './ui';
-import { A } from 'a';
 //import { faceTabs } from 'facetabs';
 var tonvaApp = "百灵威系统工程部/cart";
 var App = /** @class */ (function (_super) {
@@ -29,53 +28,28 @@ var App = /** @class */ (function (_super) {
     return App;
 }(React.Component));
 export default App;
-var B = /** @class */ (function (_super) {
-    tslib_1.__extends(B, _super);
-    function B(b) {
-        return _super.call(this, b) || this;
-    }
-    //get super() {return this.A}
-    B.prototype.test = function () {
-        return tslib_1.__awaiter(this, void 0, void 0, function () { return tslib_1.__generator(this, function (_a) {
-            return [2 /*return*/, 'B'];
-        }); });
-    };
-    B.prototype.superTest = function () {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
-            return tslib_1.__generator(this, function (_a) {
-                console.log('superTest: ' + _super.prototype.t.call(this));
-                return [2 /*return*/, _super.prototype.test.call(this)];
-            });
-        });
-    };
-    B.prototype.t = function () { return 'tb'; };
-    B.prototype.d = function () {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
-            var _a, _b, _c, _d, _e, _f;
-            return tslib_1.__generator(this, function (_g) {
-                switch (_g.label) {
-                    case 0:
-                        console.log(_super.prototype.test);
-                        console.log(this.test);
-                        console.log(_super.prototype.t);
-                        console.log(this.t);
-                        _b = (_a = console).log;
-                        _c = 'A.test ';
-                        return [4 /*yield*/, this.superTest()];
-                    case 1:
-                        _b.apply(_a, [_c + (_g.sent())]);
-                        _e = (_d = console).log;
-                        _f = 'B.test ';
-                        return [4 /*yield*/, this.test()];
-                    case 2:
-                        _e.apply(_d, [_f + (_g.sent())]);
-                        console.log('A.t ' + _super.prototype.t.call(this));
-                        console.log('B.t ' + this.t());
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
-    return B;
-}(A));
+/*
+class B extends A {
+  constructor(b:string) {
+    super(b);
+  }
+  //get super() {return this.A}
+  async test():Promise<string> {return 'B'}
+  async superTest() {
+    console.log('superTest: ' + super.t())
+    return super.test()
+  }
+  t() {return 'tb'}
+  async d() {
+    console.log(super.test);
+    console.log(this.test);
+    console.log(super.t);
+    console.log(this.t);
+    console.log('A.test ' + await this.superTest());
+    console.log('B.test ' + await this.test());
+    console.log('A.t ' + super.t());
+    console.log('B.t ' + this.t());
+  }
+}
+*/ 
 //# sourceMappingURL=App.js.map

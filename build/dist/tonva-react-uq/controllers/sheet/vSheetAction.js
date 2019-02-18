@@ -1,10 +1,9 @@
 import * as tslib_1 from "tslib";
 import React from 'react';
 import classNames from 'classnames';
-import { Button } from 'reactstrap';
 import { Page } from 'tonva-tools';
-import { VSheetView } from './vSheetView';
 import { FA } from 'tonva-react-form';
+import { VSheetView } from './vSheetView';
 var VSheetAction = /** @class */ (function (_super) {
     tslib_1.__extends(VSheetAction, _super);
     function VSheetAction() {
@@ -72,12 +71,12 @@ var VSheetAction = /** @class */ (function (_super) {
             }
             else {
                 actionButtons = React.createElement("div", { className: "flex-grow-1" }, s.actions.map(function (v, index) {
-                    return React.createElement(Button, { key: index, className: "mr-2", color: "primary", onClick: function () { return _this.actionClick(v); } }, _this.controller.getActionLabel(state, v.name));
+                    return React.createElement("button", { key: index, className: "btn btn-primary mr-2", onClick: function () { return _this.actionClick(v); } }, _this.controller.getActionLabel(state, v.name));
                 }));
                 if (state === '$') {
                     startButtons = React.createElement("div", null,
-                        React.createElement(Button, { outline: true, className: "ml-2", color: "info", onClick: _this.editClick }, "\u4FEE\u6539"),
-                        React.createElement(Button, { outline: true, className: "ml-2", color: "danger", onClick: _this.deleteClick }, "\u4F5C\u5E9F"));
+                        React.createElement("button", { className: "btn btn-outline-info ml-2", onClick: _this.editClick }, "\u4FEE\u6539"),
+                        React.createElement("button", { className: "btn btn-outline-danger ml-2", onClick: _this.deleteClick }, "\u4F5C\u5E9F"));
                 }
             }
             ;
@@ -101,7 +100,7 @@ var VSheetAction = /** @class */ (function (_super) {
         };
         return _this;
     }
-    VSheetAction.prototype.showEntry = function (sheetData) {
+    VSheetAction.prototype.open = function (sheetData) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 this.sheetData = sheetData;

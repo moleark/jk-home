@@ -62,7 +62,7 @@ var CProduct = /** @class */ (function (_super) {
                         return [4 /*yield*/, product.load(id)];
                     case 1:
                         _a.sent();
-                        this.showVPage(VProduct, product);
+                        this.openVPage(VProduct, product);
                         return [2 /*return*/];
                 }
             });
@@ -85,7 +85,7 @@ var CProduct = /** @class */ (function (_super) {
     CProduct.prototype.internalStart = function (param) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
-                this.showVPage(VProductList, param);
+                this.openVPage(VProductList, param);
                 return [2 /*return*/];
             });
         });

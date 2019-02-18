@@ -26,7 +26,7 @@ var VAddressList = /** @class */ (function (_super) {
         };
         return _this;
     }
-    VAddressList.prototype.showEntry = function () {
+    VAddressList.prototype.open = function () {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 this.openPage(this.page);

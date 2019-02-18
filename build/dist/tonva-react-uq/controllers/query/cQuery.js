@@ -19,7 +19,7 @@ var CQuery = /** @class */ (function (_super) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.showVPage(this.VQueryMain)];
+                    case 0: return [4 /*yield*/, this.openVPage(this.VQueryMain)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -44,7 +44,7 @@ var CQuerySelect = /** @class */ (function (_super) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.showVPage(this.VQuerySelect, param)];
+                    case 0: return [4 /*yield*/, this.openVPage(this.VQuerySelect, param)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];

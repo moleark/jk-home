@@ -1,7 +1,6 @@
 import * as tslib_1 from "tslib";
 import * as React from 'react';
 import { SearchBox, List, Muted } from 'tonva-react-form';
-import { Button } from 'reactstrap';
 import { Page } from 'tonva-tools';
 import { VEntity } from '../CVEntity';
 var VTuidMain = /** @class */ (function (_super) {
@@ -15,7 +14,7 @@ var VTuidMain = /** @class */ (function (_super) {
         }); }); };
         return _this;
     }
-    VTuidMain.prototype.showEntry = function (param) {
+    VTuidMain.prototype.open = function (param) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 this.openPage(this.view);
@@ -44,13 +43,13 @@ var VTuidMain = /** @class */ (function (_super) {
             var _a = this.controller, label = _a.label, proxyLinks = _a.proxyLinks, isFrom = _a.isFrom;
             var newButton;
             if (isFrom === false)
-                newButton = React.createElement(Button, { className: "ml-3", color: "primary", onClick: this.onNew }, "\u65B0\u589E");
+                newButton = React.createElement("button", { className: "btn btn-primary ml-3", onClick: this.onNew }, "\u65B0\u589E");
             return function () { return React.createElement(Page, { header: label }, proxyLinks === undefined ?
                 React.createElement(React.Fragment, null,
                     React.createElement(SearchBox, { className: "w-100", onSearch: _this.onSearch, placeholder: '搜索' + label }),
                     React.createElement("div", { className: 'my-3' },
                         newButton,
-                        React.createElement(Button, { className: "ml-3", color: "primary", onClick: _this.onList }, "\u5217\u8868"))) :
+                        React.createElement("button", { className: "btn btn-primary ml-3", onClick: _this.onList }, "\u5217\u8868"))) :
                 React.createElement(List, { className: "my-2", header: React.createElement(Muted, null,
                         label,
                         " \u4EE3\u7406\u4E0B\u5217Tuid"), items: proxyLinks, item: { render: _this.entityRender, onClick: _this.entityClick } })); };

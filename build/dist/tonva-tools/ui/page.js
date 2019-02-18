@@ -183,13 +183,15 @@ var Page = /** @class */ (function (_super) {
         }
         return React.createElement("article", { className: 'page-container' },
             titleBar,
-            React.createElement("section", null, this.state.tabs.map(function (tab, index) {
-                var isSelected = tab.isSelected, isMounted = tab.isMounted, content = tab.content;
-                if (isSelected === true || isMounted === true) {
-                    tab.isMounted = true;
-                    return React.createElement(ScrollView, { key: index, className: classNames({ invisible: isSelected === false }), onScroll: tab.onScroll, onScrollTop: tab.onScrollTop, onScrollBottom: tab.onScrollBottom }, (typeof content) === 'function' ? content() : content);
-                }
-            })),
+            React.createElement("section", { className: "position-relative" },
+                this.props.sideBar,
+                this.state.tabs.map(function (tab, index) {
+                    var isSelected = tab.isSelected, isMounted = tab.isMounted, content = tab.content;
+                    if (isSelected === true || isMounted === true) {
+                        tab.isMounted = true;
+                        return React.createElement(ScrollView, { key: index, className: classNames({ invisible: isSelected === false }), onScroll: tab.onScroll, onScrollTop: tab.onScrollTop, onScrollBottom: tab.onScrollBottom }, (typeof content) === 'function' ? content() : content);
+                    }
+                })),
             tabs,
             footer);
     };
@@ -200,7 +202,8 @@ var Page = /** @class */ (function (_super) {
             titleBar = React.createElement(TitleBar, { back: back, center: header, right: right, logout: this.props.logout });
         return (React.createElement("article", { className: 'page-container', onTouchStart: this.onTouchStart },
             titleBar,
-            React.createElement("section", null,
+            React.createElement("section", { className: "position-relative" },
+                this.props.sideBar,
                 React.createElement(ScrollView, { onScroll: onScroll, onScrollTop: onScrollTop, onScrollBottom: onScrollBottom }, children)),
             footer));
     };

@@ -167,7 +167,7 @@ var CTuidMain = /** @class */ (function (_super) {
                 switch (_a.label) {
                     case 0:
                         this.isFrom = this.entity.schemaFrom !== undefined;
-                        return [4 /*yield*/, this.showVPage(this.VTuidMain)];
+                        return [4 /*yield*/, this.openVPage(this.VTuidMain)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -210,7 +210,7 @@ var CTuidMain = /** @class */ (function (_super) {
                     case 8:
                         _b.sent();
                         return [2 /*return*/];
-                    case 9: return [4 /*yield*/, this.showVPage(v, value)];
+                    case 9: return [4 /*yield*/, this.openVPage(v, value)];
                     case 10:
                         _b.sent();
                         return [2 /*return*/];
@@ -232,7 +232,7 @@ var CTuidMain = /** @class */ (function (_super) {
                         _a.label = 2;
                     case 2:
                         v = this.VTuidEdit;
-                        return [4 /*yield*/, this.showVPage(v, values)];
+                        return [4 /*yield*/, this.openVPage(v, values)];
                     case 3:
                         _a.sent();
                         return [2 /*return*/];
@@ -282,7 +282,7 @@ var CTuidList = /** @class */ (function (_super) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.showVPage(this.VTuidList)];
+                    case 0: return [4 /*yield*/, this.openVPage(this.VTuidList)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -318,7 +318,7 @@ var CTuidSelect = /** @class */ (function (_super) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.showVPage(this.VTuidSelect, param)];
+                    case 0: return [4 /*yield*/, this.openVPage(this.VTuidSelect, param)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -367,7 +367,7 @@ var CTuidInfo = /** @class */ (function (_super) {
                     case 0: return [4 /*yield*/, this.entity.load(id)];
                     case 1:
                         data = _a.sent();
-                        return [4 /*yield*/, this.showVPage(this.VTuidInfo, data)];
+                        return [4 /*yield*/, this.openVPage(this.VTuidInfo, data)];
                     case 2:
                         _a.sent();
                         return [2 /*return*/];

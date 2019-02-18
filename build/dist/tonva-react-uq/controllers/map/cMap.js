@@ -192,7 +192,7 @@ var CMap = /** @class */ (function (_super) {
                                 item = newItem;
                             }
                         }
-                        return [4 /*yield*/, this.showVPage(this.VMapMain)];
+                        return [4 /*yield*/, this.openVPage(this.VMapMain)];
                     case 2:
                         _b.sent();
                         return [2 /*return*/];

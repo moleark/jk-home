@@ -300,7 +300,7 @@ var CApp = /** @class */ (function (_super) {
                         _a.sent();
                         return [2 /*return*/];
                     case 2:
-                        this.showVPage(this.VAppMain);
+                        this.openVPage(this.VAppMain);
                         return [2 /*return*/];
                 }
             });
@@ -353,7 +353,7 @@ var VAppMain = /** @class */ (function (_super) {
         };
         return _this;
     }
-    VAppMain.prototype.showEntry = function (param) {
+    VAppMain.prototype.open = function (param) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 this.openPage(this.appPage);

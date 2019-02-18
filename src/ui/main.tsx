@@ -12,7 +12,7 @@ export const store = {
 const color = (selected: boolean) => selected === true ? 'text-primary' : 'text-muted';
 
 export class VHome extends VPage<CCartApp> {
-    async showEntry(param?: any) {
+    async open(param?: any) {
         this.openPage(this.render);
     }
     render = (param?: any): JSX.Element => {

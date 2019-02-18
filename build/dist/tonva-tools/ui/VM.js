@@ -42,11 +42,11 @@ var Controller = /** @class */ (function () {
     };
     Controller.prototype.onDispose = function () {
     };
-    Controller.prototype.showVPage = function (vp, param) {
+    Controller.prototype.openVPage = function (vp, param) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, (new vp(this)).showEntry(param)];
+                    case 0: return [4 /*yield*/, (new vp(this)).open(param)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -159,7 +159,7 @@ var Controller = /** @class */ (function () {
                             switch (_a.label) {
                                 case 0:
                                     this._resolve_$.push(resolve);
-                                    return [4 /*yield*/, (new vp(this)).showEntry(param)];
+                                    return [4 /*yield*/, (new vp(this)).open(param)];
                                 case 1:
                                     _a.sent();
                                     return [2 /*return*/];
@@ -219,11 +219,11 @@ var View = /** @class */ (function () {
     View.prototype.renderVm = function (vm, param) {
         return (new vm(this.controller)).render(param);
     };
-    View.prototype.showVPage = function (vp, param) {
+    View.prototype.openVPage = function (vp, param) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, (new vp(this.controller)).showEntry(param)];
+                    case 0: return [4 /*yield*/, (new vp(this.controller)).open(param)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];

@@ -131,7 +131,7 @@ var VCart = /** @class */ (function (_super) {
         });
         return _this;
     }
-    VCart.prototype.showEntry = function () {
+    VCart.prototype.open = function () {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 this.openPage(this.page);

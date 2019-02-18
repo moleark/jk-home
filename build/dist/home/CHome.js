@@ -69,7 +69,7 @@ var CHome = /** @class */ (function (_super) {
                         return [4 /*yield*/, cProductCategory.start()];
                     case 1:
                         _a.sent();
-                        this.showVPage(VHome);
+                        this.openVPage(VHome);
                         return [2 /*return*/];
                 }
             });

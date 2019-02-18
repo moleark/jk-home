@@ -78,7 +78,7 @@ export class CProduct extends Controller {
 
     protected async internalStart(param: any) {
 
-        this.showVPage(VProductList, param);
+        this.openVPage(VProductList, param);
     }
 
     buildPackRows():PackItem[] {
@@ -152,7 +152,7 @@ export class CProduct extends Controller {
         */
         let product = new Product(this.cApp);
         await product.load(id);
-        this.showVPage(VProduct, product);
+        this.openVPage(VProduct, product);
     }
     /*
     getInventoryAllocations = async (productId: number, packId: number, salesRegionId: number) => {

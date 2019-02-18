@@ -5,7 +5,7 @@ import { LMR, Muted, FA, Media } from 'tonva-react-form';
 
 export class VMember extends VPage<CMember> {
 
-    async showEntry(param: any) {
+    async open(param: any) {
 
     }
 

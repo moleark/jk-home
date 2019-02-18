@@ -11,7 +11,7 @@ var OrderSuccess = /** @class */ (function (_super) {
         };
         return _this;
     }
-    OrderSuccess.prototype.showEntry = function (orderCreateResult) {
+    OrderSuccess.prototype.open = function (orderCreateResult) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 this.openPage(this.page, orderCreateResult);

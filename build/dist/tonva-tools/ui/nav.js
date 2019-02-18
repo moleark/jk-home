@@ -683,16 +683,24 @@ var Nav = /** @class */ (function () {
         return this.nav.confirmBox(message);
     };
     Nav.prototype.navToApp = function (url, unitId, apiId, sheetType, sheetId) {
-        var _this = this;
-        var sheet = this.centerHost.includes('http://localhost:') === true ? 'sheet_debug' : 'sheet';
-        var uh = sheetId === undefined ?
-            appUrl(url, unitId) :
-            appUrl(url, unitId, sheet, [apiId, sheetType, sheetId]);
-        console.log('navToApp: %s', JSON.stringify(uh));
-        nav.push(React.createElement("article", { className: 'app-container' },
-            React.createElement("span", { id: uh.hash, onClick: function () { return _this.back(); }, style: mobileHeaderStyle },
-                React.createElement("i", { className: "fa fa-arrow-left" })),
-            React.createElement("iframe", { src: uh.url })));
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return tslib_1.__generator(this, function (_a) {
+                return [2 /*return*/, new Promise(function (resolve, reject) {
+                        var sheet = _this.centerHost.includes('http://localhost:') === true ? 'sheet_debug' : 'sheet';
+                        var uh = sheetId === undefined ?
+                            appUrl(url, unitId) :
+                            appUrl(url, unitId, sheet, [apiId, sheetType, sheetId]);
+                        console.log('navToApp: %s', JSON.stringify(uh));
+                        nav.push(React.createElement("article", { className: 'app-container' },
+                            React.createElement("span", { id: uh.hash, onClick: function () { return _this.back(); }, style: mobileHeaderStyle },
+                                React.createElement("i", { className: "fa fa-arrow-left" })),
+                            React.createElement("iframe", { src: uh.url })), function () {
+                            resolve();
+                        });
+                    })];
+            });
+        });
     };
     Nav.prototype.navToSite = function (url) {
         // show in new window

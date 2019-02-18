@@ -34,7 +34,7 @@ var VProductList = /** @class */ (function (_super) {
         });
         return _this;
     }
-    VProductList.prototype.showEntry = function (param) {
+    VProductList.prototype.open = function (param) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             var key;
             return tslib_1.__generator(this, function (_a) {

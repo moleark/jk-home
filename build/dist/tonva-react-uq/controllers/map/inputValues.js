@@ -20,7 +20,7 @@ var VInputValues = /** @class */ (function (_super) {
         };
         return _this;
     }
-    VInputValues.prototype.showEntry = function (param) {
+    VInputValues.prototype.open = function (param) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 this.vForm = this.createForm(this.onValuesSubmit);

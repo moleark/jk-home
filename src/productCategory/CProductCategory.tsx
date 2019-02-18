@@ -56,7 +56,7 @@ export class CProductCategory extends Controller {
         } else {
             let results = await this.getCategoryChildren(productCategory.id);
             this.buildCategories(categoryWaper, results.first, results.secend);
-            this.showVPage(VCategory, { categoryWaper, parent });
+            this.openVPage(VCategory, { categoryWaper, parent });
         }
     }
 }

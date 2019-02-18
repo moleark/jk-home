@@ -1,7 +1,6 @@
 import * as tslib_1 from "tslib";
 import * as React from 'react';
 import { FA } from 'tonva-react-form';
-import { Button } from 'reactstrap';
 import { Page } from 'tonva-tools';
 import { jsonStringify } from '../../tools';
 import { VEntity } from '../CVEntity';
@@ -38,8 +37,8 @@ var VTuidView = /** @class */ (function (_super) {
                                     React.createElement(FA, { name: 'check-circle', size: 'lg' }),
                                     " \u6210\u529F\u63D0\u4EA4\uFF01"),
                                 React.createElement("div", { className: 'mt-5' },
-                                    React.createElement(Button, { className: "mr-3", color: "primary", onClick: _this.next }, "\u7EE7\u7EED\u5F55\u5165"),
-                                    React.createElement(Button, { color: "primary", outline: true, onClick: _this.finish }, "\u4E0D\u7EE7\u7EED")))); });
+                                    React.createElement("button", { className: "btn btn-primary mr-3", onClick: _this.next }, "\u7EE7\u7EED\u5F55\u5165"),
+                                    React.createElement("button", { className: "btn btn-outline-primary", onClick: _this.finish }, "\u4E0D\u7EE7\u7EED")))); });
                         return [2 /*return*/];
                 }
             });
@@ -50,7 +49,7 @@ var VTuidView = /** @class */ (function (_super) {
     VTuidView.prototype.buildForm = function (param) {
         this.vForm = this.createForm(undefined, param);
     };
-    VTuidView.prototype.showEntry = function (param) {
+    VTuidView.prototype.open = function (param) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 this.buildForm(param);

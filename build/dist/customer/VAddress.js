@@ -14,7 +14,7 @@ var VAddress = /** @class */ (function (_super) {
         };
         return _this;
     }
-    VAddress.prototype.showEntry = function (param) {
+    VAddress.prototype.open = function (param) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 this.openPage(this.page, param);

@@ -79,7 +79,7 @@ var CProductCategory = /** @class */ (function (_super) {
                     case 2:
                         results = _a.sent();
                         this.buildCategories(categoryWaper, results.first, results.secend);
-                        this.showVPage(VCategory, { categoryWaper: categoryWaper, parent: parent });
+                        this.openVPage(VCategory, { categoryWaper: categoryWaper, parent: parent });
                         _a.label = 3;
                     case 3: return [2 /*return*/];
                 }

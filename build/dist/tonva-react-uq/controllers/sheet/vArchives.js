@@ -32,7 +32,7 @@ var VArchives = /** @class */ (function (_super) {
         };
         return _this;
     }
-    VArchives.prototype.showEntry = function () {
+    VArchives.prototype.open = function () {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             var _a;
             return tslib_1.__generator(this, function (_b) {

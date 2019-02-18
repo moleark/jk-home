@@ -93,7 +93,7 @@ var COrder = /** @class */ (function (_super) {
                         this.cApp.cart.clear(); //.removeFromCart(this.orderData.orderItems);
                         // 打开订单显示界面
                         this.closePage(1);
-                        this.showVPage(OrderSuccess, result);
+                        this.openVPage(OrderSuccess, result);
                         return [2 /*return*/];
                 }
             });
@@ -116,7 +116,7 @@ var COrder = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.createOrderFromCart(cart)];
                     case 1:
                         _a.sent();
-                        this.showVPage(VCreateOrder);
+                        this.openVPage(VCreateOrder);
                         return [2 /*return*/];
                 }
             });

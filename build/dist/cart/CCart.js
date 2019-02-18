@@ -64,7 +64,7 @@ var CCart = /** @class */ (function (_super) {
     CCart.prototype.internalStart = function (param) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
-                this.showVPage(VCart);
+                this.openVPage(VCart);
                 return [2 /*return*/];
             });
         });

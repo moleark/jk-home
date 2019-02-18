@@ -58,7 +58,7 @@ var VQueryMain = /** @class */ (function (_super) {
         });
         return _this;
     }
-    VQueryMain.prototype.showEntry = function (param) {
+    VQueryMain.prototype.open = function (param) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             var _a, row, queryRow;
             return tslib_1.__generator(this, function (_b) {

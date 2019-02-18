@@ -119,7 +119,7 @@ var Host = /** @class */ (function () {
             var pos = urlDebug.indexOf(hostString);
             if (pos > 0) {
                 if (local === false)
-                    break;
+                    return url;
                 urlDebug = urlDebug.replace(hostString, "://" + value + "/");
                 return urlDebug;
             }

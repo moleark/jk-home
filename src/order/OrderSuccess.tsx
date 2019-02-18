@@ -4,7 +4,7 @@ import { COrder } from './COrder';
 
 export class OrderSuccess extends VPage<COrder> {
 
-    async showEntry(orderCreateResult: any) {
+    async open(orderCreateResult: any) {
 
         this.openPage(this.page, orderCreateResult);
     }

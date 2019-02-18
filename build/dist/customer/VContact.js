@@ -69,7 +69,7 @@ var VContact = /** @class */ (function (_super) {
         };
         return _this;
     }
-    VContact.prototype.showEntry = function (userContactData) {
+    VContact.prototype.open = function (userContactData) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             var contact;
             return tslib_1.__generator(this, function (_a) {

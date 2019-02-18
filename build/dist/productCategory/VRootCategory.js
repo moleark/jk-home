@@ -45,7 +45,7 @@ var VRootCategory = /** @class */ (function (_super) {
             return React.createElement("div", { key: name, className: "col-6 col-md-4 col-lg-3 cursor-pointer", 
                 //style={{borderRight:'1px solid gray', borderBottom:'1px solid gray'}}
                 onClick: function () { return _this.categoryClick(item, parent); } },
-                React.createElement("div", { className: "pt-1 pb-1 px-2", style: { border: '1px solid #eeeeee', marginRight: '-1px', marginBottom: '-1px' } },
+                React.createElement("div", { className: "py-2 px-2", style: { border: '1px solid #eeeeee', marginRight: '-1px', marginBottom: '-1px' } },
                     React.createElement("div", { style: titleTitle },
                         React.createElement("span", { className: "ml-1 align-middle" },
                             React.createElement(FA, { name: "chevron-circle-right", className: "text-info" }),
@@ -65,6 +65,6 @@ var VRootCategory = /** @class */ (function (_super) {
 }(View));
 export { VRootCategory };
 export function renderThirdCategory(items) {
-    return React.createElement("div", { className: "py-1 text-muted small", style: subStyle }, items.length === 0 ? React.createElement(React.Fragment, null, "\u00A0") : items.map(function (v) { return v.name; }).join(' / '));
+    return React.createElement("div", { className: "py-1 px-1 text-muted small", style: subStyle }, items.length === 0 ? React.createElement(React.Fragment, null, "\u00A0") : items.map(function (v) { return v.name; }).join(' / '));
 }
 //# sourceMappingURL=VRootCategory.js.map

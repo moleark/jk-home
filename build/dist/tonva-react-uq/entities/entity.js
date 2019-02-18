@@ -323,22 +323,8 @@ var Entity = /** @class */ (function () {
                 var _tuid = f._tuid;
                 if (_tuid === undefined)
                     return id;
-                console.log(this.name, 'bigint', v, 'tuid', _tuid.name);
                 _tuid.useId(id, true);
-                //let val = _tuid.valueFromId(id);
-                //return val.obj || val;
                 return _tuid.boxId(id);
-            /*
-            if (tuidKey !== undefined) {
-                let tuid = f._tuid;
-                if (tuid === undefined) {
-                    // 在jsonStringify中间不会出现
-                    Object.defineProperty(f, '_tuid', {value:'_tuid', writable: true});
-                    f._tuid = tuid = this.getTuid(tuidKey, tuidUrl);
-                }
-                tuid.useId(Number(v), true);
-            }*/
-            //return Number(v);
         }
     };
     Entity.prototype.unpackArr = function (ret, arr, data, p) {

@@ -17,7 +17,7 @@ var VSheetProcessing = /** @class */ (function (_super) {
         };
         return _this;
     }
-    VSheetProcessing.prototype.showEntry = function (sheetData) {
+    VSheetProcessing.prototype.open = function (sheetData) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 this.sheetData = sheetData;

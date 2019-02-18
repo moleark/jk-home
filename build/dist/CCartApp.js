@@ -63,7 +63,7 @@ var CCartApp = /** @class */ (function (_super) {
         });
     };
     CCartApp.prototype.showMain = function (initTabName) {
-        this.showVPage(this.VAppMain, initTabName);
+        this.openVPage(this.VAppMain, initTabName);
     };
     CCartApp.prototype.onDispose = function () {
         this.cart.dispose();

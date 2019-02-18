@@ -1,18 +1,17 @@
 import * as tslib_1 from "tslib";
 import * as React from 'react';
 import { nav, mobileHeaderStyle } from './nav';
+import { Page } from './page';
 var TitleBar = /** @class */ (function (_super) {
     tslib_1.__extends(TitleBar, _super);
     function TitleBar(props) {
         var _this = _super.call(this, props) || this;
         _this.logoutClick = function () {
-            if (confirm('Really want to logout?') === false)
-                return;
-            var logout = _this.props.logout;
-            if (typeof logout === 'function') {
-                logout();
-            }
-            nav.logout();
+            nav.push(React.createElement(Page, { header: "\u5B89\u5168\u9000\u51FA", back: "close" },
+                React.createElement("div", { className: "m-5 border border-info bg-white rounded p-3 text-center" },
+                    React.createElement("div", null, "\u9000\u51FA\u5F53\u524D\u8D26\u53F7\u4E0D\u4F1A\u5220\u9664\u4EFB\u4F55\u5386\u53F2\u6570\u636E\uFF0C\u4E0B\u6B21\u767B\u5F55\u4F9D\u7136\u53EF\u4EE5\u4F7F\u7528\u672C\u8D26\u53F7"),
+                    React.createElement("div", { className: "mt-3" },
+                        React.createElement("button", { className: "btn btn-danger", onClick: function () { return _this.logout(); } }, "\u9000\u51FA")))));
         };
         _this.navChange = _this.navChange.bind(_this);
         _this.state = {
@@ -46,6 +45,13 @@ var TitleBar = /** @class */ (function (_super) {
     };
     TitleBar.prototype.openWindow = function () {
         window.open(document.location.href);
+    };
+    TitleBar.prototype.logout = function () {
+        var logout = this.props.logout;
+        if (typeof logout === 'function') {
+            logout();
+        }
+        nav.logout();
     };
     TitleBar.prototype.render = function () {
         var b = this.state.hasBack || self != top;

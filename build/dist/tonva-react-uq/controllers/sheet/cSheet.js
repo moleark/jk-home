@@ -44,7 +44,7 @@ var CSheet = /** @class */ (function (_super) {
                     case 1:
                         _a.sent();
                         this.pageStateItems = this.entity.createPageStateItems();
-                        return [4 /*yield*/, this.showVPage(this.VSheetMain)];
+                        return [4 /*yield*/, this.openVPage(this.VSheetMain)];
                     case 2:
                         _a.sent();
                         return [2 /*return*/];
@@ -206,7 +206,7 @@ var CSheet = /** @class */ (function (_super) {
                     case 11:
                         _b.sent();
                         return [2 /*return*/];
-                    case 12: return [4 /*yield*/, this.showVPage(c, value)];
+                    case 12: return [4 /*yield*/, this.openVPage(c, value)];
                     case 13:
                         _b.sent();
                         return [2 /*return*/];
@@ -249,7 +249,7 @@ var CSheet = /** @class */ (function (_super) {
                                 }
                             }
                         });
-                        return [4 /*yield*/, this.showVPage(this.VSheetAction, sheetData)];
+                        return [4 /*yield*/, this.openVPage(this.VSheetAction, sheetData)];
                     case 2:
                         _a.sent();
                         return [2 /*return*/];
@@ -265,7 +265,7 @@ var CSheet = /** @class */ (function (_super) {
                     case 0: return [4 /*yield*/, this.getSheetData(sheetId)];
                     case 1:
                         sheetData = _a.sent();
-                        return [4 /*yield*/, this.showVPage(this.VSheetProcessing, sheetData)];
+                        return [4 /*yield*/, this.openVPage(this.VSheetProcessing, sheetData)];
                     case 2:
                         _a.sent();
                         return [2 /*return*/];
@@ -294,7 +294,7 @@ var CSheet = /** @class */ (function (_super) {
                     case 0: return [4 /*yield*/, this.getArchived(inBrief.id)];
                     case 1:
                         sheetData = _a.sent();
-                        return [4 /*yield*/, this.showVPage(this.VArchived, sheetData)];
+                        return [4 /*yield*/, this.openVPage(this.VArchived, sheetData)];
                     case 2:
                         _a.sent();
                         return [2 /*return*/];
@@ -306,7 +306,7 @@ var CSheet = /** @class */ (function (_super) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.showVPage(this.VSheetSaved, sheetData)];
+                    case 0: return [4 /*yield*/, this.openVPage(this.VSheetSaved, sheetData)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];

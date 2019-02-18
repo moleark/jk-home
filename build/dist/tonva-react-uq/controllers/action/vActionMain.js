@@ -35,7 +35,7 @@ var VActionMain = /** @class */ (function (_super) {
         };
         return _this;
     }
-    VActionMain.prototype.showEntry = function (param) {
+    VActionMain.prototype.open = function (param) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 this.vForm = this.createForm(this.onSubmit, param);

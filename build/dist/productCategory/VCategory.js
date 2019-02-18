@@ -65,7 +65,7 @@ var VCategory = /** @class */ (function (_super) {
         };
         return _this;
     }
-    VCategory.prototype.showEntry = function (categoryWaper) {
+    VCategory.prototype.open = function (categoryWaper) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 this.openPage(this.page, categoryWaper);

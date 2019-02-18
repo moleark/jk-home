@@ -58,7 +58,7 @@ var VCreateOrder = /** @class */ (function (_super) {
         });
         return _this;
     }
-    VCreateOrder.prototype.showEntry = function (param) {
+    VCreateOrder.prototype.open = function (param) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 this.openPage(this.page);

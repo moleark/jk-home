@@ -29,7 +29,7 @@ var VQuerySelect = /** @class */ (function (_super) {
         };
         return _this;
     }
-    VQuerySelect.prototype.showEntry = function (param) {
+    VQuerySelect.prototype.open = function (param) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             var _a, row, selectRow;
             return tslib_1.__generator(this, function (_b) {

@@ -60,7 +60,7 @@ var VMapMain = /** @class */ (function (_super) {
         });
         return _this;
     }
-    VMapMain.prototype.showEntry = function (param) {
+    VMapMain.prototype.open = function (param) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 this.isFrom = this.controller.isFrom;

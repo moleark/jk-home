@@ -90,6 +90,8 @@ var CacheUqLocals = /** @class */ (function () {
                         uqOwner = uqApi.uqOwner, uqName = uqApi.uqName;
                         un = uqOwner + '/' + uqName;
                         uq = this.local.uqs[un];
+                        if (uq === undefined)
+                            return [2 /*return*/, false];
                         isNet = uq.isNet, value = uq.value;
                         if (isNet === true)
                             return [2 /*return*/, true];

@@ -33,7 +33,7 @@ var CUser = /** @class */ (function (_super) {
                             userContactData.contact.isDefault = true;
                         _b.label = 3;
                     case 3:
-                        this.showVPage(VContact, userContactData);
+                        this.openVPage(VContact, userContactData);
                         return [2 /*return*/];
                 }
             });
@@ -89,7 +89,7 @@ var CUser = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.cApp.currentUser.getContacts()];
                     case 1:
                         _a.userContacts = _b.sent();
-                        this.showVPage(VAddressList);
+                        this.openVPage(VAddressList);
                         return [2 /*return*/];
                 }
             });

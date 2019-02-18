@@ -44,7 +44,7 @@ var VTuidMainListBase = /** @class */ (function (_super) {
         });
         return _this;
     }
-    VTuidMainListBase.prototype.showEntry = function (param) {
+    VTuidMainListBase.prototype.open = function (param) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
@@ -130,7 +130,7 @@ var VTuidDivListBase = /** @class */ (function (_super) {
         });
         return _this;
     }
-    VTuidDivListBase.prototype.showEntry = function (param) {
+    VTuidDivListBase.prototype.open = function (param) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {

@@ -1,7 +1,6 @@
 import * as tslib_1 from "tslib";
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { Badge } from 'reactstrap';
 import { Page } from 'tonva-tools';
 import { List, Muted, LMR } from 'tonva-react-form';
 import { VEntity } from '../CVEntity';
@@ -17,7 +16,7 @@ var VSheetMain = /** @class */ (function (_super) {
             var state = item.state, count = item.count;
             if (count === 0)
                 return null;
-            var badge = React.createElement(Badge, { className: "ml-5 align-self-end", color: "success" }, count);
+            var badge = React.createElement("span", { className: "badge badge-success ml-5 align-self-end" }, count);
             return React.createElement(LMR, { className: "px-3 py-2", left: _this.controller.getStateLabel(state), right: badge });
         };
         _this.view = observer(function () {
@@ -37,7 +36,7 @@ var VSheetMain = /** @class */ (function (_super) {
         });
         return _this;
     }
-    VSheetMain.prototype.showEntry = function () {
+    VSheetMain.prototype.open = function () {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 this.openPage(this.view);

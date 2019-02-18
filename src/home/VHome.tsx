@@ -36,7 +36,7 @@ const imgStyle:React.CSSProperties = {
 
 export class VHome extends View<CHome> {
 
-    async showEntry(param?: any) {
+    async open(param?: any) {
         this.openPage(this.page);
     }
 

@@ -19,7 +19,7 @@ export class CCart extends Controller {
     }
 
     protected async internalStart(param: any) {
-        this.showVPage(VCart);
+        this.openVPage(VCart);
     }
 
     /**

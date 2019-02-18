@@ -1,7 +1,6 @@
 import * as tslib_1 from "tslib";
 import * as React from 'react';
 import { FA } from 'tonva-react-form';
-import { Button } from 'reactstrap';
 import { Page } from 'tonva-tools';
 import { VEntity } from '../CVEntity';
 var VTuidEdit = /** @class */ (function (_super) {
@@ -50,8 +49,8 @@ var VTuidEdit = /** @class */ (function (_super) {
                                     React.createElement(FA, { name: 'check-circle', size: 'lg' }),
                                     " \u6210\u529F\u63D0\u4EA4\uFF01"),
                                 React.createElement("div", { className: 'mt-5' },
-                                    React.createElement(Button, { className: "mr-3", color: "primary", onClick: this.next }, "\u7EE7\u7EED\u5F55\u5165"),
-                                    React.createElement(Button, { color: "primary", outline: true, onClick: this.finish }, "\u4E0D\u7EE7\u7EED")))));
+                                    React.createElement("button", { className: "btn btn-primary mr-3", onClick: this.next }, "\u7EE7\u7EED\u5F55\u5165"),
+                                    React.createElement("button", { className: "btn btn-outline-primary", onClick: this.finish }, "\u4E0D\u7EE7\u7EED")))));
                         this.event('item-changed', { id: this.id, values: values });
                         return [2 /*return*/];
                 }
@@ -60,7 +59,7 @@ var VTuidEdit = /** @class */ (function (_super) {
         return _this;
         //protected view = TuidNewPage;
     }
-    VTuidEdit.prototype.showEntry = function (param) {
+    VTuidEdit.prototype.open = function (param) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 this.vForm = this.createForm(this.onSubmit, param);

@@ -123,8 +123,6 @@ var Tuid = /** @class */ (function (_super) {
             this.moveToHead(id);
             return;
         }
-        console.log('// 如果没有缓冲, 或者没有waiting');
-        // 如果没有缓冲, 或者没有waiting
         if (this.queue.length >= maxCacheSize) {
             // 缓冲已满，先去掉最不常用的
             var r_1 = this.queue.shift();
@@ -144,7 +142,6 @@ var Tuid = /** @class */ (function (_super) {
                 this.waitingIds.splice(index, 1);
             }
         }
-        console.log('this.waitingIds.push(id)', id);
         this.waitingIds.push(id);
         this.queue.push(id);
         return;

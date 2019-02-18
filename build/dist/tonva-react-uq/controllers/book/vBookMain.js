@@ -9,7 +9,7 @@ var VBookMain = /** @class */ (function (_super) {
         _this.view = function () { return React.createElement(Page, { header: _this.label }, "Book"); };
         return _this;
     }
-    VBookMain.prototype.showEntry = function (param) {
+    VBookMain.prototype.open = function (param) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 this.openPage(this.view);

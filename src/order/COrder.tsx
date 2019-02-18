@@ -29,7 +29,7 @@ export class COrder extends Controller {
 
         let cart = param;
         await this.createOrderFromCart(cart);
-        this.showVPage(VCreateOrder);
+        this.openVPage(VCreateOrder);
     }
 
     private createOrderFromCart = async (cartItem: any[]) => {
@@ -104,7 +104,7 @@ export class COrder extends Controller {
 
         // 打开订单显示界面
         this.closePage(1);
-        this.showVPage(OrderSuccess, result);
+        this.openVPage(OrderSuccess, result);
     }
 
     openContactList = (contactType: ContactType) => {

@@ -21,19 +21,17 @@ var CLink = /** @class */ (function (_super) {
                 }
             });
         }); };
-        _this.view = function (className) {
-            return React.createElement("div", { className: classNames('px-3', 'py-2', 'align-items-center', 'cursor-pointer', className), onClick: _this.onClick },
-                _this.icon,
-                " \u00A0 ",
-                _this.label);
-        };
         _this.controller = controller;
         _this.icon = controller.icon;
         _this.label = controller.label;
         return _this;
     }
     CLink.prototype.render = function (className) {
-        return React.createElement(this.view, className);
+        return React.createElement("div", { className: classNames('px-3', 'py-2', 'align-items-center', 'cursor-pointer', className), onClick: this.onClick },
+            this.icon,
+            " \u00A0 ",
+            this.label);
+        //return React.createElement(this.view, className);
     };
     return CLink;
 }(Link));
