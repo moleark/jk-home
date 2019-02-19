@@ -1,7 +1,7 @@
 import * as tslib_1 from "tslib";
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import * as classNames from 'classnames';
+import classNames from 'classnames';
 import '../css/va-badge.css';
 var Badge = /** @class */ (function (_super) {
     tslib_1.__extends(Badge, _super);

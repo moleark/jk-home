@@ -1,7 +1,7 @@
 import * as tslib_1 from "tslib";
 import * as React from 'react';
-import * as _ from 'lodash';
-import * as className from 'classnames';
+import _ from 'lodash';
+import className from 'classnames';
 import { TonvaForm } from '../form';
 var MultiStep = /** @class */ (function (_super) {
     tslib_1.__extends(MultiStep, _super);

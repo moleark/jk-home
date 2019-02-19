@@ -22,9 +22,12 @@ var SearchBox = /** @class */ (function (_super) {
             _this.key = evt.target.value;
             if (_this.key !== undefined) {
                 _this.key = _this.key.trim();
+                if (_this.key === '')
+                    _this.key = undefined;
             }
-            _this.disabled = !_this.key;
-            //this.setState({disabled: !this.key});
+            if (_this.props.allowEmptySearch !== true) {
+                _this.disabled = !_this.key;
+            }
         };
         /*
         ref = (input: HTMLInputElement) => {
@@ -40,10 +43,12 @@ var SearchBox = /** @class */ (function (_super) {
                         evt.preventDefault();
                         if (this.key === null)
                             this.key = this.props.initKey || '';
-                        if (!this.key)
-                            return [2 /*return*/];
-                        if (this.input)
-                            this.input.disabled = true;
+                        if (this.props.allowEmptySearch !== true) {
+                            if (!this.key)
+                                return [2 /*return*/];
+                            if (this.input)
+                                this.input.disabled = true;
+                        }
                         return [4 /*yield*/, this.props.onSearch(this.key)];
                     case 1:
                         _a.sent();
