@@ -72,18 +72,23 @@ export class CProduct extends Controller {
 }
 
 export function renderBrand(brand: any) {
+    return item('品牌', brand.name);
+}
+
+function item(caption: string, value: any) {
+    if (value === null || value === undefined) return null;
     return <>
-        <div className="col-4 col-sm-2 text-muted">品牌:</div>
-        <div className="col-8 col-sm-4">{brand.name}</div>
-    </>
+        <div className="col-4 col-sm-2 text-muted pr-0">{caption}:</div>
+        <div className="col-8 col-sm-4">{value}</div>
+    </>;
 }
 
 export function productRow(product: any, index: number) {
-
-    return <div className="row d-flex mb-1 px-2">
+    let { brand, description, CAS, purity, molecularFomula, molecularWeight, origin } = product;
+    return <div className="row d-flex mb-3 px-2">
         <div className="col-12">
             <div className="row py-2">
-                <div className="col-12"><strong>{product.description}</strong></div>
+                <div className="col-12"><strong>{description}</strong></div>
             </div>
             <div className="row">
                 <div className="col-3">
@@ -91,17 +96,12 @@ export function productRow(product: any, index: number) {
                 </div>
                 <div className="col-9">
                     <div className="row">
-                        <div className="col-4 col-sm-2 text-muted pr-0">CAS:</div>
-                        <div className="col-8 col-sm-4">{product.CAS}</div>
-                        <div className="col-4 col-sm-2 text-muted pr-0">纯度:</div>
-                        <div className="col-8 col-sm-4">{product.purity}</div>
-                        <div className="col-4 col-sm-2 text-muted pr-0">分子式:</div>
-                        <div className="col-8 col-sm-4">{product.molecularFomula}</div>
-                        <div className="col-4 col-sm-2 text-muted pr-0">分子量:</div>
-                        <div className="col-8 col-sm-4">{product.molecularWeight}</div>
-                        <div className="col-4 col-sm-2 text-muted pr-0">产品编号:</div>
-                        <div className="col-8 col-sm-4">{product.origin}</div>
-                        {tv(product.brand, renderBrand)}
+                        {item('CAS', CAS)}
+                        {item('纯度', purity)}
+                        {item('分子式', molecularFomula)}
+                        {item('分子量', molecularWeight)}
+                        {item('产品编号', origin)}
+                        {tv(brand, renderBrand)}
                     </div>
                 </div>
             </div>
