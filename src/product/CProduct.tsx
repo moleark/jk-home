@@ -53,7 +53,7 @@ export class CProduct extends Controller {
         let searchProductQuery = cUqProduct.query("searchProduct");
         this.pageProducts = new PageProducts(searchProductQuery);
         this.pageProducts.first({ key: key });
-        this.showVPage(VProductList);
+        this.openVPage(VProductList);
     }
 
     searchByCategory(category: any) {
@@ -61,13 +61,13 @@ export class CProduct extends Controller {
         let searchProductQuery = cUqProduct.query("searchProductByCategory");
         this.pageProducts = new PageProducts(searchProductQuery);
         this.pageProducts.first({ productCategory: category.id, salesRegion: this.cApp.currentSalesRegion.id });
-        this.showVPage(VProductList);
+        this.openVPage(VProductList);
     }
 
     showProductDetail = async (id: number) => {
         let product = new Product(this.cApp);
         await product.load(id);
-        this.showVPage(VProduct, product);
+        this.openVPage(VProduct, product);
     }
 }
 

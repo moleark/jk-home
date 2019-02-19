@@ -51,7 +51,7 @@ export class VRootCategory extends View<CProductCategory> {
             className="col-6 col-md-4 col-lg-3 cursor-pointer"
             //style={{borderRight:'1px solid gray', borderBottom:'1px solid gray'}}
             onClick={() => this.categoryClick(item, parent)}>
-            <div className="pt-1 pb-1 px-2"
+            <div className="py-2 px-2"
                 style={{ border: '1px solid #eeeeee', marginRight: '-1px', marginBottom: '-1px' }}
             >
                 <div style={titleTitle}>
@@ -74,7 +74,7 @@ export class VRootCategory extends View<CProductCategory> {
 
 
 export function renderThirdCategory(items: any) {
-    return <div className="py-1 text-muted small" style={subStyle}>
+    return <div className="py-1 px-1 text-muted small" style={subStyle}>
         {items.length === 0 ? <>&nbsp;</> : items.map(v => v.name).join(' / ')}
     </div>
 }

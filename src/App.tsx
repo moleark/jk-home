@@ -4,7 +4,6 @@ import './App.css';
 import { NavView, nav, Page, Tabs } from 'tonva-tools';
 import { startApp } from 'tonva-react-uq';
 import ui from './ui';
-import { A } from 'a';
 //import { faceTabs } from 'facetabs';
 
 const tonvaApp = "百灵威系统工程部/cart";
@@ -30,7 +29,7 @@ class App extends React.Component {
 
 export default App;
 
-
+/*
 class B extends A {
   constructor(b:string) {
     super(b);
@@ -53,3 +52,4 @@ class B extends A {
     console.log('B.t ' + this.t());
   }
 }
+*/

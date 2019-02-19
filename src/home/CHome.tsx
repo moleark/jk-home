@@ -44,7 +44,7 @@ export class CHome extends Controller {
 
         let { cProductCategory } = this.cApp;
         await cProductCategory.start();
-        this.showVPage(VHome);
+        this.openVPage(VHome);
     }
 
     renderSiteHeader = () => {

@@ -29,7 +29,7 @@ export class CUser extends Controller {
     async internalStart(contactType: ContactType) {
         this.contactType = contactType;
         this.userContacts = await this.cApp.currentUser.getContacts();
-        this.showVPage(VAddressList);
+        this.openVPage(VAddressList);
     }
 
     /**
@@ -47,7 +47,7 @@ export class CUser extends Controller {
                     && userSetting.invoiceContact && userSetting.invoiceContact.id === userContact.contact.id))
                 userContactData.contact.isDefault = true;
         }
-        this.showVPage(VContact, userContactData);
+        this.openVPage(VContact, userContactData);
     }
 
     saveContact = async (contact: any) => {

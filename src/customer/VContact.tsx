@@ -45,7 +45,7 @@ export class VContact extends VPage<CUser> {
 
     private contactData: any = {};
 
-    async showEntry(userContactData: any) {
+    async open(userContactData: any) {
 
         let { contact } = userContactData;
         if (contact !== undefined) {

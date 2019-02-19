@@ -25,7 +25,7 @@ const cartSchema = [
 ];
 
 export class VCart extends VPage<CCart> {
-    async showEntry() {
+    async open() {
         this.openPage(this.page);
     }
 

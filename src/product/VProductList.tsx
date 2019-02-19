@@ -7,7 +7,7 @@ import { observer } from 'mobx-react';
 
 export class VProductList extends VPage<CProduct> {
 
-    async showEntry(param: any) {
+    async open(param: any) {
 
         this.openPage(this.page);
     }

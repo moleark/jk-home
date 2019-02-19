@@ -5,7 +5,7 @@ import { tv } from 'tonva-react-uq';
 
 export class VAddress extends VPage<CUser> {
 
-    async showEntry(param: any) {
+    async open(param: any) {
 
         this.openPage(this.page, param);
     }

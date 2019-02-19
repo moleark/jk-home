@@ -74,7 +74,7 @@ export class CCartApp extends CApp {
     }
 
     showMain(initTabName?: string){
-        this.showVPage(this.VAppMain, initTabName);
+        this.openVPage(this.VAppMain, initTabName);
     }
 
     protected onDispose() {

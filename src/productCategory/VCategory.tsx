@@ -7,7 +7,7 @@ import { titleTitle, subStyle, renderThirdCategory } from './VRootCategory';
 
 export class VCategory extends VPage<CProductCategory> {
 
-    async showEntry(categoryWaper: any) {
+    async open(categoryWaper: any) {
 
         this.openPage(this.page, categoryWaper);
     }

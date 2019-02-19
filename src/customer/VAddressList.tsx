@@ -7,7 +7,7 @@ import { ContactType } from 'order/COrder';
 
 export class VAddressList extends VPage<CUser> {
 
-    async showEntry() {
+    async open() {
 
         this.openPage(this.page);
     }

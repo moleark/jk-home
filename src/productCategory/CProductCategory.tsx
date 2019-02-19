@@ -54,7 +54,7 @@ export class CProductCategory extends Controller {
         let results = await this.getCategoryChildren(productCategory.id);
         if (results.first.length !== 0) {
             this.buildCategories(categoryWaper, results.first, results.secend);
-            this.showVPage(VCategory, { categoryWaper, parent });
+            this.openVPage(VCategory, { categoryWaper, parent });
         } else {
             let { cProduct } = this.cApp;
             cProduct.searchByCategory(productCategory);

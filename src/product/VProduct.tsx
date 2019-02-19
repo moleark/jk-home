@@ -30,7 +30,7 @@ export class VProduct extends VPage<CProduct> {
     private product: Product;
     //private packRows: PackRow[];
 
-    async showEntry(product: Product) {
+    async open(product: Product) {
         this.product = product;
         this.uiSchema = {
             items: {
