@@ -40,7 +40,7 @@ export class Product {
     }
 
     async load(id: number) {
-        let loadSchemas:Promise<any>[] = [
+        let loadSchemas: Promise<any>[] = [
             this.productTuid.loadSchema(),
             this.packTuid.loadSchema(),
             this.productChemicalMap.loadSchema(),
@@ -63,11 +63,11 @@ export class Product {
 
         let promises: PromiseLike<any>[] = [];
         promises.push(this.productChemicalMap.obj({ product: id }));
-        promises.push(this.priceMap.table({ product: id, salesRegion: currentSalesRegion.id }));
-        promises.push(this.getFutureDeliveryTimeDescription(id, currentSalesRegion.id));
         if (currentUser.hasCustomer) {
             promises.push(this.getCustomerDiscount.obj({ brand: this.product.brand, customer: currentUser.currentCustomer }));
         }
+        promises.push(this.priceMap.table({ product: id, salesRegion: currentSalesRegion.id }));
+        promises.push(this.getFutureDeliveryTimeDescription(id, currentSalesRegion.id));
         let inventoryAllocationPromises = this.packRows.map(v => {
             return this.getInventoryAllocationQuery.table({ product: this.product, pack: v.pack, salesRegion: currentSalesRegion });
         });
@@ -83,20 +83,19 @@ export class Product {
             this.product.molecularWeight = this.productChemical.molecularWeight;
         }
 
-        let prices: any[] = results[p++];
-        prices.forEach(element => {
-            element.vipprice = element.price * (1 - discount);
-            element.currency = currentSalesRegion.currency;
-        });
-
-        let fd = results[p++];
-
         let discount = 0;
         if (currentUser.hasCustomer) {
             let discountSetting = results[p++];
             discount = discountSetting && discountSetting.discount;
         }
 
+        let prices: any[] = results[p++];
+        prices.forEach(element => {
+            element.vipPrice = Math.round(element.retail * (1 - discount));
+            element.currency = currentSalesRegion.currency;
+        });
+
+        let fd = results[p++];
         let allocationResults = results[p++];
         for (let i = 0; i < allocationResults.length; i++) {
             const element = this.packRows[i];

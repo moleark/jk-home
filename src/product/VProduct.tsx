@@ -21,7 +21,7 @@ const schema: ItemSchema[] = [
             { name: 'currency', type: 'string' },
             { name: 'quantity', type: 'number' } as NumSchema,
             { name: 'inventoryAllocation', type: 'object' } as ObjectSchema,
-            { name: 'deliveryTimeDescription', type: 'string' }
+            { name: 'futureDeliveryTimeDescription', type: 'string' }
         ]
     } as ArrSchema
 ];
@@ -65,10 +65,11 @@ export class VProduct extends VPage<CProduct> {
     private onQuantityChanged = async (context: RowContext, value: any, prev: any) => {
         //let { row } = context;
         let { data } = context;
-        let { pack, retail, currency } = data;
+        let { pack, retail, vipPrice, currency } = data;
+        let price = vipPrice || retail;
         let { cApp } = this.controller;
         let { cart } = cApp;
-        await cart.AddToCart(this.product.id, pack, value, retail, currency);
+        await cart.AddToCart(this.product.id, pack, value, price, currency);
     }
 
     //context:Context, name:string, value:number
@@ -96,19 +97,21 @@ export class VProduct extends VPage<CProduct> {
 
         let deliveryTimeUI = <></>;
         if (inventoryAllocation && inventoryAllocation.length > 0) {
+            /*
             deliveryTimeUI = inventoryAllocation.map((v, index) => {
                 return <div key={index}>
                     {tv(v.warehouse, (values: any) => <>{values.name}</>)}
                     {v.deliveryTimeDescription}
                 </div>
             });
+            */
+           deliveryTimeUI = <div className="text-success">现货</div>
         } else {
             deliveryTimeUI = <div>{futureDeliveryTimeDescription}</div>
         }
         let packLabel = <small className="text-muted">包装：</small>;
         return <LMR className="mx-3" right={right}>
             <div><b>{tv(pack)}</b></div>
-            {this.renderVm(VDelivery)}
             {deliveryTimeUI}
         </LMR>;
     }
