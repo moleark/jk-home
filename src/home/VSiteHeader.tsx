@@ -10,7 +10,7 @@ export class VSiteHeader extends View<CHome> {
         let login = <div>
             登录
         </div>
-        let left = <img className="m-1" src={logo} alt="logo" style={{width:'3rem', height:'3rem'}} />;
+        let left = <img className="m-1" src={logo} alt="logo" style={{height: "3rem", width: "3rem"}} />;
         //let cart = this.controller.cApp.cCart.renderCartLabel();
         let right = undefined;
         /*
@@ -18,7 +18,7 @@ export class VSiteHeader extends View<CHome> {
             {currentSalesRegion} &nbsp;
             <button onClick={()=>nav.start()}>Try</button>
         </div>;*/
-        return <LMR 
+        return <LMR
             className="mb-3 align-items-center bg-white"
             left={left} right={right}>
             <div className="">

@@ -6,7 +6,7 @@ export class Order {
 
     webUser: any;
     organization: BoxId;
-    customer: BoxId;
+    customer: any;
 
     @observable shippingContact: BoxId;
     @observable invoiceContact: BoxId;
@@ -21,6 +21,7 @@ export class Order {
         let orderItems: any[] = [];
         this.orderItems.forEach(oi => {
             oi.packs.forEach(pk => {
+                this.currency = pk.currency;
                 orderItems.push({
                     product: oi.product, pack: pk.pack, price: pk.price, quantity: pk.quantity
                     , subAmount: pk.quantity * pk.price

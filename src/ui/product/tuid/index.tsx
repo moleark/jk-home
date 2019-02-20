@@ -5,5 +5,4 @@ export default {
     product: productUI,
     productx: productUI,
     productCategory: productCategoryUI,
-    productcategory: productCategoryUI,
 }

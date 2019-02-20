@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ControllerUq, Tuid, Map, CUq, Query } from 'tonva-react-uq';
+import { Query } from 'tonva-react-uq';
 import { observable } from 'mobx';
 import { VRootCategory } from './VRootCategory';
 import { VCategory } from './VCategory';
@@ -51,12 +51,13 @@ export class CProductCategory extends Controller {
     async openMainPage(categoryWaper: any, parent: any) {
 
         let { productCategory } = categoryWaper;
-        if (productCategory.obj.isLeaf === 0) {
-            // 导航到产品列表界面
-        } else {
-            let results = await this.getCategoryChildren(productCategory.id);
+        let results = await this.getCategoryChildren(productCategory.id);
+        if (results.first.length !== 0) {
             this.buildCategories(categoryWaper, results.first, results.secend);
             this.openVPage(VCategory, { categoryWaper, parent });
+        } else {
+            let { cProduct } = this.cApp;
+            cProduct.searchByCategory(productCategory);
         }
     }
 }

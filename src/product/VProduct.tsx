@@ -2,7 +2,7 @@ import * as React from 'react';
 import { CProduct, productRow } from './CProduct';
 import {
     VPage, Page, Form, ItemSchema, ArrSchema, NumSchema, UiSchema, UiArr, Field,
-    StringSchema, Context, ObjectSchema, RowContext, UiCustom
+    StringSchema, Context, ObjectSchema, RowContext, UiCustom, View
 } from 'tonva-tools';
 import { List, LMR, FA, SearchBox } from 'tonva-react-form';
 import { tv, BoxId } from 'tonva-react-uq';
@@ -19,7 +19,9 @@ const schema: ItemSchema[] = [
             { name: 'retail', type: 'number' } as NumSchema,
             { name: 'vipPrice', type: 'number' } as NumSchema,
             { name: 'currency', type: 'string' },
-            { name: 'quantity', type: 'number' } as NumSchema
+            { name: 'quantity', type: 'number' } as NumSchema,
+            { name: 'inventoryAllocation', type: 'object' } as ObjectSchema,
+            { name: 'deliveryTimeDescription', type: 'string' }
         ]
     } as ArrSchema
 ];
@@ -46,6 +48,7 @@ export class VProduct extends VPage<CProduct> {
                         }
                     },
                     ArrContainer: (label: string, content: JSX.Element) => { return <div className="bg-white">{content}</div>; },
+                    RowContainer: (content: JSX.Element) => { return <div className="py-2">{content}</div> },
                     Rowseperator: (<div className="border border-danger border-top"></div>),
                 } as UiArr,
             }
@@ -72,10 +75,23 @@ export class VProduct extends VPage<CProduct> {
     private arrTemplet = (item: any) => {
         //let a = context.getValue('');
         let { pack, retail, vipPrice, inventoryAllocation, futureDeliveryTimeDescription } = item;
-        let right, priceUI = <></>;
+        let right = null;
         if (retail) {
-            right = <div className="d-flex"><Field name="quantity" /></div>;
-            priceUI = <div>retail:{retail} vipPrice:{vipPrice}</div>
+            let price: number;
+            let retailUI: any;
+            if (vipPrice) {
+                price = vipPrice;
+                retailUI = <small className="text-muted"><del>¥{retail}</del></small>;
+            }
+            else {
+                price = retail;
+            }
+            right = <div className="d-block text-right">
+                <div className="pb-2 small text-muted">{retailUI} <span className="text-danger">¥ <span className="h5">{price}</span></span></div>
+                <div className="d-flex"><Field name="quantity" /></div>
+            </div >
+        } else {
+            right = <small>请询价</small>
         }
 
         let deliveryTimeUI = <></>;
@@ -89,9 +105,10 @@ export class VProduct extends VPage<CProduct> {
         } else {
             deliveryTimeUI = <div>{futureDeliveryTimeDescription}</div>
         }
+        let packLabel = <small className="text-muted">包装：</small>;
         return <LMR className="mx-3" right={right}>
-            <div>{tv(pack)}</div>
-            {priceUI}
+            <div><b>{tv(pack)}</b></div>
+            {this.renderVm(VDelivery)}
             {deliveryTimeUI}
         </LMR>;
     }
@@ -102,16 +119,18 @@ export class VProduct extends VPage<CProduct> {
         let { id } = this.product;
         let header = cApp.cHome.renderSearchHeader();
         let cartLabel = cApp.cCart.renderCartLabel();
-        let listHeader = <LMR className="pt-3" right="quantity  cart  favorite">
-            <div className="row">
-                <div className="col-2">SKU</div>
-                <div className="col-2">price</div>
-                <div className="col-2">vip price</div>
-            </div>
-        </LMR>
         return <Page header={header} right={cartLabel}>
-            <div className="px-2 py-2 bg-white mb-1">{tv(id, productRow)}</div>
+            <div className="px-2 py-2 bg-white mb-3">{tv(id, productRow)}</div>
             <Form schema={schema} uiSchema={this.uiSchema} formData={this.data} />
         </Page>
     })
+}
+
+
+class VDelivery extends View<CProduct> {
+
+    render() {
+        // let inventoryAllocation = this.controller.getInventoryAllocation();
+        return <div>inventoryAllocation</div>
+    }
 }

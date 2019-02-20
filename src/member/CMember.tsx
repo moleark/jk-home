@@ -3,7 +3,6 @@ import Loadable from 'react-loadable';
 import { Controller, Loading } from 'tonva-tools';
 import { VMember } from './VMember';
 import { CCartApp } from 'CCartApp';
-import { Query } from 'tonva-react-uq';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 

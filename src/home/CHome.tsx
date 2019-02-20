@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ControllerUq, CApp, CUq, TuidMain } from 'tonva-react-uq';
+import { TuidMain } from 'tonva-react-uq';
 import { VSiteHeader } from './VSiteHeader';
 import { CCartApp } from '../CCartApp';
 import { PageItems, Controller } from 'tonva-tools';

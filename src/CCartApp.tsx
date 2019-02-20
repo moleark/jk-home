@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import { CApp, CUq } from 'tonva-react-uq';
 import { CCart } from 'cart/CCart';
 import { CProduct } from 'product';
@@ -51,7 +52,7 @@ export class CCartApp extends CApp {
         let languageTuid = this.cUqCommon.tuid('language');
         this.currentLanguage = await languageTuid.load(197);
 
-        this.currentUser = new WebUser(this.cUqWebUser);
+        this.currentUser = new WebUser(this.cUqWebUser, this.cUqCustomer);
         if (this.isLogined)
             this.currentUser.user = this.user;
 

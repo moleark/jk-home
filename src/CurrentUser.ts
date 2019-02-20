@@ -15,10 +15,13 @@ export class WebUser {
     private webUserContactMap: Map;
     private webUserSettingMap: Map;
 
-    constructor(cUqWebUser: CUq) {
-        this.webUserCustomerMap = cUqWebUser.map('webUserCustomer');
-        this.webUserContactMap = cUqWebUser.map('webUserContacts');
-        this.webUserSettingMap = cUqWebUser.map('webUserSetting');
+    private cUsqCustomer: CUq;
+
+    constructor(cUsqWebUser: CUq, cUsqCustomer: CUq) {
+        this.webUserCustomerMap = cUsqWebUser.map('webUserCustomer');
+        this.webUserContactMap = cUsqWebUser.map('webUserContacts');
+        this.webUserSettingMap = cUsqWebUser.map('webUserSetting');
+        this.cUsqCustomer = cUsqCustomer;
     }
 
     set user(user: User) {
@@ -35,7 +38,7 @@ export class WebUser {
                 this.webUserCustomerMap.obj({ webUser: this.id })
                     .then((value) => {
                         if (value != undefined)
-                            this.currentCustomer = new Customer(value.Customer);
+                            this.currentCustomer = new Customer(value.customer, this.cUsqCustomer);
                     })
             }
         }
@@ -107,10 +110,14 @@ export class WebUser {
 export class Customer {
 
     private contactMap: Map;
-    private customerSettingMap: Map;
     id: number;
 
-    constructor(customer: BoxId) {
+    private customerSettingMap: Map;
+
+    constructor(customer: BoxId, cUsqCustomer: CUq) {
+        this.id = customer.id;
+        this.contactMap = cUsqCustomer.map('customerContacts');
+        this.customerSettingMap = cUsqCustomer.map('customerSetting');
     };
 
     async getContacts(): Promise<any[]> {
@@ -118,11 +125,11 @@ export class Customer {
     }
 
     async addContact(contactId: number) {
-        await this.contactMap.add({ webUser: this.id, arr1: [{ contact: contactId }] });
+        await this.contactMap.add({ customer: this.id, arr1: [{ contact: contactId }] });
     }
 
     async delContact(contactId: number) {
-        await this.contactMap.del({ webUser: this.id, arr1: [{ contact: contactId }] });
+        await this.contactMap.del({ customer: this.id, arr1: [{ contact: contactId }] });
     }
 
     async getSetting() {

@@ -7,8 +7,9 @@ import { observer } from 'mobx-react';
 export class VCartLabel extends View<CCart> {
 
     private showCart = async () => {
-        let { cApp } = this.controller;
-        cApp.showMain('cart');
+        // let { cApp } = this.controller;
+        // cApp.showMain('cart');
+        this.controller.start();
     }
 
     render(param: any): JSX.Element {
