@@ -73,6 +73,7 @@ export class Product {
         });
         promises.push(Promise.all(inventoryAllocationPromises));
         let results = await Promise.all(promises);
+
         let p = 0;
         this.productChemical = results[p++];
         if (this.productChemical) {

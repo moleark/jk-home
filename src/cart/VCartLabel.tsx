@@ -18,13 +18,13 @@ export class VCartLabel extends View<CCart> {
 
     private content = observer(() => {
         let { cart } = this.controller;
-        let count:any = cart.count.get();
+        let count: any = cart.count.get();
         let badge, onClick, pointer;
         if (count > 0) {
             onClick = this.showCart;
             pointer = 'cursor-pointer';
-            if (count < 100) badge=<u>{count}</u>;
-            else badge =<u>99+</u>;
+            if (count < 100) badge = <u>{count}</u>;
+            else badge = <u>99+</u>;
         }
         return <div className={classNames('jk-cart ml-1 mr-2', pointer)} onClick={onClick}>
             <div>

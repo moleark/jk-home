@@ -105,9 +105,9 @@ export class VProduct extends VPage<CProduct> {
                 </div>
             });
             */
-           deliveryTimeUI = <div className="text-success">现货</div>
+           deliveryTimeUI = <div className="text-success">国内现货</div>
         } else {
-            deliveryTimeUI = <div>{futureDeliveryTimeDescription}</div>
+            deliveryTimeUI = <div>期货:{futureDeliveryTimeDescription}</div>
         }
         let packLabel = <small className="text-muted">包装：</small>;
         return <LMR className="mx-3" right={right}>
