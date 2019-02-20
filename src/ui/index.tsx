@@ -4,6 +4,7 @@ import { CCartApp } from '../CCartApp';
 import orderUI from './order';
 import productUI from './product';
 import customerUI from './customer';
+import warehouseUI from './warehouse';
 
 const ui: AppUI = {
     CApp: CCartApp,
@@ -12,6 +13,7 @@ const ui: AppUI = {
         '百灵威系统工程部/order': orderUI,
         '百灵威系统工程部/product': productUI,
         '百灵威系统工程部/customer': customerUI,
+        '百灵威系统工程部/warehouse': warehouseUI,
     }
 }
 

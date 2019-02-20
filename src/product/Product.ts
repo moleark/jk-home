@@ -58,7 +58,7 @@ export class Product {
             promises.push(this.getCustomerDiscount.obj({ brand: this.product.brand, customer: currentUser.currentCustomer }));
         }
         let inventoryAllocationPromises = this.packRows.map(v => {
-            return this.getInventoryAllocationQuery.table({ product:this.product, pack:v.pack, salesRegion: currentSalesRegion });
+            return this.getInventoryAllocationQuery.table({ product: this.product, pack: v.pack, salesRegion: currentSalesRegion });
         });
         promises.push(Promise.all(inventoryAllocationPromises));
         let results = await Promise.all(promises);
@@ -87,7 +87,7 @@ export class Product {
         }
 
         let allocationResults = results[p++];
-        for (let i=0; i < allocationResults.length; i++) {
+        for (let i = 0; i < allocationResults.length; i++) {
             const element = this.packRows[i];
             element.futureDeliveryTimeDescription = fd;
             element.inventoryAllocation = allocationResults[i];
@@ -95,7 +95,7 @@ export class Product {
         this.packRows.forEach(v => {
             let price = prices.find(x => x.pack.id === v.pack.id);
             if (price) {
-                let {retail, vipPrice} = price;
+                let { retail, vipPrice } = price;
                 v.retail = retail;
                 v.vipPrice = vipPrice;
             }
