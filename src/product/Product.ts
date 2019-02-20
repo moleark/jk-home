@@ -40,6 +40,17 @@ export class Product {
     }
 
     async load(id: number) {
+        let loadSchemas:Promise<any>[] = [
+            this.productTuid.loadSchema(),
+            this.packTuid.loadSchema(),
+            this.productChemicalMap.loadSchema(),
+            this.priceMap.loadSchema(),
+            this.getCustomerDiscount.loadSchema(),
+            this.getInventoryAllocationQuery.loadSchema(),
+            this.getFutureDeliveryTime.loadSchema(),
+        ];
+        await Promise.all(loadSchemas);
+
         this.id = this.productTuid.boxId(id);
         let { cart, currentSalesRegion, currentUser } = this.cApp;
         this.product = await this.productTuid.load(id);
