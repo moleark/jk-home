@@ -83,7 +83,7 @@ function item(caption: string, value: any) {
     </>;
 }
 
-export function productRow(product: any, index: number) {
+export function renderProduct(product: any, index: number) {
     let { brand, description, CAS, purity, molecularFomula, molecularWeight, origin } = product;
     return <div className="row d-flex mb-3 px-2">
         <div className="col-12">

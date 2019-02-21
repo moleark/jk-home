@@ -3,9 +3,10 @@ import _ from 'lodash';
 import { CUq, Action, Query, TuidMain, TuidDiv, BoxId } from 'tonva-react-uq';
 import { PackItem } from '../tools';
 import { CCartApp } from '../CCartApp';
+import { Product } from 'product/Product';
 
 export interface CartProduct {
-    product: BoxId;
+    product: Product;
     packs: PackItem[];
     $isSelected?: boolean;
     $isDeleted?: boolean;
@@ -24,7 +25,7 @@ abstract class CartStore {
 }
 
 export class Cart {
-    private cCartApp: CCartApp;
+    cCartApp: CCartApp;
     private cUqProduct: CUq;
     private cUqOrder: CUq;
     private cartStore: CartStore;
@@ -82,6 +83,7 @@ export class Cart {
             this.items.push(...items);
             return;
         }
+        // 已登录但是cartStore !== undefined时继续执行，这是合并购物车？
         let cartLocal = this.cartStore as CartLocal;
         let items = this.items.splice(0, this.items.length);
         this.items.splice(0, this.items.length);
@@ -99,7 +101,7 @@ export class Cart {
     }
 
     getQuantity(productId: number, packId: number): number {
-        let cp = this.items.find(v => v.$isDeleted !== true && v.product.id === productId);
+        let cp = this.items.find(v => v.$isDeleted !== true && v.product.product.id === productId);
         if (cp === undefined) return 0;
         let packItem = cp.packs.find(v => v.pack.id === packId);
         if (packItem === undefined) return 0;
@@ -119,7 +121,7 @@ export class Cart {
             quantity: quantity,
             currency: currency,
         };
-        let cartItem = this.items.find((element) => element.product.id === product.id);
+        let cartItem = this.items.find((element) => element.product.product.id === product.id);
         if (!cartItem) {
             //cartItem = this.createCartItem(product, pack, quantity, price, currency);
             //this.items.push(cartItem);
@@ -166,7 +168,7 @@ export class Cart {
             for (let pi of packs) {
                 if ($isDeleted === true || pi.quantity === 0) {
                     rows.push({
-                        product: product,
+                        product: product.product,
                         packItem: pi
                     });
                 }
@@ -241,7 +243,8 @@ class CartRemote extends CartStore {
             let cpi = cartDict[product.id];
             if (cpi === undefined) {
                 cpi = {} as any; //new CartProduct;
-                cpi.product = product;
+                cpi.product = new Product(this.cart.cCartApp); // product;
+                cpi.product.load(product.id);
                 cpi.packs = [];
                 cpi.packs.push(packItem);
                 cpi.createdate = createdate;
@@ -301,22 +304,25 @@ class CartLocal extends CartStore {
             let cartstring = localStorage.getItem(LOCALCARTNAME);
             if (cartstring === null) return [];
             let cartData = JSON.parse(cartstring);
-            let items = cartData.map(element => {
+            let items: CartProduct[] = [];
+            for (let i=0; i<cartData.length; i++){
                 let cartProduct: CartProduct = {} as any;
-                let { product, packs, createdate } = element;
+                let { product, packs, createdate } = cartData[i];
                 if (packs !== undefined) {
                     for (let p of packs) {
                         p.pack = this.packTuid.boxId(p.pack);
                     }
                 }
-                cartProduct.product = this.productTuid.boxId(product);
+                // cartProduct.product = this.productTuid.boxId(product);
+                cartProduct.product = new Product(this.cart.cCartApp);
+                await cartProduct.product.load(product);
                 cartProduct.packs = [];
                 cartProduct.packs.push(...packs);
                 cartProduct.$isSelected = false;
                 cartProduct.$isDeleted = false;
                 cartProduct.createdate = createdate;
-                return cartProduct;
-            });
+                items.push(cartProduct);
+            };
             return items;
         }
         catch {
@@ -329,7 +335,7 @@ class CartLocal extends CartStore {
         let items = this.cart.items.map(e => {
             let { product, packs } = e;
             return {
-                product: product.id,
+                product: product.product.id,
                 packs: packs && packs.map(v => {
                     let { pack, price, currency, quantity } = v;
                     return {

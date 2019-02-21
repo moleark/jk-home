@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { CProduct, productRow } from './CProduct';
+import { CProduct, renderProduct } from './CProduct';
 import {
     VPage, Page, Form, ItemSchema, ArrSchema, NumSchema, UiSchema, UiArr, Field,
     StringSchema, Context, ObjectSchema, RowContext, UiCustom, View
@@ -69,7 +69,7 @@ export class VProduct extends VPage<CProduct> {
         let price = vipPrice || retail;
         let { cApp } = this.controller;
         let { cart } = cApp;
-        await cart.AddToCart(this.product.id, pack, value, price, currency);
+        await cart.AddToCart(this.product.product.id, pack, value, price, currency);
     }
 
     //context:Context, name:string, value:number
@@ -119,11 +119,12 @@ export class VProduct extends VPage<CProduct> {
     private page = observer(() => {
 
         let { cApp } = this.controller;
-        let { id } = this.product;
+        // let { id } = this.product;
+        let { product } = this.product;
         let header = cApp.cHome.renderSearchHeader();
         let cartLabel = cApp.cCart.renderCartLabel();
         return <Page header={header} right={cartLabel}>
-            <div className="px-2 py-2 bg-white mb-3">{tv(id, productRow)}</div>
+            <div className="px-2 py-2 bg-white mb-3">{renderProduct(product, 0)}</div>
             <Form schema={schema} uiSchema={this.uiSchema} formData={this.data} />
         </Page>
     })

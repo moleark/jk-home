@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TuidUI } from 'tonva-react-uq';
+import { TuidUI, tv } from 'tonva-react-uq';
 
 export const productUI: TuidUI = {
     content: (values: any) => {
@@ -21,6 +21,7 @@ export const productUI: TuidUI = {
                             {item('分子式', molecularFomula)}
                             {item('分子量', molecularWeight)}
                             {item('产品编号', origin)}
+                            {tv(brand, (values: any) => <>{item("品牌", values.name)}</>)}
                         </div>
                     </div>
                 </div>

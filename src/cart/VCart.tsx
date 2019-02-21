@@ -48,17 +48,16 @@ export class VCart extends VPage<CCart> {
 
     private productRow = (item: any) => {
         let { product } = item;
-        return <div className="pr-1"><div className="row">
-            <div className="col-sm-6">{tv(product)}</div>
-            <div className="col-sm-6"><Field name="packs" /></div>
-        </div></div>;
+        return <div className="pr-1">
+            <div className="row">
+                <div className="col-sm-6 pb-3">{tv(product)}</div>
+                <div className="col-sm-6"><Field name="packs" /></div>
+            </div>
+        </div>;
     }
 
     private packsRow = (item: any) => {
         let { pack, quantity, price } = item;
-        //let {name} = pack;
-        //<div className="d-flex flex-grow-1">
-        //</div>
         return <div className="d-flex align-items-center px-2">
             <div className="flex-grow-1">{tv(pack)}</div>
             <div className="w-6c mr-4 text-right"><span className="text-danger h5">¥{price}</span></div>
@@ -111,12 +110,12 @@ export class VCart extends VPage<CCart> {
     }
 
     private test = () => {
-        let {cart} = this.controller;
+        let { cart } = this.controller;
         let row = cart.items[0];
         row.packs[0].quantity = row.packs[0].quantity + 1;
     }
 
-    private testButton = () => <button onClick={()=>this.test()}>test</button>;
+    private testButton = () => <button onClick={() => this.test()}>test</button>;
 
     private page = observer((params: any): JSX.Element => {
         let { cart } = this.controller;
@@ -131,7 +130,7 @@ export class VCart extends VPage<CCart> {
     private tab = observer(() => {
         let { cart } = this.controller;
         let header = <header className="py-2 text-center bg-info text-white">
-            <FA className="align-middle" name="shopping-cart" size="2x"/> &nbsp; <span className="h5 align-middle">购物车</span>
+            <FA className="align-middle" name="shopping-cart" size="2x" /> &nbsp; <span className="h5 align-middle">购物车</span>
         </header>;
         if (cart.count.get() === 0) {
             return <>

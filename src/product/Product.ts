@@ -22,9 +22,8 @@ export class Product {
     private getInventoryAllocationQuery: Query;
     private getFutureDeliveryTime: Query;
 
-    id: BoxId;
+    // id: BoxId;
     product: any;
-    productChemical: any;
     packRows: PackRow[];
 
     constructor(cApp: CCartApp) {
@@ -51,7 +50,7 @@ export class Product {
         ];
         await Promise.all(loadSchemas);
 
-        this.id = this.productTuid.boxId(id);
+        // this.id = this.productTuid.boxId(id);
         let { cart, currentSalesRegion, currentUser } = this.cApp;
         this.product = await this.productTuid.load(id);
         this.packRows = this.product.packx.map(v => {
@@ -75,13 +74,13 @@ export class Product {
         let results = await Promise.all(promises);
 
         let p = 0;
-        this.productChemical = results[p++];
-        if (this.productChemical) {
-            this.product.chemical = this.productChemical.chemical;
-            this.product.purity = this.productChemical.purity;
-            this.product.CAS = this.productChemical.CAS;
-            this.product.molecularFomula = this.productChemical.molecularFomula;
-            this.product.molecularWeight = this.productChemical.molecularWeight;
+        let productChemical = results[p++];
+        if (productChemical) {
+            this.product.chemical = productChemical.chemical;
+            this.product.purity = productChemical.purity;
+            this.product.CAS = productChemical.CAS;
+            this.product.molecularFomula = productChemical.molecularFomula;
+            this.product.molecularWeight = productChemical.molecularWeight;
         }
 
         let discount = 0;

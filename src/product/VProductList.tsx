@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { VPage, Page } from 'tonva-tools';
-import { CProduct, productRow } from './CProduct';
+import { CProduct, renderProduct } from './CProduct';
 import { List } from 'tonva-react-form';
 import { observer } from 'mobx-react';
 //import { cCartApp } from 'ui/CCartApp';
@@ -27,7 +27,7 @@ export class VProductList extends VPage<CProduct> {
         let header = cApp.cHome.renderSearchHeader();
         let cart = cApp.cCart.renderCartLabel();
         return <Page header={header} right={cart} onScrollBottom={this.onScrollBottom}>
-            <List before={''} items={pageProducts} item={{ render: productRow, onClick: this.onProductClick }} />
+            <List before={''} items={pageProducts} item={{ render: renderProduct, onClick: this.onProductClick }} />
         </Page>
     });
 }

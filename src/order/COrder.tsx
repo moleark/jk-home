@@ -1,10 +1,9 @@
 import * as React from 'react';
-import { TuidMain, Map, Sheet, BoxId } from 'tonva-react-uq';
+import { Sheet, BoxId } from 'tonva-react-uq';
 import { CCartApp } from 'CCartApp';
 import { VCreateOrder } from './VCreateOrder';
 import { Order, OrderItem } from './Order';
 import { observable } from 'mobx';
-import * as _ from 'lodash';
 import { Controller } from 'tonva-tools';
 import { OrderSuccess } from './OrderSuccess';
 

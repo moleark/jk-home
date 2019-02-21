@@ -10,7 +10,7 @@ export class OrderSuccess extends VPage<COrder> {
     }
 
     private page = (orderCreateResult: any) => {
-        return <Page>
+        return <Page header="下单成功">
             <div>{orderCreateResult.no}</div>
         </Page>
     }
