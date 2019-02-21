@@ -8,7 +8,7 @@ export const contactUI = {
                 {name}
             </b>
             &nbsp; {mobile} &nbsp; {organizationName}<br />
-            {addressString}
+            <small>{addressString}</small>
         </div>
     }
 }

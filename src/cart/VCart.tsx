@@ -35,7 +35,7 @@ export class VCart extends VPage<CCart> {
         let amount = cart.amount.get();
         let check = "去结算";
         let content = amount > 0 ?
-            <>{check} ({amount} 元)</> :
+            <>{check} (¥{amount})</> :
             <>{check}</>;
         return <button className="btn btn-success w-100" type="button" onClick={checkOut} disabled={amount <= 0}>
             {content}
@@ -61,7 +61,7 @@ export class VCart extends VPage<CCart> {
         //</div>
         return <div className="d-flex align-items-center px-2">
             <div className="flex-grow-1">{tv(pack)}</div>
-            <div className="w-6c mr-4 text-right"><span className="text-danger h5">{price}</span>元</div>
+            <div className="w-6c mr-4 text-right"><span className="text-danger h5">¥{price}</span></div>
             <Field name="quantity" />
         </div>;
     }

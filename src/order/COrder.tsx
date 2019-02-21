@@ -93,8 +93,9 @@ export class COrder extends Controller {
             return;
         }
         if (!this.orderData.invoiceContact) {
-            this.openContactList(ContactType.InvoiceContact);
-            return;
+            this.setContact(this.orderData.shippingContact, ContactType.InvoiceContact);
+            // this.openContactList(ContactType.InvoiceContact);
+            // return;
         }
 
         let result: any = await this.orderSheet.save("order", this.orderData.getDataForSave());

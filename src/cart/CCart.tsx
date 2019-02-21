@@ -53,7 +53,7 @@ export class CCart extends Controller {
     checkOut = async () => {
 
         if (!this.isLogined) {
-            // 导航到登录界面
+            alert("请登录");
         } else {
             let selectCartItem = this.cart.getSelectItem();
             if (selectCartItem === undefined) return;
