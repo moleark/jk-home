@@ -1,4 +1,4 @@
-import { UserInNav, User } from 'tonva-tools';
+import { User } from 'tonva-tools';
 import { Map, BoxId, CUq } from 'tonva-react-uq';
 
 export class WebUser {
