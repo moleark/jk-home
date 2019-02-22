@@ -13,10 +13,7 @@ export class BoxId {
     valueFromFieldName: (fieldName:string)=>BoxId|any;
     _$com?: any;
     _$tuid?: Tuid;
-    getObj():any {
-        if (this._$tuid === undefined) return;
-        return this._$tuid.getCacheValue(this.id);
-    }
+    getObj: ()=>any;
 }
 
 const maxCacheSize = 1000;
@@ -45,18 +42,23 @@ export abstract class Tuid extends Entity {
             value: this,
             writable: false,
             enumerable: false,
-        });
+        })
         Object.defineProperty(prototype, 'obj', {
             enumerable: false,
             get: function() {
                 if (this.id === undefined || this.id<=0) return undefined;
                 return this._$tuid.valueFromId(this.id);
             }
-        });
+        })
         prototype.valueFromFieldName = function(fieldName:string):BoxId|any {
             let t:Tuid = this._$tuid;
             return t.valueFromFieldName(fieldName, this.obj);
-        };
+        }
+        prototype.getObj = function():any {
+            if (this._$tuid !== undefined) {
+                return this._$tuid.getCacheValue(this.id);
+            }
+        }
         prototype.toJSON = function() {return this.id}
     }
     boxId(id:number):BoxId {
