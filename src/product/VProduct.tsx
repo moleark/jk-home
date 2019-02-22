@@ -9,6 +9,7 @@ import { tv, BoxId } from 'tonva-react-uq';
 import { observer } from 'mobx-react';
 import { MinusPlusWidget } from '../tools/minusPlusWidget';
 import { PackRow, Product } from './Product';
+import { ViewProductChemical } from './itemView';
 
 const schema: ItemSchema[] = [
     {
@@ -30,7 +31,6 @@ export class VProduct extends VPage<CProduct> {
     private data: any;
     private uiSchema: UiSchema;
     private product: Product;
-    //private packRows: PackRow[];
 
     async open(product: Product) {
         this.product = product;
@@ -59,7 +59,7 @@ export class VProduct extends VPage<CProduct> {
             list: product.packRows,
         };
 
-        this.openPage(this.page);
+        this.openPage(this.page, product);
     }
 
     private onQuantityChanged = async (context: RowContext, value: any, prev: any) => {
@@ -105,7 +105,7 @@ export class VProduct extends VPage<CProduct> {
                 </div>
             });
             */
-           deliveryTimeUI = <div className="text-success">国内现货</div>
+            deliveryTimeUI = <div className="text-success">国内现货</div>
         } else {
             deliveryTimeUI = <div>期货:{futureDeliveryTimeDescription}</div>
         }
@@ -116,25 +116,19 @@ export class VProduct extends VPage<CProduct> {
         </LMR>;
     }
 
-    private page = observer(() => {
+    private page = observer((product: any) => {
 
         let { cApp } = this.controller;
-        // let { id } = this.product;
+        /*
         let { product } = this.product;
+        <div className="px-2 py-2 bg-white mb-3">{renderProduct(product, 0)}</div>
+        <Form schema={schema} uiSchema={this.uiSchema} formData={this.data} />
+        */
         let header = cApp.cHome.renderSearchHeader();
         let cartLabel = cApp.cCart.renderCartLabel();
+        let viewProduct = new ViewProductChemical(product, { onQuantityChanged: cApp.cart.AddToCart });
         return <Page header={header} right={cartLabel}>
-            <div className="px-2 py-2 bg-white mb-3">{renderProduct(product, 0)}</div>
-            <Form schema={schema} uiSchema={this.uiSchema} formData={this.data} />
+            {viewProduct.render()}
         </Page>
     })
-}
-
-
-class VDelivery extends View<CProduct> {
-
-    render() {
-        // let inventoryAllocation = this.controller.getInventoryAllocation();
-        return <div>inventoryAllocation</div>
-    }
 }

@@ -57,6 +57,9 @@ export abstract class Tuid extends Entity {
             let t:Tuid = this._$tuid;
             return t.valueFromFieldName(fieldName, this.obj);
         };
+        prototype.getObj = function():any {
+            if (this._$tuid !== undefined) return this._$tuid.getCacheValue(this.id);
+        };
         prototype.toJSON = function() {return this.id}
     }
     boxId(id:number):BoxId {
@@ -307,7 +310,7 @@ export abstract class Tuid extends Entity {
     async posArr(arr:string, owner:number, id:number, order:number) {
         return await this.tvApi.tuidArrPos(this.name, arr, owner, id, order);
     }
-    
+
     // cache放到Tuid里面之后，这个函数不再需要公开调用了
     //private async ids(idArr:number[]) {
     //    return await this.tvApi.tuidIds(this.name, idArr);

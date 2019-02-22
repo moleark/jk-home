@@ -1,12 +1,14 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { Map, TuidDiv, TuidMain, Query, tv, BoxId } from 'tonva-react-uq';
-import { PageItems, Controller } from 'tonva-tools';
+import { PageItems, Controller, nav, Page } from 'tonva-tools';
 import { CCartApp } from '../CCartApp';
 import { PackItem } from '../tools';
 import { VProduct } from './VProduct';
 import { VProductList } from './VProductList';
 import { Product } from './Product';
+import { loaderProductChemical, LoaderCartRow } from './itemLoader';
+import { ViewProductChemical, ViewCartRow } from './itemView';
 
 class PageProducts extends PageItems<any> {
 
@@ -65,8 +67,12 @@ export class CProduct extends Controller {
     }
 
     showProductDetail = async (id: number) => {
+        let loader = new loaderProductChemical(this.cApp);
+        let product = await loader.load(id);
+        /*
         let product = new Product(this.cApp);
         await product.load(id);
+        */
         this.openVPage(VProduct, product);
     }
 }

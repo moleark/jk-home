@@ -6,7 +6,7 @@ import { CCartApp } from '../CCartApp';
 import { Product } from 'product/Product';
 
 export interface CartProduct {
-    product: Product;
+    product: BoxId;
     packs: PackItem[];
     $isSelected?: boolean;
     $isDeleted?: boolean;
@@ -101,7 +101,7 @@ export class Cart {
     }
 
     getQuantity(productId: number, packId: number): number {
-        let cp = this.items.find(v => v.$isDeleted !== true && v.product.product.id === productId);
+        let cp = this.items.find(v => v.$isDeleted !== true && v.product.id === productId);
         if (cp === undefined) return 0;
         let packItem = cp.packs.find(v => v.pack.id === packId);
         if (packItem === undefined) return 0;
@@ -113,7 +113,7 @@ export class Cart {
      * @param pack 要添加到购物车中的包装
      * @param quantity 要添加到购物车中包装的个数
      */
-    async AddToCart(product: any, pack: any, quantity: number, price: number, currency: any) {
+    AddToCart = async (product: any, pack: any, quantity: number, price: number, currency: any) => {
         _.remove(this.items, v => v.$isDeleted === true);
         let packItem: PackItem = {
             pack: pack,
@@ -121,7 +121,7 @@ export class Cart {
             quantity: quantity,
             currency: currency,
         };
-        let cartItem = this.items.find((element) => element.product.product.id === product.id);
+        let cartItem = this.items.find((element) => element.product.id === product.id);
         if (!cartItem) {
             //cartItem = this.createCartItem(product, pack, quantity, price, currency);
             //this.items.push(cartItem);
@@ -168,7 +168,7 @@ export class Cart {
             for (let pi of packs) {
                 if ($isDeleted === true || pi.quantity === 0) {
                     rows.push({
-                        product: product.product,
+                        product: product,
                         packItem: pi
                     });
                 }
@@ -243,8 +243,8 @@ class CartRemote extends CartStore {
             let cpi = cartDict[product.id];
             if (cpi === undefined) {
                 cpi = {} as any; //new CartProduct;
-                cpi.product = new Product(this.cart.cCartApp); // product;
-                cpi.product.load(product.id);
+                cpi.product = product;
+                // cpi.product.load(product.id);
                 cpi.packs = [];
                 cpi.packs.push(packItem);
                 cpi.createdate = createdate;
@@ -313,9 +313,9 @@ class CartLocal extends CartStore {
                         p.pack = this.packTuid.boxId(p.pack);
                     }
                 }
-                // cartProduct.product = this.productTuid.boxId(product);
-                cartProduct.product = new Product(this.cart.cCartApp);
-                await cartProduct.product.load(product);
+                cartProduct.product = this.productTuid.boxId(product);
+                // cartProduct.product = new Product(this.cart.cCartApp);
+                // await cartProduct.product.load(product);
                 cartProduct.packs = [];
                 cartProduct.packs.push(...packs);
                 cartProduct.$isSelected = false;
@@ -335,7 +335,7 @@ class CartLocal extends CartStore {
         let items = this.cart.items.map(e => {
             let { product, packs } = e;
             return {
-                product: product.product.id,
+                product: product.id,
                 packs: packs && packs.map(v => {
                     let { pack, price, currency, quantity } = v;
                     return {
