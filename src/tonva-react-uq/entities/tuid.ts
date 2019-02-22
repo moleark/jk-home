@@ -13,6 +13,10 @@ export class BoxId {
     valueFromFieldName: (fieldName:string)=>BoxId|any;
     _$com?: any;
     _$tuid?: Tuid;
+    getObj():any {
+        if (this._$tuid === undefined) return;
+        return this._$tuid.getCacheValue(this.id);
+    }
 }
 
 const maxCacheSize = 1000;
@@ -90,7 +94,10 @@ export abstract class Tuid extends Entity {
             case 'number': _id = id as number; break;
             default: return;
         }
-        let v = this.cache.get(_id);
+        return this.getCacheValue(_id);
+    }
+    getCacheValue(id:number) {
+        let v = this.cache.get(id);
         if (this.owner !== undefined && typeof v === 'object') {
             v.$owner = this.owner.boxId(v.owner); // this.owner.valueFromId(v.owner);
         }
