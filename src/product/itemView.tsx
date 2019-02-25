@@ -1,5 +1,6 @@
+/*
 import * as React from 'react';
-import { VMSub, VMMain, VMProductChemical, VmProductChemicalInventory, VMSubInventory } from './item';
+import { VMSub, VMMain, VMSubInventory } from './item';
 
 export class ViewMain<T extends VMMain<S>, S extends VMSub> {
     protected main: T
@@ -37,11 +38,6 @@ export class ViewMain<T extends VMMain<S>, S extends VMSub> {
 }
 
 export class ViewProduct extends ViewMain<VMProductChemical, VMSub> {
-    /*
-    render():JSX.Element {
-        return <></>;
-    }
-    */
 }
 
 export class ViewProductOrdering extends ViewMain<VmProductChemicalInventory, VMSubInventory> {
@@ -53,3 +49,4 @@ export class ViewProductOrdering extends ViewMain<VmProductChemicalInventory, VM
 export class ViewCartRow extends ViewMain<VMProductChemical, VMSub> {
 
 }
+*/
