@@ -14,6 +14,7 @@ export interface ProductPackRow extends PackRow {
     currency: BoxId;
 }
 
+/*
 export class Product {
     private cApp: CCartApp;
     private productTuid: TuidMain;
@@ -121,3 +122,4 @@ export class Product {
         }
     }
 }
+*/

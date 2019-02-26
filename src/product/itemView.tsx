@@ -1,3 +1,4 @@
+/*
 import * as React from 'react';
 import { VMSub, VMMain, VMSubInventory } from './item';
 import { tv } from 'tonva-react-uq';
@@ -9,7 +10,6 @@ import { MinusPlusWidget } from 'tools';
 import { LMR } from 'tonva-react-form';
 import { UiArr } from 'tonva-tools/ui/form/uiSchema';
 
-/*
 export class ViewMain<T extends VMMain<S>, S extends VMSub> {
     protected main: T
     protected param: any;

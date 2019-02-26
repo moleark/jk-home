@@ -19,6 +19,7 @@ export interface Inventory {
 
 }
 */
+/*
 export class VMMain {
     product: BoxId;
 }
@@ -45,7 +46,6 @@ export class VM<M extends VMMain, S extends VMSub> {
     main: M;
     subs: S[];
 }
-/*
 export class VMProduct extends VMMain<VMSub> {
 }
 
