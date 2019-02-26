@@ -3,8 +3,7 @@ import { VCartLabel } from './VCartLabel';
 import { CCartApp } from 'CCartApp';
 import { VCart } from './VCart';
 import { Controller, RowContext } from 'tonva-tools';
-import { Cart } from './Cart';
-import { PackItem } from 'tools';
+import { Cart, CartPackRow } from './Cart';
 
 export class CCart extends Controller {
 
@@ -37,7 +36,7 @@ export class CCart extends Controller {
     onQuantityChanged = async (context: RowContext, value: any, prev: any) => {
         let { data, parentData } = context;
         let { product } = parentData;
-        let { pack, price, currency } = data as PackItem;
+        let { pack, price, currency } = data as CartPackRow;
         await this.cart.AddToCart(product.id, pack.id, value, price, currency);
     }
 

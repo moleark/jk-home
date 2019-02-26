@@ -14,7 +14,7 @@ export interface CartItem {
     createdate: number;
 }
 
-interface CartPackRow extends PackRow {
+export interface CartPackRow extends PackRow {
     price: number;
     currency: any;
 }

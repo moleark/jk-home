@@ -1,14 +1,14 @@
 import { observable, computed, autorun, IReactionDisposer, IObservableArray } from 'mobx';
 import _ from 'lodash';
 import { CUq, Action, Query, TuidMain, TuidDiv, BoxId } from 'tonva-react-uq';
-import { PackItem } from '../tools';
 import { CCartApp } from '../CCartApp';
 import { MainProduct } from 'mainSubs';
 import { ProductService } from 'product/itemLoader';
+import { CartPackRow } from './Cart';
 
 export interface CartItem {
     product: MainProduct;
-    packs: PackItem[];
+    packs: CartPackRow[];
     $isSelected?: boolean;
     $isDeleted?: boolean;
     createdate: number;
@@ -48,7 +48,7 @@ export abstract class Cart2 {
         let productService = new ProductService(this.cApp);
         for (let cd of cartData) {
             let { product, createdate, pack, price, quantity, currency } = cd;
-            let packItem: PackItem = {
+            let packItem: CartPackRow = {
                 pack: pack,
                 price: price,
                 quantity: quantity,

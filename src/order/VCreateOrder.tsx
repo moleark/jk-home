@@ -5,6 +5,7 @@ import { List, LMR, FA } from 'tonva-react-form';
 import { tv, BoxId } from 'tonva-react-uq';
 import { observer } from 'mobx-react';
 import { OrderItem } from './Order';
+import { renderCartProduct } from 'cart/VCart';
 
 export class VCreateOrder extends VPage<COrder> {
 
@@ -18,33 +19,39 @@ export class VCreateOrder extends VPage<COrder> {
     }
 
     private renderProduct = (product: any) => <strong>{product.description}</strong>
-    private renderPack = (pack: any) => {
-        return <>{(pack.radiox === 1 ? "" : pack.radiox + '*') + pack.radioy + pack.unit}</>
-    }
-    private renderOrderItem = (orderItem: OrderItem) => {
-        let { product, packs } = orderItem;
-        let left = <img src="favicon.ico" alt="structure image" />;
-        let right = <div>
-            {packs.map((v) => {
-                let { pack, price, quantity } = v;
-                return <div key={pack.id} className="d-flex">
-                    <div className="w-6c text-right">{tv(pack)}</div>
-                    <div className="w-6c text-right">¥{price}</div>
-                    <div className="mx-2"><FA className="text-muted" name="times" /></div>
-                    <div className="w-4c">{quantity}</div>
-                </div>
-            })}
-        </div>;
-        return <LMR left={left} right={right} className="px-3 py-2">
-            <div className="px-3">
-                <div>
-                    {tv(product, this.renderProduct)}
-                </div>
-                <div className="row">
-                    <div className="col-12">货期</div>
+
+    private packsRow = (item: any) => {
+        let { pack, quantity, price, currency, inventoryAllocation, futureDeliveryTimeDescription } = item;
+        let deliveryTimeUI = <></>;
+        if (inventoryAllocation && inventoryAllocation.length > 0) {
+            deliveryTimeUI = <div className="text-success">国内现货</div>
+        } else {
+            deliveryTimeUI = <div>期货:{futureDeliveryTimeDescription}</div>
+        }
+        return <div className="px-2 py-2 border-top">
+            <div className="d-flex align-items-center">
+                <div className="flex-grow-1"><b>{tv(pack)}</b></div>
+                <div className="w-12c mr-4 text-right">
+                    <span className="text-danger h5">¥{price * quantity}</span>
+                    <small className="text-muted">(¥{price} × {quantity})</small>
                 </div>
             </div>
-        </LMR>
+            <div>{deliveryTimeUI}</div>
+        </div>;
+    }
+
+    private renderOrderItem = (orderItem: OrderItem) => {
+        let { product, packs } = orderItem;
+        return <div className="pr-1">
+            <div className="row">
+                <div className="col-lg-6 pb-3">{renderCartProduct(product, 0)}</div>
+                <div className="col-lg-6">{
+                    packs.map(p => {
+                        return this.packsRow(p);
+                    })
+                }</div>
+            </div>
+        </div>;
     }
 
     private page = observer(() => {
@@ -57,17 +64,15 @@ export class VCreateOrder extends VPage<COrder> {
         let chevronRight = <FA name="chevron-right" />
 
         let invoiceContactUI = <div className="row px-3 py-1 bg-white mb-1">
-            <div className="col-12 col-sm-2 d-flex justify-content-between">
-                <div className="text-muted">发票地址:</div>
-                <div>
-                    <input type="checkbox" id="sameAsShippingContact" checked onChange={()=>openContactList(ContactType.InvoiceContact)} />
-                    <label htmlFor="sameAsShippingContact">同收货地址</label>
-                </div>
+            <div className="col-4 col-sm-2 text-muted">发票地址:</div>
+            <div className="col-8 col-sm-8 pl-4 pl-sm-0">
+                <input type="checkbox" id="sameAsShippingContact" checked onChange={() => openContactList(ContactType.InvoiceContact)} />
+                <label htmlFor="sameAsShippingContact">同收货地址</label>
             </div>
         </div>
         if (shippingContact.id !== invoiceContact.id) {
             invoiceContactUI = <div className="row px-3 py-3 bg-white mb-1" onClick={() => openContactList(ContactType.InvoiceContact)}>
-                <div className="col-12 col-sm-2 text-muted">发票地址:</div>
+                <div className="col-4 col-sm-2 text-muted">发票地址:</div>
                 <div className="col-12 col-sm-10 pl-4 pl-sm-0 d-flex">
                     {tv(invoiceContact, undefined, undefined, this.nullContact)}
                     {chevronRight}

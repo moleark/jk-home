@@ -4,7 +4,7 @@ import { CCart } from './CCart';
 import { List, LMR, FA } from 'tonva-react-form';
 import { tv, BoxId } from 'tonva-react-uq';
 import { observer } from 'mobx-react';
-import { MinusPlusWidget, PackItem } from '../tools';
+import { MinusPlusWidget } from '../tools';
 import { renderBrand } from '../product/CProduct';
 
 const cartSchema = [
@@ -49,11 +49,11 @@ export class VCart extends VPage<CCart> {
         return <this.tab />;
     }
 
-    private productRow = (item: any) => {
+    private renderCartItem = (item: any) => {
         let { product } = item;
         return <div className="pr-1">
             <div className="row">
-                <div className="col-lg-6 pb-3">{renderProduct(product, 0)}</div>
+                <div className="col-lg-6 pb-3">{renderCartProduct(product, 0)}</div>
                 <div className="col-lg-6"><Field name="packs" /></div>
             </div>
         </div>;
@@ -84,7 +84,7 @@ export class VCart extends VPage<CCart> {
         items: {
             list: {
                 widget: 'arr',
-                Templet: this.productRow,
+                Templet: this.renderCartItem,
                 ArrContainer: (label: any, content: JSX.Element) => content,
                 RowContainer: (content: JSX.Element) => <div className="py-3">{content}</div>,
                 //onStateChanged: this.controller.onRowStateChanged,
@@ -166,7 +166,7 @@ function productPropItem(caption: string, value: any) {
     </>;
 }
 
-function renderProduct(product: any, index: number) {
+export function renderCartProduct(product: any, index: number) {
     let { brand, description, CAS, purity, molecularFomula, molecularWeight, origin } = product;
     return <div className="row d-flex mb-3 px-2">
         <div className="col-12">

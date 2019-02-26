@@ -1,3 +1,4 @@
+/*
 import { BoxId } from 'tonva-react-uq';
 
 export interface PackItem {
@@ -6,3 +7,4 @@ export interface PackItem {
     currency: BoxId;
     quantity: number;
 }
+*/

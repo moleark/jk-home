@@ -1,6 +1,6 @@
 import { BoxId } from 'tonva-react-uq';
 import { observable, computed } from 'mobx';
-import { PackItem } from '../tools';
+import { CartPackRow } from 'cart/Cart';
 
 export class Order {
 
@@ -44,7 +44,7 @@ export class Order {
 export class OrderItem {
 
     product: BoxId;
-    @observable packs: PackItem[];
+    @observable packs: CartPackRow[];
     @computed get subAmount() {
         return this.packs.reduce((p, c) => {
             return p + c.price * c.quantity
