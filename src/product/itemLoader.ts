@@ -1,152 +1,152 @@
-import { VMMain, VMSub, VMProductChemical, VmProductChemicalInventory, VMSubInventory, VMCartRow } from './item';
 import { CCartApp } from 'CCartApp';
-import { TuidMain, TuidDiv, Map, Query, Entity, BoxId } from 'tonva-react-uq';
-import { element } from 'prop-types';
+import { TuidMain, TuidDiv, Map, Query } from 'tonva-react-uq';
+import { ProductPackRow } from './Product';
+import { Loader } from 'mainSubs/loader';
+import { MainSubs, MainProductChemical } from 'mainSubs';
 
-export abstract class LoaderMain<T extends VMMain<S>, S extends VMSub> {
-    protected cApp: CCartApp
-    private schemaLoaded: boolean = false;
+export class LoaderProduct extends Loader<MainProductChemical> {
     private productTuid: TuidMain;
     private packTuid: TuidDiv;
     private getFutureDeliveryTime: Query;
+    private productChemicalMap: Map;
 
-    constructor(cApp: CCartApp) {
-        this.cApp = cApp;
-        this.initEntities();
-    }
     protected initEntities() {
-        let { cUqProduct, cUqCustomerDiscount, cUqWarehouse } = this.cApp;
+
+        let { cUqProduct } = this.cApp;
         this.productTuid = cUqProduct.tuid('productx');
         this.packTuid = this.productTuid.divs['packx'];
         this.getFutureDeliveryTime = cUqProduct.query("getFutureDeliveryTime");
-    }
-    protected entityArray(): Entity[] {
-        return [
-            this.productTuid,
-            this.packTuid,
-        ];
+        this.productChemicalMap = cUqProduct.map('productChemical');
     }
 
-    protected abstract createData(): T;
+    protected async loadToData(productId: any, data: MainProductChemical): Promise<void> {
 
-    protected loadPromiseArray(id: number): Promise<any>[] {
-        return [
-            this.productTuid.load(id),
-        ];
-    }
+        let product = await this.productTuid.load(productId);
+        data = { ...product };
 
-    async load(id: number): Promise<T> {
-        if (this.schemaLoaded === false) {
-            await Promise.all(this.entityArray());
-            this.schemaLoaded = true;
+        let productChemical = await this.productChemicalMap.obj({ product: productId });
+        if (productChemical) {
+            let { chemical, purity, CAS, molecularFomula, molecularWeight } = productChemical;
+            data.chemical = chemical;
+            data.purity = purity;
+            data.CAS = CAS;
+            data.molecularFomula = molecularFomula;
+            data.molecularWeight = molecularWeight;
         }
-        let data = this.createData();
-        await this.loadMainData(id, data);
-        await this.loadSubsData(data);
-        return data;
     }
 
-    protected async loadMainData(id: number, data: T): Promise<void> {
-        // let results = await Promise.all(this.loadPromiseArray(id));
-        data.product = this.productTuid.boxId(id);
-    }
-
-    protected async loadSubsData(data: T): Promise<void> {
-
+    protected initData(): MainProductChemical {
+        return {} as MainProductChemical;
     }
 }
 
-export class loaderProductChemical extends LoaderMain<VMProductChemical, VMSub> {
-    private productChemicalMap: Map;
+export class LoaderProductChemical extends Loader<MainSubs<MainProductChemical, ProductPackRow>> {
+
     private getCustomerDiscount: Query;
     private priceMap: Map;
     private getInventoryAllocationQuery: Query;
 
     protected initEntities() {
-        super.initEntities();
 
         let { cUqProduct, cUqCustomerDiscount, cUqWarehouse } = this.cApp;
-        this.productChemicalMap = cUqProduct.map('productChemical');
         this.getCustomerDiscount = cUqCustomerDiscount.query("getdiscount");
         this.priceMap = cUqProduct.map('pricex');
         this.getInventoryAllocationQuery = cUqWarehouse.query("getInventoryAllocation");
     }
 
-    protected async loadMainData(id: number, data: VMProductChemical): Promise<void> {
-        await super.loadMainData(id, data);
-
-        let productChemical = await this.productChemicalMap.obj({ product: id });
-        data.productChemical = productChemical;
+    protected initData(): MainSubs<MainProductChemical, ProductPackRow> {
+        return { main: {} as MainProductChemical, subs: [] as ProductPackRow[] };
     }
 
-    protected async loadSubsData(data: VMProductChemical): Promise<void> {
-        await super.loadSubsData(data);
+    protected async loadToData(productId: any, data: MainSubs<MainProductChemical, ProductPackRow>): Promise<void> {
 
-        let productObj = data.product.getObj();
+        /*
+        let product = await this.productTuid.load(param);
+        data.main = { ...product };
+
+        let productChemical = await this.productChemicalMap.obj({ product: param });
+        if (productChemical) {
+            let { chemical, purity, CAS, molecularFomula, molecularWeight } = productChemical;
+            data.main.chemical = chemical;
+            data.main.purity = purity;
+            data.main.CAS = CAS;
+            data.main.molecularFomula = molecularFomula;
+            data.main.molecularWeight = molecularWeight;
+        }
+        */
+        let productLoader = new ProductService(this.cApp);
+        data.main = await productLoader.loadProductChemical(productId);
+
+        /*
+        let productLoader = new LoaderProduct(this.cApp);
+        data.main = await productLoader.load(productId);
+        */
 
         let discount = 0;
-        let { currentUser, currentSalesRegion } = this.cApp;
+        let { currentUser, currentSalesRegion, cart } = this.cApp;
         if (currentUser.hasCustomer) {
-            let discountSetting = await this.getCustomerDiscount.obj({ brand: productObj.brand.id, customer: currentUser.currentCustomer });
+            let discountSetting = await this.getCustomerDiscount.obj({ brand: data.main.brand.id, customer: currentUser.currentCustomer });
             discount = discountSetting && discountSetting.discount;
         }
 
-        let prices = await this.priceMap.table({ product: productObj.id, salesRegion: currentSalesRegion.id });
+        let prices = await this.priceMap.table({ product: productId, salesRegion: currentSalesRegion.id });
         data.subs = prices.map(element => {
             let ret: any = {};
             ret.pack = element.pack;
             ret.retail = element.retail;
-            ret.vipPrice = Math.round(element.retail * (1-discount));
+            ret.vipPrice = Math.round(element.retail * (1 - discount));
             ret.currency = currentSalesRegion.currency;
+            ret.quantity = cart.getQuantity(productId, element.pack.id)
             return ret;
         });
 
         let promises: PromiseLike<any>[] = [];
         let inventoryAllocationPromises = data.subs.map(v => {
-            return this.getInventoryAllocationQuery.table({ product: productObj.id, pack: v.pack, salesRegion: currentSalesRegion });
+            return this.getInventoryAllocationQuery.table({ product: productId, pack: v.pack, salesRegion: currentSalesRegion });
         });
         promises.push(Promise.all(inventoryAllocationPromises));
         let results = await Promise.all(promises);
 
-        for (let i = 0; i < results.length; i++){
+        for (let i = 0; i < results.length; i++) {
             data.subs[i].inventoryAllocation = results[i];
         }
     }
-
-    protected createData(): VMProductChemical {
-        return new VMProductChemical();
-    }
-
 }
 
-export class LoaderProductOrdering extends LoaderMain<VmProductChemicalInventory, VMSubInventory> {
-    protected createData(): VmProductChemicalInventory {
-        return new VmProductChemicalInventory();
-    }
-}
+// 拟用 LoaderProduct 替换
+export class ProductService {
 
-export class LoaderCartRow extends LoaderMain<VMCartRow, VMSub> {
+    private cApp: CCartApp;
+    private productTuid: TuidMain;
+    private productChemicalMap: Map;
 
-    private originCartItem: any;
-    constructor(cCartApp: CCartApp) {
-        super(cCartApp);
-    }
-
-    protected createData(): VMCartRow {
-        return new VMCartRow();
+    constructor(cApp: CCartApp) {
+        this.cApp = cApp;
+        this.initEntities();
     }
 
-    async load(id: number): Promise<VMCartRow> {
-        // this.originCartItem = originCartItem;
+    protected initEntities() {
 
-        let data = this.createData();
-        return data;
+        let { cUqProduct, cUqCustomerDiscount, cUqWarehouse } = this.cApp;
+        this.productTuid = cUqProduct.tuid('productx');
+        this.productChemicalMap = cUqProduct.map('productChemical');
     }
 
-    protected async loadMainData(id: number, data: VMCartRow): Promise<void> {
-        await super.loadMainData(id, data);
-        data.$isDeleted = false;
-        data.$isSelected = true;
-        data.createdate = this.originCartItem.createData;
+    async loadProductChemical(productId: number): Promise<MainProductChemical> {
+
+        let result: MainProductChemical;
+        let product = await this.productTuid.load(productId);
+        result = {...product };
+
+        let productChemical = await this.productChemicalMap.obj({ product: productId });
+        if (productChemical) {
+            let { chemical, purity, CAS, molecularFomula, molecularWeight } = productChemical;
+            result.chemical = chemical;
+            result.purity = purity;
+            result.CAS = CAS;
+            result.molecularFomula = molecularFomula;
+            result.molecularWeight = molecularWeight;
+        }
+        return result;
     }
 }

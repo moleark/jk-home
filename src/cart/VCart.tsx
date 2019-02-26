@@ -5,6 +5,7 @@ import { List, LMR, FA } from 'tonva-react-form';
 import { tv, BoxId } from 'tonva-react-uq';
 import { observer } from 'mobx-react';
 import { MinusPlusWidget, PackItem } from '../tools';
+import { renderBrand } from '../product/CProduct';
 
 const cartSchema = [
     {
@@ -18,6 +19,9 @@ const cartSchema = [
                     { name: 'pack', type: 'object' } as ObjectSchema,
                     { name: 'price', type: 'number' } as NumSchema,
                     { name: 'quantity', type: 'number' } as NumSchema,
+                    { name: 'currency', type: 'string' },
+                    { name: 'inventoryAllocation', type: 'object' } as ObjectSchema,
+                    { name: 'futureDeliveryTimeDescription', type: 'string' }
                 ]
             }
         ],
@@ -31,7 +35,6 @@ export class VCart extends VPage<CCart> {
 
     protected CheckOutButton = observer(() => {
         let { checkOut, cart } = this.controller;
-        //let { count, amount } = cart.sum;
         let amount = cart.amount.get();
         let check = "去结算";
         let content = amount > 0 ?
@@ -50,18 +53,27 @@ export class VCart extends VPage<CCart> {
         let { product } = item;
         return <div className="pr-1">
             <div className="row">
-                <div className="col-sm-6 pb-3">{tv(product)}</div>
-                <div className="col-sm-6"><Field name="packs" /></div>
+                <div className="col-lg-6 pb-3">{renderProduct(product, 0)}</div>
+                <div className="col-lg-6"><Field name="packs" /></div>
             </div>
         </div>;
     }
 
     private packsRow = (item: any) => {
-        let { pack, quantity, price } = item;
-        return <div className="d-flex align-items-center px-2">
-            <div className="flex-grow-1">{tv(pack)}</div>
-            <div className="w-6c mr-4 text-right"><span className="text-danger h5">¥{price}</span></div>
-            <Field name="quantity" />
+        let { pack, price, currency, inventoryAllocation, futureDeliveryTimeDescription } = item;
+        let deliveryTimeUI = <></>;
+        if (inventoryAllocation && inventoryAllocation.length > 0) {
+            deliveryTimeUI = <div className="text-success">国内现货</div>
+        } else {
+            deliveryTimeUI = <div>期货:{futureDeliveryTimeDescription}</div>
+        }
+        return <div className="px-2">
+            <div className="d-flex align-items-center">
+                <div className="flex-grow-1"><b>{tv(pack)}</b></div>
+                <div className="w-6c mr-4 text-right"><span className="text-danger h5">¥{price}</span></div>
+                <Field name="quantity" />
+            </div>
+            <div>{deliveryTimeUI}</div>
         </div>;
     }
 
@@ -141,7 +153,39 @@ export class VCart extends VPage<CCart> {
         return <div className="bg-white">
             {header}
             <this.cartForm />
-            <footer className="m-3"><this.CheckOutButton /></footer>
+            <footer className="p-3"><this.CheckOutButton /></footer>
         </div>
     });
+}
+
+function productPropItem(caption: string, value: any) {
+    if (value === null || value === undefined) return null;
+    return <>
+        <div className="col-4 col-sm-2 col-lg-4 text-muted pr-0 small">{caption}</div>
+        <div className="col-8 col-sm-4 col-lg-8">{value}</div>
+    </>;
+}
+
+function renderProduct(product: any, index: number) {
+    let { brand, description, CAS, purity, molecularFomula, molecularWeight, origin } = product;
+    return <div className="row d-flex mb-3 px-2">
+        <div className="col-12">
+            <div className="row py-2">
+                <div className="col-12"><strong>{description}</strong></div>
+            </div>
+            <div className="row">
+                <div className="col-3">
+                    <img src="favicon.ico" alt="structure" />
+                </div>
+                <div className="col-9">
+                    <div className="row">
+                        {productPropItem('CAS', CAS)}
+                        {productPropItem('纯度', purity)}
+                        {productPropItem('编号', origin)}
+                        {renderBrand}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 }

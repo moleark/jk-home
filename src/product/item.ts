@@ -1,3 +1,4 @@
+
 import { BoxId, tv } from 'tonva-react-uq';
 
 /*
@@ -18,6 +19,14 @@ export interface Inventory {
 
 }
 */
+export class VMMain {
+    product: BoxId;
+}
+
+export class VMMainChemical extends VMMain {
+    chemical: BoxId;
+}
+
 export class VMSub {
     pack: BoxId;
     retail: number;
@@ -32,15 +41,11 @@ export class VMSubInventory extends VMSub {
     inventory: BoxId;
 }
 
-export class VMSubInventoryInCartRow extends VMSub {
-
+export class VM<M extends VMMain, S extends VMSub> {
+    main: M;
+    subs: S[];
 }
-
-export class VMMain<T extends VMSub> {
-    product: BoxId;
-    subs: T[] = [];
-}
-
+/*
 export class VMProduct extends VMMain<VMSub> {
 }
 
@@ -59,3 +64,4 @@ export class VMCartRow extends VMProductChemicalBase<VMSubInventory> {
     $isDeleted?: boolean;
     createdate: number;
 }
+*/

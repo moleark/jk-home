@@ -57,3 +57,7 @@
 .text-danger-3 {
   color: #ff4040;
 }
+
+.sep-product-select {
+  border-top: 1px solid #f0f0f0;
+}

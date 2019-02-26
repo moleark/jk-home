@@ -35,12 +35,10 @@ export class CCart extends Controller {
     }
 
     onQuantityChanged = async (context: RowContext, value: any, prev: any) => {
-        //let { row } = context;
         let { data, parentData } = context;
         let { product } = parentData;
-        let { pack, price, quantity, currency } = data as PackItem;
-        //let { retail, currency } = pack;
-        await this.cart.AddToCart(product, pack, value, price, currency);
+        let { pack, price, currency } = data as PackItem;
+        await this.cart.AddToCart(product.id, pack.id, value, price, currency);
     }
 
     onRowStateChanged = async (context: RowContext, selected: boolean, deleted: boolean) => {

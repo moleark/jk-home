@@ -3,13 +3,15 @@ import { CCartApp } from 'CCartApp';
 
 export interface PackRow {
     pack: BoxId;
-    //price: number;
+    quantity: number;
+    futureDeliveryTimeDescription?: string;
+    inventoryAllocation?: any[];
+}
+
+export interface ProductPackRow extends PackRow {
     retail: number;
     vipPrice: number;
     currency: BoxId;
-    quantity: number;
-    futureDeliveryTimeDescription: string;
-    inventoryAllocation: any[];
 }
 
 export class Product {
@@ -22,9 +24,8 @@ export class Product {
     private getInventoryAllocationQuery: Query;
     private getFutureDeliveryTime: Query;
 
-    // id: BoxId;
     product: any;
-    packRows: PackRow[];
+    packRows: ProductPackRow[];
 
     constructor(cApp: CCartApp) {
         this.cApp = cApp;

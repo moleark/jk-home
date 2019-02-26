@@ -1,50 +1,46 @@
 import { observable, computed, autorun, IReactionDisposer, IObservableArray } from 'mobx';
 import _ from 'lodash';
-import { CUq, Action, Query, TuidMain, TuidDiv, BoxId } from 'tonva-react-uq';
-import { PackItem } from '../tools';
+import { CUq, Action, Query, TuidMain, TuidDiv, BoxId as MainProduct } from 'tonva-react-uq';
 import { CCartApp } from '../CCartApp';
-import { Product } from 'product/Product';
+import { ProductService } from 'product/itemLoader';
+import { MainProductChemical } from 'mainSubs';
+import { PackRow } from 'product/Product';
 
-export interface CartProduct {
-    product: BoxId;
-    packs: PackItem[];
+export interface CartItem {
+    product: MainProductChemical;
+    packs: CartPackRow[];
     $isSelected?: boolean;
     $isDeleted?: boolean;
     createdate: number;
 }
 
-abstract class CartStore {
-    protected cart: Cart;
-    constructor(cart: Cart) {
-        this.cart = cart;
-    }
-    abstract get isLocal(): boolean;
-    abstract async load(): Promise<CartProduct[]>;
-    abstract async storeCart(product: BoxId, packItem: PackItem): Promise<void>;
-    abstract async removeFromCart(rows: { product: BoxId, packItem: PackItem }[]): Promise<void>;
+interface CartPackRow extends PackRow {
+    price: number;
+    currency: any;
 }
 
 export class Cart {
-    cCartApp: CCartApp;
-    private cUqProduct: CUq;
-    private cUqOrder: CUq;
+    cApp: CCartApp;
+    private getInventoryAllocationQuery: Query;
+    private packTuid: TuidDiv;
+
     private cartStore: CartStore;
     private disposer: IReactionDisposer;
 
     @observable data: any = {
-        list: observable<CartProduct>([]),
+        list: observable<CartItem>([]),
     };
-    items: CartProduct[];
+    items: CartItem[];
     count = observable.box<number>(0);
     amount = observable.box<number>(0);
 
-    constructor(cCartApp: CCartApp) {
-        this.cCartApp = cCartApp;
-        let { cUqProduct: cUqProduct, cUqOrder: cUqOrder } = cCartApp;
-        this.cUqProduct = cUqProduct;
-        this.cUqOrder = cUqOrder;
+    constructor(cApp: CCartApp) {
+        this.cApp = cApp;
         this.items = this.data.list;
         this.disposer = autorun(this.calcSum);
+        let { cUqProduct, cUqWarehouse } = cApp;
+        this.getInventoryAllocationQuery = cUqWarehouse.query("getInventoryAllocation");
+        this.packTuid = cUqProduct.tuidDiv('productx', 'packx');
     }
 
     dispose() {
@@ -71,14 +67,14 @@ export class Cart {
     }
 
     async load(): Promise<void> {
-        if (this.cCartApp.isLogined === false) {
-            this.cartStore = new CartLocal(this, this.cUqProduct);
+        if (this.cApp.isLogined === false) {
+            this.cartStore = new CartLocal(this, this.cApp);
             let items = await this.cartStore.load();
             this.items.push(...items);
             return;
         }
         if (this.cartStore === undefined) {
-            this.cartStore = new CartRemote(this, this.cUqOrder);
+            this.cartStore = new CartRemote(this, this.cApp);
             let items = await this.cartStore.load();
             this.items.push(...items);
             return;
@@ -87,14 +83,14 @@ export class Cart {
         let cartLocal = this.cartStore as CartLocal;
         let items = this.items.splice(0, this.items.length);
         this.items.splice(0, this.items.length);
-        this.cartStore = new CartRemote(this, this.cUqOrder);
+        this.cartStore = new CartRemote(this, this.cApp);
         (this.items as IObservableArray).replace(await this.cartStore.load());
 
         for (let item of items) {
             let { product, packs } = item;
             for (let packItem of packs) {
                 let { pack, quantity, price, currency } = packItem;
-                await this.AddToCart(product, pack, quantity, price, currency);
+                await this.AddToCart(product.id, pack.id, quantity, price, currency);
             }
         }
         cartLocal.clear();
@@ -110,26 +106,28 @@ export class Cart {
 
     /**
      * 添加购物车
-     * @param pack 要添加到购物车中的包装
+     * @param packId 要添加到购物车中的包装
      * @param quantity 要添加到购物车中包装的个数
      */
-    AddToCart = async (product: any, pack: any, quantity: number, price: number, currency: any) => {
+    AddToCart = async (productId: number, packId: number, quantity: number, price: number, currency: any) => {
         _.remove(this.items, v => v.$isDeleted === true);
-        let packItem: PackItem = {
-            pack: pack,
+        let packItem: CartPackRow = {
+            pack: this.packTuid.boxId(packId),
             price: price,
             quantity: quantity,
             currency: currency,
         };
-        let cartItem = this.items.find((element) => element.product.id === product.id);
+        packItem.inventoryAllocation =
+            await this.getInventoryAllocationQuery.table({ product: productId, pack: packId, salesRegion: this.cApp.currentSalesRegion })
+
+        let cartItem = this.items.find((element) => element.product.id === productId);
         if (!cartItem) {
-            //cartItem = this.createCartItem(product, pack, quantity, price, currency);
-            //this.items.push(cartItem);
-            let row: CartProduct = {} as any;
-            row.product = product;
+            let productService = new ProductService(this.cApp);
+            let row: CartItem = {} as any;
+            row.product = await productService.loadProductChemical(productId);
             row.packs = [];
-            row.packs.push(packItem),
-                row.$isSelected = true;
+            row.packs.push(packItem);
+            row.$isSelected = true;
             row.$isDeleted = false;
             row.createdate = Date.now();
             this.items.push(row);
@@ -141,7 +139,7 @@ export class Cart {
             }
             cartItem.$isSelected = true;
             cartItem.$isDeleted = false;
-            let piPack = packs.find(v => v.pack.id === pack.id);
+            let piPack = packs.find(v => v.pack.id === packId);
             if (piPack === undefined) {
                 packs.push(packItem);
             }
@@ -150,10 +148,10 @@ export class Cart {
                 piPack.quantity = quantity;
             }
         }
-        await this.storeCart(product, packItem);
+        await this.storeCart(productId, packItem);
     }
 
-    async storeCart(product: BoxId, packItem: PackItem): Promise<void> {
+    async storeCart(product: number, packItem: CartPackRow): Promise<void> {
         await this.cartStore.storeCart(product, packItem);
     }
 
@@ -162,13 +160,13 @@ export class Cart {
      * @param item
      */
     async removeDeletedItem() {
-        let rows: { product: BoxId, packItem: PackItem }[] = [];
+        let rows: { product: number, packItem: CartPackRow }[] = [];
         for (let cp of this.items) {
             let { product, packs, $isDeleted } = cp;
             for (let pi of packs) {
                 if ($isDeleted === true || pi.quantity === 0) {
                     rows.push({
-                        product: product,
+                        product: product.id,
                         packItem: pi
                     });
                 }
@@ -197,7 +195,7 @@ export class Cart {
         //_.remove(this.items, v => v.$isDeleted === true || v.packs.length === 0);
     }
 
-    private async removeFromCart(rows: { product: BoxId, packItem: PackItem }[]): Promise<void> {
+    private async removeFromCart(rows: { product: number, packItem: CartPackRow }[]): Promise<void> {
         await this.cartStore.removeFromCart(rows);
     }
 
@@ -206,11 +204,62 @@ export class Cart {
         await this.removeDeletedItem();
     }
 
-    getSelectItem(): CartProduct[] {
+    getSelectItem(): CartItem[] {
         return this.items.filter(v => {
             let { $isSelected, $isDeleted } = v;
             return $isSelected === true && v.$isDeleted !== true;
         });
+    }
+}
+
+abstract class CartStore {
+    protected cApp: CCartApp;
+    private getInventoryAllocationQuery: Query;
+    private packTuid: TuidDiv;
+    protected cart: Cart;
+    constructor(cart: Cart, cApp: CCartApp) {
+        this.cart = cart;
+        this.cApp = cApp;
+
+        let { cUqWarehouse, cUqProduct } = this.cApp;
+        this.getInventoryAllocationQuery = cUqWarehouse.query("getInventoryAllocation");
+        this.packTuid = cUqProduct.tuidDiv('productx', 'packx');
+    }
+    abstract get isLocal(): boolean;
+    abstract async load(): Promise<CartItem[]>;
+    abstract async storeCart(product: number, packItem: CartPackRow): Promise<void>;
+    abstract async removeFromCart(rows: { product: number, packItem: CartPackRow }[]): Promise<void>;
+
+    protected async generateItems(cartData: any): Promise<CartItem[]> {
+        let results: CartItem[] = [];
+
+        let productService = new ProductService(this.cApp);
+        for (let cd of cartData) {
+            let { product: productId, createdate, packs } = cd;
+            let cartItem: CartItem = {} as any;
+            cartItem.product = await productService.loadProductChemical(productId);
+            cartItem.createdate = createdate;
+            cartItem.$isSelected = false;
+            cartItem.$isDeleted = false;
+            results.push(cartItem);
+
+            cartItem.packs = [];
+            if (packs !== undefined) {
+                for (let p of packs) {
+                    let { pack: packId, price, quantity, currency } = p;
+                    let packItem: CartPackRow = {
+                        pack: this.packTuid.boxId(packId),
+                        price: price,
+                        quantity: quantity,
+                        currency: currency,
+                    };
+                    packItem.inventoryAllocation =
+                        await this.getInventoryAllocationQuery.table({ product: productId, pack: packId, salesRegion: this.cApp.currentSalesRegion })
+                    cartItem.packs.push(packItem);
+                }
+            }
+        }
+        return results;
     }
 }
 
@@ -221,17 +270,38 @@ class CartRemote extends CartStore {
 
     get isLocal(): boolean { return false }
 
-    constructor(cart: Cart, cUqOrder: CUq) {
-        super(cart);
+    constructor(cart: Cart, cApp: CCartApp) {
+        super(cart, cApp);
+
+        let { cUqOrder } = this.cApp;
         this.getCartQuery = cUqOrder.query('getcart')
         this.setCartAction = cUqOrder.action('setcart');
         this.removeFromCartAction = cUqOrder.action('removefromcart');
     }
 
-    async load(): Promise<CartProduct[]> {
+    async load(): Promise<CartItem[]> {
+
         let cartData = await this.getCartQuery.page(undefined, 0, 100);
-        let cartDict: { [product: number]: CartProduct } = {};
-        let cartProducts: CartProduct[] = [];
+        let cartData2: any[] = [];
+        for (let cd of cartData) {
+            let { product, pack, quantity, price, currency } = cd;
+            let packRow: any = {
+                pack: pack.id,
+                price: price,
+                quantity: quantity,
+                currency: currency && currency.id
+            }
+            let cpi = cartData2.find(e => e.product === product.id);
+            if (cpi === undefined) {
+                cpi = { product: product.id, packs: [] };
+                cartData2.push(cpi);
+            }
+            cpi.packs.push(packRow);
+        }
+        return await this.generateItems(cartData2);
+        /*
+        let cartDict: { [product: number]: CartItem } = {};
+        let cartProducts: CartItem[] = [];
         for (let cd of cartData) {
             let { product, createdate, pack, price, quantity, currency } = cd;
             let packItem: PackItem = {
@@ -257,7 +327,7 @@ class CartRemote extends CartStore {
             cpi.packs.push(packItem);
         }
         return cartProducts;
-        //this.items.push(...cartProducts);
+        */
     }
 
     /**
@@ -265,7 +335,7 @@ class CartRemote extends CartStore {
      * @param pack 要添加到购物车中的包装
      * @param quantity 要添加到购物车中包装的个数
      */
-    async storeCart(product: BoxId, packItem: PackItem) {
+    async storeCart(product: number, packItem: CartPackRow) {
         let param = {
             product: product,
             ...packItem
@@ -273,7 +343,7 @@ class CartRemote extends CartStore {
         await this.setCartAction.submit(param);
     }
 
-    async removeFromCart(rows: { product: BoxId, packItem: PackItem }[]) {
+    async removeFromCart(rows: { product: number, packItem: CartPackRow }[]) {
         let params = rows.map(v => {
             let { product, packItem } = v;
             return {
@@ -282,31 +352,28 @@ class CartRemote extends CartStore {
             }
         })
         await this.removeFromCartAction.submit({ rows: params });
-        //_.pullAllBy(this.items, rows, 'pack.id');
     }
 }
 
 const LOCALCARTNAME: string = "cart";
 class CartLocal extends CartStore {
-    private productTuid: TuidMain;
-    private packTuid: TuidDiv;
 
-    constructor(cart: Cart, cUqProduct: CUq) {
-        super(cart);
-        this.productTuid = cUqProduct.tuid('productx');
-        this.packTuid = cUqProduct.tuidDiv('productx', 'packx');
+    constructor(cart: Cart, cApp: CCartApp) {
+        super(cart, cApp);
     }
 
     get isLocal(): boolean { return true }
 
-    async load(): Promise<CartProduct[]> {
+    async load(): Promise<CartItem[]> {
         try {
             let cartstring = localStorage.getItem(LOCALCARTNAME);
             if (cartstring === null) return [];
             let cartData = JSON.parse(cartstring);
-            let items: CartProduct[] = [];
+            return await this.generateItems(cartData);
+            /*
+            let items: CartItem[] = [];
             for (let i=0; i<cartData.length; i++){
-                let cartProduct: CartProduct = {} as any;
+                let cartProduct: CartItem = {} as any;
                 let { product, packs, createdate } = cartData[i];
                 if (packs !== undefined) {
                     for (let p of packs) {
@@ -324,6 +391,7 @@ class CartLocal extends CartStore {
                 items.push(cartProduct);
             };
             return items;
+            */
         }
         catch {
             localStorage.removeItem(LOCALCARTNAME);
@@ -331,7 +399,7 @@ class CartLocal extends CartStore {
         }
     }
 
-    async storeCart(product: BoxId, packItem: PackItem) {
+    async storeCart(product: number, packItem: CartPackRow) {
         let items = this.cart.items.map(e => {
             let { product, packs } = e;
             return {
@@ -352,7 +420,7 @@ class CartLocal extends CartStore {
         localStorage.setItem(LOCALCARTNAME, text);
     }
 
-    async removeFromCart(rows: { product: BoxId, packItem: PackItem }[]) {
+    async removeFromCart(rows: { product: number, packItem: CartPackRow }[]) {
         await this.storeCart(undefined, undefined);
     }
 

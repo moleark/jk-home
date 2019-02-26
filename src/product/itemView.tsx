@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { VMSub, VMMain, VMProductChemical, VmProductChemicalInventory, VMSubInventory } from './item';
+import { VMSub, VMMain, VMSubInventory } from './item';
 import { tv } from 'tonva-react-uq';
 import { setReactionScheduler } from 'mobx/lib/internal';
 import { Form, NumSchema, UiSchema, RowContext, Field } from 'tonva-tools';
@@ -9,6 +9,7 @@ import { MinusPlusWidget } from 'tools';
 import { LMR } from 'tonva-react-form';
 import { UiArr } from 'tonva-tools/ui/form/uiSchema';
 
+/*
 export class ViewMain<T extends VMMain<S>, S extends VMSub> {
     protected main: T
     protected param: any;
@@ -45,7 +46,9 @@ export class ViewMain<T extends VMMain<S>, S extends VMSub> {
         </div>
     }
 }
+*/
 
+/*
 function row(label: string, value: any) {
     return <React.Fragment key={label}><div className="col-sm-4">{label}</div><div className="col-sm-8">{value}</div></React.Fragment>;
 }
@@ -66,7 +69,7 @@ const schema: ItemSchema[] = [
     } as ArrSchema
 ];
 
-export class ViewProductChemicalBase<S extends VMSub> extends ViewMain<VMProductChemical, VMSub> {
+export class ViewProductChemicalBase extends ViewMain<VMProductChemical, VMSub> {
     protected param: { onQuantityChanged: (product: number, pack: number, quantity: number, price: number, currency: number) => Promise<void> };
 
     private onQuantityChanged = async (context: RowContext, value: any, prev: any) => {
@@ -111,6 +114,7 @@ export class ViewProductChemicalBase<S extends VMSub> extends ViewMain<VMProduct
                 </div>
             });
             */
+           /*
             deliveryTimeUI = <div className="text-success">国内现货</div>
         } else {
             deliveryTimeUI = <div>期货:{futureDeliveryTimeDescription}</div>
@@ -155,16 +159,18 @@ export class ViewProductChemicalBase<S extends VMSub> extends ViewMain<VMProduct
 export class ViewProductChemical extends ViewProductChemicalBase<VMSub> {
 }
 
+/*
 export class ViewProductOrdering extends ViewMain<VmProductChemicalInventory, VMSubInventory> {
-    render(): JSX.Element {
-        return super.render();
-    }
+render(): JSX.Element {
+return super.render();
+}
 }
 
 export class ViewCartRow extends ViewProductChemicalBase<VMSub> {
-    render(): JSX.Element {
-        return <>{super.render()}
-            cartrow
-        </>;
-    }
+render(): JSX.Element {
+return <>{super.render()}
+cartrow
+</>;
 }
+}
+*/
