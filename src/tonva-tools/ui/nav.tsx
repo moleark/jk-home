@@ -488,7 +488,7 @@ export class Nav {
     saveLocalUser() {
         this.local.user.set(this.user);
     }
-
+    /*
     private loginCallbacks = new Callbacks<(user: User)=>Promise<void>>();
     private logoutCallbacks = new Callbacks<()=>Promise<void>>();
     registerLoginCallback(callback: (user:User)=>Promise<void>) {
@@ -503,8 +503,8 @@ export class Nav {
     unregisterLogoutCallback(callback: ()=>Promise<void>) {
         this.logoutCallbacks.unregister(callback);
     }
-
-    async logined(user: User) {
+    */
+    async logined(user: User, callback?: (user:User)=>Promise<void>) {
         let ws:WSChannel = this.ws = new WSChannel(this.wsHost, user.token);
         ws.connect();
 
@@ -512,16 +512,17 @@ export class Nav {
         this.user = user;
         this.saveLocalUser();
         netToken.set(user.id, user.token);
-        if (this.loginCallbacks.has)
-            this.loginCallbacks.call(user);
+        if (callback !== undefined) //this.loginCallbacks.has)
+            callback(user);
+            //this.loginCallbacks.call(user);
         else {
             await this.showAppView();
         }
     }
 
-    async showLogin(withBack?:boolean) {
+    async showLogin(callback?: (user:User)=>Promise<void>, withBack?:boolean) {
         let lv = await import('../entry/login');
-        let loginView = <lv.default withBack={withBack} />;
+        let loginView = <lv.default withBack={withBack} callback={callback} />;
         if (withBack !== true) {
             this.nav.clear();
             this.pop();
@@ -529,7 +530,18 @@ export class Nav {
         this.nav.push(loginView);
     }
 
-    async logout(notShowLogin?:boolean) {
+    async showLogout(callback?: ()=>Promise<void>) {
+        nav.push(<Page header="安全退出" back="close">
+            <div className="m-5 border border-info bg-white rounded p-3 text-center">
+                <div>退出当前账号不会删除任何历史数据，下次登录依然可以使用本账号</div>
+                <div className="mt-3">
+                    <button className="btn btn-danger" onClick={()=>this.logout(callback)}>退出</button>
+                </div>
+            </div>
+        </Page>);
+    }
+
+    async logout(callback?:()=>Promise<void>) { //notShowLogin?:boolean) {
         this.local.logoutClear();
         this.user = undefined; //{} as User;
         logoutApis();
@@ -537,12 +549,18 @@ export class Nav {
         let guest = this.local.guest.get();
         setCenterToken(0, guest && guest.token);
         this.ws = undefined;
+        /*
         if (this.loginCallbacks.has)
             this.logoutCallbacks.call();
         else {
             if (notShowLogin === true) return;
         }
         await nav.start();
+        */
+        if (callback === undefined)
+            await nav.start();
+        else
+            await callback();
     }
 
     get level(): number {
