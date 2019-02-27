@@ -15,7 +15,7 @@ import '../css/animation.css';
 import { WsBase, wsBridge } from '../net/wsChannel';
 import { resOptions } from './res';
 import { Loading } from './loading';
-import { Callbacks } from './callbacks';
+import { Callbacks, Callback } from './callbacks';
 
 const regEx = new RegExp('Android|webOS|iPhone|iPad|' +
     'BlackBerry|Windows Phone|'  +
@@ -127,7 +127,7 @@ export class NavView extends React.Component<Props, State> {
     {
         let err = fetchError.error;
         if (err !== undefined && err.unauthorized === true) {
-            await nav.showLogin();
+            await nav.showLogin(undefined);
             return;
         }
         this.setState({
@@ -461,7 +461,7 @@ export class Nav {
                 await notLogined();
             }
             else {
-                await nav.showLogin();
+                await nav.showLogin(undefined);
             }
             return;
         }
@@ -489,18 +489,18 @@ export class Nav {
         this.local.user.set(this.user);
     }
 
-    private loginCallbacks = new Callbacks<(user: User)=>void>();
-    private logoutCallbacks = new Callbacks<()=>void>();
-    registerLoginCallback(callback: (user:User)=>void) {
+    private loginCallbacks = new Callbacks<(user: User)=>Promise<void>>();
+    private logoutCallbacks = new Callbacks<()=>Promise<void>>();
+    registerLoginCallback(callback: (user:User)=>Promise<void>) {
         this.loginCallbacks.register(callback);
     }
-    unregisterLoginCallback(callback: (user:User)=>void) {
+    unregisterLoginCallback(callback: (user:User)=>Promise<void>) {
         this.loginCallbacks.unregister(callback);
     }
-    registerLogoutCallback(callback: ()=>void) {
+    registerLogoutCallback(callback: ()=>Promise<void>) {
         this.logoutCallbacks.register(callback);
     }
-    unregisterLogoutCallback(callback: ()=>void) {
+    unregisterLogoutCallback(callback: ()=>Promise<void>) {
         this.logoutCallbacks.unregister(callback);
     }
 
@@ -512,21 +512,20 @@ export class Nav {
         this.user = user;
         this.saveLocalUser();
         netToken.set(user.id, user.token);
-        this.loginCallbacks.call(user);
-        await this.showAppView();
+        if (this.loginCallbacks.has)
+            this.loginCallbacks.call(user);
+        else {
+            await this.showAppView();
+        }
     }
 
     async showLogin(withBack?:boolean) {
-        //if (this.loginView === undefined) {
         let lv = await import('../entry/login');
-        //this.loginView = <lv.default logo={logo} />;
         let loginView = <lv.default withBack={withBack} />;
-        //}
         if (withBack !== true) {
             this.nav.clear();
             this.pop();
         }
-        //this.nav.show(loginView);
         this.nav.push(loginView);
     }
 
@@ -538,8 +537,11 @@ export class Nav {
         let guest = this.local.guest.get();
         setCenterToken(0, guest && guest.token);
         this.ws = undefined;
-        this.logoutCallbacks.call();
-        if (notShowLogin === true) return;
+        if (this.loginCallbacks.has)
+            this.logoutCallbacks.call();
+        else {
+            if (notShowLogin === true) return;
+        }
         await nav.start();
     }
 

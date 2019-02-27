@@ -5,6 +5,7 @@ import { RegisterController, ForgetController } from './register';
 import userApi from './userApi';
 import { LoginRes, loginRes } from './res';
 import { tonvaTop, getSender } from './tools';
+import { User } from 'tonva-tools/user';
 
 const schema: Schema = [
     {name: 'username', type: 'string', required: true, maxLength: 100} as StringSchema,
@@ -12,7 +13,11 @@ const schema: Schema = [
     {name: 'login', type: 'submit'},
 ];
 
-export default class Login extends React.Component<{withBack?:boolean}> {
+export interface LoginProps {
+    withBack?:boolean;
+}
+
+export default class Login extends React.Component<LoginProps> {
     private res: LoginRes = resLang(loginRes);
     private uiSchema: UiSchema = {
         items: {
