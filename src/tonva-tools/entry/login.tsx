@@ -14,7 +14,8 @@ const schema: Schema = [
 ];
 
 export interface LoginProps {
-    withBack?:boolean;
+    withBack?: boolean;
+    callback?: (user:User) => Promise<void>
 }
 
 export default class Login extends React.Component<LoginProps> {
@@ -46,7 +47,7 @@ export default class Login extends React.Component<LoginProps> {
             return type + '或密码错！';
         }
         console.log("onLoginSubmit: user=%s pwd:%s", user.name, user.token);
-        await nav.logined(user);
+        await nav.logined(user, this.props.callback);
     }
     private clickReg = () => {
         //nav.replace(<RegisterView />);
