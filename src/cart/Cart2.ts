@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { CUq, Action, Query, TuidMain, TuidDiv, BoxId } from 'tonva-react-uq';
 import { CCartApp } from '../CCartApp';
 import { MainProduct } from 'mainSubs';
-import { ProductService } from 'product/itemLoader';
+import { LoaderProduct } from 'product/itemLoader';
 import { CartPackRow } from './Cart';
 
 export interface CartItem {
@@ -45,7 +45,7 @@ export abstract class Cart2 {
 
     protected async generateItems(cartData: any) {
         let cartDict: { [product: number]: CartItem } = {};
-        let productService = new ProductService(this.cApp);
+        let productLoader = new LoaderProduct(this.cApp);
         for (let cd of cartData) {
             let { product, createdate, pack, price, quantity, currency } = cd;
             let packItem: CartPackRow = {
@@ -58,7 +58,7 @@ export abstract class Cart2 {
             let cpi = cartDict[product.id];
             if (cpi === undefined) {
                 cpi = {} as any;
-                cpi.product = await productService.loadProductChemical(product);
+                cpi.product = await productLoader.load(product);
                 cpi.packs = [];
                 cpi.packs.push(packItem);
                 cpi.createdate = createdate;

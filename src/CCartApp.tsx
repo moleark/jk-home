@@ -54,7 +54,7 @@ export class CCartApp extends CApp {
 
         this.currentUser = new WebUser(this.cUqWebUser, this.cUqCustomer);
         if (this.isLogined)
-            this.currentUser.user = this.user;
+            this.currentUser.setUser(this.user);
 
         this.cart = new Cart(this);
 

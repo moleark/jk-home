@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { CCartApp } from 'CCartApp';
 import { TuidMain, TuidDiv, Map, Query } from 'tonva-react-uq';
 import { ProductPackRow } from './Product';
@@ -22,7 +23,7 @@ export class LoaderProduct extends Loader<MainProductChemical> {
     protected async loadToData(productId: any, data: MainProductChemical): Promise<void> {
 
         let product = await this.productTuid.load(productId);
-        data = { ...product };
+        _.merge(data, product);
 
         let productChemical = await this.productChemicalMap.obj({ product: productId });
         if (productChemical) {
@@ -60,27 +61,8 @@ export class LoaderProductChemical extends Loader<MainSubs<MainProductChemical, 
 
     protected async loadToData(productId: any, data: MainSubs<MainProductChemical, ProductPackRow>): Promise<void> {
 
-        /*
-        let product = await this.productTuid.load(param);
-        data.main = { ...product };
-
-        let productChemical = await this.productChemicalMap.obj({ product: param });
-        if (productChemical) {
-            let { chemical, purity, CAS, molecularFomula, molecularWeight } = productChemical;
-            data.main.chemical = chemical;
-            data.main.purity = purity;
-            data.main.CAS = CAS;
-            data.main.molecularFomula = molecularFomula;
-            data.main.molecularWeight = molecularWeight;
-        }
-        */
-        let productLoader = new ProductService(this.cApp);
-        data.main = await productLoader.loadProductChemical(productId);
-
-        /*
         let productLoader = new LoaderProduct(this.cApp);
         data.main = await productLoader.load(productId);
-        */
 
         let discount = 0;
         let { currentUser, currentSalesRegion, cart } = this.cApp;
@@ -113,6 +95,7 @@ export class LoaderProductChemical extends Loader<MainSubs<MainProductChemical, 
     }
 }
 
+/*
 // 拟用 LoaderProduct 替换
 export class ProductService {
 
@@ -150,3 +133,4 @@ export class ProductService {
         return result;
     }
 }
+*/

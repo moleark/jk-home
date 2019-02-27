@@ -2,7 +2,7 @@ import * as React from 'react';
 import { VCartLabel } from './VCartLabel';
 import { CCartApp } from 'CCartApp';
 import { VCart } from './VCart';
-import { Controller, RowContext } from 'tonva-tools';
+import { Controller, RowContext, nav, User } from 'tonva-tools';
 import { Cart, CartPackRow } from './Cart';
 
 export class CCart extends Controller {
@@ -50,7 +50,13 @@ export class CCart extends Controller {
     checkOut = async () => {
 
         if (!this.isLogined) {
-            alert("请登录");
+            // nav.unregisterLoginCallback()
+            nav.registerLoginCallback(async (user: User): Promise<void> => {
+                await this.cApp.currentUser.setUser(user);
+                this.closePage(1);
+                await this.checkOut();
+            })
+            nav.showLogin(true);
         } else {
             let selectCartItem = this.cart.getSelectItem();
             if (selectCartItem === undefined) return;
