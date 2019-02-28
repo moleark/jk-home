@@ -3,18 +3,16 @@ import { VCartLabel } from './VCartLabel';
 import { CCartApp } from 'CCartApp';
 import { VCart } from './VCart';
 import { Controller, RowContext, nav, User } from 'tonva-tools';
-import { Cart, CartPackRow } from './Cart';
+import { CartPackRow } from './Cart';
 
 export class CCart extends Controller {
 
     cApp: CCartApp;
-    cart: Cart;
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
 
         this.cApp = cApp;
-        this.cart = cApp.cart;
     }
 
     protected async internalStart(param: any) {
@@ -37,11 +35,28 @@ export class CCart extends Controller {
         let { data, parentData } = context;
         let { product } = parentData;
         let { pack, price, currency } = data as CartPackRow;
-        await this.cart.AddToCart(product.id, pack.id, value, price, currency);
+        // await this.cart.AddToCart(product.id, pack.id, value, price, currency);
+        let { cartViewModel, cartService } = this.cApp;
+        if (value > 0) {
+            await cartService.AddToCart(cartViewModel, product.id, pack.id, value, price, currency);
+        } else {
+            await cartService.removeFromCart(cartViewModel, product.id, pack.id);
+        }
     }
 
     onRowStateChanged = async (context: RowContext, selected: boolean, deleted: boolean) => {
         alert('onRowStateChanged')
+    }
+
+    private loginCallback = async (user: User): Promise<void> => {
+        await this.cApp.currentUser.setUser(user);
+        this.closePage(1);
+        await this.checkOut();
+    };
+
+    onProductClick(productId: number) {
+        let { cProduct } = this.cApp;
+        cProduct.showProductDetail(productId);
     }
 
     /**
@@ -50,17 +65,11 @@ export class CCart extends Controller {
     checkOut = async () => {
 
         if (!this.isLogined) {
-            // nav.unregisterLoginCallback()
-            nav.registerLoginCallback(async (user: User): Promise<void> => {
-                await this.cApp.currentUser.setUser(user);
-                this.closePage(1);
-                await this.checkOut();
-            })
-            nav.showLogin(true);
+            nav.showLogin(this.loginCallback, true);
         } else {
-            let selectCartItem = this.cart.getSelectItem();
+            let { cartViewModel, cOrder } = this.cApp;
+            let selectCartItem = cartViewModel.getSelectItem();
             if (selectCartItem === undefined) return;
-            let { cOrder } = this.cApp;
             await cOrder.start(selectCartItem);
         }
     }

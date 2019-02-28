@@ -10,9 +10,12 @@ import ChangePasswordPage from './changePassword';
 
 class Me extends React.Component {
     private exit() {
+        nav.showLogout();
+        /*
         if (confirm('退出当前账号不会删除任何历史数据，下次登录依然可以使用本账号')) {
             nav.logout();
         }
+        */
     }
 
     private about = () => nav.push(<About />);
@@ -49,7 +52,7 @@ class Me extends React.Component {
             rows.push(
                 {
                     type: 'component',
-                    component: <button className="btn btn-success w-100" onClick={() => nav.showLogin(true)}>
+                    component: <button className="btn btn-success w-100" onClick={() => nav.showLogin(undefined, true)}>
                         <FA name="sign-out" size="lg" /> 请登录
                     </button>
                 },

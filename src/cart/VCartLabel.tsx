@@ -17,7 +17,7 @@ export class VCartLabel extends View<CCart> {
     };
 
     private content = observer(() => {
-        let { cart } = this.controller;
+        let { cartViewModel: cart } = this.controller.cApp;
         let count: any = cart.count.get();
         let badge, onClick, pointer;
         if (count > 0) {

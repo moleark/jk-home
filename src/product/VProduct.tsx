@@ -87,22 +87,21 @@ export class VProduct extends VPage<CProduct> {
 
         let deliveryTimeUI = <></>;
         if (inventoryAllocation && inventoryAllocation.length > 0) {
-            /*
             deliveryTimeUI = inventoryAllocation.map((v, index) => {
-                return <div key={index}>
-                    {tv(v.warehouse, (values: any) => <>{values.name}</>)}
-                    {v.deliveryTimeDescription}
+                let { warehouse, quantity, deliveryTimeDescription } = v;
+                return <div key={index} className="text-success">
+                    {tv(warehouse, (values: any) => <>{values.name}</>)}: {quantity}
+                    {deliveryTimeDescription}
                 </div>
             });
-            */
-            deliveryTimeUI = <div className="text-success">国内现货</div>
         } else {
-            deliveryTimeUI = <div>期货:{futureDeliveryTimeDescription}</div>
+            deliveryTimeUI = <div>{futureDeliveryTimeDescription && '期货: ' + futureDeliveryTimeDescription}</div>
         }
-        let packLabel = <small className="text-muted">包装：</small>;
         return <LMR className="mx-3" right={right}>
-            <div><b>{tv(pack)}</b></div>
-            {deliveryTimeUI}
+            <div className="d-flex flex-column justify-content-between h-100">
+                <div><b>{tv(pack)}</b></div>
+                <div>{deliveryTimeUI}</div>
+            </div>
         </LMR>;
     }
 
@@ -111,8 +110,12 @@ export class VProduct extends VPage<CProduct> {
         let { pack, retail, vipPrice, currency } = data;
         let price = vipPrice || retail;
         let { cApp } = this.controller;
-        let { cart } = cApp;
-        await cart.AddToCart(this.product.id, pack.id, value, price, currency);
+        let { cartService, cartViewModel } = cApp;
+        if (value > 0) {
+            await cartService.AddToCart(cartViewModel, this.product.id, pack.id, value, price, currency);
+        } else {
+            await cartService.removeFromCart(cartViewModel, this.product.id, pack.id);
+        }
     }
 
     private uiSchema: UiSchema = {

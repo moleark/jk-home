@@ -34,8 +34,9 @@ export class VCart extends VPage<CCart> {
     }
 
     protected CheckOutButton = observer(() => {
-        let { checkOut, cart } = this.controller;
-        let amount = cart.amount.get();
+        let { checkOut, cApp } = this.controller;
+        let { cartViewModel } = cApp;
+        let amount = cartViewModel.amount.get();
         let check = "去结算";
         let content = amount > 0 ?
             <>{check} (¥{amount})</> :
@@ -53,7 +54,9 @@ export class VCart extends VPage<CCart> {
         let { product } = item;
         return <div className="pr-1">
             <div className="row">
-                <div className="col-lg-6 pb-3">{renderCartProduct(product, 0)}</div>
+                <div className="col-lg-6 pb-3" onClick={() => this.controller.onProductClick(product.id)}>
+                    {renderCartProduct(product, 0)}
+                </div>
                 <div className="col-lg-6"><Field name="packs" /></div>
             </div>
         </div>;
@@ -112,8 +115,9 @@ export class VCart extends VPage<CCart> {
     }
 
     protected cartForm = () => {
-        let { cart } = this.controller;
-        let cartData = cart.data;
+        let { cartViewModel } = this.controller.cApp;
+        // let cartData = cart.data;
+        let cartData = cartViewModel.data;
         return <Form className="bg-white" schema={cartSchema} uiSchema={this.uiSchema} formData={cartData} />
     };
 
@@ -122,15 +126,16 @@ export class VCart extends VPage<CCart> {
     }
 
     private test = () => {
-        let { cart } = this.controller;
-        let row = cart.items[0];
+        let { cartViewModel } = this.controller.cApp;
+        // let row = cart.items[0];
+        let row = cartViewModel.cartItems[0];
         row.packs[0].quantity = row.packs[0].quantity + 1;
     }
 
     private testButton = () => <button onClick={() => this.test()}>test</button>;
 
     private page = observer((params: any): JSX.Element => {
-        let { cart } = this.controller;
+        let { cartViewModel: cart } = this.controller.cApp;
         if (cart.count.get() === 0) {
             return <Page header="购物车">{this.empty()}</Page>;
         }
@@ -140,7 +145,7 @@ export class VCart extends VPage<CCart> {
     });
 
     private tab = observer(() => {
-        let { cart } = this.controller;
+        let { cartViewModel: cart } = this.controller.cApp;
         let header = <header className="py-2 text-center bg-info text-white">
             <FA className="align-middle" name="shopping-cart" size="2x" /> &nbsp; <span className="h5 align-middle">购物车</span>
         </header>;
@@ -167,7 +172,7 @@ function productPropItem(caption: string, value: any) {
 }
 
 export function renderCartProduct(product: any, index: number) {
-    let { brand, description, CAS, purity, molecularFomula, molecularWeight, origin } = product;
+    let { id, brand, description, CAS, purity, molecularFomula, molecularWeight, origin } = product;
     return <div className="row d-flex mb-3 px-2">
         <div className="col-12">
             <div className="row py-2">

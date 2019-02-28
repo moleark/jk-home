@@ -67,6 +67,54 @@ export class Cart {
     }
 
     async load(): Promise<void> {
+
+        if (this.cApp.isLogined) {
+            if ((this.cartStore === undefined) || (this.cartStore && this.cartStore.isLocal)) {
+                let tempItems: CartItem[] = [];
+                if (this.cartStore && this.cartStore.isLocal) {
+                    tempItems = this.items.splice(0);
+                }
+                this.cartStore = new CartRemote(this, this.cApp);
+                let items = await this.cartStore.load();
+                this.items.push(...items);
+                if (tempItems.length > 0) {
+                    // merge
+                    for (let i = 0; i < tempItems.length; i++) {
+                        let { product: tempProduct, packs: tempPacks } = tempItems[i];
+                        let cartItemExits = this.items.find(v => v.product.id === tempProduct.id);
+                        if (cartItemExits) {
+                            for (let j = 0; j < tempPacks.length; j++) {
+                                // 如果本地购物车中的产品已经过期，则要删除
+                                if (cartItemExits.packs.findIndex(vp => vp.pack.id === tempPacks[j].pack.id) < 0) {
+                                    let { pack, quantity, price, currency } = tempPacks[j];
+                                    this.AddToCart(cartItemExits.product.id, pack.id, quantity, price, currency);
+                                }
+                            }
+                        } else {
+                            for (let j = 0; j < tempPacks.length; j++) {
+                                let { pack, quantity, price, currency } = tempPacks[j];
+                                this.AddToCart(tempItems[i].product.id, pack.id, quantity, price, currency);
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            if (this.cartStore === undefined) {
+                this.cartStore = new CartLocal(this, this.cApp);
+                let items = await this.cartStore.load();
+                this.items.push(...items);
+                return;
+            } else {
+                if (!this.cartStore.isLocal) {
+                    // 清除localstorage
+                    this.cartStore = new CartLocal(this, this.cApp);
+                    this.clear();
+                }
+            }
+        }
+
+        /*
         if (this.cApp.isLogined === false) {
             this.cartStore = new CartLocal(this, this.cApp);
             let items = await this.cartStore.load();
@@ -81,8 +129,7 @@ export class Cart {
         }
         // 已登录但是cartStore !== undefined时继续执行，这是合并购物车？
         let cartLocal = this.cartStore as CartLocal;
-        let items = this.items.splice(0, this.items.length);
-        this.items.splice(0, this.items.length);
+        let items = this.items.splice(0);
         this.cartStore = new CartRemote(this, this.cApp);
         (this.items as IObservableArray).replace(await this.cartStore.load());
 
@@ -94,6 +141,7 @@ export class Cart {
             }
         }
         cartLocal.clear();
+        */
     }
 
     getQuantity(productId: number, packId: number): number {

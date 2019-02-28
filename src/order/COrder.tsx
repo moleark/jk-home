@@ -100,8 +100,12 @@ export class COrder extends Controller {
         let result: any = await this.orderSheet.save("order", this.orderData.getDataForSave());
         await this.orderSheet.action(result.id, result.flow, result.state, "submit");
 
-        this.cApp.cart.clear(); //.removeFromCart(this.orderData.orderItems);
-
+        let { cartViewModel, cartService } = this.cApp;
+        this.orderData.orderItems.forEach(e => {
+            e.packs.forEach(v => {
+                cartService.removeFromCart(cartViewModel, e.product.id, v.pack.id);
+            })
+        });
         // 打开订单显示界面
         this.closePage(1);
         this.openVPage(OrderSuccess, result);

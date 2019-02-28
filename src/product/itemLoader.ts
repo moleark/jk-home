@@ -8,7 +8,6 @@ import { MainSubs, MainProductChemical } from 'mainSubs';
 export class LoaderProduct extends Loader<MainProductChemical> {
     private productTuid: TuidMain;
     private packTuid: TuidDiv;
-    private getFutureDeliveryTime: Query;
     private productChemicalMap: Map;
 
     protected initEntities() {
@@ -16,7 +15,6 @@ export class LoaderProduct extends Loader<MainProductChemical> {
         let { cUqProduct } = this.cApp;
         this.productTuid = cUqProduct.tuid('productx');
         this.packTuid = this.productTuid.divs['packx'];
-        this.getFutureDeliveryTime = cUqProduct.query("getFutureDeliveryTime");
         this.productChemicalMap = cUqProduct.map('productChemical');
     }
 
@@ -46,6 +44,7 @@ export class LoaderProductChemical extends Loader<MainSubs<MainProductChemical, 
     private getCustomerDiscount: Query;
     private priceMap: Map;
     private getInventoryAllocationQuery: Query;
+    private getFutureDeliveryTime: Query;
 
     protected initEntities() {
 
@@ -53,6 +52,7 @@ export class LoaderProductChemical extends Loader<MainSubs<MainProductChemical, 
         this.getCustomerDiscount = cUqCustomerDiscount.query("getdiscount");
         this.priceMap = cUqProduct.map('pricex');
         this.getInventoryAllocationQuery = cUqWarehouse.query("getInventoryAllocation");
+        this.getFutureDeliveryTime = cUqProduct.query("getFutureDeliveryTime");
     }
 
     protected initData(): MainSubs<MainProductChemical, ProductPackRow> {
@@ -65,32 +65,41 @@ export class LoaderProductChemical extends Loader<MainSubs<MainProductChemical, 
         data.main = await productLoader.load(productId);
 
         let discount = 0;
-        let { currentUser, currentSalesRegion, cart } = this.cApp;
+        let { currentUser, currentSalesRegion, cartViewModel } = this.cApp;
         if (currentUser.hasCustomer) {
             let discountSetting = await this.getCustomerDiscount.obj({ brand: data.main.brand.id, customer: currentUser.currentCustomer });
             discount = discountSetting && discountSetting.discount;
         }
 
-        let prices = await this.priceMap.table({ product: productId, salesRegion: currentSalesRegion.id });
+        let { id: currentSalesRegionId } = currentSalesRegion;
+        let prices = await this.priceMap.table({ product: productId, salesRegion: currentSalesRegionId });
         data.subs = prices.map(element => {
             let ret: any = {};
             ret.pack = element.pack;
             ret.retail = element.retail;
             ret.vipPrice = Math.round(element.retail * (1 - discount));
             ret.currency = currentSalesRegion.currency;
-            ret.quantity = cart.getQuantity(productId, element.pack.id)
+            ret.quantity = cartViewModel.getQuantity(productId, element.pack.id)
             return ret;
         });
 
         let promises: PromiseLike<any>[] = [];
-        let inventoryAllocationPromises = data.subs.map(v => {
-            return this.getInventoryAllocationQuery.table({ product: productId, pack: v.pack, salesRegion: currentSalesRegion });
-        });
-        promises.push(Promise.all(inventoryAllocationPromises));
+        data.subs.forEach(v => {
+            promises.push(this.getInventoryAllocationQuery.table({ product: productId, pack: v.pack, salesRegion: currentSalesRegion }));
+        })
         let results = await Promise.all(promises);
 
+        let fd = await this.getFutureDeliveryTimeDescription(productId, currentSalesRegionId);
         for (let i = 0; i < results.length; i++) {
+            data.subs[i].futureDeliveryTimeDescription = fd;
             data.subs[i].inventoryAllocation = results[i];
+        }
+    }
+
+    private getFutureDeliveryTimeDescription = async (productId: number, salesRegionId: number) => {
+        let futureDeliveryTime = await this.getFutureDeliveryTime.table({ product: productId, salesRegion: salesRegionId });
+        if (futureDeliveryTime.length > 0) {
+            return futureDeliveryTime[0].deliveryTimeDescription;
         }
     }
 }
