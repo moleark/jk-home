@@ -10,13 +10,8 @@ import { CUser } from 'customer/CPerson';
 import { CMember } from 'member/CMember';
 import { WebUser } from 'CurrentUser';
 import { consts } from './home/consts';
-<<<<<<< HEAD
-import { Cart } from './cart/Cart';
-import { VPage, Page, nav } from 'tonva-tools';
-=======
 import { CartViewModel, CartService, CartRemoteService, CartLocalService, CartServiceFactory } from 'cart/Cart2';
 import { User, nav } from 'tonva-tools';
->>>>>>> 4cf2bc45588dfa0a64ab0f6b14b95e2684016c42
 
 export class CCartApp extends CApp {
     cartService: CartService;
@@ -85,15 +80,8 @@ export class CCartApp extends CApp {
         this.topKey = nav.topKey();
     }
 
-<<<<<<< HEAD
-    showMain(initTabName?: string){
-        //this.openVPage(this.VAppMain, initTabName);
-        this.clearPrevPages();
-        this.openVPage(VMain);
-=======
     showMain(initTabName?: string) {
         this.openVPage(this.VAppMain, initTabName);
->>>>>>> 4cf2bc45588dfa0a64ab0f6b14b95e2684016c42
     }
 
     async loginCallBack(user: User) {
@@ -105,21 +93,6 @@ export class CCartApp extends CApp {
     }
 
     protected onDispose() {
-<<<<<<< HEAD
-        if (this.cart !== undefined) this.cart.dispose();
-=======
         this.cartViewModel.dispose();
->>>>>>> 4cf2bc45588dfa0a64ab0f6b14b95e2684016c42
-    }
-}
-
-class VMain extends VPage<CCartApp> {
-    async open() {
-        let right = <button onClick={()=>nav.logout()}>logout</button>
-        this.openPage(()=> {
-            return <Page header="ddd" right={right}>
-                start
-            </Page>
-        })
     }
 }
