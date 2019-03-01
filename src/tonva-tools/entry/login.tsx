@@ -5,7 +5,7 @@ import { RegisterController, ForgetController } from './register';
 import userApi from './userApi';
 import { LoginRes, loginRes } from './res';
 import { tonvaTop, getSender } from './tools';
-import { User } from 'tonva-tools/user';
+import { User } from '../user';
 
 const schema: Schema = [
     {name: 'username', type: 'string', required: true, maxLength: 100} as StringSchema,
