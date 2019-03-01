@@ -40,7 +40,7 @@ export class CCart extends Controller {
         if (value > 0) {
             await cartService.AddToCart(cartViewModel, product.id, pack.id, value, price, currency);
         } else {
-            await cartService.removeFromCart(cartViewModel, product.id, pack.id);
+            await cartService.removeFromCart(cartViewModel, [{ productId: product.id, packId: pack.id }]);
         }
     }
 

@@ -78,7 +78,7 @@ export class VProduct extends VPage<CProduct> {
                 price = retail;
             }
             right = <div className="d-block text-right">
-                <div className="pb-2 small text-muted">{retailUI} <span className="text-danger">¥ <span className="h5">{price}</span></span></div>
+                <div className="pb-2 small text-muted">{retailUI}&nbsp; &nbsp; <span className="text-danger">¥ <span className="h5">{price}</span></span></div>
                 <div className="d-flex"><Field name="quantity" /></div>
             </div >
         } else {
@@ -114,7 +114,7 @@ export class VProduct extends VPage<CProduct> {
         if (value > 0) {
             await cartService.AddToCart(cartViewModel, this.product.id, pack.id, value, price, currency);
         } else {
-            await cartService.removeFromCart(cartViewModel, this.product.id, pack.id);
+            await cartService.removeFromCart(cartViewModel, [{ productId: this.product.id, packId: pack.id }]);
         }
     }
 

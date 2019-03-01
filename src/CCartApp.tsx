@@ -11,11 +11,12 @@ import { CMember } from 'member/CMember';
 import { WebUser } from 'CurrentUser';
 import { consts } from './home/consts';
 import { CartViewModel, CartService, CartRemoteService, CartLocalService, CartServiceFactory } from 'cart/Cart2';
-import { User } from 'tonva-tools';
+import { User, nav } from 'tonva-tools';
 
 export class CCartApp extends CApp {
     cartService: CartService;
     cartViewModel: CartViewModel;
+    topKey: any;
 
     currentSalesRegion: any;
     currentLanguage: any;
@@ -74,6 +75,7 @@ export class CCartApp extends CApp {
         promises.push(this.cProductCategory.start());
         await Promise.all(promises);
         this.showMain();
+        this.topKey = nav.topKey();
     }
 
     showMain(initTabName?: string) {

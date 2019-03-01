@@ -6,9 +6,9 @@ import { tv, BoxId } from 'tonva-react-uq';
 import { observer } from 'mobx-react';
 import { OrderItem } from './Order';
 import { renderCartProduct } from 'cart/VCart';
+import { observable } from 'mobx';
 
 export class VCreateOrder extends VPage<COrder> {
-
     async open(param: any) {
 
         this.openPage(this.page);
@@ -32,7 +32,7 @@ export class VCreateOrder extends VPage<COrder> {
             <div className="d-flex align-items-center">
                 <div className="flex-grow-1"><b>{tv(pack)}</b></div>
                 <div className="w-12c mr-4 text-right">
-                    <span className="text-danger h5">¥{price * quantity}</span>
+                    <span className="text-danger h5"><small>¥</small>{price * quantity}</span>
                     <small className="text-muted">(¥{price} × {quantity})</small>
                 </div>
             </div>
@@ -42,7 +42,7 @@ export class VCreateOrder extends VPage<COrder> {
 
     private renderOrderItem = (orderItem: OrderItem) => {
         let { product, packs } = orderItem;
-        return <div className="pr-1">
+        return <div className="px-3">
             <div className="row">
                 <div className="col-lg-6 pb-3">{renderCartProduct(product, 0)}</div>
                 <div className="col-lg-6">{
@@ -57,19 +57,55 @@ export class VCreateOrder extends VPage<COrder> {
     private page = observer(() => {
 
         let { orderData, submitOrder, openContactList } = this.controller;
-        let { orderItems, shippingContact, invoiceContact } = orderData;
-        let footer = <button type="button"
-            className="btn btn-danger w-100"
-            onClick={submitOrder}>提交订单(¥{orderData.amount})</button>;
+        // let { orderItems, shippingContact, invoiceContact } = orderData;
+        let footer = <div>
+            <div className="w-100">
+                <div className="d-flex justify-content-left flex-grow-1">
+                    <span className="text-danger" style={{ fontSize: '1.8rem' }}><small>¥</small>{orderData.amount}</span>
+                </div>
+                <button type="button"
+                    className="btn btn-danger w-30"
+                    onClick={submitOrder}>提交订单
+                </button>
+            </div>
+        </div>;
         let chevronRight = <FA name="chevron-right" />
+
+        let shippingAddressBlankTip = this.controller.shippingAddressIsBlank ? <div className="text-danger small my-2"><FA name="exclamation-circle" /> 必须填写收货地址</div> : null;
+        let invoiceAddressBlankTip = this.controller.invoiceAddressIsBlank ? <div className="text-danger small my-2"><FA name="exclamation-circle" /> 必须填写发票地址</div> : null;
+        let divInvoice: any = null;
+        if (this.controller.useShippingAddress === false) {
+            if (orderData.invoiceContact !== undefined) {
+                divInvoice = <div className="col-12 col-sm-10 offset-sm-2 pl-4 pl-sm-0 d-flex">
+                    {tv(orderData.invoiceContact, undefined, undefined, this.nullContact)}
+                    {chevronRight}
+                </div>
+            } else {
+                divInvoice = <div className="col-8 pl-4 pl-sm-0 offset-4 offset-sm-2">
+                    <button className="btn btn-outline-primary" onClick={() => openContactList(ContactType.InvoiceContact)}>选择发票地址</button>
+                    {invoiceAddressBlankTip}
+                </div>
+            }
+        }
 
         let invoiceContactUI = <div className="row px-3 py-1 bg-white mb-1">
             <div className="col-4 col-sm-2 text-muted">发票地址:</div>
             <div className="col-8 col-sm-8 pl-4 pl-sm-0">
-                <input type="checkbox" id="sameAsShippingContact" checked onChange={() => openContactList(ContactType.InvoiceContact)} />
-                <label htmlFor="sameAsShippingContact">同收货地址</label>
+                <div>
+                    <label>
+                        <input type="checkbox"
+                            defaultChecked={this.controller.useShippingAddress}
+                            onChange={e => {
+                                this.controller.useShippingAddress = e.currentTarget.checked;
+                                orderData.invoiceContact = undefined;
+                                this.controller.invoiceAddressIsBlank = false;
+                            }} /> 同收货地址
+                    </label>
+                </div>
             </div>
-        </div>
+            {divInvoice}
+      </div>
+        /*
         if (shippingContact.id !== invoiceContact.id) {
             invoiceContactUI = <div className="row px-3 py-3 bg-white mb-1" onClick={() => openContactList(ContactType.InvoiceContact)}>
                 <div className="col-4 col-sm-2 text-muted">发票地址:</div>
@@ -79,17 +115,18 @@ export class VCreateOrder extends VPage<COrder> {
                 </div>
             </div>
         }
-
+        */
         return <Page header="订单预览" footer={footer}>
             <div className="row px-3 py-3 bg-white mb-1" onClick={() => openContactList(ContactType.ShippingContact)}>
                 <div className="col-12 col-sm-2 text-muted">收货地址:</div>
                 <div className="col-12 col-sm-10 pl-4 pl-sm-0 d-flex">
-                    {tv(shippingContact, undefined, undefined, this.nullContact)}
+                    {tv(orderData.shippingContact, undefined, undefined, this.nullContact)}
+                    {shippingAddressBlankTip}
                     {chevronRight}
                 </div>
             </div>
             {invoiceContactUI}
-            <List items={orderItems} item={{ render: this.renderOrderItem }} />
+            <List items={orderData.orderItems} item={{ render: this.renderOrderItem }} />
         </Page>
     })
 }

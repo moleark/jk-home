@@ -2,9 +2,9 @@ import { observable, computed, autorun, IReactionDisposer, IObservableArray } fr
 import _ from 'lodash';
 import { CUq, Action, Query, TuidMain, TuidDiv, BoxId } from 'tonva-react-uq';
 import { CCartApp } from '../CCartApp';
-import { MainProduct } from 'mainSubs';
 import { LoaderProduct } from 'product/itemLoader';
 import { CartItem, CartPackRow } from './Cart';
+import { resolve } from 'path';
 
 export class CartViewModel {
 
@@ -64,6 +64,8 @@ export class CartViewModel {
         let { id: productId } = product;
         let cartItemExists: CartItem = this.cartItems.find((element) => element.product.id === productId);
         if (!cartItemExists) {
+            cartItem.$isSelected = true;
+            cartItem.$isDeleted = false;
             this.cartItems.push(cartItem);
             return;
         }
@@ -89,18 +91,21 @@ export class CartViewModel {
         }
     }
 
-    removeFromCart(productId: number, packId: number) {
-
-        let cartItemIndex = this.cartItems.findIndex(e => e.product.id === productId);
-        if (cartItemIndex > 0) {
-            let cartItem = this.cartItems[cartItemIndex];
-            let i = cartItem.packs.findIndex(e => e.pack.id === packId)
-            if (i >= 0) {
-                cartItem.packs.splice(i, 1);
-                if (cartItem.packs.length === 0) {
-                    this.cartItems.splice(cartItemIndex, 1);
+    removeFromCart(rows: [{ productId: number, packId: number }]) {
+        if (rows && rows.length > 0) {
+            rows.forEach(pe => {
+                let cartItemIndex = this.cartItems.findIndex(e => e.product.id === pe.productId);
+                if (cartItemIndex > 0) {
+                    let cartItem = this.cartItems[cartItemIndex];
+                    let i = cartItem.packs.findIndex(e => e.pack.id === pe.packId)
+                    if (i >= 0) {
+                        cartItem.packs.splice(i, 1);
+                        if (cartItem.packs.length === 0) {
+                            this.cartItems.splice(cartItemIndex, 1);
+                        }
+                    }
                 }
-            }
+            })
         }
     }
 }
@@ -133,9 +138,11 @@ export abstract class CartService {
     protected async generateCartItems(cartData: any): Promise<CartViewModel> {
 
         let result = new CartViewModel();
-        for (let cd of cartData) {
-            let { product: productId, createdate, packs } = cd;
-            result.cartItems.push(await this.generateCartItem(productId, packs))
+        if (cartData) {
+            for (let cd of cartData) {
+                let { product: productId, createdate, packs } = cd;
+                result.cartItems.push(await this.generateCartItem(productId, packs))
+            }
         }
         return result;
     }
@@ -146,7 +153,7 @@ export abstract class CartService {
         let productService = new LoaderProduct(this.cApp);
         cartItem.product = await productService.load(productId);
         cartItem.createdate = Date.now();
-        cartItem.$isSelected = false;
+        cartItem.$isSelected = true;
         cartItem.$isDeleted = false;
 
         cartItem.packs = [];
@@ -169,7 +176,7 @@ export abstract class CartService {
 
     abstract async AddToCart(cartViewModel: CartViewModel, productId: number, packId: number, quantity: number, price: number, currency: any);
 
-    abstract async removeFromCart(cartViewModel: CartViewModel, productId: number, packId: number);
+    abstract async removeFromCart(cartViewModel: CartViewModel, rows: [{ productId: number, packId: number }]);
 
     abstract async merge(source: CartViewModel);
 }
@@ -237,9 +244,12 @@ export class CartRemoteService extends CartService {
         }
     }
 
-    async removeFromCart(cartViewModel: CartViewModel, productId: number, packId: number) {
-        cartViewModel.removeFromCart(productId, packId);
-        await this.removeFromCartAction.submit({ rows: [{ product: productId, pack: packId }] })
+    async removeFromCart(cartViewModel: CartViewModel, rows: [{ productId: number, packId: number }]) {
+        if (rows && rows.length > 0) {
+            cartViewModel.removeFromCart(rows);
+            let param = rows.map(e => { return { product: e.productId, pack: e.packId } });
+            await this.removeFromCartAction.submit({ rows: param })
+        }
     }
 
     async merge(source: CartViewModel) {
@@ -267,8 +277,6 @@ export class CartLocalService extends CartService {
     async load(): Promise<CartViewModel> {
         try {
             let cartstring = localStorage.getItem(LOCALCARTNAME);
-            if (cartstring === null) return;
-
             let cartData = JSON.parse(cartstring);
             return await this.generateCartItems(cartData);
         }
@@ -286,8 +294,8 @@ export class CartLocalService extends CartService {
         this.save(cartViewModel);
     }
 
-    async removeFromCart(cartViewModel: CartViewModel, productId: number, packId: number) {
-        cartViewModel.removeFromCart(productId, packId);
+    async removeFromCart(cartViewModel: CartViewModel, rows: [{ productId: number, packId: number }]) {
+        cartViewModel.removeFromCart(rows);
         this.save(cartViewModel);
     }
 

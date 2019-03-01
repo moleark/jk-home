@@ -26,7 +26,10 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
-
+.jk-cart {
+  display: flex;
+  align-items: center;
+}
 .jk-cart>div {
   position: relative;
 }
