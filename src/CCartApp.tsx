@@ -11,6 +11,7 @@ import { CMember } from 'member/CMember';
 import { WebUser } from 'CurrentUser';
 import { consts } from './home/consts';
 import { Cart } from './cart/Cart';
+import { VPage, Page, nav } from 'tonva-tools';
 
 export class CCartApp extends CApp {
     cart: Cart;
@@ -37,6 +38,7 @@ export class CCartApp extends CApp {
     cMember: CMember;
 
     protected async internalStart() {
+        /*
         this.cUqOrder = this.getCUq(consts.uqOrder);
         this.cUqProduct = this.getCUq(consts.uqProduct);
         this.cUqCommon = this.getCUq(consts.uqCommon);
@@ -70,14 +72,28 @@ export class CCartApp extends CApp {
         promises.push(this.cart.load());
         promises.push(this.cProductCategory.start());
         await Promise.all(promises);
+        */
         this.showMain();
     }
 
     showMain(initTabName?: string){
-        this.openVPage(this.VAppMain, initTabName);
+        //this.openVPage(this.VAppMain, initTabName);
+        this.clearPrevPages();
+        this.openVPage(VMain);
     }
 
     protected onDispose() {
-        this.cart.dispose();
+        if (this.cart !== undefined) this.cart.dispose();
+    }
+}
+
+class VMain extends VPage<CCartApp> {
+    async open() {
+        let right = <button onClick={()=>nav.logout()}>logout</button>
+        this.openPage(()=> {
+            return <Page header="ddd" right={right}>
+                start
+            </Page>
+        })
     }
 }

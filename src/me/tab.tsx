@@ -49,7 +49,7 @@ class Me extends React.Component {
             rows.push(
                 {
                     type: 'component',
-                    component: <button className="btn btn-success w-100" onClick={() => nav.showLogin(true)}>
+                    component: <button className="btn btn-success w-100" onClick={() => nav.showLogin(undefined, true)}>
                         <FA name="sign-out" size="lg" /> 请登录
                     </button>
                 },

@@ -600,7 +600,7 @@ export class Nav {
     pop(level:number = 1) {
         this.nav.pop(level);
     }
-    getTopKey():number {
+    topKey():number {
         return this.nav.topKey();
     }
     popTo(key:number) {
