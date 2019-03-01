@@ -95,7 +95,7 @@ export class CartViewModel {
         if (rows && rows.length > 0) {
             rows.forEach(pe => {
                 let cartItemIndex = this.cartItems.findIndex(e => e.product.id === pe.productId);
-                if (cartItemIndex > 0) {
+                if (cartItemIndex >= 0) {
                     let cartItem = this.cartItems[cartItemIndex];
                     let i = cartItem.packs.findIndex(e => e.pack.id === pe.packId)
                     if (i >= 0) {
