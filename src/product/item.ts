@@ -30,10 +30,12 @@ export class VMMainChemical extends VMMain {
 
 export class VMSub {
     pack: BoxId;
-    price: number;
+    retail: number;
     vipPrice: number;
+    currency: BoxId;
     quantity: number;
     amount: number;
+    inventoryAllocation: any;
 }
 
 export class VMSubInventory extends VMSub {
@@ -44,18 +46,22 @@ export class VM<M extends VMMain, S extends VMSub> {
     main: M;
     subs: S[];
 }
-*/
-/*
 export class VMProduct extends VMMain<VMSub> {
 }
 
 export class VMProductChemicalBase<S extends VMSub> extends VMMain<S> {
-    chemical: BoxId;
+    productChemical: any;
 }
 
 export class VMProductChemical extends VMProductChemicalBase<VMSub> {
 }
 
 export class VmProductChemicalInventory extends VMProductChemicalBase<VMSubInventory> {
+}
+
+export class VMCartRow extends VMProductChemicalBase<VMSubInventory> {
+    $isSelected?: boolean;
+    $isDeleted?: boolean;
+    createdate: number;
 }
 */

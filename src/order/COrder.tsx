@@ -4,17 +4,24 @@ import { CCartApp } from 'CCartApp';
 import { VCreateOrder } from './VCreateOrder';
 import { Order, OrderItem } from './Order';
 import { observable } from 'mobx';
-import { Controller } from 'tonva-tools';
+import { Controller, nav } from 'tonva-tools';
 import { OrderSuccess } from './OrderSuccess';
+import { getPackedSettings } from 'http2';
 
 export enum ContactType {
     ShippingContact = "ShippingContact",
     InvoiceContact = "InvoiceContact",
 }
 
+const blankTime = 2000;
+
 export class COrder extends Controller {
     private cApp: CCartApp;
     @observable orderData: Order = new Order();
+    @observable useShippingAddress: boolean = true;
+    @observable shippingAddressIsBlank: boolean = false;
+    @observable invoiceAddressIsBlank: boolean = false;
+
     private orderSheet: Sheet;
 
     constructor(cApp: CCartApp, res: any) {
@@ -79,31 +86,46 @@ export class COrder extends Controller {
     }
 
     setContact = (contactBox: BoxId, contactType: ContactType) => {
-        if (contactType === ContactType.ShippingContact)
+        if (contactType === ContactType.ShippingContact) {
             this.orderData.shippingContact = contactBox;
-        else
+            this.shippingAddressIsBlank = false;
+        } else {
             this.orderData.invoiceContact = contactBox;
+            this.invoiceAddressIsBlank = false;
+        }
     }
 
     submitOrder = async () => {
 
-        if (!this.orderData.shippingContact) {
-            this.openContactList(ContactType.ShippingContact);
+        let { shippingContact, invoiceContact, orderItems } = this.orderData;
+        if (!shippingContact) {
+            this.shippingAddressIsBlank = true;
+            setTimeout(() => this.shippingAddressIsBlank = false, blankTime);
             return;
         }
-        if (!this.orderData.invoiceContact) {
-            this.setContact(this.orderData.shippingContact, ContactType.InvoiceContact);
-            // this.openContactList(ContactType.InvoiceContact);
-            // return;
+        if (!invoiceContact) {
+            if (this.useShippingAddress) {
+                this.setContact(shippingContact, ContactType.InvoiceContact);
+            } else {
+                this.invoiceAddressIsBlank = true;
+                setTimeout(() => this.invoiceAddressIsBlank = false, blankTime);
+                return;
+            }
         }
 
         let result: any = await this.orderSheet.save("order", this.orderData.getDataForSave());
         await this.orderSheet.action(result.id, result.flow, result.state, "submit");
 
-        this.cApp.cart.clear(); //.removeFromCart(this.orderData.orderItems);
-
+        let { cartViewModel, cartService } = this.cApp;
+        let param: [{ productId: number, packId: number }] = [] as any;
+        orderItems.forEach(e => {
+            e.packs.forEach(v => {
+                param.push({ productId: e.product.id, packId: v.pack.id })
+            })
+        });
+        cartService.removeFromCart(cartViewModel, param);
         // 打开订单显示界面
-        this.closePage(1);
+        nav.popTo(this.cApp.topKey);
         this.openVPage(OrderSuccess, result);
     }
 

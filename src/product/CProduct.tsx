@@ -1,12 +1,11 @@
 import * as React from 'react';
 import * as _ from 'lodash';
-import { Map, TuidDiv, TuidMain, Query, tv, BoxId } from 'tonva-react-uq';
-import { PageItems, Controller } from 'tonva-tools';
+import { Query, tv } from 'tonva-react-uq';
+import { PageItems, Controller, nav, Page } from 'tonva-tools';
 import { CCartApp } from '../CCartApp';
-import { PackItem } from '../tools';
 import { VProduct } from './VProduct';
 import { VProductList } from './VProductList';
-import { Product } from './Product';
+import { LoaderProductChemical } from './itemLoader';
 
 class PageProducts extends PageItems<any> {
 
@@ -37,7 +36,6 @@ export class CProduct extends Controller {
     cApp: CCartApp;
 
     pageProducts: PageProducts;
-    product: Product;
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
@@ -65,20 +63,25 @@ export class CProduct extends Controller {
     }
 
     showProductDetail = async (id: number) => {
+
+        let loader = new LoaderProductChemical(this.cApp);
+        let product = await loader.load(id);
+        /*
         let product = new Product(this.cApp);
         await product.load(id);
+        */
         this.openVPage(VProduct, product);
     }
 }
 
 export function renderBrand(brand: any) {
-    return item('品牌', brand.name);
+    return productPropItem('品牌', brand.name);
 }
 
-function item(caption: string, value: any) {
+export function productPropItem(caption: string, value: any) {
     if (value === null || value === undefined) return null;
     return <>
-        <div className="col-4 col-sm-2 text-muted pr-0">{caption}:</div>
+        <div className="col-4 col-sm-2 text-muted pr-0 small">{caption}</div>
         <div className="col-8 col-sm-4">{value}</div>
     </>;
 }
@@ -96,11 +99,11 @@ export function renderProduct(product: any, index: number) {
                 </div>
                 <div className="col-9">
                     <div className="row">
-                        {item('CAS', CAS)}
-                        {item('纯度', purity)}
-                        {item('分子式', molecularFomula)}
-                        {item('分子量', molecularWeight)}
-                        {item('产品编号', origin)}
+                        {productPropItem('CAS', CAS)}
+                        {productPropItem('纯度', purity)}
+                        {productPropItem('分子式', molecularFomula)}
+                        {productPropItem('分子量', molecularWeight)}
+                        {productPropItem('产品编号', origin)}
                         {tv(brand, renderBrand)}
                     </div>
                 </div>

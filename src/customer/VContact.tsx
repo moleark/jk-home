@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { VPage, Page, Form, Schema, UiSchema, Context } from 'tonva-tools';
+import { VPage, Page, Form, Schema, UiSchema, Context, UiInputItem, UiIdItem } from 'tonva-tools';
 import { CUser } from './CPerson';
 
 const schema: Schema = [
@@ -9,7 +9,7 @@ const schema: Schema = [
     { name: 'mobile', type: 'string', required: true },
     { name: 'telephone', type: 'string', required: false },
     { name: 'email', type: 'string', required: false },
-    { name: 'address', type: 'id', required: false },
+    { name: 'address', type: 'id', required: true },
     { name: 'addressString', type: 'string', required: true },
     { name: 'isDefault', type: 'boolean', required: false },
     { name: 'submit', type: 'submit' },
@@ -18,24 +18,26 @@ const schema: Schema = [
 const uiSchema: UiSchema = {
     items: {
         id: { visible: false },
-        name: { widget: 'text', label: '姓名' },
-        organizationName: { widget: 'text', label: '单位名称' },
-        mobile: { widget: 'text', label: '手机号' },
-        telephone: { widget: 'text', label: '电话' },
+        name: { widget: 'text', label: '姓名', placeholder: '姓名' } as UiInputItem,
+        organizationName: { widget: 'text', label: '单位名称', placeholder: '单位名称' } as UiInputItem,
+        mobile: { widget: 'text', label: '手机号码', placeholder: '手机号码' } as UiInputItem,
+        telephone: { widget: 'text', label: '电话', placeholder: '电话' } as UiInputItem,
         email: {
-            widget: 'email', label: 'email',
+            widget: 'email', label: 'Email',
             rules: (value: any) => {
                 if (value && !/\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/.test(value))
-                    return "email格式不正确。";
+                    return "Email格式不正确。";
                 else
                     return undefined;
-            }
-        },
-        address: { widget: 'id', label: 'address' },
+            },
+            placeholder: 'Email'
+        } as UiInputItem,
+        address: { widget: 'id', label: '所在地区', placeholder: '所在地区' } as UiIdItem,
         addressString: {
             widget: 'text', label: '详细地址',
-            rules: (value: any) => { if (value && value.length < 8) return "详细地址不能小于8个字符。"; else return undefined; }
-        },
+            rules: (value: any) => { if (value && value.length < 8) return "详细地址不能小于8个字符。"; else return undefined; },
+            placeholder: '详细地址'
+        } as UiInputItem,
         isDefault: { widget: 'checkbox', label: '作为默认地址' },
         submit: { widget: 'button', label: '提交' },
     }

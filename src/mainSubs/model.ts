@@ -4,29 +4,33 @@ export interface Id {
     id: number;
 }
 
-export interface Product extends Id {
-    discription: string;
+export interface MainBrand extends Id {
+    name: string;
 }
 
+export interface MainProduct extends Id {
+    origin: string;
+    description: string;
+    descriptionC: string;
+    brand: MainBrand;
+}
+
+export interface MainProductChemical extends MainProduct {
+
+    chemical: number;
+    CAS: string;
+    purity: string;
+    molecularFomula: string;
+    molecularWeight: string;
+}
+
+// 下面这些都还没有用，以后可能会用到
 export interface Pack extends Id {
     name: string;
 }
 
-export interface Chemical extends Id {
-    CAS: string;
-    purity: number;
-}
-
 export interface Inventory extends Id {
     name: string;
-}
-
-export interface MainProduct {
-    product: Product;    
-}
-
-export interface MainProductChemical extends MainProduct {
-    chemical: Chemical;
 }
 
 export interface SubPack {

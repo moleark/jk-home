@@ -24,7 +24,7 @@ export class WebUser {
         this.cUsqCustomer = cUsqCustomer;
     }
 
-    set user(user: User) {
+    setUser = async (user: User) => {
         if (user !== undefined) {
             this._user = user;
             this.id = user.id;
@@ -35,11 +35,9 @@ export class WebUser {
             this.token = user.token;
 
             if (this._user !== undefined) {
-                this.webUserCustomerMap.obj({ webUser: this.id })
-                    .then((value) => {
-                        if (value != undefined)
-                            this.currentCustomer = new Customer(value.customer, this.cUsqCustomer);
-                    })
+                let value = await this.webUserCustomerMap.obj({ webUser: this.id });
+                if (value != undefined)
+                    this.currentCustomer = new Customer(value.customer, this.cUsqCustomer);
             }
         }
     }

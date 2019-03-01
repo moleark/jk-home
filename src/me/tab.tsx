@@ -1,18 +1,22 @@
 import * as React from 'react';
 //import {Media, PropGrid, Prop, FA, IconText, TonvaForm, FormRow, SubmitResult, Fields} from 'tonva-react-form';
-import {nav, User, Page} from 'tonva-tools';
-import {Prop, Media, IconText, FA, PropGrid} from 'tonva-react-form';
+import { nav, User, Page, EditMeInfo } from 'tonva-tools';
+import { Prop, Media, IconText, FA, PropGrid, LMR } from 'tonva-react-form';
 //import {store} from 'store';
 import { consts } from '../home/consts';
 //import mainApi from 'mainApi';
-import {About} from './about';
+import { About } from './about';
 import ChangePasswordPage from './changePassword';
+import { Image } from 'tonva-react-form/components/image';
 
 class Me extends React.Component {
     private exit() {
+        nav.showLogout();
+        /*
         if (confirm('退出当前账号不会删除任何历史数据，下次登录依然可以使用本账号')) {
             nav.logout();
         }
+        */
     }
 
     private about = () => nav.push(<About />);
@@ -21,18 +25,18 @@ class Me extends React.Component {
         nav.push(<ChangePasswordPage />);
     }
     render() {
-        const {user} = nav;
-        let aboutRows:Prop[] = [
+        const { user } = nav;
+        let aboutRows: Prop[] = [
             '',
             {
                 type: 'component',
-                component: <IconText iconClass="text-info" icon="envelope" text="关于百灵威" />,
+                component: <IconText iconClass="text-info mr-2" icon="smile-o" text="关于百灵威" />,
                 onClick: this.about
             },
             '',
         ];
 
-        let logOutRows:Prop[] = [
+        let logOutRows: Prop[] = [
             '',
             {
                 type: 'component',
@@ -42,7 +46,7 @@ class Me extends React.Component {
                 </button>
             },
         ];
-        let rows:Prop[];
+        let rows: Prop[];
         if (user === undefined) {
             rows = aboutRows;
             rows.push('');
@@ -56,16 +60,27 @@ class Me extends React.Component {
             );
         }
         else {
+            let { name, nick, id, icon } = user;
             rows = [
                 '',
                 {
                     type: 'component',
-                    component: <Media icon={consts.appIcon} main={user.name} discription={String(user.id)} />
+                    component: <LMR className="py-2 cursor-pointer w-100"
+                        left={<Image className="w-3c h-3c mr-3" src={icon} />}
+                        right={<FA className="align-self-end" name="chevron-right" />}
+                        onClick={() => {
+                            nav.push(<EditMeInfo />)
+                        }}>
+                        <div>
+                            <div>{userSpan(name, nick)}</div>
+                            <div>{id}</div>
+                        </div>
+                    </LMR>
                 },
                 '',
                 {
                     type: 'component',
-                    component: <IconText iconClass="text-info" icon="envelope" text="修改密码" />,
+                    component: <IconText iconClass="text-info mr-2" icon="key" text="修改密码" />,
                     onClick: this.changePassword
                 },
             ]
@@ -76,3 +91,9 @@ class Me extends React.Component {
 }
 
 export default Me;
+
+function userSpan(name: string, nick: string): JSX.Element {
+    return nick ?
+        <><b>{nick} &nbsp; <small className="muted">{name}</small></b></>
+        : <b>{name}</b>
+}

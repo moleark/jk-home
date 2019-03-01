@@ -1,17 +1,16 @@
 import * as React from 'react';
 import { MainProduct, SubPack } from './model';
 
-export type Render<T> = (model:T) => JSX.Element;
+export type Render<T> = (model: T) => JSX.Element;
 
-export function renderMainProduct(model: MainProduct):JSX.Element {
-    let {product} = model;
+export function renderMainProduct(model: MainProduct): JSX.Element {
     return <div>
-        {product.discription}
+        {model.description}
     </div>
 }
 
-export function renderSubPack(model: SubPack):JSX.Element {
-    let {pack, vipPrice, price, quantity, amount} = model;
+export function renderSubPack(model: SubPack): JSX.Element {
+    let { pack, vipPrice, price, quantity, amount } = model;
     return <div>
         {pack.name}, {vipPrice}, {price}, {quantity}, {amount}
     </div>

@@ -10,11 +10,18 @@ import { CUser } from 'customer/CPerson';
 import { CMember } from 'member/CMember';
 import { WebUser } from 'CurrentUser';
 import { consts } from './home/consts';
+<<<<<<< HEAD
 import { Cart } from './cart/Cart';
 import { VPage, Page, nav } from 'tonva-tools';
+=======
+import { CartViewModel, CartService, CartRemoteService, CartLocalService, CartServiceFactory } from 'cart/Cart2';
+import { User, nav } from 'tonva-tools';
+>>>>>>> 4cf2bc45588dfa0a64ab0f6b14b95e2684016c42
 
 export class CCartApp extends CApp {
-    cart: Cart;
+    cartService: CartService;
+    cartViewModel: CartViewModel;
+    topKey: any;
 
     currentSalesRegion: any;
     currentLanguage: any;
@@ -55,10 +62,12 @@ export class CCartApp extends CApp {
         this.currentLanguage = await languageTuid.load(197);
 
         this.currentUser = new WebUser(this.cUqWebUser, this.cUqCustomer);
-        if (this.isLogined)
-            this.currentUser.user = this.user;
+        if (this.isLogined) {
+            this.currentUser.setUser(this.user);
+        }
 
-        this.cart = new Cart(this);
+        this.cartService = CartServiceFactory.getCartService(this);
+        this.cartViewModel = await this.cartService.load();
 
         this.cProductCategory = new CProductCategory(this, undefined);
         this.cCart = new CCart(this, undefined);
@@ -69,21 +78,38 @@ export class CCartApp extends CApp {
         this.cMember = new CMember(this, undefined);
 
         let promises: PromiseLike<void>[] = [];
-        promises.push(this.cart.load());
         promises.push(this.cProductCategory.start());
         await Promise.all(promises);
         */
         this.showMain();
+        this.topKey = nav.topKey();
     }
 
+<<<<<<< HEAD
     showMain(initTabName?: string){
         //this.openVPage(this.VAppMain, initTabName);
         this.clearPrevPages();
         this.openVPage(VMain);
+=======
+    showMain(initTabName?: string) {
+        this.openVPage(this.VAppMain, initTabName);
+>>>>>>> 4cf2bc45588dfa0a64ab0f6b14b95e2684016c42
+    }
+
+    async loginCallBack(user: User) {
+        if (this.cartService.isLocal) {
+            let cartLocal = this.cartViewModel;
+            this.cartService = CartServiceFactory.getCartService(this);
+            this.cartViewModel = await this.cartService.merge(cartLocal);
+        }
     }
 
     protected onDispose() {
+<<<<<<< HEAD
         if (this.cart !== undefined) this.cart.dispose();
+=======
+        this.cartViewModel.dispose();
+>>>>>>> 4cf2bc45588dfa0a64ab0f6b14b95e2684016c42
     }
 }
 
