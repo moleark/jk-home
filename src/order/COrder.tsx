@@ -39,17 +39,17 @@ export class COrder extends Controller {
     }
 
     private createOrderFromCart = async (cartItem: any[]) => {
-
-        this.orderData.webUser = this.cApp.currentUser.id;
-        this.orderData.customer = this.cApp.currentUser.currentCustomer.id;
+        let {currentUser} = this.cApp;
+        this.orderData.webUser = currentUser.id;
+        this.orderData.customer = currentUser.currentCustomer.id;
         let defaultSetting = undefined;
 
         if (this.orderData.shippingContact === undefined) {
-            defaultSetting = this.cApp.currentUser.getSetting();
+            defaultSetting = currentUser.getSetting();
             if (defaultSetting.defaultShippingContact) {
                 this.setContact(defaultSetting.defaultShippingContact, ContactType.ShippingContact);
             } else {
-                let contactArr: any[] = await this.cApp.currentUser.getContacts();
+                let contactArr: any[] = await currentUser.getContacts();
                 if (contactArr && contactArr.length > 0) {
                     this.setContact(contactArr[0].contact, ContactType.ShippingContact);
                 }
@@ -58,12 +58,12 @@ export class COrder extends Controller {
 
         if (this.orderData.invoiceContact === undefined) {
             if (defaultSetting === undefined) {
-                defaultSetting = this.cApp.currentUser.getSetting();
+                defaultSetting = currentUser.getSetting();
             }
             if (defaultSetting.defaultInvoiceContact) {
                 this.setContact(defaultSetting.defaultInvoiceContact, ContactType.InvoiceContact);
             } else {
-                let contactArr: any[] = await this.cApp.currentUser.getContacts();
+                let contactArr: any[] = await currentUser.getContacts();
                 if (contactArr && contactArr.length > 0) {
                     this.setContact(contactArr[0].contact, ContactType.InvoiceContact);
                 }

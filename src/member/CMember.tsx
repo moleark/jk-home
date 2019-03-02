@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Loadable from 'react-loadable';
-import { Controller, Loading } from 'tonva-tools';
+import { Controller, Loading, nav } from 'tonva-tools';
 import { VMember } from './VMember';
 import { CCartApp } from 'CCartApp';
 import { observable } from 'mobx';
@@ -26,11 +26,21 @@ export class CMember extends Controller {
         }
     }
 
+    private loginCallback = async () => {
+        nav.pop();
+        await this.internalStart(undefined);
+    }
+
     render = observer(() => {
         if (this.isLogined) {
             return this.member === undefined ? <Loading /> : this.renderView(VMember);
         } else {
-            return <div>请登录</div>;
+            return <div 
+                className="d-flex h-100 align-items-center justify-content-center text-muted">
+                <button 
+                    className="btn btn-primary"
+                    onClick={()=>nav.showLogin(this.loginCallback, true)}>登录</button>
+            </div>;
         }
     })
 
