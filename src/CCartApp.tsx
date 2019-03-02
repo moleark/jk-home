@@ -40,7 +40,6 @@ export class CCartApp extends CApp {
     cMember: CMember;
 
     protected async internalStart() {
-        /*
         this.cUqOrder = this.getCUq(consts.uqOrder);
         this.cUqProduct = this.getCUq(consts.uqProduct);
         this.cUqCommon = this.getCUq(consts.uqCommon);
@@ -75,7 +74,6 @@ export class CCartApp extends CApp {
         let promises: PromiseLike<void>[] = [];
         promises.push(this.cProductCategory.start());
         await Promise.all(promises);
-        */
         this.showMain();
         this.topKey = nav.topKey();
     }

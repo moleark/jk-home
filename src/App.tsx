@@ -6,8 +6,8 @@ import { startApp } from 'tonva-react-uq';
 import ui from './ui';
 //import { faceTabs } from 'facetabs';
 
-//const tonvaApp = "百灵威系统工程部/cart";
-const tonvaApp = "bruce/TestApp";
+const tonvaApp = "百灵威系统工程部/cart";
+//const tonvaApp = "bruce/TestApp";
 
 class App extends React.Component {
 

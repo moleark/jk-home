@@ -107,12 +107,6 @@ export class MinusPlusWidget extends UpdownWidget {
         return <div className="d-flex align-items-center">{minus}{input}{plus}
             {this.renderErrors()}
         </div>;
-        /*
-        return <div className="input-group w-6c">
-            <div className="input-group-prepend">{minus}</div>
-            {input}
-            <div className="input-group-append">{plus}</div>
-        </div>*/
     });
 
     render() {

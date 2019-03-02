@@ -24,8 +24,7 @@ class PageProducts extends PageItems<any> {
     }
 
     protected setPageStart(item: any): any {
-        if (item === undefined) return 0;
-        return item.id;
+        this.pageStart = item === undefined? 0 : item.id;
     }
 }
 

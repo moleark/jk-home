@@ -32,24 +32,20 @@ export class VProduct extends VPage<CProduct> {
     private renderProduct = (product: MainProductChemical) => {
 
         let { brand, description, CAS, purity, molecularFomula, molecularWeight, origin } = product;
-        return <div className="row d-flex mb-3 px-2">
-            <div className="col-12">
-                <div className="row py-2">
-                    <div className="col-12"><strong>{description}</strong></div>
+        return <div className="mb-3 px-2">
+            <div className="py-2"><strong>{description}</strong></div>
+            <div className="row">
+                <div className="col-3">
+                    <img src="favicon.ico" alt="structure" />
                 </div>
-                <div className="row">
-                    <div className="col-3">
-                        <img src="favicon.ico" alt="structure" />
-                    </div>
-                    <div className="col-9">
-                        <div className="row">
-                            {this.item('CAS', CAS)}
-                            {this.item('纯度', purity)}
-                            {this.item('分子式', molecularFomula)}
-                            {this.item('分子量', molecularWeight)}
-                            {this.item('产品编号', origin)}
-                            {renderBrand(brand)}
-                        </div>
+                <div className="col-9">
+                    <div className="row">
+                        {this.item('CAS', CAS)}
+                        {this.item('纯度', purity)}
+                        {this.item('分子式', molecularFomula)}
+                        {this.item('分子量', molecularWeight)}
+                        {this.item('产品编号', origin)}
+                        {renderBrand(brand)}
                     </div>
                 </div>
             </div>
@@ -77,9 +73,9 @@ export class VProduct extends VPage<CProduct> {
             else {
                 price = retail;
             }
-            right = <div className="d-block text-right">
-                <div className="pb-2 small text-muted">{retailUI}&nbsp; &nbsp; <span className="text-danger">¥ <span className="h5">{price}</span></span></div>
-                <div className="d-flex"><Field name="quantity" /></div>
+            right = <div className="row">
+                <div className="col-sm-6 pb-2 d-flex justify-content-end align-items-center"><small className="text-muted">{retailUI}</small>&nbsp; &nbsp; <span className="text-danger">¥ <span className="h5">{price}</span></span></div>
+                <div className="col-sm-6 pb-2 d-flex justify-content-end align-items-center"><Field name="quantity" /></div>
             </div >
         } else {
             right = <small>请询价</small>
@@ -97,12 +93,25 @@ export class VProduct extends VPage<CProduct> {
         } else {
             deliveryTimeUI = <div>{futureDeliveryTimeDescription && '期货: ' + futureDeliveryTimeDescription}</div>
         }
+        /*
         return <LMR className="mx-3" right={right}>
             <div className="d-flex flex-column justify-content-between h-100">
                 <div><b>{tv(pack)}</b></div>
                 <div>{deliveryTimeUI}</div>
             </div>
         </LMR>;
+        */
+        return <div className="px-2">
+            <div className="row">
+                <div className="col-6">
+                    <div><b>{tv(pack)}</b></div>
+                    <div>{deliveryTimeUI}</div>
+                </div>
+                <div className="col-6">
+                    {right}
+                </div>
+            </div>
+        </div>;
     }
 
     private onQuantityChanged = async (context: RowContext, value: any, prev: any) => {

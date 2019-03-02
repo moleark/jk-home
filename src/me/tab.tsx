@@ -1,13 +1,8 @@
 import * as React from 'react';
-//import {Media, PropGrid, Prop, FA, IconText, TonvaForm, FormRow, SubmitResult, Fields} from 'tonva-react-form';
-import { nav, User, Page, EditMeInfo } from 'tonva-tools';
+import { nav, User, Page, EditMeInfo, Image } from 'tonva-tools';
 import { Prop, Media, IconText, FA, PropGrid, LMR } from 'tonva-react-form';
-//import {store} from 'store';
-import { consts } from '../home/consts';
-//import mainApi from 'mainApi';
 import { About } from './about';
 import ChangePasswordPage from './changePassword';
-import { Image } from 'tonva-react-form/components/image';
 
 class Me extends React.Component {
     private exit() {
@@ -73,7 +68,7 @@ class Me extends React.Component {
                         }}>
                         <div>
                             <div>{userSpan(name, nick)}</div>
-                            <div>{id}</div>
+                            <div className="small"><span className="text-muted">ID:</span> {id>10000?id:String(id+10000).substr(1)}</div>
                         </div>
                     </LMR>
                 },

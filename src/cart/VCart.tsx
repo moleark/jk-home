@@ -118,7 +118,7 @@ export class VCart extends VPage<CCart> {
         let { cartViewModel } = this.controller.cApp;
         // let cartData = cart.data;
         let cartData = cartViewModel.data;
-        return <Form className="bg-white" schema={cartSchema} uiSchema={this.uiSchema} formData={cartData} />
+        return <Form className="bg-white flex-fill overflow-auto" schema={cartSchema} uiSchema={this.uiSchema} formData={cartData} />
     };
 
     private empty() {
@@ -155,7 +155,7 @@ export class VCart extends VPage<CCart> {
                 {this.empty()}
             </>;
         }
-        return <div className="bg-white">
+        return <div className="bg-white d-flex flex-column h-100">
             {header}
             <this.cartForm />
             <footer className="p-3"><this.CheckOutButton /></footer>
@@ -187,7 +187,7 @@ export function renderCartProduct(product: any, index: number) {
                         {productPropItem('CAS', CAS)}
                         {productPropItem('纯度', purity)}
                         {productPropItem('编号', origin)}
-                        {renderBrand}
+                        {renderBrand(brand)}
                     </div>
                 </div>
             </div>
