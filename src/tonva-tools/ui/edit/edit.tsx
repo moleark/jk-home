@@ -65,7 +65,7 @@ export class Edit extends React.Component<EditProps> {
         let value:any = this.props.data[name];
         switch (type) {
             default:
-                divValue = <b>{value}</b>;
+                divValue = value? <b>{value}</b> : <small className="text-muted">(无)</small>;
                 break;
             case 'image':
                 divValue = <Image className="w-4c h-4c" src={value} />;
@@ -73,7 +73,7 @@ export class Edit extends React.Component<EditProps> {
         }
         return <div className={this.rowContainerClassName} onClick={async ()=>await this.rowClick(itemSchema, uiItem, label, value)}>
             <div className="w-6c">{label}</div>
-            <div className="flex-fill text-right">{divValue}</div>
+            <div className="flex-fill d-flex justify-content-end">{divValue}</div>
             <div className="w-2c text-right"><i className="fa fa-chevron-right" /></div>
         </div>;
     }

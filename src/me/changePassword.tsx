@@ -1,3 +1,4 @@
+/*
 import * as React from 'react';
 import {Page, nav, Form, Context, Schema, UiSchema, UiPasswordItem} from 'tonva-tools';
 import center from './center';
@@ -67,3 +68,4 @@ export default class ChangePasswordPage extends React.Component {
         </Page>;
     }
 }
+*/

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { nav, User, Page, EditMeInfo, Image } from 'tonva-tools';
 import { Prop, Media, IconText, FA, PropGrid, LMR } from 'tonva-react-form';
 import { About } from './about';
-import ChangePasswordPage from './changePassword';
+//import ChangePasswordPage from './changePassword';
 
 class Me extends React.Component {
     private exit() {
@@ -16,8 +16,9 @@ class Me extends React.Component {
 
     private about = () => nav.push(<About />);
 
-    private changePassword = () => {
-        nav.push(<ChangePasswordPage />);
+    private changePassword = async () => {
+        await nav.changePassword();
+        // nav.push(<ChangePasswordPage />);
     }
     render() {
         const { user } = nav;
