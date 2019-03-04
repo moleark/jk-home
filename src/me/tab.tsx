@@ -2,11 +2,11 @@ import * as React from 'react';
 import { nav, User, Page, EditMeInfo, Image } from 'tonva-tools';
 import { Prop, Media, IconText, FA, PropGrid, LMR } from 'tonva-react-form';
 import { About } from './about';
-import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import { jnkTop } from './loginTop';
 //import ChangePasswordPage from './changePassword';
 
+@observer
 class Me extends React.Component {
     private exit() {
         nav.showLogout();
