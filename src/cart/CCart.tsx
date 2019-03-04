@@ -4,6 +4,7 @@ import { CCartApp } from 'CCartApp';
 import { VCart } from './VCart';
 import { Controller, RowContext, nav, User } from 'tonva-tools';
 import { CartPackRow } from './Cart';
+import { jnkTop } from 'me/loginTop';
 
 export class CCart extends Controller {
 
@@ -65,7 +66,7 @@ export class CCart extends Controller {
     checkOut = async () => {
 
         if (!this.isLogined) {
-            nav.showLogin(this.loginCallback, true);
+            nav.showLogin(this.loginCallback, jnkTop, true);
         } else {
             let { cartViewModel, cOrder } = this.cApp;
             let selectCartItem = cartViewModel.getSelectItem();

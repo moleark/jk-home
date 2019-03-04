@@ -13,6 +13,7 @@ const ui: AppUI = {
         '百灵威系统工程部/order': orderUI,
         '百灵威系统工程部/product': productUI,
         '百灵威系统工程部/customer': customerUI,
+        '百灵威系统工程部/webUser': customerUI,
         '百灵威系统工程部/warehouse': warehouseUI,
     }
 }

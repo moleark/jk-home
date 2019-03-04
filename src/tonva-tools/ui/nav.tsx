@@ -19,7 +19,7 @@ import '../css/animation.css';
 
 const regEx = new RegExp('Android|webOS|iPhone|iPad|' +
     'BlackBerry|Windows Phone|'  +
-    'Opera Mini|IEMobile|Mobile' , 
+    'Opera Mini|IEMobile|Mobile' ,
     'i');
 const isMobile = regEx.test(navigator.userAgent);
 export const mobileHeaderStyle = isMobile? {
@@ -148,7 +148,7 @@ export class NavView extends React.Component<Props, State> {
         let key = stackKey++;
         this.stack.push({
             key: key,
-            view: view, 
+            view: view,
             ceased: false,
             disposer: disposer
         });
@@ -166,8 +166,8 @@ export class NavView extends React.Component<Props, State> {
         }
         let key = stackKey++;
         this.stack.push({
-            key: key, 
-            view: view, 
+            key: key,
+            view: view,
             ceased: false,
             disposer: disposer
         });
@@ -438,7 +438,7 @@ export class Nav {
         this.resUrl = 'http://' + resHost + '/res/';
         this.wsHost = ws;
         setCenterUrl(url);
-        
+
         let unit = await this.loadUnit();
         meInFrame.unit = unit;
 
@@ -518,9 +518,9 @@ export class Nav {
         }
     }
 
-    async showLogin(callback?: (user:User)=>Promise<void>, withBack?:boolean) {
+    async showLogin(callback?: (user:User)=>Promise<void>, top?: any, withBack?:boolean) {
         let lv = await import('../entry/login');
-        let loginView = <lv.default withBack={withBack} callback={callback} />;
+        let loginView = <lv.default withBack={withBack} callback={callback} top={top} />;
         if (withBack !== true) {
             this.nav.clear();
             this.pop();
@@ -629,7 +629,7 @@ export class Nav {
                     <i className="fa fa-arrow-left" />
                 </span>
                 <iframe src={uh.url} />
-            </article>, 
+            </article>,
             ()=> {
                 resolve();
             });

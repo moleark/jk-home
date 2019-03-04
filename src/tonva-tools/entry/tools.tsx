@@ -16,7 +16,7 @@ interface Sender {
 }
 const senders:Sender[] = [
     {type:'mobile', caption:'手机号', regex: /^[0-9]*$/},
-    {type:'email', caption:'邮箱', regex: /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/}
+    {type:'email', caption:'邮箱', regex: /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/}
 ];
 
 export function getSender(un: string):Sender {

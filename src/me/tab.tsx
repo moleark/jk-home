@@ -2,6 +2,9 @@ import * as React from 'react';
 import { nav, User, Page, EditMeInfo, Image } from 'tonva-tools';
 import { Prop, Media, IconText, FA, PropGrid, LMR } from 'tonva-react-form';
 import { About } from './about';
+import { observable } from 'mobx';
+import { observer } from 'mobx-react';
+import { jnkTop } from './loginTop';
 //import ChangePasswordPage from './changePassword';
 
 class Me extends React.Component {
@@ -20,6 +23,23 @@ class Me extends React.Component {
         await nav.changePassword();
         // nav.push(<ChangePasswordPage />);
     }
+
+    private meComponent = observer(() => {
+        let { user } = nav;
+        let { name, nick, id, icon } = user;
+        return <LMR className="py-2 cursor-pointer w-100"
+            left={<Image className="w-3c h-3c mr-3" src={icon} />}
+            right={<FA className="align-self-end" name="chevron-right" />}
+            onClick={() => {
+                nav.push(<EditMeInfo />)
+            }}>
+            <div>
+                <div>{userSpan(name, nick)}</div>
+                <div className="small"><span className="text-muted">ID:</span> {id > 10000 ? id : String(id + 10000).substr(1)}</div>
+            </div>
+        </LMR>
+    });
+
     render() {
         const { user } = nav;
         let aboutRows: Prop[] = [
@@ -49,29 +69,18 @@ class Me extends React.Component {
             rows.push(
                 {
                     type: 'component',
-                    component: <button className="btn btn-success w-100" onClick={() => nav.showLogin(undefined, true)}>
+                    component: <button className="btn btn-success w-100" onClick={() => nav.showLogin(undefined, jnkTop, true)}>
                         <FA name="sign-out" size="lg" /> 请登录
                     </button>
                 },
             );
         }
         else {
-            let { name, nick, id, icon } = user;
             rows = [
                 '',
                 {
                     type: 'component',
-                    component: <LMR className="py-2 cursor-pointer w-100"
-                        left={<Image className="w-3c h-3c mr-3" src={icon} />}
-                        right={<FA className="align-self-end" name="chevron-right" />}
-                        onClick={() => {
-                            nav.push(<EditMeInfo />)
-                        }}>
-                        <div>
-                            <div>{userSpan(name, nick)}</div>
-                            <div className="small"><span className="text-muted">ID:</span> {id>10000?id:String(id+10000).substr(1)}</div>
-                        </div>
-                    </LMR>
+                    component: <this.meComponent />
                 },
                 '',
                 {

@@ -15,7 +15,7 @@ export class VCreateOrder extends VPage<COrder> {
     }
 
     private nullContact = () => {
-        return <>请点击此处输入收货地址</>
+        return <span className="text-primary">选择收货地址</span>;
     }
 
     private renderProduct = (product: any) => <strong>{product.description}</strong>
@@ -71,14 +71,16 @@ export class VCreateOrder extends VPage<COrder> {
         </div>;
         let chevronRight = <FA name="chevron-right" />
 
-        let shippingAddressBlankTip = this.controller.shippingAddressIsBlank ? <div className="text-danger small my-2"><FA name="exclamation-circle" /> 必须填写收货地址</div> : null;
+        let shippingAddressBlankTip = this.controller.shippingAddressIsBlank ?
+            <div className="text-danger small my-2"><FA name="exclamation-circle" /> 必须填写收货地址</div>
+            : null;
         let invoiceAddressBlankTip = this.controller.invoiceAddressIsBlank ? <div className="text-danger small my-2"><FA name="exclamation-circle" /> 必须填写发票地址</div> : null;
         let divInvoice: any = null;
         if (this.controller.useShippingAddress === false) {
             if (orderData.invoiceContact !== undefined) {
                 divInvoice = <div className="col-12 col-sm-10 offset-sm-2 pl-4 pl-sm-0 d-flex">
                     {tv(orderData.invoiceContact, undefined, undefined, this.nullContact)}
-                    {chevronRight}
+                    <div className="">{chevronRight}</div>
                 </div>
             } else {
                 divInvoice = <div className="col-8 pl-4 pl-sm-0 offset-4 offset-sm-2">
@@ -119,10 +121,9 @@ export class VCreateOrder extends VPage<COrder> {
         return <Page header="订单预览" footer={footer}>
             <div className="row px-3 py-3 bg-white mb-1" onClick={() => openContactList(ContactType.ShippingContact)}>
                 <div className="col-12 col-sm-2 text-muted">收货地址:</div>
-                <div className="col-12 col-sm-10 pl-4 pl-sm-0 d-flex">
-                    {tv(orderData.shippingContact, undefined, undefined, this.nullContact)}
+                <div className="col-12 col-sm-10 pl-4 pt-2 pl-sm-0">
+                    <LMR className="w-100 align-items-center" right={chevronRight}>{tv(orderData.shippingContact, undefined, undefined, this.nullContact)}</LMR>
                     {shippingAddressBlankTip}
-                    {chevronRight}
                 </div>
             </div>
             {invoiceContactUI}

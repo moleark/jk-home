@@ -26,8 +26,9 @@ export class VProductList extends VPage<CProduct> {
         let { pageProducts, cApp } = this.controller;
         let header = cApp.cHome.renderSearchHeader();
         let cart = cApp.cCart.renderCartLabel();
+        let none = <div className="my-3 mx-2 text-warning">抱歉，未找到相关产品，请重新搜索！</div>
         return <Page header={header} right={cart} onScrollBottom={this.onScrollBottom}>
-            <List before={''} items={pageProducts} item={{ render: renderProduct, onClick: this.onProductClick }} />
+            <List before={''} none={none} items={pageProducts} item={{ render: renderProduct, onClick: this.onProductClick }} />
         </Page>
     });
 }
