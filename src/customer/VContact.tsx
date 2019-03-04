@@ -12,7 +12,7 @@ const schema: Schema = [
     { name: 'address', type: 'id', required: false },
     { name: 'addressString', type: 'string', required: true },
     { name: 'isDefault', type: 'boolean', required: false },
-    { name: 'submit', type: 'submit' },
+    // { name: 'submit', type: 'submit' },
 ]
 
 const uiSchema: UiSchema = {
@@ -46,6 +46,7 @@ const uiSchema: UiSchema = {
 export class VContact extends VPage<CUser> {
 
     private contactData: any = {};
+    private form: Form;
 
     async open(userContactData: any) {
 
@@ -66,6 +67,8 @@ export class VContact extends VPage<CUser> {
     }
 
     private saveContact = async () => {
+        if (!this.form) return;
+        await this.form.buttonClick("submit");
     }
     private onFormButtonClick = async (name: string, context: Context) => {
         await this.controller.saveContact(context.form.data);
@@ -76,7 +79,7 @@ export class VContact extends VPage<CUser> {
         let footer = <button type="button" className="btn btn-primary w-100" onClick={this.saveContact}>保存并使用</button>
         return <Page header="添加收货人" footer={footer}>
             <div className="App-container container text-left">
-                <Form schema={schema} uiSchema={uiSchema} formData={this.contactData}
+                <Form ref={v => this.form = v } schema={schema} uiSchema={uiSchema} formData={this.contactData}
                     onButtonClick={this.onFormButtonClick} fieldLabelSize={3} className="my-3" />
             </div>
         </Page>

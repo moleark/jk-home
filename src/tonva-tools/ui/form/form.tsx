@@ -49,11 +49,11 @@ export class Form extends React.Component<FormProps> {
 
     constructor(props:FormProps) {
         super(props);
-        let {schema, uiSchema, formData, 
-            Container, FieldContainer, FieldClass, 
-            ButtonClass, 
+        let {schema, uiSchema, formData,
+            Container, FieldContainer, FieldClass,
+            ButtonClass,
             res,
-            //ArrContainer, RowContainer, //ArrFieldContainer, 
+            //ArrContainer, RowContainer, //ArrFieldContainer,
             //RowSeperator,
         } = props;
         this.Container = Container || this.DefaultContainer;
@@ -203,7 +203,7 @@ export class Form extends React.Component<FormProps> {
             alert(`you should define form onButtonClick`);
             return;
         }
-        let ret = await onButtonClick(buttonName, this.context);
+        let ret = await onButtonClick(buttonName, this.formContext);
         if (ret === undefined) return;
         this.formContext.setError(buttonName, ret);
     }

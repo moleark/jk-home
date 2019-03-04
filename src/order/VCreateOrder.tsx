@@ -91,7 +91,7 @@ export class VCreateOrder extends VPage<COrder> {
         }
 
         let invoiceContactUI = <div className="row px-3 py-1 bg-white mb-1">
-            <div className="col-4 col-sm-2 text-muted">发票地址:</div>
+            <div className="col-4 col-sm-2 pb-2 text-muted">发票地址:</div>
             <div className="col-8 col-sm-8 pl-4 pl-sm-0">
                 <div>
                     <label>
@@ -120,8 +120,8 @@ export class VCreateOrder extends VPage<COrder> {
         */
         return <Page header="订单预览" footer={footer}>
             <div className="row px-3 py-3 bg-white mb-1" onClick={() => openContactList(ContactType.ShippingContact)}>
-                <div className="col-12 col-sm-2 text-muted">收货地址:</div>
-                <div className="col-12 col-sm-10 pl-4 pt-2 pl-sm-0">
+                <div className="col-12 col-sm-2 pb-2 text-muted">收货地址:</div>
+                <div className="col-12 col-sm-10 pl-4 pl-sm-0">
                     <LMR className="w-100 align-items-center" right={chevronRight}>{tv(orderData.shippingContact, undefined, undefined, this.nullContact)}</LMR>
                     {shippingAddressBlankTip}
                 </div>

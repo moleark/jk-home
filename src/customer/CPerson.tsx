@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TuidMain } from 'tonva-react-uq';
+import { TuidMain, BoxId } from 'tonva-react-uq';
 import { VAddressList } from './VAddressList';
 import { CCartApp } from 'CCartApp';
 import { VContact } from './VContact';
@@ -53,21 +53,25 @@ export class CUser extends Controller {
     saveContact = async (contact: any) => {
 
         let contactWithId = await this.contactTuid.save(undefined, contact);
-        await this.cApp.currentUser.addContact(contactWithId.id);
+        let { id: contactId } = contactWithId;
+
+        let { currentUser } = this.cApp;
+        await currentUser.addContact(contactId);
         if (contact.isDefault === true) {
             if (this.contactType === ContactType.ShippingContact)
-                await this.cApp.currentUser.setDefaultShippingContact(contactWithId.id);
+                await currentUser.setDefaultShippingContact(contactId);
             else
-                await this.cApp.currentUser.setDefaultInvoiceContact(contactWithId.id);
+                await currentUser.setDefaultInvoiceContact(contactId);
         }
         if (contact.id !== undefined) {
-            this.cApp.currentUser.delContact(contact.id);
+            currentUser.delContact(contact.id);
         }
         this.backPage();
-        this.onContactSelected(contactWithId);
+        let contactBox = this.contactTuid.boxId(contactId);
+        this.onContactSelected(contactBox);
     }
 
-    onContactSelected = (contact: any) => {
+    onContactSelected = (contact: BoxId) => {
 
         let { cOrder } = this.cApp;
         cOrder.setContact(contact, this.contactType);
