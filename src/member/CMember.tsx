@@ -5,6 +5,7 @@ import { VMember } from './VMember';
 import { CCartApp } from 'CCartApp';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
+import { FA } from 'tonva-react-form';
 
 export class CMember extends Controller {
 
@@ -36,10 +37,14 @@ export class CMember extends Controller {
             return this.member === undefined ? <Loading /> : this.renderView(VMember);
         } else {
             return <div 
-                className="d-flex h-100 align-items-center justify-content-center text-muted">
-                <button 
-                    className="btn btn-primary"
-                    onClick={()=>nav.showLogin(this.loginCallback, true)}>登录</button>
+                className="d-flex h-100 flex-column align-items-center justify-content-center">
+                <div className="flex-fill" />
+                <button className="btn btn-success w-25"
+                    onClick={()=>nav.showLogin(this.loginCallback, true)}>
+                    <FA name="sign-out" size="lg" /> 请登录
+                </button>
+                <div className="flex-fill" />
+                <div className="flex-fill" />
             </div>;
         }
     })

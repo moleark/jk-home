@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { nav, Page, Form, Schema, UiSchema, UiTextItem, UiPasswordItem, Context, UiButton, resLang, StringSchema } from '../ui';
 import { RegisterController, ForgetController } from './register';
-//import Forget from './forget';
 import userApi from './userApi';
 import { LoginRes, loginRes } from './res';
 import { tonvaTop, getSender } from './tools';
@@ -15,8 +14,8 @@ const schema: Schema = [
 
 export interface LoginProps {
     withBack?: boolean;
+    callback?: (user:User) => Promise<void>;
     top?: any;
-    callback?: (user: User) => Promise<void>
 }
 
 export default class Login extends React.Component<LoginProps> {
@@ -66,24 +65,26 @@ export default class Login extends React.Component<LoginProps> {
                 注册账号
             </button>
         </div>;
-        let header: string | boolean | JSX.Element = false;
+        let header:string|boolean|JSX.Element = false;
         if (this.props.withBack === true) {
             header = '登录';
         }
-        let { top } = this.props;
-        if (top === undefined) {
-            top = tonvaTop;
-        }
+        let {top} = this.props;
+        if (top !== undefined) top = tonvaTop;
         return <Page header={header} footer={footer}>
-            <div className="w-max-20c my-5 py-5"
-                style={{ marginLeft: 'auto', marginRight: 'auto' }}>
-                {top}
-                <div className="h-3c" />
-                <Form schema={schema} uiSchema={this.uiSchema} onButtonClick={this.onSubmit} requiredFlag={false} />
-                <button className="btn btn-link btn-block"
-                    onClick={() => this.clickForget()}>
-                    忘记密码
-                </button>
+            <div className="d-flex h-100 flex-column justify-content-center align-items-center">
+                <div className="flex-fill" />
+                <div className="w-20c">
+                    {top}
+                    <div className="h-2c" />
+                    <Form schema={schema} uiSchema={this.uiSchema} onButtonClick={this.onSubmit} requiredFlag={false} />
+                    <button className="btn btn-link btn-block"
+                        onClick={() => this.clickForget()}>
+                        忘记密码
+                    </button>
+                </div>
+                <div className="flex-fill" />
+                <div className="flex-fill" />
             </div>
         </Page>;
     }

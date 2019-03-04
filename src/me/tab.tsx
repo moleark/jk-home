@@ -23,10 +23,10 @@ class Me extends React.Component {
         await nav.changePassword();
         // nav.push(<ChangePasswordPage />);
     }
-
-    private meComponent = observer(() => {
-        let { user } = nav;
-        let { name, nick, id, icon } = user;
+    private meInfo = observer(() => {
+        let {user} = nav;
+        if (user === undefined) return null;
+        let {id, name, nick, icon} = user;
         return <LMR className="py-2 cursor-pointer w-100"
             left={<Image className="w-3c h-3c mr-3" src={icon} />}
             right={<FA className="align-self-end" name="chevron-right" />}
@@ -35,11 +35,10 @@ class Me extends React.Component {
             }}>
             <div>
                 <div>{userSpan(name, nick)}</div>
-                <div className="small"><span className="text-muted">ID:</span> {id > 10000 ? id : String(id + 10000).substr(1)}</div>
+                <div className="small"><span className="text-muted">ID:</span> {id>10000?id:String(id+10000).substr(1)}</div>
             </div>
-        </LMR>
+        </LMR>;
     });
-
     render() {
         const { user } = nav;
         let aboutRows: Prop[] = [
@@ -80,7 +79,7 @@ class Me extends React.Component {
                 '',
                 {
                     type: 'component',
-                    component: <this.meComponent />
+                    component: <this.meInfo />
                 },
                 '',
                 {

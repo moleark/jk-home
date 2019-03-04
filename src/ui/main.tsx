@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { VPage, TabCaptionComponent, Page, Tabs } from 'tonva-tools';
 import { CCartApp } from 'CCartApp';
-import { observable } from 'mobx';
 import { meTab } from '../me';
 
 export const store = {

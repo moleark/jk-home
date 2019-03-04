@@ -136,13 +136,19 @@ export class VCart extends VPage<CCart> {
 
     private page = observer((params: any): JSX.Element => {
         let { cartViewModel: cart } = this.controller.cApp;
+        let footer:any, content:any;
         if (cart.count.get() === 0) {
-            return <Page header="购物车">{this.empty()}</Page>;
+            content = this.empty();
+            footer = undefined;
         }
-        return <Page header="购物车" footer={<this.CheckOutButton />}>
-            <this.cartForm />
+        else {
+            content = <this.cartForm />;
+            footer = <this.CheckOutButton />;
+        }
+        return <Page header="购物车" footer={footer}>
+            {content}
         </Page>;
-    });
+    })
 
     private tab = observer(() => {
         let { cartViewModel: cart } = this.controller.cApp;
