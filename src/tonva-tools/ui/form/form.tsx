@@ -37,8 +37,7 @@ export class Form extends React.Component<FormProps> {
     //private content: any;
     //private formData: any;
     private disposer: IReactionDisposer;
-    //@observable 
-    readonly data:any;
+    @observable readonly data:any;
 
     readonly Container: (content:JSX.Element) => JSX.Element;
     readonly FieldContainer: (label:any, content:JSX.Element) => JSX.Element;
