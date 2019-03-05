@@ -114,12 +114,19 @@ export class VCart extends VPage<CCart> {
         }
     }
 
-    protected cartForm = () => {
+    protected cartForm = observer(() => {
         let { cartViewModel } = this.controller.cApp;
         // let cartData = cart.data;
-        let cartData = cartViewModel.data;
+        let {data:cartData} = cartViewModel;
+        let {list} = cartData;
+        let q = 0;
+        for (let item of list) {
+            for (let pack of item.packs) {
+                q += pack.quantity;
+            }
+        }
         return <Form className="bg-white flex-fill overflow-auto" schema={cartSchema} uiSchema={this.uiSchema} formData={cartData} />
-    };
+    });
 
     private empty() {
         return <div className="py-5 text-center bg-white">你的购物车空空如也</div>
