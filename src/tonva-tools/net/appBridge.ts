@@ -171,16 +171,6 @@ export function appUrl(url: string, unitId: number, page?:string, param?:any[]):
     return {url: url, hash: u};
 }
 
-export async function loadAppUqs(appOwner:string, appName): Promise<App> {
-    let centerAppApi = new CenterAppApi('tv/', undefined);
-    let unit = meInFrame.unit;
-    let ret = await centerAppApi.uqs(unit, appOwner, appName);
-    centerAppApi.checkUqs(unit, appOwner, appName).then(v => {
-        if (v === false) nav.start();
-    });
-    return ret;
-}
-
 export async function appUq(uq:string, uqOwner:string, uqName:string): Promise<UqToken> {
     let uqToken = uqTokens[uq];
     if (uqToken !== undefined) return uqToken;
