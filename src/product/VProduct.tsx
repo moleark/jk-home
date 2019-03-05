@@ -121,7 +121,7 @@ export class VProduct extends VPage<CProduct> {
         let { cApp } = this.controller;
         let { cartService, cartViewModel } = cApp;
         if (value > 0) {
-            await cartService.AddToCart(cartViewModel, this.product.id, pack.id, value, price, currency);
+            await cartService.addToCart(cartViewModel, this.product.id, pack.id, value, price, currency);
         } else {
             await cartService.removeFromCart(cartViewModel, [{ productId: this.product.id, packId: pack.id }]);
         }

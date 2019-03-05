@@ -41,7 +41,7 @@ export class CCart extends Controller {
         // await this.cart.AddToCart(product.id, pack.id, value, price, currency);
         let { cartViewModel, cartService } = this.cApp;
         if (value > 0) {
-            await cartService.AddToCart(cartViewModel, product.id, pack.id, value, price, currency);
+            await cartService.addToCart(cartViewModel, product.id, pack.id, value, price, currency);
         } else {
             await cartService.removeFromCart(cartViewModel, [{ productId: product.id, packId: pack.id }]);
         }

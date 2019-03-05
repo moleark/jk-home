@@ -174,7 +174,7 @@ export abstract class CartService {
         return cartItem;
     }
 
-    abstract async AddToCart(cartViewModel: CartViewModel, productId: number, packId: number, quantity: number, price: number, currency: any);
+    abstract async addToCart(cartViewModel: CartViewModel, productId: number, packId: number, quantity: number, price: number, currency: any);
 
     abstract async removeFromCart(cartViewModel: CartViewModel, rows: [{ productId: number, packId: number }]);
 
@@ -227,7 +227,7 @@ export class CartRemoteService extends CartService {
      * @param pack 要添加到购物车中的包装
      * @param quantity 要添加到购物车中包装的个数
      */
-    async AddToCart(cartViewModel: CartViewModel, productId: number, packId: number, quantity: number, price: number, currency: any) {
+    async addToCart(cartViewModel: CartViewModel, productId: number, packId: number, quantity: number, price: number, currency: any) {
         let param = {
             product: productId,
             pack: packId,
@@ -298,7 +298,7 @@ export class CartLocalService extends CartService {
         }
     }
 
-    async AddToCart(cartViewModel: CartViewModel, productId: number, packId: number, quantity: number, price: number, currency: any) {
+    async addToCart(cartViewModel: CartViewModel, productId: number, packId: number, quantity: number, price: number, currency: any) {
 
         let cartItem: CartItem = await this.generateCartItem(productId
             , [{ pack: packId, price: price, quantity: quantity, currency: currency && currency.id }]);
