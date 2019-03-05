@@ -503,6 +503,7 @@ export class Nav {
     }
 
     async logined(user: User, callback?: (user:User)=>Promise<void>) {
+        logoutApis();
         let ws:WSChannel = this.ws = new WSChannel(this.wsHost, user.token);
         ws.connect();
 
@@ -543,7 +544,6 @@ export class Nav {
         this.local.logoutClear();
         this.user = undefined; //{} as User;
         logoutApis();
-        logoutUqTokens();
         let guest = this.local.guest.get();
         setCenterToken(0, guest && guest.token);
         this.ws = undefined;

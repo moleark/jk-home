@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import {HttpChannel} from './httpChannel';
 import {HttpChannelUI, HttpChannelNavUI} from './httpChannelUI';
-import {appUq, meInFrame} from './appBridge';
+import {appUq, meInFrame, logoutUqTokens} from './appBridge';
 import {ApiBase} from './apiBase';
 import { host } from './host';
 import { nav } from '../ui';
@@ -13,6 +13,7 @@ export function logoutApis() {
     channelUIs = {};
     channelNoUIs = {};
     logoutUnitxApis();
+    logoutUqTokens();
 }
 
 interface UqLocal {
@@ -102,7 +103,6 @@ class CacheUqLocals {
             return false;
         }
         return isMatch;
-
     }
 }
 
