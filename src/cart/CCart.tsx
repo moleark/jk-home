@@ -3,12 +3,14 @@ import { VCartLabel } from './VCartLabel';
 import { CCartApp } from 'CCartApp';
 import { VCart } from './VCart';
 import { Controller, RowContext, nav, User } from 'tonva-tools';
-import { CartPackRow } from './Cart';
+import { CartPackRow, CartItem } from './Cart';
 import { jnkTop } from 'me/loginTop';
+import { async } from 'q';
 
 export class CCart extends Controller {
 
     cApp: CCartApp;
+    private selectedCartItems: CartItem[];
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
@@ -50,9 +52,11 @@ export class CCart extends Controller {
     }
 
     private loginCallback = async (user: User): Promise<void> => {
-        await this.cApp.currentUser.setUser(user);
+        let { cApp } = this;
+        await cApp.currentUser.setUser(user);
+        await cApp.loginCallBack(user);
         this.closePage(1);
-        await this.checkOut();
+        await this.doCheckOut();
     };
 
     onProductClick(productId: number) {
@@ -60,19 +64,25 @@ export class CCart extends Controller {
         cProduct.showProductDetail(productId);
     }
 
-    /**
-     * 导航到CheckOut界面
-     */
     checkOut = async () => {
-
+        let { cartViewModel } = this.cApp;
+        this.selectedCartItems = cartViewModel.getSelectItem();
+        if (this.selectedCartItems === undefined) return;
         if (!this.isLogined) {
             nav.showLogin(this.loginCallback, jnkTop, true);
         } else {
-            let { cartViewModel, cOrder } = this.cApp;
-            let selectCartItem = cartViewModel.getSelectItem();
-            if (selectCartItem === undefined) return;
-            await cOrder.start(selectCartItem);
+            this.doCheckOut();
         }
+    }
+
+    /**
+     * 导航到CheckOut界面
+     */
+    private doCheckOut = async () => {
+
+        let { cOrder } = this.cApp;
+        if (this.selectedCartItems === undefined) return;
+        await cOrder.start(this.selectedCartItems);
     }
 
     tab = () => <this.renderCart />

@@ -84,9 +84,11 @@ export class CCartApp extends CApp {
 
     async loginCallBack(user: User) {
         if (this.cartService.isLocal) {
-            let cartLocal = this.cartViewModel;
+            let cartLocal = { ...this.cartViewModel } as CartViewModel;
+            // this.cartService.clear(this.cartViewModel);
             this.cartService = CartServiceFactory.getCartService(this);
-            this.cartViewModel = await this.cartService.merge(cartLocal);
+            this.cartViewModel = await this.cartService.load();
+            // this.cartViewModel = await this.cartService.merge(cartLocal);
         }
     }
 

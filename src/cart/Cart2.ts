@@ -178,6 +178,8 @@ export abstract class CartService {
 
     abstract async removeFromCart(cartViewModel: CartViewModel, rows: [{ productId: number, packId: number }]);
 
+    abstract async clear(cartViewModel: CartViewModel);
+
     abstract async merge(source: CartViewModel);
 }
 
@@ -252,6 +254,17 @@ export class CartRemoteService extends CartService {
         }
     }
 
+    async clear(cartViewModel: CartViewModel) {
+        let param = cartViewModel.cartItems.map(v => {
+            let { product, packs } = v;
+            return {
+                product: product,
+                ...packs
+            }
+        })
+        await this.removeFromCartAction.submit({ rows: param });
+    }
+
     async merge(source: CartViewModel) {
         let param = source.cartItems.map(v => {
             let { product, packs } = v;
@@ -320,7 +333,7 @@ export class CartLocalService extends CartService {
         localStorage.setItem(LOCALCARTNAME, text);
     }
 
-    clear() {
+    clear(cartViewModel: CartViewModel) {
         localStorage.removeItem(LOCALCARTNAME);
     }
 
