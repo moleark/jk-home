@@ -16,7 +16,7 @@ export class CartViewModel {
     private disposer: IReactionDisposer;
 
     cartItems: CartItem[];
-    @observable data: any = {
+    @observable data = {
         list: observable<CartItem>([]),
     };
     count = observable.box<number>(0);
