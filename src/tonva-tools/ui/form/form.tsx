@@ -37,7 +37,8 @@ export class Form extends React.Component<FormProps> {
     //private content: any;
     //private formData: any;
     private disposer: IReactionDisposer;
-    @observable readonly data:any;
+    //@observable 
+    readonly data:any;
 
     readonly Container: (content:JSX.Element) => JSX.Element;
     readonly FieldContainer: (label:any, content:JSX.Element) => JSX.Element;
@@ -70,10 +71,10 @@ export class Form extends React.Component<FormProps> {
         this.disposer = autorun(this.watch);
         this.data = {};
         // this.initRender();
-        this.initData(this.props.formData);
     }
 
     private renderContent():any {
+        this.initData(this.props.formData);
         let {children} = this.props;
         if (children !== undefined) {
             this.formContext = new FormContext(this, true);
