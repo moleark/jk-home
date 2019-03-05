@@ -6,6 +6,7 @@ import { CCartApp } from 'CCartApp';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import { FA } from 'tonva-react-form';
+import { jnkTop } from 'me/loginTop';
 
 export class CMember extends Controller {
 
@@ -36,11 +37,11 @@ export class CMember extends Controller {
         if (this.isLogined) {
             return this.member === undefined ? <Loading /> : this.renderView(VMember);
         } else {
-            return <div 
+            return <div
                 className="d-flex h-100 flex-column align-items-center justify-content-center">
                 <div className="flex-fill" />
                 <button className="btn btn-success w-25"
-                    onClick={()=>nav.showLogin(this.loginCallback, true)}>
+                    onClick={()=>nav.showLogin(this.loginCallback, jnkTop, true)}>
                     <FA name="sign-out" size="lg" /> 请登录
                 </button>
                 <div className="flex-fill" />

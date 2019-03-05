@@ -2,6 +2,17 @@ import * as React from 'react';
 import { VPage, Image } from 'tonva-tools';
 import { CMember } from './CMember';
 import { LMR, Muted, FA, Media } from 'tonva-react-form';
+import pig from '../images/pig.png';
+
+const stylePig: React.CSSProperties = {
+    width: '100%',
+    height: '20rem',
+    backgroundImage: `url(${pig})`,
+    backgroundSize: 'contain',
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    opacity: 0.09,
+    position: 'absolute',
+}
 
 export class VMember extends VPage<CMember> {
 
@@ -20,14 +31,17 @@ export class VMember extends VPage<CMember> {
             return <></>;
         let { currentUser } = cApp;
         let { recommendationCode, point } = member;
+        if (!point) point = 0;
 
         let im = <Image className="mr-3 w-3c h-3c" src={currentUser.icon} />;
         let inviteCode = <div className="small">邀请码: {recommendationCode}</div>;
 
-        let divPoints = <div className="my-3 p-4 text-center bg-white">
-            <div>
-                <small className="muted">积分: </small>
-                <span className="text-danger" style={{fontSize:'2rem'}}>{point}</span>
+        let divPoints = <div className="my-3 text-center bg-white h-25" style={{position: 'relative'}}>
+            <div className="w-100 bg-white h-20c" style={{position: 'absolute'}} />
+            <div className="d-flex align-items-center justify-content-center" style={stylePig}/>
+            <div className="w-100 d-flex align-items-center justify-content-center h-20c" style={{position: 'absolute'}}>
+                <div className="muted mr-3 small">积分: </div>
+                <div className="text-danger" style={{ fontSize: '2rem' }}>{point}</div>
             </div>
         </div>
 
