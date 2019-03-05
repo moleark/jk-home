@@ -22,12 +22,12 @@ export default class Login extends React.Component<LoginProps> {
     private res: LoginRes = resLang(loginRes);
     private uiSchema: UiSchema = {
         items: {
-            username: {placeholder: '手机/邮箱/用户名', label: '登录账号'} as UiTextItem, 
+            username: {placeholder: '手机/邮箱/用户名', label: '登录账号'} as UiTextItem,
             password: {widget: 'password', placeholder: '密码', label: '密码'} as UiPasswordItem,
             login: {widget: 'button', className: 'btn btn-primary btn-block mt-3', label: '登录'} as UiButton,
         }
     }
-    
+
     private onSubmit = async (name:string, context:Context):Promise<string> => {
         let values = context.form.data;
         let un = values['username'];
@@ -36,7 +36,7 @@ export default class Login extends React.Component<LoginProps> {
             return 'something wrong, pwd is undefined';
         }
         let user = await userApi.login({
-            user: un, 
+            user: un,
             pwd: pwd,
             guest: nav.guest,
         });
@@ -70,7 +70,7 @@ export default class Login extends React.Component<LoginProps> {
             header = '登录';
         }
         let {top} = this.props;
-        if (top !== undefined) top = tonvaTop;
+        if (top === undefined) top = tonvaTop;
         return <Page header={header} footer={footer}>
             <div className="d-flex h-100 flex-column justify-content-center align-items-center">
                 <div className="flex-fill" />
