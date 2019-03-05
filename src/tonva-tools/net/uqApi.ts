@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import {HttpChannel} from './httpChannel';
 import {HttpChannelUI, HttpChannelNavUI} from './httpChannelUI';
-import {appUq, meInFrame} from './appBridge';
+import {appUq, meInFrame, logoutUqTokens} from './appBridge';
 import {ApiBase} from './apiBase';
 import { host } from './host';
 import { nav } from '../ui';
@@ -13,6 +13,7 @@ export function logoutApis() {
     channelUIs = {};
     channelNoUIs = {};
     logoutUnitxApis();
+    logoutUqTokens();
 }
 
 interface UqLocal {
@@ -99,9 +100,9 @@ class CacheUqLocals {
         let isMatch = _.isMatch(value, ret);
         if (isMatch === false) {
             this.saveLocal(un, ret);
+            return false;
         }
         return isMatch;
-
     }
 }
 
@@ -349,6 +350,7 @@ export let centerToken:string|undefined = undefined;
 
 let loginedUserId:number = 0;
 export function setCenterToken(userId:number, t?:string) {
+    loginedUserId = userId;
     centerToken = t;
     console.log('setCenterToken %s', t);
     centerChannel = undefined;
@@ -498,8 +500,8 @@ export async function loadAppUqs(appOwner:string, appName): Promise<App> {
     let ret = await centerAppApi.uqs(unit, appOwner, appName);
     centerAppApi.checkUqs(unit, appOwner, appName).then(v => {
         if (v === false) {
-            localStorage.removeItem(appUqs);
-            nav.start();
+            //localStorage.removeItem(appUqs);
+            //nav.start();
         }
     });
     return ret;

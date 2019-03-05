@@ -37,7 +37,7 @@ export class Form extends React.Component<FormProps> {
     //private content: any;
     //private formData: any;
     private disposer: IReactionDisposer;
-    //@observable
+    //@observable 
     readonly data:any;
 
     readonly Container: (content:JSX.Element) => JSX.Element;
@@ -50,8 +50,8 @@ export class Form extends React.Component<FormProps> {
 
     constructor(props:FormProps) {
         super(props);
-        let {schema, uiSchema, formData,
-            Container, FieldContainer, FieldClass,
+        let {schema, uiSchema, formData, 
+            Container, FieldContainer, FieldClass, 
             ButtonClass, res,
         } = props;
         this.Container = Container || this.DefaultContainer;
@@ -71,7 +71,6 @@ export class Form extends React.Component<FormProps> {
         this.disposer = autorun(this.watch);
         this.data = {};
         // this.initRender();
-        //this.initData(this.props.formData);
     }
 
     private renderContent():any {

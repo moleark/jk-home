@@ -19,7 +19,7 @@ import '../css/animation.css';
 
 const regEx = new RegExp('Android|webOS|iPhone|iPad|' +
     'BlackBerry|Windows Phone|'  +
-    'Opera Mini|IEMobile|Mobile' ,
+    'Opera Mini|IEMobile|Mobile' , 
     'i');
 const isMobile = regEx.test(navigator.userAgent);
 export const mobileHeaderStyle = isMobile? {
@@ -148,7 +148,7 @@ export class NavView extends React.Component<Props, State> {
         let key = stackKey++;
         this.stack.push({
             key: key,
-            view: view,
+            view: view, 
             ceased: false,
             disposer: disposer
         });
@@ -166,8 +166,8 @@ export class NavView extends React.Component<Props, State> {
         }
         let key = stackKey++;
         this.stack.push({
-            key: key,
-            view: view,
+            key: key, 
+            view: view, 
             ceased: false,
             disposer: disposer
         });
@@ -438,7 +438,7 @@ export class Nav {
         this.resUrl = 'http://' + resHost + '/res/';
         this.wsHost = ws;
         setCenterUrl(url);
-
+        
         let unit = await this.loadUnit();
         meInFrame.unit = unit;
 
@@ -503,6 +503,7 @@ export class Nav {
     }
 
     async logined(user: User, callback?: (user:User)=>Promise<void>) {
+        logoutApis();
         let ws:WSChannel = this.ws = new WSChannel(this.wsHost, user.token);
         ws.connect();
 
@@ -543,7 +544,6 @@ export class Nav {
         this.local.logoutClear();
         this.user = undefined; //{} as User;
         logoutApis();
-        logoutUqTokens();
         let guest = this.local.guest.get();
         setCenterToken(0, guest && guest.token);
         this.ws = undefined;
@@ -629,7 +629,7 @@ export class Nav {
                     <i className="fa fa-arrow-left" />
                 </span>
                 <iframe src={uh.url} />
-            </article>,
+            </article>, 
             ()=> {
                 resolve();
             });
