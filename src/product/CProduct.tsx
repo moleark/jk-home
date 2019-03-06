@@ -5,7 +5,7 @@ import { PageItems, Controller, nav, Page } from 'tonva-tools';
 import { CCartApp } from '../CCartApp';
 import { VProduct } from './VProduct';
 import { VProductList } from './VProductList';
-import { LoaderProductChemical } from './itemLoader';
+import { LoaderProductChemicalWithPacks } from './itemLoader';
 
 class PageProducts extends PageItems<any> {
 
@@ -63,7 +63,7 @@ export class CProduct extends Controller {
 
     showProductDetail = async (id: number) => {
 
-        let loader = new LoaderProductChemical(this.cApp);
+        let loader = new LoaderProductChemicalWithPacks(this.cApp);
         let product = await loader.load(id);
         /*
         let product = new Product(this.cApp);

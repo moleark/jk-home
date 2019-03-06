@@ -3,7 +3,26 @@ import { CCartApp } from 'CCartApp';
 import { TuidMain, TuidDiv, Map, Query } from 'tonva-react-uq';
 import { ProductPackRow } from './Product';
 import { Loader } from 'mainSubs/loader';
-import { MainSubs, MainProductChemical } from 'mainSubs';
+import { MainSubs, MainProductChemical, MainBrand } from 'mainSubs';
+
+export class LoaderBrand extends Loader<MainBrand> {
+    private brandTuid: TuidMain;
+
+    protected initEntities() {
+        let { cUqProduct } = this.cApp;
+        this.brandTuid = cUqProduct.tuid('brand');
+    }
+
+    protected async loadToData(brandId: number, data: MainBrand): Promise<void> {
+        let brand = await this.brandTuid.load(brandId);
+        data.id = brand.id;
+        data.name = brand.name;
+    }
+
+    protected initData(): MainBrand {
+        return {} as MainBrand;
+    }
+}
 
 export class LoaderProduct extends Loader<MainProductChemical> {
     private productTuid: TuidMain;
@@ -18,10 +37,13 @@ export class LoaderProduct extends Loader<MainProductChemical> {
         this.productChemicalMap = cUqProduct.map('productChemical');
     }
 
-    protected async loadToData(productId: any, data: MainProductChemical): Promise<void> {
+    protected async loadToData(productId: number, data: MainProductChemical): Promise<void> {
 
         let product = await this.productTuid.load(productId);
         _.merge(data, product);
+
+        let brandLoader = new LoaderBrand(this.cApp);
+        data.brand = await brandLoader.load(data.brand.id);
 
         let productChemical = await this.productChemicalMap.obj({ product: productId });
         if (productChemical) {
@@ -39,7 +61,7 @@ export class LoaderProduct extends Loader<MainProductChemical> {
     }
 }
 
-export class LoaderProductChemical extends Loader<MainSubs<MainProductChemical, ProductPackRow>> {
+export class LoaderProductChemicalWithPacks extends Loader<MainSubs<MainProductChemical, ProductPackRow>> {
 
     private getCustomerDiscount: Query;
     private priceMap: Map;
@@ -77,7 +99,8 @@ export class LoaderProductChemical extends Loader<MainSubs<MainProductChemical, 
             let ret: any = {};
             ret.pack = element.pack;
             ret.retail = element.retail;
-            ret.vipPrice = Math.round(element.retail * (1 - discount));
+            if (discount !== 0)
+                ret.vipPrice = Math.round(element.retail * (1 - discount));
             ret.currency = currentSalesRegion.currency;
             ret.quantity = cartViewModel.getQuantity(productId, element.pack.id)
             return ret;
