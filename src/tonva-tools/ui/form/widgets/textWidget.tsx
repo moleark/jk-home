@@ -14,7 +14,24 @@ export class TextWidget extends Widget {
         this.input.value = value;
     }
     protected get placeholder() {return (this.ui && this.ui.placeholder) || this.name}
-    protected onKeyDown: (evt:React.KeyboardEvent<HTMLInputElement>)=>void;
+    protected onKeyDown = async (evt:React.KeyboardEvent<HTMLInputElement>) => {
+        this.internalOnKeyDown(evt);
+        if (evt.keyCode !== 13) return;
+        let {onEnter} = this.context.form.props;
+        if (onEnter === undefined) return;
+
+        this.changeValue(evt.currentTarget.value, true);
+        this.checkRules();
+        this.context.checkContextRules();
+
+        let ret = await onEnter(this.name, this.context);
+        if (ret !== undefined) {
+            this.context.setError(this.name, ret);
+        }
+    }
+
+    protected internalOnKeyDown(evt:React.KeyboardEvent<HTMLInputElement>) {
+    }
 
     protected onBlur(evt: React.FocusEvent<any>) {
         this.onInputChange(evt);

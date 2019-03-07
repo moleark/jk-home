@@ -39,7 +39,7 @@ export class CMember extends Controller {
             return <div 
                 className="d-flex h-100 flex-column align-items-center justify-content-center">
                 <div className="flex-fill" />
-                <button className="btn btn-success w-25"
+                <button className="btn btn-success w-20c"
                     onClick={()=>nav.showLogin(this.loginCallback, true)}>
                     <FA name="sign-out" size="lg" /> 请登录
                 </button>

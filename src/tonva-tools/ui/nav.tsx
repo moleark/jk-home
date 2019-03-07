@@ -258,7 +258,7 @@ export class NavView extends React.Component<Props, State> {
     clear() {
         let len = this.stack.length;
         while (this.stack.length > 0) this.popAndDispose();
-        this.refresh();
+        //this.refresh();
         if (len > 1) {
             //window.removeEventListener('popstate', this.navBack);
             //window.history.back(len-1);
@@ -319,10 +319,11 @@ export class NavView extends React.Component<Props, State> {
                 break;
             case 2:
                 elWait = <li className="va-wait va-wait2">
-                    <i className="fa fa-spinner fa-spin fa-3x fa-fw"></i>
-                    <span className="sr-only">Loading...</span>
+                    <Loading />
                 </li>;
                 break;
+                //<i className="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+                //<span className="sr-only">Loading...</span>
         }
         if (fetchError)
             elError = <FetchErrorView clearError={this.clearError} {...fetchError} />
@@ -430,56 +431,64 @@ export class Nav {
     private isInFrame:boolean;
     private centerHost: string;
     async start() {
-        nav.clear();
-        nav.push(<Page header={false}><Loading /></Page>);
-        await host.start();
-        let {url, ws, resHost} = host;
-        this.centerHost = url;
-        this.resUrl = 'http://' + resHost + '/res/';
-        this.wsHost = ws;
-        setCenterUrl(url);
-        
-        let unit = await this.loadUnit();
-        meInFrame.unit = unit;
+        try {
+            nav.clear();
+            //nav.push(<Page header={false}><Loading /></Page>);
+            this.startWait();
+            await host.start();
+            let {url, ws, resHost} = host;
+            this.centerHost = url;
+            this.resUrl = 'http://' + resHost + '/res/';
+            this.wsHost = ws;
+            setCenterUrl(url);
+            
+            let unit = await this.loadUnit();
+            meInFrame.unit = unit;
 
-        let guest:Guest = this.local.guest.get();
-        if (guest === undefined) {
-            guest = await guestApi.guest();
-        }
-        nav.setGuest(guest);
+            let guest:Guest = this.local.guest.get();
+            if (guest === undefined) {
+                guest = await guestApi.guest();
+            }
+            nav.setGuest(guest);
 
-        let hash = document.location.hash;
-        // document.title = document.location.origin;
-        console.log("url=%s hash=%s", document.location.origin, hash);
-        this.isInFrame = hash !== undefined && hash !== '' && hash.startsWith('#tv');
-        if (this.isInFrame === true) {
-            let mif = setMeInFrame(hash);
-            if (mif !== undefined) {
-                this.ws = wsBridge;
-                console.log('this.ws = wsBridge in sub frame');
-                //nav.user = {id:0} as User;
-                if (self !== window.parent) {
-                    window.parent.postMessage({type:'sub-frame-started', hash: mif.hash}, '*');
+            let hash = document.location.hash;
+            // document.title = document.location.origin;
+            console.log("url=%s hash=%s", document.location.origin, hash);
+            this.isInFrame = hash !== undefined && hash !== '' && hash.startsWith('#tv');
+            if (this.isInFrame === true) {
+                let mif = setMeInFrame(hash);
+                if (mif !== undefined) {
+                    this.ws = wsBridge;
+                    console.log('this.ws = wsBridge in sub frame');
+                    //nav.user = {id:0} as User;
+                    if (self !== window.parent) {
+                        window.parent.postMessage({type:'sub-frame-started', hash: mif.hash}, '*');
+                    }
+                    // 下面这一句，已经移到 appBridge.ts 里面的 initSubWin，也就是响应从main frame获得user之后开始。
+                    //await this.showAppView();
+                    return;
                 }
-                // 下面这一句，已经移到 appBridge.ts 里面的 initSubWin，也就是响应从main frame获得user之后开始。
-                //await this.showAppView();
+            }
+
+            let user: User = this.local.user.get();
+            if (user === undefined) {
+                let {notLogined} = this.nav.props;
+                if (notLogined !== undefined) {
+                    await notLogined();
+                }
+                else {
+                    await nav.showLogin(undefined);
+                }
                 return;
             }
-        }
 
-        let user: User = this.local.user.get();
-        if (user === undefined) {
-            let {notLogined} = this.nav.props;
-            if (notLogined !== undefined) {
-                await notLogined();
-            }
-            else {
-                await nav.showLogin(undefined);
-            }
-            return;
+            await nav.logined(user);
         }
-
-        await nav.logined(user);
+        catch (err) {
+        }
+        finally {
+            this.endWait();
+        }
     }
 
     async showAppView() {

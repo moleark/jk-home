@@ -2,6 +2,7 @@ import * as React from 'react';
 import { VPage, Image } from 'tonva-tools';
 import { CMember } from './CMember';
 import { LMR, Muted, FA, Media } from 'tonva-react-form';
+import { observer } from 'mobx-react';
 
 export class VMember extends VPage<CMember> {
 
@@ -14,7 +15,7 @@ export class VMember extends VPage<CMember> {
         return <this.content />;
     }
 
-    private content = () => {
+    private content = observer(() => {
         let { cApp, member } = this.controller;
         if (member === undefined)
             return <></>;
@@ -54,7 +55,7 @@ export class VMember extends VPage<CMember> {
             {divPoints}
             {/*detail*/}
         </div>
-    }
+    })
 }
 /*
 <div className="shadow bg-white rounded p-3 mb-1">
