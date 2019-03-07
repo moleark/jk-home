@@ -66,8 +66,9 @@ export class CApp extends Controller {
         Promise.all(promiseChecks).then((checks) => {
             for (let c of checks) {
                 if (c === false) {
-                    nav.start();
-                    return;
+                    //debugger;
+                    //nav.start();
+                    //return;
                 }
             }
         });

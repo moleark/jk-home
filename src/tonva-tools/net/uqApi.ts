@@ -102,7 +102,8 @@ class CacheUqLocals {
             this.saveLocal(un, ret);
             return false;
         }
-        return isMatch;
+        uq.isNet = true;
+        return true;
     }
 }
 
@@ -500,8 +501,8 @@ export async function loadAppUqs(appOwner:string, appName): Promise<App> {
     let ret = await centerAppApi.uqs(unit, appOwner, appName);
     centerAppApi.checkUqs(unit, appOwner, appName).then(v => {
         if (v === false) {
-            //localStorage.removeItem(appUqs);
-            //nav.start();
+            localStorage.removeItem(appUqs);
+            nav.start();
         }
     });
     return ret;
