@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import { CCartApp } from 'CCartApp';
 import { TuidMain, TuidDiv, Map, Query } from 'tonva-react-uq';
 import { ProductPackRow } from './Product';
 import { Loader } from 'mainSubs/loader';
@@ -95,7 +94,7 @@ export class LoaderProductChemicalWithPacks extends Loader<MainSubs<MainProductC
 
         let { id: currentSalesRegionId } = currentSalesRegion;
         let prices = await this.priceMap.table({ product: productId, salesRegion: currentSalesRegionId });
-        data.subs = prices.map(element => {
+        data.subs = prices.filter(e => e.discountinued === 0 && e.expireDate > Date.now()).map(element => {
             let ret: any = {};
             ret.pack = element.pack;
             ret.retail = element.retail;
@@ -122,7 +121,9 @@ export class LoaderProductChemicalWithPacks extends Loader<MainSubs<MainProductC
     private getFutureDeliveryTimeDescription = async (productId: number, salesRegionId: number) => {
         let futureDeliveryTime = await this.getFutureDeliveryTime.table({ product: productId, salesRegion: salesRegionId });
         if (futureDeliveryTime.length > 0) {
-            return futureDeliveryTime[0].deliveryTimeDescription;
+            let { minValue, maxValue, unit, deliveryTimeDescription } = futureDeliveryTime[0];
+            return minValue + (maxValue > minValue ? '~' + maxValue : '') + ' ' + unit;
+            // return futureDeliveryTime[0].deliveryTimeDescription;
         }
     }
 }
