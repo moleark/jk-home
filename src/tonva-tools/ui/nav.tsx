@@ -1,11 +1,11 @@
 import * as React from 'react';
-import {observable} from 'mobx';
+import {observable, has} from 'mobx';
 import {User, Guest/*, UserInNav*/} from '../user';
 import {Page} from './page';
 import {netToken} from '../net/netToken';
 import FetchErrorView from './fetchErrorView';
 import {FetchError} from '../fetchError';
-import {appUrl, setMeInFrame, logoutUqTokens} from '../net/appBridge';
+import {appUrl, setMeInFrame, logoutUqTokens, getExHash, getExHashPos} from '../net/appBridge';
 import {LocalData} from '../local';
 import {guestApi, logoutApis, setCenterUrl, setCenterToken, WSChannel, meInFrame, isDevelopment, host} from '../net';
 import { WsBase, wsBridge } from '../net/wsChannel';
@@ -428,12 +428,17 @@ export class Nav {
         return unitId;
     }
 
-    private isInFrame:boolean;
+    hashParam: string;
     private centerHost: string;
     async start() {
         try {
+            let hash = document.location.hash;
+            if (hash !== undefined && hash.length > 0) {
+                let pos = getExHashPos();
+                if (pos < 0) pos = undefined;
+                this.hashParam = hash.substring(1, pos);
+            }
             nav.clear();
-            //nav.push(<Page header={false}><Loading /></Page>);
             this.startWait();
             await host.start();
             let {url, ws, resHost} = host;
@@ -451,12 +456,9 @@ export class Nav {
             }
             nav.setGuest(guest);
 
-            let hash = document.location.hash;
-            // document.title = document.location.origin;
-            console.log("url=%s hash=%s", document.location.origin, hash);
-            this.isInFrame = hash !== undefined && hash !== '' && hash.startsWith('#tv');
-            if (this.isInFrame === true) {
-                let mif = setMeInFrame(hash);
+            let exHash = getExHash();
+            let mif = setMeInFrame(exHash);
+            if (exHash !== undefined && window !== window.parent) {
                 if (mif !== undefined) {
                     this.ws = wsBridge;
                     console.log('this.ws = wsBridge in sub frame');

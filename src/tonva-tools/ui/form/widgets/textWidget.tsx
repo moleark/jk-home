@@ -1,8 +1,7 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import { Widget } from './widget';
-import { UiTextItem } from '../../schema';
-import { StringSchema } from '../../schema';
+import { UiTextItem, StringSchema } from '../../schema';
 
 export class TextWidget extends Widget {
     protected inputType = 'text';
