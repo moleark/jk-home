@@ -1,11 +1,11 @@
 import * as React from 'react';
 import _ from 'lodash';
-import { Page, loadAppUqs, nav, meInFrame, Controller, TypeVPage, VPage, resLang} from 'tonva-tools';
+import { Page, loadAppUqs, nav, meInFrame, Controller, TypeVPage, VPage, resLang, getExHash, isDevelopment} from 'tonva-tools';
 import { List, LMR, FA } from 'tonva-react-form';
 import { CUq, EntityType, UqUI } from './uq';
 import { centerApi } from '../centerApi';
 
-export interface AppUI {
+export interface RoleAppUI {
     CApp?: typeof CApp;
     CUq?: typeof CUq;
     main?: TypeVPage<CApp>;
@@ -13,10 +13,13 @@ export interface AppUI {
     res?: any;
 }
 
+export interface AppUI extends RoleAppUI {
+    roles?: {[role:string]: RoleAppUI};
+}
+
 export class CApp extends Controller {
     private appOwner:string;
     private appName:string;
-    private isProduction:boolean;
     private cImportUqs: {[uq:string]: CUq} = {};
     protected ui:AppUI;
     id: number;
@@ -53,11 +56,12 @@ export class CApp extends Controller {
 
         let promises: PromiseLike<string>[] = [];
         let promiseChecks: PromiseLike<boolean>[] = [];
+        let roleAppUI = this.buildRoleAppUI();
         for (let appUq of uqs) {
-            let {id:uqId, uqOwner, uqName, url, urlDebug, ws, access, token} = appUq;
+            let {id:uqId, uqOwner, uqName, access} = appUq;
             let uq = uqOwner + '/' + uqName;
-            let ui = this.ui && this.ui.uqs && this.ui.uqs[uq];
-            let cUq = this.newCUq(uq, uqId, access, ui || {});
+            let uqUI = roleAppUI && roleAppUI.uqs && roleAppUI.uqs[uq];
+            let cUq = this.newCUq(uq, uqId, access, uqUI || {});
             this.cUqCollection[uq] = cUq;
             promises.push(cUq.loadSchema());
             promiseChecks.push(cUq.entities.uqApi.checkAccess());
@@ -82,6 +86,20 @@ export class CApp extends Controller {
         }
         if (retErrors.length === 0) return;
         return retErrors;
+    }
+
+    private buildRoleAppUI():RoleAppUI {
+        if (!this.ui) return undefined;
+        let {hashParam} = nav;
+        if (!hashParam) return this.ui;
+        let {roles} = this.ui;
+        let ret:RoleAppUI = {} as any;
+        for (let i in this.ui) {
+            if (i === 'roles') continue;
+            ret[i] = _.cloneDeep(this.ui[i]);
+        }
+        _.merge(ret, roles && roles[hashParam]);
+        return ret;
     }
 
     async getImportUq(uqOwner:string, uqName:string):Promise<CUq> {
@@ -120,37 +138,32 @@ export class CApp extends Controller {
 
     protected get VAppMain():TypeVPage<CApp> {return (this.ui&&this.ui.main) || VAppMain}
     protected async beforeStart():Promise<boolean> {
-        //if (await super.beforeStart() === false) return false;
         try {
-            let hash = document.location.hash;
-            if (hash.startsWith('#tvdebug')) {
-                this.isProduction = false;
-                //await this.showMainPage();
-                //return;
-            }
-            else {
-                this.isProduction = hash.startsWith('#tv');
-            }
             let {unit} = meInFrame;
-            if (this.isProduction === false && (unit===undefined || unit<=0)) {
+            if (isDevelopment === true) {
                 let app = await loadAppUqs(this.appOwner, this.appName);
                 let {id} = app;
                 this.id = id;
                 await this.loadAppUnits();
                 switch (this.appUnits.length) {
                     case 0:
-                        this.showUnsupport();
+                        this.showUnsupport(unit);
                         return false;
                     case 1:
-                        unit = this.appUnits[0].id;
-                        if (unit === undefined || unit < 0) {
-                            this.showUnsupport();
+                        let appUnit = this.appUnits[0].id;
+                        if (appUnit === undefined || appUnit < 0 || 
+                            unit !== undefined && appUnit != unit)
+                        {
+                            this.showUnsupport(unit);
                             return false;
                         }
-                        meInFrame.unit = unit;
+                        meInFrame.unit = appUnit;
                         break;
-                    default: 
-                        //nav.clear();
+                    default:
+                        if (unit>0 && this.appUnits.find(v => v.id===unit) !== undefined) {
+                            meInFrame.unit = unit;
+                            break;
+                        }
                         nav.push(<this.selectUnitPage />)
                         return false;
                 }
@@ -198,7 +211,7 @@ export class CApp extends Controller {
         nav.clear();
     }
 
-    private showUnsupport() {
+    private showUnsupport(unit:number) {
         this.clearPrevPages();
         let {user} = nav;
         let userName:string = user? user.name : '[未登录]';
@@ -209,7 +222,7 @@ export class CApp extends Controller {
                         <FA name="exclamation-triangle" />
                     </div>
                     <div className="col">
-                        用户不支持APP
+                        用户不支持APP, unit={unit}
                     </div>
                 </div>
                 <div className="form-group row">
@@ -225,23 +238,26 @@ export class CApp extends Controller {
     }
 
     private async showMainPage() {
-        // #tvRwPBwMef-23-sheet-api-108
-        let parts = document.location.hash.split('-');
-        if (parts.length > 2) {
-            let action = parts[2];
-            // sheet_debug 表示centerUrl是debug方式的
-            if (action === 'sheet' || action === 'sheet_debug') {
-                let uqId = Number(parts[3]);
-                let sheetTypeId = Number(parts[4]);
-                let sheetId = Number(parts[5]);
-                let cUq = this.getCUqFromId(uqId);
-                if (cUq === undefined) {
-                    alert('unknown uqId: ' + uqId);
+        // #tv-RwPBwMef-23-sheet-api-108
+        let exHash = getExHash();
+        if (exHash !== undefined) {
+            let parts = exHash.split('-');
+            if (parts.length > 3) {
+                let action = parts[3];
+                // sheet_debug 表示centerUrl是debug方式的
+                if (action === 'sheet' || action === 'sheet_debug') {
+                    let uqId = Number(parts[4]);
+                    let sheetTypeId = Number(parts[5]);
+                    let sheetId = Number(parts[6]);
+                    let cUq = this.getCUqFromId(uqId);
+                    if (cUq === undefined) {
+                        alert('unknown uqId: ' + uqId);
+                        return;
+                    }
+                    this.clearPrevPages();
+                    await cUq.navSheet(sheetTypeId, sheetId);
                     return;
                 }
-                this.clearPrevPages();
-                await cUq.navSheet(sheetTypeId, sheetId);
-                return;
             }
         }
         this.openVPage(this.VAppMain);
@@ -258,9 +274,10 @@ export class CApp extends Controller {
     private async loadAppUnits() {
         let ret = await centerApi.userAppUnits(this.id);
         this.appUnits = ret;
+        /*
         if (ret.length === 1) {
             meInFrame.unit = ret[0].id;
-        }
+        }*/
     }
 
     renderRow = (item: any, index: number):JSX.Element => {
@@ -292,7 +309,7 @@ class VAppMain extends VPage<CApp> {
 
     protected appPage() {
         let {caption} = this.controller;
-        return <Page header={caption} logout={()=>{meInFrame.unit = undefined}}>
+        return <Page header={caption} logout={async()=>{meInFrame.unit = undefined}}>
             {this.appContent()}
         </Page>;
     }
