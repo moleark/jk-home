@@ -7,24 +7,37 @@ import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import { FA } from 'tonva-react-form';
 import { jnkTop } from 'me/loginTop';
+import { Action, Map, BoxId } from 'tonva-react-uq';
 
 export class CMember extends Controller {
 
     cApp: CCartApp;
     @observable member: any;
+    private referrer: BoxId;
+    private memberAction: Action;
+    private memberRecommenverMap: Map;
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
 
         this.cApp = cApp;
+        let { cUqMember } = cApp;
+        this.memberAction = cUqMember.action('MemberAction');
+        this.memberRecommenverMap = cUqMember.map('MemberRecommender');
     }
 
     protected async internalStart(param: any) {
 
-        let memberAction = this.cApp.cUqMember.action('MemberAction');
         if (this.isLogined) {
-            let ma = await memberAction.submit({});
-            this.member = { recommendationCode: ma.code, point: ma.point };
+            let { id: currentUserId } = this.user;
+            let promises: PromiseLike<any>[] = [];
+            promises.push(this.memberAction.submit({}));
+            promises.push(this.memberRecommenverMap.table({ referrer: currentUserId }));
+            promises.push(this.memberRecommenverMap.table({ member: currentUserId }));
+            let result = await Promise.all(promises);
+            let { code, point } = result[0];
+            this.referrer = result[2];
+            this.member = { recommendationCode: code, point: point, fans: result[1], referrer: result[2] };
         }
     }
 
@@ -41,7 +54,7 @@ export class CMember extends Controller {
                 className="d-flex h-100 flex-column align-items-center justify-content-center">
                 <div className="flex-fill" />
                 <button className="btn btn-success w-20c"
-                    onClick={()=>nav.showLogin(this.loginCallback, jnkTop, true)}>
+                    onClick={() => nav.showLogin(this.loginCallback, jnkTop, true)}>
                     <FA name="sign-out" size="lg" /> 请登录
                 </button>
                 <div className="flex-fill" />
@@ -55,16 +68,14 @@ export class CMember extends Controller {
         return <this.render />;
     }
 
-    /*{
-        let LoadableComponent = Loadable({
-            loader: () => import('../CCartApp'),
-            loading: Loading,
-            render(loaded, props) {
-                let { cCartApp } = loaded;
-                cCartApp.cMember.start();
-                return <cCartApp.cMember.render />
+    setReferrer(code: string) {
+        if (code) {
+            // 写入map，方法是add，用这个方法可能会写入多次，多以在写入之前要检查有没有，有的话，就不能再调用这个方法了
+            // 这个逻辑我认为应该是在服务端，写入的时候要给双方积分，给多少积分的逻辑，也应该在后端，从邀请码到拥有此邀请码
+            // 的会员id之间的转换，逻辑也应该在后台，这个后端的逻辑写在ACTION中？
+            if (!this.referrer) {
+                let { id: currentUserId } = this.user;
             }
-        });
-        return <LoadableComponent />;
-    }*/
+        }
+    }
 }

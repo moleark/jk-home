@@ -2,7 +2,7 @@ import { observable, computed, autorun, IReactionDisposer, IObservableArray } fr
 import _ from 'lodash';
 import { CUq, Action, Query, TuidMain, TuidDiv, BoxId } from 'tonva-react-uq';
 import { CCartApp } from '../CCartApp';
-import { LoaderProduct } from 'product/itemLoader';
+import { LoaderProductChemical } from 'product/itemLoader';
 import { CartItem, CartPackRow } from './Cart';
 import { resolve } from 'path';
 
@@ -150,7 +150,7 @@ export abstract class CartService {
     protected async generateCartItem(productId: number, packs: any[]): Promise<CartItem> {
 
         let cartItem: CartItem = {} as any;
-        let productService = new LoaderProduct(this.cApp);
+        let productService = new LoaderProductChemical(this.cApp);
         cartItem.product = await productService.load(productId);
         cartItem.createdate = Date.now();
         cartItem.$isSelected = true;

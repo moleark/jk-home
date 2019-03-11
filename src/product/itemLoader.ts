@@ -23,7 +23,7 @@ export class LoaderBrand extends Loader<MainBrand> {
     }
 }
 
-export class LoaderProduct extends Loader<MainProductChemical> {
+export class LoaderProductChemical extends Loader<MainProductChemical> {
     private productTuid: TuidMain;
     private packTuid: TuidDiv;
     private productChemicalMap: Map;
@@ -53,6 +53,12 @@ export class LoaderProduct extends Loader<MainProductChemical> {
             data.molecularFomula = molecularFomula;
             data.molecularWeight = molecularWeight;
         }
+
+        data.packs = [];
+        product.PackX.forEach(e => {
+            // let { id, radiox, radioy, unit } = e;
+            data.packs.push(e);
+        });
     }
 
     protected initData(): MainProductChemical {
@@ -60,7 +66,7 @@ export class LoaderProduct extends Loader<MainProductChemical> {
     }
 }
 
-export class LoaderProductChemicalWithPacks extends Loader<MainSubs<MainProductChemical, ProductPackRow>> {
+export class LoaderProductChemicalWithPrices extends Loader<MainSubs<MainProductChemical, ProductPackRow>> {
 
     private getCustomerDiscount: Query;
     private priceMap: Map;
@@ -82,7 +88,7 @@ export class LoaderProductChemicalWithPacks extends Loader<MainSubs<MainProductC
 
     protected async loadToData(productId: any, data: MainSubs<MainProductChemical, ProductPackRow>): Promise<void> {
 
-        let productLoader = new LoaderProduct(this.cApp);
+        let productLoader = new LoaderProductChemical(this.cApp);
         data.main = await productLoader.load(productId);
 
         let discount = 0;
