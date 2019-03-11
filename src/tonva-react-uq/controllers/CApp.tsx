@@ -144,28 +144,31 @@ export class CApp extends Controller {
                 let app = await loadAppUqs(this.appOwner, this.appName);
                 let {id} = app;
                 this.id = id;
-                await this.loadAppUnits();
-                switch (this.appUnits.length) {
-                    case 0:
-                        this.showUnsupport(unit);
-                        return false;
-                    case 1:
-                        let appUnit = this.appUnits[0].id;
-                        if (appUnit === undefined || appUnit < 0 || 
-                            unit !== undefined && appUnit != unit)
-                        {
+                let {user} = nav;
+                if (user !== undefined && user.id > 0) {
+                    await this.loadAppUnits();
+                    switch (this.appUnits.length) {
+                        case 0:
                             this.showUnsupport(unit);
                             return false;
-                        }
-                        meInFrame.unit = appUnit;
-                        break;
-                    default:
-                        if (unit>0 && this.appUnits.find(v => v.id===unit) !== undefined) {
-                            meInFrame.unit = unit;
+                        case 1:
+                            let appUnit = this.appUnits[0].id;
+                            if (appUnit === undefined || appUnit < 0 || 
+                                unit !== undefined && appUnit != unit)
+                            {
+                                this.showUnsupport(unit);
+                                return false;
+                            }
+                            meInFrame.unit = appUnit;
                             break;
-                        }
-                        nav.push(<this.selectUnitPage />)
-                        return false;
+                        default:
+                            if (unit>0 && this.appUnits.find(v => v.id===unit) !== undefined) {
+                                meInFrame.unit = unit;
+                                break;
+                            }
+                            nav.push(<this.selectUnitPage />)
+                            return false;
+                    }
                 }
             }
 
