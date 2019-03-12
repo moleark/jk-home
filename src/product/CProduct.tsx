@@ -80,8 +80,8 @@ export function renderBrand(brand: any) {
 export function productPropItem(caption: string, value: any) {
     if (value === null || value === undefined) return null;
     return <>
-        <div className="col-4 col-sm-2 text-muted pr-0 small">{caption}</div>
-        <div className="col-8 col-sm-4">{value}</div>
+        <div className="col-4 col-sm-2 col-lg-4 text-muted pr-0 small">{caption}</div>
+        <div className="col-8 col-sm-4 col-lg-8">{value}</div>
     </>;
 }
 

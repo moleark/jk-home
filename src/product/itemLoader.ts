@@ -55,7 +55,7 @@ export class LoaderProductChemical extends Loader<MainProductChemical> {
         }
 
         data.packs = [];
-        product.PackX.forEach(e => {
+        product.packx.forEach(e => {
             // let { id, radiox, radioy, unit } = e;
             data.packs.push(e);
         });
