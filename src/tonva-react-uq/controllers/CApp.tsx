@@ -1,6 +1,6 @@
 import * as React from 'react';
 import _ from 'lodash';
-import { Page, loadAppUqs, nav, meInFrame, Controller, TypeVPage, VPage, resLang, getExHash, isDevelopment} from 'tonva-tools';
+import { Page, loadAppUqs, nav, appInFrame, Controller, TypeVPage, VPage, resLang, getExHash, isDevelopment} from 'tonva-tools';
 import { List, LMR, FA } from 'tonva-react-form';
 import { CUq, EntityType, UqUI } from './uq';
 import { centerApi } from '../centerApi';
@@ -9,12 +9,13 @@ export interface RoleAppUI {
     CApp?: typeof CApp;
     CUq?: typeof CUq;
     main?: TypeVPage<CApp>;
-    uqs: {[uq:string]: UqUI};
+    uqs: {[uq:string]: UqUI | (()=>Promise<UqUI>)};
     res?: any;
 }
 
 export interface AppUI extends RoleAppUI {
-    roles?: {[role:string]: RoleAppUI};
+    appName: string; // 格式: owner/appName
+    roles?: {[role:string]: RoleAppUI | (()=>Promise<RoleAppUI>)};
 }
 
 export class CApp extends Controller {
@@ -25,15 +26,20 @@ export class CApp extends Controller {
     id: number;
     appUnits:any[];
 
-    constructor(tonvaApp:string, ui?:AppUI) {
+    constructor(ui:AppUI) {
         super(resLang(ui && ui.res));
+        let tonvaApp = ui.appName;
+        if (tonvaApp === undefined) {
+            throw 'appName like "owner/app" must be defined in UI';
+        }
         let parts = tonvaApp.split('/');
         if (parts.length !== 2) {
             throw 'tonvaApp name must be / separated, owner/app';
         }
         this.appOwner = parts[0];
         this.appName = parts[1];
-        this.ui = ui || {uqs:{}};
+        if (ui.uqs === undefined) ui.uqs = {};
+        this.ui = ui;
         this.caption = this.res.caption || 'Tonva';
     }
     
@@ -42,21 +48,21 @@ export class CApp extends Controller {
 
     async startDebug() {
         let appName = this.appOwner + '/' + this.appName;
-        let cApp = new CApp(appName, {uqs:{}} );
+        let cApp = new CApp({appName: appName, uqs:{}} );
         let keepNavBackButton = true;
         await cApp.start(keepNavBackButton);    
     }
 
     protected async loadUqs(): Promise<string[]> {
         let retErrors:string[] = [];
-        let unit = meInFrame.unit;
+        let unit = appInFrame.unit;
         let app = await loadAppUqs(this.appOwner, this.appName);
         let {id, uqs} = app;
         this.id = id;
 
         let promises: PromiseLike<string>[] = [];
         let promiseChecks: PromiseLike<boolean>[] = [];
-        let roleAppUI = this.buildRoleAppUI();
+        let roleAppUI = await this.buildRoleAppUI();
         for (let appUq of uqs) {
             let {id:uqId, uqOwner, uqName, access} = appUq;
             let uq = uqOwner + '/' + uqName;
@@ -88,7 +94,7 @@ export class CApp extends Controller {
         return retErrors;
     }
 
-    private buildRoleAppUI():RoleAppUI {
+    private async buildRoleAppUI():Promise<RoleAppUI> {
         if (!this.ui) return undefined;
         let {hashParam} = nav;
         if (!hashParam) return this.ui;
@@ -98,7 +104,9 @@ export class CApp extends Controller {
             if (i === 'roles') continue;
             ret[i] = _.cloneDeep(this.ui[i]);
         }
-        _.merge(ret, roles && roles[hashParam]);
+        let roleAppUI = roles && roles[hashParam];
+        if (typeof roleAppUI === 'function') roleAppUI = await roleAppUI();
+        _.merge(ret, roleAppUI);
         return ret;
     }
 
@@ -139,33 +147,36 @@ export class CApp extends Controller {
     protected get VAppMain():TypeVPage<CApp> {return (this.ui&&this.ui.main) || VAppMain}
     protected async beforeStart():Promise<boolean> {
         try {
-            let {unit} = meInFrame;
             if (isDevelopment === true) {
+                let {predefinedUnit} = appInFrame;
                 let app = await loadAppUqs(this.appOwner, this.appName);
                 let {id} = app;
                 this.id = id;
-                await this.loadAppUnits();
-                switch (this.appUnits.length) {
-                    case 0:
-                        this.showUnsupport(unit);
-                        return false;
-                    case 1:
-                        let appUnit = this.appUnits[0].id;
-                        if (appUnit === undefined || appUnit < 0 || 
-                            unit !== undefined && appUnit != unit)
-                        {
-                            this.showUnsupport(unit);
+                let {user} = nav;
+                if (user !== undefined && user.id > 0) {
+                    this.appUnits = await centerApi.userAppUnits(this.id);
+                    switch (this.appUnits.length) {
+                        case 0:
+                            this.showUnsupport(/*unit*/);
                             return false;
-                        }
-                        meInFrame.unit = appUnit;
-                        break;
-                    default:
-                        if (unit>0 && this.appUnits.find(v => v.id===unit) !== undefined) {
-                            meInFrame.unit = unit;
+                        case 1:
+                            let appUnit = this.appUnits[0].id;
+                            if (appUnit === undefined || appUnit < 0 || 
+                                predefinedUnit !== undefined && appUnit != predefinedUnit)
+                            {
+                                this.showUnsupport(/*unit*/);
+                                return false;
+                            }
+                            appInFrame.unit = appUnit;
                             break;
-                        }
-                        nav.push(<this.selectUnitPage />)
-                        return false;
+                        default:
+                            if (predefinedUnit>0 && this.appUnits.find(v => v.id===predefinedUnit) !== undefined) {
+                                appInFrame.unit = predefinedUnit;
+                                break;
+                            }
+                            nav.push(<this.selectUnitPage />)
+                            return false;
+                    }
                 }
             }
 
@@ -211,27 +222,31 @@ export class CApp extends Controller {
         nav.clear();
     }
 
-    private showUnsupport(unit:number) {
+    private showUnsupport(/*unit:number*/) {
         this.clearPrevPages();
         let {user} = nav;
         let userName:string = user? user.name : '[未登录]';
         this.openPage(<Page header="APP无法运行" logout={true}>
             <div className="m-3 text-danger container">
                 <div className="form-group row">
-                    <div className="col-2">
-                        <FA name="exclamation-triangle" />
-                    </div>
-                    <div className="col">
-                        用户不支持APP, unit={unit}
-                    </div>
-                </div>
-                <div className="form-group row">
-                    <div className="col-2">用户: </div>
+                    <div className="col-2">登录用户: </div>
                     <div className="col">{userName}</div>
                 </div>
                 <div className="form-group row">
                     <div className="col-2">App:</div>
                     <div className="col">{`${this.appOwner}/${this.appName}`}</div>
+                </div>
+                <div className="form-group row">
+                    <div className="col-2">
+                        <FA name="exclamation-triangle" />
+                    </div>
+                    <div className="col">
+                        <div className="text-muted">无法运行可能原因：</div>
+                        <ul className="p-0">
+                            <li>没有小号运行 {this.ui.appName}</li>
+                            <li>用户 <b>{userName}</b> 没有加入任何一个运行{this.ui.appName}的小号</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </Page>)
@@ -271,15 +286,6 @@ export class CApp extends Controller {
         return;
     }
 
-    private async loadAppUnits() {
-        let ret = await centerApi.userAppUnits(this.id);
-        this.appUnits = ret;
-        /*
-        if (ret.length === 1) {
-            meInFrame.unit = ret[0].id;
-        }*/
-    }
-
     renderRow = (item: any, index: number):JSX.Element => {
         let {id, nick, name} = item;
         return <LMR className="px-3 py-2" right={'id: ' + id}>
@@ -287,7 +293,7 @@ export class CApp extends Controller {
         </LMR>;
     }
     onRowClick = async (item: any) => {
-        meInFrame.unit = item.id; // 25;
+        appInFrame.unit = item.id; // 25;
         await this.start();
     }
 
@@ -309,7 +315,7 @@ class VAppMain extends VPage<CApp> {
 
     protected appPage() {
         let {caption} = this.controller;
-        return <Page header={caption} logout={async()=>{meInFrame.unit = undefined}}>
+        return <Page header={caption} logout={async()=>{appInFrame.unit = undefined}}>
             {this.appContent()}
         </Page>;
     }

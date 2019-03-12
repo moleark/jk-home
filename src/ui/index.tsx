@@ -7,6 +7,7 @@ import customerUI from './customer';
 import warehouseUI from './warehouse';
 
 const ui: AppUI = {
+    appName: "百灵威系统工程部/cart",
     CApp: CCartApp,
     main: VHome,
     uqs: {
