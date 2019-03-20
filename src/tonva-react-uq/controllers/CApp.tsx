@@ -4,6 +4,7 @@ import { Page, loadAppUqs, nav, appInFrame, Controller, TypeVPage, VPage, resLan
 import { List, LMR, FA } from 'tonva-react-form';
 import { CUq, EntityType, UqUI } from './uq';
 import { centerApi } from '../centerApi';
+import { LocalData } from 'tonva-tools/local';
 
 export interface RoleAppUI {
     CApp?: typeof CApp;
@@ -157,14 +158,14 @@ export class CApp extends Controller {
                     this.appUnits = await centerApi.userAppUnits(this.id);
                     switch (this.appUnits.length) {
                         case 0:
-                            this.showUnsupport(/*unit*/);
+                            this.showUnsupport(predefinedUnit);
                             return false;
                         case 1:
                             let appUnit = this.appUnits[0].id;
                             if (appUnit === undefined || appUnit < 0 || 
                                 predefinedUnit !== undefined && appUnit != predefinedUnit)
                             {
-                                this.showUnsupport(/*unit*/);
+                                this.showUnsupport(predefinedUnit);
                                 return false;
                             }
                             appInFrame.unit = appUnit;
@@ -222,7 +223,7 @@ export class CApp extends Controller {
         nav.clear();
     }
 
-    private showUnsupport(/*unit:number*/) {
+    private showUnsupport(predefinedUnit: number) {
         this.clearPrevPages();
         let {user} = nav;
         let userName:string = user? user.name : '[未登录]';
@@ -237,6 +238,10 @@ export class CApp extends Controller {
                     <div className="col">{`${this.appOwner}/${this.appName}`}</div>
                 </div>
                 <div className="form-group row">
+                    <div className="col-2">预设小号:</div>
+                    <div className="col">{predefinedUnit || <small className="text-muted">[无预设小号]</small>}</div>
+                </div>
+                <div className="form-group row">
                     <div className="col-2">
                         <FA name="exclamation-triangle" />
                     </div>
@@ -245,9 +250,25 @@ export class CApp extends Controller {
                         <ul className="p-0">
                             <li>没有小号运行 {this.ui.appName}</li>
                             <li>用户 <b>{userName}</b> 没有加入任何一个运行{this.ui.appName}的小号</li>
+                            {
+                                predefinedUnit && 
+                                <li>预设小号 <b>{predefinedUnit}</b> 没有运行App {this.ui.appName}</li>
+                            }
                         </ul>
                     </div>
                 </div>
+                {
+                    predefinedUnit || 
+                    <div className="form-group row">
+                    <div className="col-2"></div>
+                    <div className="col">
+                        预设小号定义在 public/unit.json 文件中。
+                        定义了这个文件的程序，只能由url直接启动。
+                        用户第一次访问app之后，会缓存在localStorage里。<br/>
+                        如果要删去缓存的预定义Unit，logout然后再login。
+                    </div>
+                </div>
+                }
             </div>
         </Page>)
     }

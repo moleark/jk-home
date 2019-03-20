@@ -395,7 +395,7 @@ export class Nav {
         await this.ws.receive(msg);
     }
 
-    private async getUnitName() {
+    private async getPredefinedUnitName() {
         try {
             let unitRes = await fetch('unit.json', {});
             //if (unitRes)
@@ -413,12 +413,12 @@ export class Nav {
         let unit = this.local.unit.get();
         if (unit !== undefined) {
             if (isDevelopment !== true) return unit.id;
-            unitName = await this.getUnitName();
+            unitName = await this.getPredefinedUnitName();
             if (unitName === undefined) return;
             if (unit.name === unitName) return unit.id;
         }
         else {
-            unitName = await this.getUnitName();
+            unitName = await this.getPredefinedUnitName();
             if (unitName === undefined) return;
         }
         let unitId = await guestApi.unitFromName(unitName);
@@ -470,8 +470,8 @@ export class Nav {
                 }
             }
 
-            let unit = await this.loadPredefinedUnit();
-            appInFrame.predefinedUnit = unit;
+            let predefinedUnit = await this.loadPredefinedUnit();
+            appInFrame.predefinedUnit = predefinedUnit;
 
             let user: User = this.local.user.get();
             if (user === undefined) {
@@ -553,6 +553,7 @@ export class Nav {
     }
 
     async logout(callback?:()=>Promise<void>) { //notShowLogin?:boolean) {
+        appInFrame.unit = undefined;
         this.local.logoutClear();
         this.user = undefined; //{} as User;
         logoutApis();
