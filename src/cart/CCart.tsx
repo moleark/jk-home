@@ -66,7 +66,7 @@ export class CCart extends Controller {
 
     checkOut = async () => {
         let { cartViewModel } = this.cApp;
-        this.selectedCartItems = cartViewModel.getSelectItem();
+        this.selectedCartItems = cartViewModel.getSelectedItem();
         if (this.selectedCartItems === undefined) return;
         if (!this.isLogined) {
             nav.showLogin(this.loginCallback, jnkTop, true);

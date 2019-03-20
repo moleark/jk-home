@@ -52,7 +52,7 @@ export class CartViewModel {
         return packItem.quantity;
     }
 
-    getSelectItem(): CartItem[] {
+    getSelectedItem(): CartItem[] {
         return this.cartItems.filter(v => {
             let { $isSelected, $isDeleted } = v;
             return $isSelected === true && $isDeleted !== true;
