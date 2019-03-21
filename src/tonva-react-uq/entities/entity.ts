@@ -232,7 +232,7 @@ export abstract class Entity {
         return ret;
     }
     
-    private unpackRow(ret:any, fields:Field[], data:string, p:number):number {
+    protected unpackRow(ret:any, fields:Field[], data:string, p:number):number {
         let ch0 = 0, ch = 0, c = p, i = 0, len = data.length, fLen = fields.length;
         for (;p<len;p++) {
             ch0 = ch;
@@ -250,7 +250,12 @@ export abstract class Entity {
                 }
                 c = p+1;
                 ++i;
-                if (i>=fLen) break;
+                if (i>=fLen) {
+                    p = data.indexOf('\n');
+                    if (p >= 0) ++p;
+                    else p = len;
+                    break;
+                }
             }
             else if (ch === 10) {
                 let f = fields[i];
@@ -279,6 +284,7 @@ export abstract class Entity {
             case 'time':
                 let date = new Date(Number(v));
                 return date;
+            case 'id':
             case 'tinyint':
             case 'smallint':
             case 'int':

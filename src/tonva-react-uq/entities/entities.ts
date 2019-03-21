@@ -9,7 +9,7 @@ import { Map } from './map';
 import { Pending } from './pending';
 import { CUq } from '../controllers';
 
-export type FieldType = 'tinyint' | 'smallint' | 'int' | 'bigint' | 'dec' | 'char' | 'text' 
+export type FieldType = 'id' | 'tinyint' | 'smallint' | 'int' | 'bigint' | 'dec' | 'char' | 'text' 
     | 'datetime' | 'date' | 'time';
 
 export function fieldDefaultValue(type:FieldType) {

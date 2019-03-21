@@ -195,6 +195,34 @@ export abstract class Tuid extends Entity {
             _tuid.useId(tuidValue[f.name]);
         }
     }
+    async from(): Promise<TuidMain> {return;}
+    private async unpackTuidIds(values:any[]|string):Promise<any[]> {
+        if (this.schemaFrom === undefined) {
+            if (this.name === 'contact') debugger;
+            let {mainFields} = this.schema;
+            if (mainFields === undefined) return values as any[];
+            let ret:any[] = []
+            let len = (values as string).length;
+            let p = 0;
+            while (p<len) {
+                let ch = (values as string).charCodeAt(p);
+                if (ch === 10) {
+                    ++p;
+                    break;
+                }
+                let row = {};
+                p = this.unpackRow(row, mainFields, values as string, p);
+                ret.push(row);
+            }
+            return ret;
+        }
+        else {
+            if (this.name === 'contact') debugger;
+            let tuidMain = await this.from();
+            let ret = await tuidMain.unpackTuidIds(values);
+            return ret;
+        }
+    }
     async cacheIds():Promise<void> {
         if (this.waitingIds.length === 0) return;
         let name:string, arr:string;
@@ -207,6 +235,8 @@ export abstract class Tuid extends Entity {
         }
         let api = await this.getApiFrom();
         let tuids = await api.tuidIds(name, arr, this.waitingIds);
+        tuids = await this.unpackTuidIds(tuids);
+        if (this.name === 'contact') debugger;
         for (let tuidValue of tuids) {
             if (this.cacheValue(tuidValue) === false) continue;
             this.cacheTuidFieldValues(tuidValue);
@@ -360,7 +390,7 @@ export class TuidMain extends Tuid {
     async cUqFrom(): Promise<CUq> {
         if (this.schemaFrom === undefined) return this.entities.cUq;
         let {owner, uq: uq} = this.schemaFrom;
-        let cUq = await this.entities.cUq
+        let cUq = this.entities.cUq;
         let cApp = cUq.cApp;
         if (cApp === undefined) return cUq;
         let cUqFrm = await cApp.getImportUq(owner, uq);
