@@ -198,7 +198,6 @@ export abstract class Tuid extends Entity {
     async from(): Promise<TuidMain> {return;}
     private async unpackTuidIds(values:any[]|string):Promise<any[]> {
         if (this.schemaFrom === undefined) {
-            if (this.name === 'contact') debugger;
             let {mainFields} = this.schema;
             if (mainFields === undefined) return values as any[];
             let ret:any[] = []
@@ -217,7 +216,6 @@ export abstract class Tuid extends Entity {
             return ret;
         }
         else {
-            if (this.name === 'contact') debugger;
             let tuidMain = await this.from();
             let ret = await tuidMain.unpackTuidIds(values);
             return ret;
@@ -236,7 +234,6 @@ export abstract class Tuid extends Entity {
         let api = await this.getApiFrom();
         let tuids = await api.tuidIds(name, arr, this.waitingIds);
         tuids = await this.unpackTuidIds(tuids);
-        if (this.name === 'contact') debugger;
         for (let tuidValue of tuids) {
             if (this.cacheValue(tuidValue) === false) continue;
             this.cacheTuidFieldValues(tuidValue);
@@ -339,7 +336,7 @@ export abstract class Tuid extends Entity {
     async posArr(arr:string, owner:number, id:number, order:number) {
         return await this.tvApi.tuidArrPos(this.name, arr, owner, id, order);
     }
-    
+
     // cache放到Tuid里面之后，这个函数不再需要公开调用了
     //private async ids(idArr:number[]) {
     //    return await this.tvApi.tuidIds(this.name, idArr);

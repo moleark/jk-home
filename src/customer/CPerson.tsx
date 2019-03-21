@@ -30,6 +30,9 @@ export class CUser extends Controller {
         this.contactType = contactType;
         this.userContacts = await this.cApp.currentUser.getContacts();
         this.openVPage(VAddressList);
+        if (!this.userContacts || this.userContacts.length === 0) {
+            this.onContactEdit();
+        }
     }
 
     /**
