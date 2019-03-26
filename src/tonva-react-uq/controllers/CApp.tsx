@@ -64,6 +64,7 @@ export class CApp extends Controller {
         let promises: PromiseLike<string>[] = [];
         let promiseChecks: PromiseLike<boolean>[] = [];
         let roleAppUI = await this.buildRoleAppUI();
+        this.ui = roleAppUI;
         for (let appUq of uqs) {
             let {id:uqId, uqOwner, uqName, access} = appUq;
             let uq = uqOwner + '/' + uqName;
@@ -95,17 +96,18 @@ export class CApp extends Controller {
         return retErrors;
     }
 
-    private async buildRoleAppUI():Promise<RoleAppUI> {
+    private async buildRoleAppUI():Promise<AppUI> {
         if (!this.ui) return undefined;
         let {hashParam} = nav;
         if (!hashParam) return this.ui;
         let {roles} = this.ui;
-        let ret:RoleAppUI = {} as any;
+        let roleAppUI = roles && roles[hashParam];
+        if (!roleAppUI) return this.ui;
+        let ret:AppUI = {} as any;
         for (let i in this.ui) {
             if (i === 'roles') continue;
-            ret[i] = _.cloneDeep(this.ui[i]);
+            ret[i] = this.ui[i];
         }
-        let roleAppUI = roles && roles[hashParam];
         if (typeof roleAppUI === 'function') roleAppUI = await roleAppUI();
         _.merge(ret, roleAppUI);
         return ret;
@@ -208,9 +210,6 @@ export class CApp extends Controller {
             this.clearPrevPages();
         }
         await this.showMainPage();
-    }
-    async load() {
-        await this.beforeStart();
     }
 
     render(): JSX.Element {

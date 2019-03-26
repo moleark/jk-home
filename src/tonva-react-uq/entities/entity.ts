@@ -239,19 +239,20 @@ export abstract class Entity {
             ch = data.charCodeAt(p);
             if (ch === 9) {
                 let f = fields[i];
+                let {name} = f;
                 if (ch0 !== 8) {
                     if (p>c) {
                         let v = data.substring(c, p);
-                        ret[f.name] = this.to(ret, v, f);
+                        ret[name] = this.to(ret, v, f);
                     }
                 }
                 else {
-                    ret[f.name] = null;
+                    ret[name] = null;
                 }
                 c = p+1;
                 ++i;
                 if (i>=fLen) {
-                    p = data.indexOf('\n');
+                    p = data.indexOf('\n', c);
                     if (p >= 0) ++p;
                     else p = len;
                     break;
@@ -259,14 +260,15 @@ export abstract class Entity {
             }
             else if (ch === 10) {
                 let f = fields[i];
+                let {name} = f;
                 if (ch0 !== 8) {
                     if (p>c) {
                         let v = data.substring(c, p);
-                        ret[f.name] = this.to(ret, v, f);
+                        ret[name] = this.to(ret, v, f);
                     }
                 }
                 else {
-                    ret[f.name] = null;
+                    ret[name] = null;
                 }
                 ++p;
                 ++i;
