@@ -109,7 +109,7 @@ export abstract class Entity {
         let result = {};
         let fields = this.fields;
         if (fields !== undefined) this.buildFieldsParams(result, fields, params);
-        let arrs = this.arrFields; 
+        let arrs = this.arrFields;
         if (arrs !== undefined) {
             for (let arr of arrs) {
                 let {name, fields} = arr;
@@ -156,7 +156,7 @@ export abstract class Entity {
         }
         return ret.join('');
     }
-    
+
     private escape(row:any, field:Field):any {
         let d = row[field.name];
         switch (typeof d) {
@@ -179,7 +179,7 @@ export abstract class Entity {
             case 'undefined': return '';
         }
     }
-    
+
     private packRow(result:string[], fields:Field[], data:any) {
         let len = fields.length;
         if (len === 0) return;
@@ -191,7 +191,7 @@ export abstract class Entity {
         }
         result.push(ret + ln);
     }
-    
+
     private packArr(result:string[], fields:Field[], data:any[]) {
         if (data !== undefined) {
             for (let row of data) {
@@ -200,7 +200,7 @@ export abstract class Entity {
         }
         result.push(ln);
     }
-    
+
     unpackSheet(data:string):any {
         let ret = {} as any; //new this.newMain();
         //if (schema === undefined || data === undefined) return;
@@ -215,7 +215,7 @@ export abstract class Entity {
         }
         return ret;
     }
-    
+
     unpackReturns(data:string):any {
         let ret = {} as any;
         //if (schema === undefined || data === undefined) return;
@@ -231,7 +231,7 @@ export abstract class Entity {
         }
         return ret;
     }
-    
+
     protected unpackRow(ret:any, fields:Field[], data:string, p:number):number {
         let ch0 = 0, ch = 0, c = p, i = 0, len = data.length, fLen = fields.length;
         for (;p<len;p++) {
@@ -251,7 +251,7 @@ export abstract class Entity {
                 c = p+1;
                 ++i;
                 if (i>=fLen) {
-                    p = data.indexOf('\n');
+                    p = data.indexOf('\n', c);
                     if (p >= 0) ++p;
                     else p = len;
                     break;
