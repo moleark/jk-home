@@ -1,11 +1,12 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { Query, tv } from 'tonva-react-uq';
-import { PageItems, Controller, nav, Page } from 'tonva-tools';
+import { PageItems, Controller, nav, Page, Image } from 'tonva-tools';
 import { CCartApp } from '../CCartApp';
 import { VProduct } from './VProduct';
 import { VProductList } from './VProductList';
 import { LoaderProductChemicalWithPrices } from './itemLoader';
+import { ProductImage } from 'tools/productImage';
 
 class PageProducts extends PageItems<any> {
 
@@ -86,15 +87,16 @@ export function productPropItem(caption: string, value: any) {
 }
 
 export function renderProduct(product: any, index: number) {
-    let { brand, description, CAS, purity, molecularFomula, molecularWeight, origin } = product;
+    let { brand, description, descriptionC, CAS, purity, molecularFomula, molecularWeight, origin, imageUrl } = product;
     return <div className="row d-flex mb-3 px-2">
         <div className="col-12">
             <div className="row py-2">
                 <div className="col-12"><strong>{description}</strong></div>
+                <div className="col-12 small muted">{descriptionC}</div>
             </div>
             <div className="row">
                 <div className="col-3">
-                    <img src="favicon.ico" alt="structure" />
+                    <ProductImage chemicalId={imageUrl} className="w-4c h-4c" />
                 </div>
                 <div className="col-9">
                     <div className="row">

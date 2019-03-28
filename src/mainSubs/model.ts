@@ -13,6 +13,7 @@ export interface MainProduct extends Id {
     description: string;
     descriptionC: string;
     brand: MainBrand;
+    imageUrl: string;
 }
 
 export interface MainProductChemical extends MainProduct {

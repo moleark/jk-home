@@ -19,7 +19,7 @@ const cartSchema = [
                     { name: 'pack', type: 'object' } as ObjectSchema,
                     { name: 'price', type: 'number' } as NumSchema,
                     { name: 'quantity', type: 'number' } as NumSchema,
-                    { name: 'currency', type: 'string' },
+                    { name: 'currency', type: 'object' } as ObjectSchema,
                     { name: 'inventoryAllocation', type: 'object' } as ObjectSchema,
                     { name: 'futureDeliveryTimeDescription', type: 'string' }
                 ]
@@ -117,14 +117,7 @@ export class VCart extends VPage<CCart> {
     protected cartForm = observer(() => {
         let { cartViewModel } = this.controller.cApp;
         // let cartData = cart.data;
-        let {data:cartData} = cartViewModel;
-        let {list} = cartData;
-        let q = 0;
-        for (let item of list) {
-            for (let pack of item.packs) {
-                q += pack.quantity;
-            }
-        }
+        let { data: cartData } = cartViewModel;
         return <Form className="bg-white flex-fill overflow-auto" schema={cartSchema} uiSchema={this.uiSchema} formData={cartData} />
     });
 
@@ -143,7 +136,7 @@ export class VCart extends VPage<CCart> {
 
     private page = observer((params: any): JSX.Element => {
         let { cartViewModel: cart } = this.controller.cApp;
-        let footer:any, content:any;
+        let footer: any, content: any;
         if (cart.count.get() === 0) {
             content = this.empty();
             footer = undefined;
