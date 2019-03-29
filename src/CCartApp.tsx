@@ -6,7 +6,7 @@ import { CProduct } from 'product';
 import { COrder } from 'order/COrder';
 import { CHome } from './home/CHome';
 import { CProductCategory } from 'productCategory/CProductCategory';
-import { CUser } from 'customer/CPerson';
+import { CUser } from 'customer/CUser';
 import { CMember } from 'member/CMember';
 import { WebUser } from 'CurrentUser';
 import { consts } from './home/consts';

@@ -232,6 +232,8 @@ export abstract class Tuid extends Entity {
             arr = this.name;
         }
         let api = await this.getApiFrom();
+        if (name === 'address')
+            debugger;
         let tuids = await api.tuidIds(name, arr, this.waitingIds);
         tuids = await this.unpackTuidIds(tuids);
         for (let tuidValue of tuids) {
