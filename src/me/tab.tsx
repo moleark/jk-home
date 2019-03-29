@@ -3,8 +3,6 @@ import { nav, User, Page, EditMeInfo, Image } from 'tonva-tools';
 import { Prop, Media, IconText, FA, PropGrid, LMR } from 'tonva-react-form';
 import { About } from './about';
 import { observer } from 'mobx-react';
-import { jnkTop } from './loginTop';
-//import ChangePasswordPage from './changePassword';
 
 @observer
 class Me extends React.Component {
@@ -68,7 +66,7 @@ class Me extends React.Component {
             rows.push(
                 {
                     type: 'component',
-                    component: <button className="btn btn-success w-100" onClick={() => nav.showLogin(undefined, jnkTop, true)}>
+                    component: <button className="btn btn-success w-100" onClick={() => nav.showLogin(undefined, true)}>
                         <FA name="sign-out" size="lg" /> 请登录
                     </button>
                 },

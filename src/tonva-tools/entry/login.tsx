@@ -15,7 +15,7 @@ const schema: Schema = [
 export interface LoginProps {
     withBack?: boolean;
     callback?: (user:User) => Promise<void>;
-    top?: any;
+    //top?: any;
 }
 
 export default class Login extends React.Component<LoginProps> {
@@ -74,13 +74,11 @@ export default class Login extends React.Component<LoginProps> {
         if (this.props.withBack === true) {
             header = '登录';
         }
-        let {top} = this.props;
-        if (top === undefined) top = tonvaTop;
         return <Page header={header} footer={footer}>
             <div className="d-flex h-100 flex-column justify-content-center align-items-center">
                 <div className="flex-fill" />
                 <div className="w-20c">
-                    {top}
+                    {tonvaTop()}
                     <div className="h-2c" />
                     <Form schema={schema} uiSchema={this.uiSchema} 
                         onButtonClick={this.onSubmit} 

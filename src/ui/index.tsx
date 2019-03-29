@@ -5,6 +5,7 @@ import orderUI from './order';
 import productUI from './product';
 import customerUI from './customer';
 import warehouseUI from './warehouse';
+import { jnkTop } from '../me/loginTop';
 
 const ui: AppUI = {
     appName: "百灵威系统工程部/cart",
@@ -16,7 +17,8 @@ const ui: AppUI = {
         '百灵威系统工程部/customer': customerUI,
         '百灵威系统工程部/webUser': customerUI,
         '百灵威系统工程部/warehouse': warehouseUI,
-    }
+    },
+    loginTop: jnkTop,
 }
 
 export default ui;

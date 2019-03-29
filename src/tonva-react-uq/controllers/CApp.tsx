@@ -1,10 +1,9 @@
 import * as React from 'react';
 import _ from 'lodash';
-import { Page, loadAppUqs, nav, appInFrame, Controller, TypeVPage, VPage, resLang, getExHash, isDevelopment} from 'tonva-tools';
+import { Page, loadAppUqs, nav, appInFrame, Controller, TypeVPage, VPage, resLang, getExHash, isDevelopment, NavSettings} from 'tonva-tools';
 import { List, LMR, FA } from 'tonva-react-form';
-import { CUq, EntityType, UqUI } from './uq';
+import { CUq, UqUI } from './uq';
 import { centerApi } from '../centerApi';
-import { LocalData } from 'tonva-tools/local';
 
 export interface RoleAppUI {
     CApp?: typeof CApp;
@@ -14,7 +13,7 @@ export interface RoleAppUI {
     res?: any;
 }
 
-export interface AppUI extends RoleAppUI {
+export interface AppUI extends RoleAppUI, NavSettings {
     appName: string; // 格式: owner/appName
     roles?: {[role:string]: RoleAppUI | (()=>Promise<RoleAppUI>)};
 }
@@ -29,6 +28,7 @@ export class CApp extends Controller {
 
     constructor(ui:AppUI) {
         super(resLang(ui && ui.res));
+        nav.setSettings(ui);
         let tonvaApp = ui.appName;
         if (tonvaApp === undefined) {
             throw 'appName like "owner/app" must be defined in UI';
