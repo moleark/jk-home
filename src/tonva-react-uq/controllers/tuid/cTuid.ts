@@ -52,8 +52,8 @@ export abstract class CTuid<T extends Tuid> extends CEntity<T, TuidUI> {
 export class CTuidMain extends CTuid<TuidMain> {
     constructor(cUq: CUq, entity: TuidMain, ui: TuidUI, res:any) {
         super(cUq, entity, ui, res);
-        let tuid = this.entity;
-        this.proxies = tuid.proxies;
+        //let tuid = this.entity;
+        //this.proxies = tuid.proxies;
         if (this.proxies !== undefined) {
             this.proxyLinks = [];
             for (let i in this.proxies) {
@@ -63,26 +63,26 @@ export class CTuidMain extends CTuid<TuidMain> {
         }
     }
 
-    async from():Promise<CTuidMain> {
-        let ret = await this.entity.cFrom();
+    from():CTuidMain {
+        let ret = this.entity.cFrom();
         if (ret === undefined) return this;
         return ret;
     }
 
-    async cUqFrom():Promise<CUq> {
-        return await this.entity.cUqFrom();
+    cUqFrom():CUq {
+        return this.entity.cUqFrom();
     }
-    async cEditFrom(): Promise<CTuidEdit> {
-        let cUq = await this.entity.cUqFrom();
-        return await cUq.cTuidEditFromName(this.entity.name);
+    cEditFrom(): CTuidEdit {
+        let cUq = this.entity.cUqFrom();
+        return cUq.cTuidEditFromName(this.entity.name);
     }
-    async cInfoFrom(): Promise<CTuidInfo> {
-        let cUq = await this.entity.cUqFrom();
-        return await cUq.cTuidInfoFromName(this.entity.name);
+    cInfoFrom(): CTuidInfo {
+        let cUq = this.entity.cUqFrom();
+        return cUq.cTuidInfoFromName(this.entity.name);
     }
-    async cSelectFrom(): Promise<CTuidSelect> {
-        let cUq = await this.entity.cUqFrom();
-        return await cUq.cTuidSelectFromName(this.entity.name);
+    cSelectFrom(): CTuidSelect {
+        let cUq = this.entity.cUqFrom();
+        return cUq.cTuidSelectFromName(this.entity.name);
     }
 
     getLable(tuid:Tuid):string {

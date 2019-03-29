@@ -27,7 +27,7 @@ export abstract class Entity {
     public face: any;           // 对应字段的label, placeHolder等等的中文，或者语言的翻译
 
     protected get tvApi() {return this.entities.uqApi;}
-    async getApiFrom() {return this.entities.uqApi;}
+    getApiFrom() {return this.entities.uqApi;}
 
     private fieldMaps: {[arr:string]: FieldMap} = {};
     fieldMap(arr?:string): FieldMap {
@@ -56,6 +56,7 @@ export abstract class Entity {
         if (this.schema !== undefined) return;
         let schema = await this.entities.uqApi.schema(this.name);
         this.setSchema(schema);
+        this.buildFieldsTuid();
     }
 
     public setSchema(schema:any) {

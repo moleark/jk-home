@@ -1,6 +1,6 @@
 import * as React from 'react';
 import _ from 'lodash';
-import { Page, loadAppUqs, nav, appInFrame, Controller, TypeVPage, VPage, resLang, getExHash, isDevelopment, NavSettings} from 'tonva-tools';
+import { Page, loadAppUqs, nav, appInFrame, Controller, TypeVPage, VPage, resLang, getExHash, isDevelopment, NavSettings, App} from 'tonva-tools';
 import { List, LMR, FA } from 'tonva-react-form';
 import { CUq, UqUI } from './uq';
 import { centerApi } from '../centerApi';
@@ -54,10 +54,10 @@ export class CApp extends Controller {
         await cApp.start(keepNavBackButton);    
     }
 
-    protected async loadUqs(): Promise<string[]> {
+    protected async loadUqs(app:App): Promise<string[]> {
         let retErrors:string[] = [];
         let unit = appInFrame.unit;
-        let app = await loadAppUqs(this.appOwner, this.appName);
+        //let app = await loadAppUqs(this.appOwner, this.appName);
         let {id, uqs} = app;
         this.id = id;
 
@@ -113,19 +113,22 @@ export class CApp extends Controller {
         return ret;
     }
 
-    async getImportUq(uqOwner:string, uqName:string):Promise<CUq> {
+    getImportUq(uqOwner:string, uqName:string):CUq {
         let uq = uqOwner + '/' + uqName;
         let cUq = this.cImportUqs[uq];
         if (cUq !== undefined) return cUq;
         let ui = this.ui && this.ui.uqs && this.ui.uqs[uq];
         let uqId = -1; // unknown
-        this.cImportUqs[uq] = cUq = this.newCUq(uq, uqId, undefined, ui || {});
+        this.cImportUqs[uq] = cUq = this.getCUq(uq);
+        //this.newCUq(uq, uqId, undefined, ui || {});
+        /*
         let retError = await cUq.loadSchema();
         if (retError !== undefined) {
             console.error(retError);
             debugger;
             return;
         }
+        */
         return cUq;
     }
 
@@ -143,16 +146,16 @@ export class CApp extends Controller {
         return ret;
     }
 
-    getCUq(apiName:string):CUq {
-        return this.cUqCollection[apiName];
+    getCUq(uq:string):CUq {
+        return this.cUqCollection[uq];
     }
 
     protected get VAppMain():TypeVPage<CApp> {return (this.ui&&this.ui.main) || VAppMain}
     protected async beforeStart():Promise<boolean> {
         try {
+            let app = await loadAppUqs(this.appOwner, this.appName);
             if (isDevelopment === true) {
                 let {predefinedUnit} = appInFrame;
-                let app = await loadAppUqs(this.appOwner, this.appName);
                 let {id} = app;
                 this.id = id;
                 let {user} = nav;
@@ -183,7 +186,7 @@ export class CApp extends Controller {
                 }
             }
 
-            let retErrors = await this.loadUqs();
+            let retErrors = await this.loadUqs(app);
             if (retErrors !== undefined) {
                 this.openPage(<Page header="ERROR">
                     <div className="m-3">

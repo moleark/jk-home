@@ -39,7 +39,7 @@ export abstract class Tuid extends Entity {
         this.BoxId = function():void {};
         let prototype = this.BoxId.prototype;
         Object.defineProperty(prototype, '_$tuid', {
-            value: this,
+            value: this.from(),
             writable: false,
             enumerable: false,
         })
@@ -107,6 +107,7 @@ export abstract class Tuid extends Entity {
     }
     valueFromFieldName(fieldName:string, obj:any):BoxId|any {
         if (obj === undefined) return;
+        if (this.fields === undefined) return;
         let f = this.fields.find(v => v.name === fieldName);
         if (f === undefined) return;
         let v = obj[fieldName];
@@ -122,7 +123,7 @@ export abstract class Tuid extends Entity {
     }
     useId(id:number, defer?:boolean) {
         if (id === undefined || id === 0) return;
-        if (isNumber(id) === false) return;
+        if (isNumber(id) === false) return;        
         if (this.cache.has(id) === true) {
             this.moveToHead(id);
             return;
@@ -189,16 +190,16 @@ export abstract class Tuid extends Entity {
         return true;
     }
     protected afterCacheId(tuidValue:any) {
+        if (this.fields === undefined) return;
         for (let f of this.fields) {
             let {_tuid} = f;
             if (_tuid === undefined) continue;
             _tuid.useId(tuidValue[f.name]);
         }
     }
-    async from(): Promise<TuidMain> {return;}
+    from(): TuidMain {return;}
     private async unpackTuidIds(values:any[]|string):Promise<any[]> {
         if (this.schemaFrom === undefined) {
-            if (this.name === 'contact') debugger;
             let {mainFields} = this.schema;
             if (mainFields === undefined) return values as any[];
             let ret:any[] = []
@@ -217,8 +218,7 @@ export abstract class Tuid extends Entity {
             return ret;
         }
         else {
-            if (this.name === 'contact') debugger;
-            let tuidMain = await this.from();
+            let tuidMain = this.from();
             let ret = await tuidMain.unpackTuidIds(values);
             return ret;
         }
@@ -233,10 +233,9 @@ export abstract class Tuid extends Entity {
             name = this.owner.name;
             arr = this.name;
         }
-        let api = await this.getApiFrom();
+        let api = this.getApiFrom();
         let tuids = await api.tuidIds(name, arr, this.waitingIds);
         tuids = await this.unpackTuidIds(tuids);
-        if (this.name === 'contact') debugger;
         for (let tuidValue of tuids) {
             if (this.cacheValue(tuidValue) === false) continue;
             this.cacheTuidFieldValues(tuidValue);
@@ -248,7 +247,7 @@ export abstract class Tuid extends Entity {
     }
     async load(id:number):Promise<any> {
         if (id === undefined || id === 0) return;
-        let api = await this.getApiFrom();
+        let api = this.getApiFrom();
         let values = await api.tuidGet(this.name, id);
         if (values === undefined) return;
         values._$tuid = this;
@@ -314,7 +313,7 @@ export abstract class Tuid extends Entity {
             name = this.name;
             arr = undefined;
         }
-        let api = await this.getApiFrom();
+        let api = this.getApiFrom();
         let ret = await api.tuidSearch(name, arr, owner, key, pageStart, pageSize);
         for (let row of ret) {
             this.cacheFieldsInValue(row, fields);
@@ -324,7 +323,7 @@ export abstract class Tuid extends Entity {
     }
     async loadArr(arr:string, owner:number, id:number):Promise<any> {
         if (id === undefined || id === 0) return;
-        let api = await this.getApiFrom();
+        let api = this.getApiFrom();
         return await api.tuidArrGet(this.name, arr, owner, id);
     }
     /*
@@ -354,7 +353,7 @@ export class TuidMain extends Tuid {
     get uqApi() {return this.entities.uqApi};
 
     divs: {[name:string]: TuidDiv};
-    proxies: {[name:string]: TuidMain};
+    //proxies: {[name:string]: TuidMain};
 
     public setSchema(schema:any) {
         super.setSchema(schema);
@@ -387,74 +386,76 @@ export class TuidMain extends Tuid {
         }
     }
 
-    async cUqFrom(): Promise<CUq> {
+    cUqFrom(): CUq {
         if (this.schemaFrom === undefined) return this.entities.cUq;
-        let {owner, uq: uq} = this.schemaFrom;
+        let {owner, uq} = this.schemaFrom;
         let cUq = this.entities.cUq;
         let cApp = cUq.cApp;
         if (cApp === undefined) return cUq;
-        let cUqFrm = await cApp.getImportUq(owner, uq);
+        let cUqFrm = cApp.getImportUq(owner, uq);
         if (cUqFrm === undefined) {
             console.error(`${owner}/${uq} 不存在`);
             debugger;
             return cUq;
         }
+        /*
         let retErrors = await cUqFrm.loadSchema();
         if (retErrors !== undefined) {
             console.error('cUq.loadSchema: ' + retErrors);
             debugger;
             return cUq;
-        }
+        }*/
         return cUqFrm;
     }
 
-    async getApiFrom() {
-        let from = await this.from();
+    getApiFrom() {
+        let from = this.from();
         if (from !== undefined) {
             return from.entities.uqApi;
         }
         return this.entities.uqApi;
     }
 
-    async from(): Promise<TuidMain> {
-        let cUq = await this.cUqFrom();
+    from(): TuidMain {
+        if (this.schemaFrom === undefined) return this;
+        let cUq = this.cUqFrom();
         return cUq.tuid(this.name);
     }
 
-    async cFrom(): Promise<CTuidMain> {
-        let cUq = await this.cUqFrom();
+    cFrom(): CTuidMain {
+        let cUq = this.cUqFrom();
         return cUq.cTuidMainFromName(this.name);
     }
 
-    async cEditFrom(): Promise<CTuidEdit> {
-        let cUq = await this.cUqFrom();
+    cEditFrom(): CTuidEdit {
+        let cUq = this.cUqFrom();
         return cUq.cTuidEditFromName(this.name);
     }
 
-    async cInfoFrom(): Promise<CTuidInfo> {
-        let cUq = await this.cUqFrom();
+    cInfoFrom(): CTuidInfo {
+        let cUq = this.cUqFrom();
         return cUq.cTuidInfoFromName(this.name);
     }
 
-    async cSelectFrom(): Promise<CTuidSelect> {
-        let cUq = await this.cUqFrom();
+    cSelectFrom(): CTuidSelect {
+        let cUq = this.cUqFrom();
         if (cUq === undefined) return;
         return cUq.cTuidSelectFromName(this.name);
     }
-
+    /*
     protected afterCacheId(tuidValue:any) {
         super.afterCacheId(tuidValue);
         if (this.proxies === undefined) return;
         let {type, $proxy} = tuidValue;
         let pTuid = this.proxies[type];
         pTuid.useId($proxy);
-    }
+    }*/
 }
 
 export class TuidDiv extends Tuid {
     get Main() {return this.owner}
 
-    async getApiFrom() {
-        return await this.owner.getApiFrom();
+    getApiFrom() {
+        return this.owner.getApiFrom();
     }
 }

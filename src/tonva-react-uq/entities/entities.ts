@@ -144,14 +144,14 @@ export class Entities {
     }
 
     private buildTuids(tuids:any) {
-        let proxyColl = {} as any;
+        //let proxyColl = {} as any;
         for (let i in tuids) {
             let schema = tuids[i];
-            let {name, typeId, proxies} = schema;
+            let {name, typeId/*, proxies*/} = schema;
             let tuid = this.newTuid(i, typeId);
             tuid.sys = true;
             //tuid.setSchema(schema);
-            if (proxies !== undefined) proxyColl[i] = proxies;
+            //if (proxies !== undefined) proxyColl[i] = proxies;
         }
         for (let i in tuids) {
             let schema = tuids[i];
@@ -160,6 +160,7 @@ export class Entities {
             //tuid.sys = true;
             tuid.setSchema(schema);
         }
+        /*
         for (let i in proxyColl) {
             let proxies:string[] = proxyColl[i];
             let tuid = this.tuids[i];
@@ -167,9 +168,10 @@ export class Entities {
             for (let p of proxies) {
                 tuid.proxies[p] = this.tuids[p];
             }
-        }
+        }*/
         for (let i in this.tuids) {
-            this.tuids[i].buildFieldsTuid();
+            let tuid = this.tuids[i];
+            tuid.buildFieldsTuid();
         }
     }
 
