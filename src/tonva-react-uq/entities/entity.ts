@@ -62,8 +62,12 @@ export abstract class Entity {
         if (schema === undefined) return;
         if (this.schema !== undefined) return;
         this.schema = schema;
-        let {name, fields, arrs, returns} = schema;
+        let {name} = schema;
         if (name !== this.name) this.jName = name;
+    }
+
+    public buildFieldsTuid() {
+        let {fields, arrs, returns} = this.schema;
         this.entities.buildFieldTuid(this.fields = fields);
         this.entities.buildArrFieldsTuid(this.arrFields = arrs, fields);
         this.entities.buildArrFieldsTuid(this.returns = returns, fields);

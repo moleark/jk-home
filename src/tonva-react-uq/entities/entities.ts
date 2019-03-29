@@ -168,6 +168,9 @@ export class Entities {
                 tuid.proxies[p] = this.tuids[p];
             }
         }
+        for (let i in this.tuids) {
+            this.tuids[i].buildFieldsTuid();
+        }
     }
 
     private buildAccess(access:any) {
