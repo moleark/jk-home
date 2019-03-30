@@ -12,6 +12,6 @@ export function renderMainProduct(model: MainProduct): JSX.Element {
 export function renderSubPack(model: SubPack): JSX.Element {
     let { pack, vipPrice, price, quantity, amount } = model;
     return <div>
-        {pack.name}, {vipPrice}, {price}, {quantity}, {amount}
+        {pack.unit}, {vipPrice}, {price}, {quantity}, {amount}
     </div>
 }

@@ -1,11 +1,29 @@
 import _ from 'lodash';
-import { CCartApp } from 'CCartApp';
 import { TuidMain, TuidDiv, Map, Query } from 'tonva-react-uq';
 import { ProductPackRow } from './Product';
 import { Loader } from 'mainSubs/loader';
-import { MainSubs, MainProductChemical } from 'mainSubs';
+import { MainSubs, MainProductChemical, MainBrand } from 'mainSubs';
 
-export class LoaderProduct extends Loader<MainProductChemical> {
+export class LoaderBrand extends Loader<MainBrand> {
+    private brandTuid: TuidMain;
+
+    protected initEntities() {
+        let { cUqProduct } = this.cApp;
+        this.brandTuid = cUqProduct.tuid('brand');
+    }
+
+    protected async loadToData(brandId: number, data: MainBrand): Promise<void> {
+        let brand = await this.brandTuid.load(brandId);
+        data.id = brand.id;
+        data.name = brand.name;
+    }
+
+    protected initData(): MainBrand {
+        return {} as MainBrand;
+    }
+}
+
+export class LoaderProductChemical extends Loader<MainProductChemical> {
     private productTuid: TuidMain;
     private packTuid: TuidDiv;
     private productChemicalMap: Map;
@@ -18,10 +36,13 @@ export class LoaderProduct extends Loader<MainProductChemical> {
         this.productChemicalMap = cUqProduct.map('productChemical');
     }
 
-    protected async loadToData(productId: any, data: MainProductChemical): Promise<void> {
+    protected async loadToData(productId: number, data: MainProductChemical): Promise<void> {
 
         let product = await this.productTuid.load(productId);
         _.merge(data, product);
+
+        let brandLoader = new LoaderBrand(this.cApp);
+        data.brand = await brandLoader.load(data.brand.id);
 
         let productChemical = await this.productChemicalMap.obj({ product: productId });
         if (productChemical) {
@@ -32,6 +53,12 @@ export class LoaderProduct extends Loader<MainProductChemical> {
             data.molecularFomula = molecularFomula;
             data.molecularWeight = molecularWeight;
         }
+
+        data.packs = [];
+        product.packx.forEach(e => {
+            // let { id, radiox, radioy, unit } = e;
+            data.packs.push(e);
+        });
     }
 
     protected initData(): MainProductChemical {
@@ -39,7 +66,7 @@ export class LoaderProduct extends Loader<MainProductChemical> {
     }
 }
 
-export class LoaderProductChemical extends Loader<MainSubs<MainProductChemical, ProductPackRow>> {
+export class LoaderProductChemicalWithPrices extends Loader<MainSubs<MainProductChemical, ProductPackRow>> {
 
     private getCustomerDiscount: Query;
     private priceMap: Map;
@@ -61,7 +88,7 @@ export class LoaderProductChemical extends Loader<MainSubs<MainProductChemical, 
 
     protected async loadToData(productId: any, data: MainSubs<MainProductChemical, ProductPackRow>): Promise<void> {
 
-        let productLoader = new LoaderProduct(this.cApp);
+        let productLoader = new LoaderProductChemical(this.cApp);
         data.main = await productLoader.load(productId);
 
         let discount = 0;
@@ -73,11 +100,12 @@ export class LoaderProductChemical extends Loader<MainSubs<MainProductChemical, 
 
         let { id: currentSalesRegionId } = currentSalesRegion;
         let prices = await this.priceMap.table({ product: productId, salesRegion: currentSalesRegionId });
-        data.subs = prices.map(element => {
+        data.subs = prices.filter(e => e.discountinued === 0 && e.expireDate > Date.now()).map(element => {
             let ret: any = {};
             ret.pack = element.pack;
             ret.retail = element.retail;
-            ret.vipPrice = Math.round(element.retail * (1 - discount));
+            if (discount !== 0)
+                ret.vipPrice = Math.round(element.retail * (1 - discount));
             ret.currency = currentSalesRegion.currency;
             ret.quantity = cartViewModel.getQuantity(productId, element.pack.id)
             return ret;
@@ -99,7 +127,9 @@ export class LoaderProductChemical extends Loader<MainSubs<MainProductChemical, 
     private getFutureDeliveryTimeDescription = async (productId: number, salesRegionId: number) => {
         let futureDeliveryTime = await this.getFutureDeliveryTime.table({ product: productId, salesRegion: salesRegionId });
         if (futureDeliveryTime.length > 0) {
-            return futureDeliveryTime[0].deliveryTimeDescription;
+            let { minValue, maxValue, unit, deliveryTimeDescription } = futureDeliveryTime[0];
+            return minValue + (maxValue > minValue ? '~' + maxValue : '') + ' ' + unit;
+            // return futureDeliveryTime[0].deliveryTimeDescription;
         }
     }
 }

@@ -1,11 +1,12 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { Query, tv } from 'tonva-react-uq';
-import { PageItems, Controller, nav, Page } from 'tonva-tools';
+import { PageItems, Controller, nav, Page, Image } from 'tonva-tools';
 import { CCartApp } from '../CCartApp';
 import { VProduct } from './VProduct';
 import { VProductList } from './VProductList';
-import { LoaderProductChemical } from './itemLoader';
+import { LoaderProductChemicalWithPrices } from './itemLoader';
+import { ProductImage } from 'tools/productImage';
 
 class PageProducts extends PageItems<any> {
 
@@ -13,7 +14,7 @@ class PageProducts extends PageItems<any> {
 
     constructor(searchProductQuery: Query) {
         super();
-        this.firstSize = this.pageSize = 3;
+        this.firstSize = this.pageSize = 10;
         this.searchProductQuery = searchProductQuery;
     }
 
@@ -63,7 +64,7 @@ export class CProduct extends Controller {
 
     showProductDetail = async (id: number) => {
 
-        let loader = new LoaderProductChemical(this.cApp);
+        let loader = new LoaderProductChemicalWithPrices(this.cApp);
         let product = await loader.load(id);
         /*
         let product = new Product(this.cApp);
@@ -80,21 +81,22 @@ export function renderBrand(brand: any) {
 export function productPropItem(caption: string, value: any) {
     if (value === null || value === undefined) return null;
     return <>
-        <div className="col-4 col-sm-2 text-muted pr-0 small">{caption}</div>
-        <div className="col-8 col-sm-4">{value}</div>
+        <div className="col-4 col-sm-2 col-lg-4 text-muted pr-0 small">{caption}</div>
+        <div className="col-8 col-sm-4 col-lg-8">{value}</div>
     </>;
 }
 
 export function renderProduct(product: any, index: number) {
-    let { brand, description, CAS, purity, molecularFomula, molecularWeight, origin } = product;
+    let { brand, description, descriptionC, CAS, purity, molecularFomula, molecularWeight, origin, imageUrl } = product;
     return <div className="row d-flex mb-3 px-2">
         <div className="col-12">
             <div className="row py-2">
                 <div className="col-12"><strong>{description}</strong></div>
+                <div className="col-12 small muted">{descriptionC}</div>
             </div>
             <div className="row">
                 <div className="col-3">
-                    <img src="favicon.ico" alt="structure" />
+                    <ProductImage chemicalId={imageUrl} className="w-4c h-4c" />
                 </div>
                 <div className="col-9">
                     <div className="row">

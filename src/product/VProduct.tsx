@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { CProduct, renderBrand } from './CProduct';
 import {
-    VPage, Page, Form, ItemSchema, ArrSchema, NumSchema, UiSchema, Field,
-    ObjectSchema, RowContext, UiCustom, View
+    VPage, Page, Form, ItemSchema, NumSchema, UiSchema, Field,
+    ObjectSchema, RowContext, UiCustom
 } from 'tonva-tools';
 import { LMR } from 'tonva-react-form';
 import { tv } from 'tonva-react-uq';
@@ -10,6 +10,7 @@ import { observer } from 'mobx-react';
 import { MinusPlusWidget } from '../tools/minusPlusWidget';
 import { ProductPackRow } from './Product';
 import { ViewMainSubs, MainProductChemical } from 'mainSubs';
+import { ProductImage } from 'tools/productImage';
 
 const schema: ItemSchema[] = [
     { name: 'pack', type: 'object' } as ObjectSchema,
@@ -31,12 +32,12 @@ export class VProduct extends VPage<CProduct> {
 
     private renderProduct = (product: MainProductChemical) => {
 
-        let { brand, description, CAS, purity, molecularFomula, molecularWeight, origin } = product;
+        let { brand, description, descriptionC, CAS, purity, molecularFomula, molecularWeight, origin, imageUrl } = product;
         return <div className="mb-3 px-2">
             <div className="py-2"><strong>{description}</strong></div>
             <div className="row">
                 <div className="col-3">
-                    <img src="favicon.ico" alt="structure" />
+                    <ProductImage chemicalId={imageUrl} className="w-4c h-4c" />
                 </div>
                 <div className="col-9">
                     <div className="row">
@@ -121,7 +122,7 @@ export class VProduct extends VPage<CProduct> {
         let { cApp } = this.controller;
         let { cartService, cartViewModel } = cApp;
         if (value > 0) {
-            await cartService.AddToCart(cartViewModel, this.product.id, pack.id, value, price, currency);
+            await cartService.addToCart(cartViewModel, this.product.id, pack.id, value, price, currency);
         } else {
             await cartService.removeFromCart(cartViewModel, [{ productId: this.product.id, packId: pack.id }]);
         }

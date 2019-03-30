@@ -1,10 +1,9 @@
-import { observable, computed, autorun, IReactionDisposer, IObservableArray } from 'mobx';
+import { observable, autorun, IReactionDisposer } from 'mobx';
 import _ from 'lodash';
-import { CUq, Action, Query, TuidMain, TuidDiv, BoxId } from 'tonva-react-uq';
+import { Action, Query, TuidDiv } from 'tonva-react-uq';
 import { CCartApp } from '../CCartApp';
-import { LoaderProduct } from 'product/itemLoader';
+import { LoaderProductChemical } from 'product/itemLoader';
 import { CartItem, CartPackRow } from './Cart';
-import { resolve } from 'path';
 
 export class CartViewModel {
 
@@ -52,7 +51,7 @@ export class CartViewModel {
         return packItem.quantity;
     }
 
-    getSelectItem(): CartItem[] {
+    getSelectedItem(): CartItem[] {
         return this.cartItems.filter(v => {
             let { $isSelected, $isDeleted } = v;
             return $isSelected === true && $isDeleted !== true;
@@ -150,7 +149,7 @@ export abstract class CartService {
     protected async generateCartItem(productId: number, packs: any[]): Promise<CartItem> {
 
         let cartItem: CartItem = {} as any;
-        let productService = new LoaderProduct(this.cApp);
+        let productService = new LoaderProductChemical(this.cApp);
         cartItem.product = await productService.load(productId);
         cartItem.createdate = Date.now();
         cartItem.$isSelected = true;
@@ -174,7 +173,7 @@ export abstract class CartService {
         return cartItem;
     }
 
-    abstract async AddToCart(cartViewModel: CartViewModel, productId: number, packId: number, quantity: number, price: number, currency: any);
+    abstract async addToCart(cartViewModel: CartViewModel, productId: number, packId: number, quantity: number, price: number, currency: any);
 
     abstract async removeFromCart(cartViewModel: CartViewModel, rows: [{ productId: number, packId: number }]);
 
@@ -227,7 +226,7 @@ export class CartRemoteService extends CartService {
      * @param pack 要添加到购物车中的包装
      * @param quantity 要添加到购物车中包装的个数
      */
-    async AddToCart(cartViewModel: CartViewModel, productId: number, packId: number, quantity: number, price: number, currency: any) {
+    async addToCart(cartViewModel: CartViewModel, productId: number, packId: number, quantity: number, price: number, currency: any) {
         let param = {
             product: productId,
             pack: packId,
@@ -298,7 +297,7 @@ export class CartLocalService extends CartService {
         }
     }
 
-    async AddToCart(cartViewModel: CartViewModel, productId: number, packId: number, quantity: number, price: number, currency: any) {
+    async addToCart(cartViewModel: CartViewModel, productId: number, packId: number, quantity: number, price: number, currency: any) {
 
         let cartItem: CartItem = await this.generateCartItem(productId
             , [{ pack: packId, price: price, quantity: quantity, currency: currency && currency.id }]);

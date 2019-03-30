@@ -42,24 +42,24 @@ export abstract class Tuid extends Entity {
             value: this.from(),
             writable: false,
             enumerable: false,
-        })
+        });
         Object.defineProperty(prototype, 'obj', {
             enumerable: false,
             get: function() {
                 if (this.id === undefined || this.id<=0) return undefined;
                 return this._$tuid.valueFromId(this.id);
             }
-        })
+        });
         prototype.valueFromFieldName = function(fieldName:string):BoxId|any {
             let t:Tuid = this._$tuid;
             return t.valueFromFieldName(fieldName, this.obj);
-        }
+        };
         prototype.getObj = function():any {
             if (this._$tuid !== undefined) {
                 return this._$tuid.getCacheValue(this.id);
             }
-        }
-        prototype.toJSON = function() {return this.id}
+        };
+        prototype.toJSON = function() {return this.id};
     }
     boxId(id:number):BoxId {
         this.useId(id);
@@ -81,7 +81,18 @@ export abstract class Tuid extends Entity {
         this.unique = unique;
         this.schemaFrom = this.schema.from;
     }
-
+    public buildFieldsTuid() {
+        super.buildFieldsTuid();
+        let {mainFields} = this.schema;
+        if (this.name === 'address') debugger;
+        if (mainFields !== undefined) {
+            for (let mf of mainFields) {
+                let f = this.fields.find(v => v.name === mf.name);
+                if (f === undefined) continue;
+                mf._tuid = f._tuid;
+            }
+        }
+    }
     private moveToHead(id:number) {
         let index = this.queue.findIndex(v => v === id);
         this.queue.splice(index, 1);
@@ -198,8 +209,9 @@ export abstract class Tuid extends Entity {
         }
     }
     from(): TuidMain {return;}
-    private async unpackTuidIds(values:any[]|string):Promise<any[]> {
+    private unpackTuidIds(values:any[]|string):any[] {
         if (this.schemaFrom === undefined) {
+            if (this.name === 'address' || this.name === 'Address') debugger;
             let {mainFields} = this.schema;
             if (mainFields === undefined) return values as any[];
             let ret:any[] = []
@@ -219,7 +231,7 @@ export abstract class Tuid extends Entity {
         }
         else {
             let tuidMain = this.from();
-            let ret = await tuidMain.unpackTuidIds(values);
+            let ret = tuidMain.unpackTuidIds(values);
             return ret;
         }
     }
@@ -235,7 +247,8 @@ export abstract class Tuid extends Entity {
         }
         let api = this.getApiFrom();
         let tuids = await api.tuidIds(name, arr, this.waitingIds);
-        tuids = await this.unpackTuidIds(tuids);
+        if (this.name.toLowerCase() === 'address') debugger;
+        tuids = this.unpackTuidIds(tuids);
         for (let tuidValue of tuids) {
             if (this.cacheValue(tuidValue) === false) continue;
             this.cacheTuidFieldValues(tuidValue);
@@ -338,7 +351,7 @@ export abstract class Tuid extends Entity {
     async posArr(arr:string, owner:number, id:number, order:number) {
         return await this.tvApi.tuidArrPos(this.name, arr, owner, id, order);
     }
-    
+
     // cache放到Tuid里面之后，这个函数不再需要公开调用了
     //private async ids(idArr:number[]) {
     //    return await this.tvApi.tuidIds(this.name, idArr);

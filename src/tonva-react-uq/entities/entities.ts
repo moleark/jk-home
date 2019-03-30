@@ -9,7 +9,7 @@ import { Map } from './map';
 import { Pending } from './pending';
 import { CUq } from '../controllers';
 
-export type FieldType = 'id' | 'tinyint' | 'smallint' | 'int' | 'bigint' | 'dec' | 'char' | 'text' 
+export type FieldType = 'id' | 'tinyint' | 'smallint' | 'int' | 'bigint' | 'dec' | 'char' | 'text'
     | 'datetime' | 'date' | 'time';
 
 export function fieldDefaultValue(type:FieldType) {
@@ -21,7 +21,7 @@ export function fieldDefaultValue(type:FieldType) {
         case 'dec':
             return 0;
         case 'char':
-        case 'text': 
+        case 'text':
             return '';
         case 'datetime':
         case 'date':
@@ -251,7 +251,7 @@ export class Entities {
         let id = Number(parts[1]);
         switch (type) {
             case 'uq': this.uqId = id; break;
-            case 'tuid': 
+            case 'tuid':
                 let tuid = this.newTuid(name, id);
                 tuid.sys = false;
                 break;

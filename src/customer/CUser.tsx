@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { TuidMain, BoxId } from 'tonva-react-uq';
-import { VAddressList } from './VAddressList';
+import { VContactList } from './VContactList';
 import { CCartApp } from 'CCartApp';
 import { VContact } from './VContact';
-import { Controller } from 'tonva-tools';
+import { Controller, Context } from 'tonva-tools';
 import _ from 'lodash';
 import { ContactType } from 'order/COrder';
+import { VAddress } from './VAddress';
+import { CAddress } from './CAddress';
 
 export class CUser extends Controller {
     cApp: CCartApp;
@@ -29,7 +31,10 @@ export class CUser extends Controller {
     async internalStart(contactType: ContactType) {
         this.contactType = contactType;
         this.userContacts = await this.cApp.currentUser.getContacts();
-        this.openVPage(VAddressList);
+        this.openVPage(VContactList);
+        if (!this.userContacts || this.userContacts.length === 0) {
+            this.onContactEdit();
+        }
     }
 
     /**
@@ -76,5 +81,11 @@ export class CUser extends Controller {
         let { cOrder } = this.cApp;
         cOrder.setContact(contact, this.contactType);
         this.backPage();
+    }
+
+    pickAddress = async (context: Context, name: string, value: number): Promise<number> => {
+        let caddress = new CAddress(this.cApp, undefined);
+        await caddress.start();
+        return await caddress.vCall(VAddress);
     }
 }

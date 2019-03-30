@@ -13,6 +13,7 @@ export interface MainProduct extends Id {
     description: string;
     descriptionC: string;
     brand: MainBrand;
+    imageUrl: string;
 }
 
 export interface MainProductChemical extends MainProduct {
@@ -22,11 +23,14 @@ export interface MainProductChemical extends MainProduct {
     purity: string;
     molecularFomula: string;
     molecularWeight: string;
+    packs: Pack[];
 }
 
 // 下面这些都还没有用，以后可能会用到
 export interface Pack extends Id {
-    name: string;
+    radiox: number;
+    radioy: number;
+    unit: string;
 }
 
 export interface Inventory extends Id {

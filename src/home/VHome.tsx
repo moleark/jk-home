@@ -6,34 +6,6 @@ import { observable } from 'mobx';
 
 const LIGUOSHENG = 5;
 
-interface CatItem {
-    title: string;
-    sub: string[];
-    img: string;
-}
-
-interface Cat {
-    caption: string;
-    items?: CatItem[];
-}
-
-const catItemStyle:React.CSSProperties = {
-    width:'12rem', 
-    //height: '6rem', 
-    overflow: 'hidden', 
-};
-const subStyle:React.CSSProperties = {
-    fontSize:'0.75rem',
-    overflow: 'hidden', 
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap'
-};
-const imgStyle:React.CSSProperties = {
-    //float:'left', clear:'both', 
-    height:'1.5rem', width:'1.5rem', opacity:0.1, 
-    marginRight: '0.5rem',
-};
-
 export class VHome extends View<CHome> {
 
     async open(param?: any) {

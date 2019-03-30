@@ -20,7 +20,7 @@ export class VCreateOrder extends VPage<COrder> {
 
     private renderProduct = (product: any) => <strong>{product.description}</strong>
 
-    private packsRow = (item: any) => {
+    private packsRow = (item: any, index:number) => {
         let { pack, quantity, price, currency, inventoryAllocation, futureDeliveryTimeDescription } = item;
         let deliveryTimeUI = <></>;
         if (inventoryAllocation && inventoryAllocation.length > 0) {
@@ -28,7 +28,7 @@ export class VCreateOrder extends VPage<COrder> {
         } else {
             deliveryTimeUI = <div>期货:{futureDeliveryTimeDescription}</div>
         }
-        return <div className="px-2 py-2 border-top">
+        return <div key={index} className="px-2 py-2 border-top">
             <div className="d-flex align-items-center">
                 <div className="flex-grow-1"><b>{tv(pack)}</b></div>
                 <div className="w-12c mr-4 text-right">
@@ -46,12 +46,16 @@ export class VCreateOrder extends VPage<COrder> {
             <div className="row">
                 <div className="col-lg-6 pb-3">{renderCartProduct(product, 0)}</div>
                 <div className="col-lg-6">{
-                    packs.map(p => {
-                        return this.packsRow(p);
+                    packs.map((p, index) => {
+                        return this.packsRow(p, index);
                     })
                 }</div>
             </div>
         </div>;
+    }
+
+    private orderItemKey = (orderItem: OrderItem) => {
+        return orderItem.product.id;
     }
 
     private page = observer(() => {
@@ -59,7 +63,7 @@ export class VCreateOrder extends VPage<COrder> {
         let { orderData, submitOrder, openContactList } = this.controller;
         // let { orderItems, shippingContact, invoiceContact } = orderData;
         let footer = <div>
-            <div className="w-100">
+            <div className="w-100 px-3">
                 <div className="d-flex justify-content-left flex-grow-1">
                     <span className="text-danger" style={{ fontSize: '1.8rem' }}><small>¥</small>{orderData.amount}</span>
                 </div>
@@ -106,7 +110,7 @@ export class VCreateOrder extends VPage<COrder> {
                 </div>
             </div>
             {divInvoice}
-      </div>
+        </div>
         /*
         if (shippingContact.id !== invoiceContact.id) {
             invoiceContactUI = <div className="row px-3 py-3 bg-white mb-1" onClick={() => openContactList(ContactType.InvoiceContact)}>
@@ -127,7 +131,7 @@ export class VCreateOrder extends VPage<COrder> {
                 </div>
             </div>
             {invoiceContactUI}
-            <List items={orderData.orderItems} item={{ render: this.renderOrderItem }} />
+            <List items={orderData.orderItems} item={{ render: this.renderOrderItem, key: this.orderItemKey }} />
         </Page>
     })
 }

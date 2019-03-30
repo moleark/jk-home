@@ -46,8 +46,8 @@ export class COrder extends Controller {
         let defaultSetting = undefined;
 
         if (this.orderData.shippingContact === undefined) {
-            defaultSetting = currentUser.getSetting();
-            if (defaultSetting.defaultShippingContact) {
+            defaultSetting = await currentUser.getSetting();
+            if (defaultSetting && defaultSetting.defaultShippingContact) {
                 this.setContact(defaultSetting.defaultShippingContact, ContactType.ShippingContact);
             } else {
                 let contactArr: any[] = await currentUser.getContacts();
@@ -59,9 +59,9 @@ export class COrder extends Controller {
 
         if (this.orderData.invoiceContact === undefined) {
             if (defaultSetting === undefined) {
-                defaultSetting = currentUser.getSetting();
+                defaultSetting = await currentUser.getSetting();
             }
-            if (defaultSetting.defaultInvoiceContact) {
+            if (defaultSetting && defaultSetting.defaultInvoiceContact) {
                 this.setContact(defaultSetting.defaultInvoiceContact, ContactType.InvoiceContact);
             } else {
                 let contactArr: any[] = await currentUser.getContacts();

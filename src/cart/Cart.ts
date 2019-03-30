@@ -2,7 +2,7 @@ import { observable, computed, autorun, IReactionDisposer, IObservableArray } fr
 import _ from 'lodash';
 import { Action, Query, TuidDiv } from 'tonva-react-uq';
 import { CCartApp } from '../CCartApp';
-import { LoaderProduct } from 'product/itemLoader';
+import { LoaderProductChemical } from 'product/itemLoader';
 import { MainProductChemical } from 'mainSubs';
 import { PackRow } from 'product/Product';
 
@@ -161,7 +161,7 @@ export class Cart {
 
         let cartItem: CartItem = this.items.find((element) => element.product.id === productId);
         if (!cartItem) {
-            let productLoader = new LoaderProduct(this.cApp);
+            let productLoader = new LoaderProductChemical(this.cApp);
             cartItem.product = await productLoader.load(productId);
             cartItem.packs = [];
             this.items.push(cartItem);
@@ -276,7 +276,7 @@ abstract class CartStore {
     protected async generateItems(cartData: any): Promise<CartItem[]> {
         let results: CartItem[] = [];
 
-        let productService = new LoaderProduct(this.cApp);
+        let productService = new LoaderProductChemical(this.cApp);
         for (let cd of cartData) {
             let { product: productId, createdate, packs } = cd;
             let cartItem: CartItem = {} as any;
