@@ -137,7 +137,7 @@ export class VCart extends VPage<CCart> {
     private page = observer((params: any): JSX.Element => {
         let { cartViewModel: cart } = this.controller.cApp;
         let footer: any, content: any;
-        if (cart.count.get() === 0) {
+        if (cart.count.get() === 0 && cart.cartItems.length === 0) {
             content = this.empty();
             footer = undefined;
         }
@@ -155,7 +155,7 @@ export class VCart extends VPage<CCart> {
         let header = <header className="py-2 text-center bg-info text-white">
             <FA className="align-middle" name="shopping-cart" size="2x" /> &nbsp; <span className="h5 align-middle">购物车</span>
         </header>;
-        if (cart.count.get() === 0) {
+        if (cart.count.get() === 0 && cart.cartItems.length === 0) {
             return <>
                 {header}
                 {this.empty()}
