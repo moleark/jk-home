@@ -3,7 +3,6 @@ import { VPage, Page } from 'tonva-tools';
 import { tv } from 'tonva-react-uq';
 import { List } from 'tonva-react-form';
 import { CAddress } from './CAddress';
-import { async } from 'q';
 
 export class VAddress extends VPage<CAddress> {
     private provinceId: number;
@@ -38,11 +37,19 @@ export class VAddress extends VPage<CAddress> {
     private onProvinceClick = async (item: any) => {
         this.provinceId = item.province.id;
         let cities = await this.controller.getProvinceCities(this.provinceId);
-        if (cities && cities.length > 0) {
-            this.backLevel++;
-            this.openPageElement(<Page header="市">
-                <List items={cities} item={{ render: this.renderCity, onClick: this.onCityClick }} />
-            </Page>);
+        if (cities) {
+            let len = cities.length;
+            if (len === 1) {
+                await this.onCityClick(cities[0]);
+                return;
+            }
+            if (len > 0) {
+                this.backLevel++;
+                this.openPageElement(<Page header="市">
+                    <List items={cities} item={{ render: this.renderCity, onClick: this.onCityClick }} />
+                </Page>);
+                return;
+            }
         } else {
             this.closePage(1);
             this.saveAddress();
@@ -65,12 +72,11 @@ export class VAddress extends VPage<CAddress> {
 
     private onCountyClick = async (item: any) => {
         this.countyId = item.county.id;
-        this.closePage(3);
+        this.closePage(this.backLevel);
         this.saveAddress();
     }
 
     private saveAddress = async () => {
-        let addressId = await this.controller.saveAddress(43, this.provinceId, this.cityId, this.countyId);
-        this.returnCall(addressId);
+        await this.controller.saveAddress(43, this.provinceId, this.cityId, this.countyId);
     }
 }

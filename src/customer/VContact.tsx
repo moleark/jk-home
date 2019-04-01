@@ -1,7 +1,8 @@
 import * as React from 'react';
+import _ from 'lodash';
 import { VPage, Page, Form, Schema, UiSchema, Context, UiInputItem, UiIdItem } from 'tonva-tools';
-import { CUser } from './CUser';
 import { tv } from 'tonva-react-uq';
+import { CSelectContact } from './CSelectContact';
 
 const schema: Schema = [
     { name: 'id', type: 'id', required: false },
@@ -14,10 +15,12 @@ const schema: Schema = [
     { name: 'addressString', type: 'string', required: true },
     { name: 'isDefault', type: 'boolean', required: false },
     // { name: 'submit', type: 'submit' },
-]
-export class VContact extends VPage<CUser> {
+];
 
-    private contactData: any = {};
+export class VContact extends VPage<CSelectContact> {
+
+    //private contactData: any = {};
+    private userContactData: any;
     private form: Form;
 
     private uiSchema: UiSchema = {
@@ -40,7 +43,18 @@ export class VContact extends VPage<CUser> {
             address: {
                 widget: 'id', label: '所在地区', placeholder: '所在地区',
                 pickId: async (context: Context, name: string, value: number) => await this.controller.pickAddress(context, name, value),
-                Templet: (item: any) => { return <>{item.id + ' - 暂不显示细节'}</>; }
+                Templet: (item: any) => {
+                    let {obj} = item;
+                    if (!obj) return <small className="text-muted">请选择地区</small>;
+                    let {country, province, city, county} = obj;
+                    //, (v) => <>{v.chineseName}</>
+                    return <>
+                        {tv(country)}
+                        {tv(province, (v) => <>{v.chineseName}</>)}
+                        {tv(city, (v) => <>{v.chineseName}</>)}
+                        {tv(county, (v) => <>{v.chineseName}</>)}
+                    </>; 
+                }
             } as UiIdItem,
             addressString: {
                 widget: 'text', label: '详细地址',
@@ -52,9 +66,30 @@ export class VContact extends VPage<CUser> {
         }
     }
 
-
     async open(userContactData: any) {
+        this.userContactData = userContactData;
+        this.openPage(this.page);
+    }
 
+    private onSaveContact = async () => {
+        if (!this.form) return;
+        await this.form.buttonClick("submit");
+    }
+
+    private onFormButtonClick = async (name: string, context: Context) => {
+        await this.controller.saveContact(context.form.data);
+    }
+
+    private onDelContact = async () => {
+        let {contact} = this.userContactData;
+        if (await this.vCall(VConfirmDeleteContact, contact) === true) {
+            await this.controller.delContact(contact);
+            this.closePage();
+        };
+    }
+
+    private page = () => {
+        /*
         let { contact } = userContactData;
         if (contact !== undefined) {
             this.contactData = {
@@ -68,25 +103,48 @@ export class VContact extends VPage<CUser> {
                 isDefault: contact.isDefault,
             };
         }
-        this.openPage(this.page);
-    }
+        */
+        let contactData = _.clone(this.userContactData.contact);
 
-    private saveContact = async () => {
-        if (!this.form) return;
-        await this.form.buttonClick("submit");
-    }
-    private onFormButtonClick = async (name: string, context: Context) => {
-        await this.controller.saveContact(context.form.data);
-    }
-
-    private page = () => {
-
-        let footer = <button type="button" className="btn btn-primary w-100" onClick={this.saveContact}>保存并使用</button>
-        return <Page header="添加收货人" footer={footer}>
+        let buttonDel:any;
+        if (contactData !== undefined) {
+            buttonDel = <button className="btn btn-sm btn-info" onClick={this.onDelContact}>删除</button>;
+        }
+        let footer = <button type="button" 
+            className="btn btn-primary w-100" 
+            onClick={this.onSaveContact}>保存并使用</button>;
+        return <Page header="收件信息" footer={footer} right={buttonDel}>
             <div className="App-container container text-left">
-                <Form ref={v => this.form = v} schema={schema} uiSchema={this.uiSchema} formData={this.contactData}
-                    onButtonClick={this.onFormButtonClick} fieldLabelSize={3} className="my-3" />
+                <Form ref={v => this.form = v} className="my-3" 
+                    schema={schema} 
+                    uiSchema={this.uiSchema} 
+                    formData={contactData}
+                    onButtonClick={this.onFormButtonClick} 
+                    fieldLabelSize={3} />
             </div>
         </Page>
+    }
+}
+
+class VConfirmDeleteContact extends VPage<CSelectContact> {
+    async open(contact: any) {
+        this.openPage(this.page, contact);
+    }
+
+    private onConfirm = async () => {
+        await this.returnCall(true);
+        this.closePage();
+    }
+
+    private page = (contact:any) => {
+        return <Page header="确认" back="close">
+            <div className="w-50 mx-auto border border-primary rounded my-3 p-3 bg-white">
+                <div className="p-4 text-center position-relative">
+                    <i className="fa fa-question-circle position-absolute fa-2x text-warning" style={{left:0,top:0}} />
+                    <b className="">{contact.name}</b>
+                </div>
+                <button className="btn btn-danger w-50 mx-auto d-block mt-3" onClick={this.onConfirm}>确认删除</button>
+            </div>
+        </Page>;
     }
 }

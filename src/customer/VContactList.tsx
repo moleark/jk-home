@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { VPage, Page } from 'tonva-tools';
-import { CUser } from './CUser';
+import { CSelectContact } from './CSelectContact';
 import { List, LMR, FA } from 'tonva-react-form';
 import { tv } from 'tonva-react-uq';
-import { ContactType } from 'order/COrder';
 
-export class VContactList extends VPage<CUser> {
+export class VContactList extends VPage<CSelectContact> {
 
     async open() {
 
@@ -14,7 +13,7 @@ export class VContactList extends VPage<CUser> {
 
     private onContactRender = (userContact: any) => {
         let { contact } = userContact;
-        let { onContactEdit, onContactSelected } = this.controller;
+        let { onEditContact: onContactEdit, onContactSelected } = this.controller;
         let right = <div className="p-2 cursor-pointer text-info" onClick={() => onContactEdit(userContact)}>
             <FA name="edit" />
         </div>
@@ -28,8 +27,8 @@ export class VContactList extends VPage<CUser> {
 
     private page = () => {
 
-        let { contactType, onContactEdit, userContacts } = this.controller;
-        let footer = <button type="button" className="btn btn-primary w-100" onClick={() => onContactEdit()} >添加新地址</button>;
+        let { onNewContact, userContacts } = this.controller;
+        let footer = <button type="button" className="btn btn-primary w-100" onClick={() => onNewContact()} >添加新地址</button>;
         let contactList = <List items={userContacts} item={{ render: this.onContactRender }} none="无地址" />;
         return <Page footer={footer} header="管理地址">
             {contactList}

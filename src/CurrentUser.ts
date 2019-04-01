@@ -55,7 +55,7 @@ export class WebUser {
         if (this.currentCustomer !== undefined) {
             return await this.currentCustomer.getContacts()
         }
-        return this.webUserContactMap.table({ webUser: this.id });
+        return await this.webUserContactMap.table({ webUser: this.id });
     }
 
     async addContact(contactId: number) {

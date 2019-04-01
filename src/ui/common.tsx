@@ -1,6 +1,12 @@
 import * as React from 'react';
 import { TuidUI, tv } from 'tonva-react-uq';
 
+export const countryUI: TuidUI = {
+    content: (values: any) => {
+        return <>{values.chineseName}</>;
+    }
+}
+
 export const productUI: TuidUI = {
     content: (values: any) => {
         let product = values;

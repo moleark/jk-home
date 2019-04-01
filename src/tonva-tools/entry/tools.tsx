@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { nav } from 'tonva-tools';
+import { nav } from '../ui';
 
 const logo = require('../img/logo.svg');
 

@@ -2,15 +2,14 @@ import * as React from 'react';
 import { Controller } from 'tonva-tools';
 import { CCartApp } from 'CCartApp';
 import { Query, Tuid } from 'tonva-react-uq';
-import { async } from 'q';
+import { VAddress } from './VAddress';
 
 export class CAddress extends Controller {
-
-    cApp: CCartApp;
-    getCountryProvincesQuery: Query;
-    getProvinceCitiesQuery: Query;
-    getCityCountiesQuery: Query;
-    addressTuid: Tuid;
+    private cApp: CCartApp;
+    private getCountryProvincesQuery: Query;
+    private getProvinceCitiesQuery: Query;
+    private getCityCountiesQuery: Query;
+    private addressTuid: Tuid;
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
@@ -24,7 +23,7 @@ export class CAddress extends Controller {
     }
 
     protected async internalStart() {
-
+        this.openVPage(VAddress);
     }
 
     getCountryProvince = async (countryId: number): Promise<any[]> => {
@@ -41,7 +40,7 @@ export class CAddress extends Controller {
 
     saveAddress = async (countryId: number, provinceId: number, cityId?: number, countyId?: number): Promise<any> => {
         let newAddress = await this.addressTuid.save(undefined, { country: countryId, province: provinceId, city: cityId, county: countyId });
-        return newAddress && this.addressTuid.boxId(newAddress.id);
+        let addressId = newAddress && this.addressTuid.boxId(newAddress.id);
+        this.returnCall(addressId);
     }
-
 }

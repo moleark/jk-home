@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { TuidUI } from "tonva-react-uq";
-import { productUI } from 'ui/common';
+import { productUI, countryUI } from 'ui/common';
 
 const address: TuidUI = {
     content: (values: any) => {
@@ -20,6 +20,7 @@ const contact: TuidUI = {
 export default {
     product: productUI,
     productx: productUI,
+    contry: countryUI,
     address: address,
-    contact: contact,
+    contact: contact,    
 }

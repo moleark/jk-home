@@ -1,17 +1,16 @@
-import * as React from 'react';
-
+//import * as React from 'react';
+import { User, nav } from 'tonva-tools';
 import { CApp, CUq } from 'tonva-react-uq';
 import { CCart } from 'cart/CCart';
 import { CProduct } from 'product';
 import { COrder } from 'order/COrder';
 import { CHome } from './home/CHome';
 import { CProductCategory } from 'productCategory/CProductCategory';
-import { CUser } from 'customer/CUser';
+//import { CSelectContact } from 'customer/CSelectContact';
 import { CMember } from 'member/CMember';
 import { WebUser } from 'CurrentUser';
 import { consts } from './home/consts';
 import { CartViewModel, CartService, CartRemoteService, CartLocalService, CartServiceFactory } from 'cart/Cart2';
-import { User, nav } from 'tonva-tools';
 
 export class CCartApp extends CApp {
     cartService: CartService;
@@ -35,7 +34,7 @@ export class CCartApp extends CApp {
     cCart: CCart;
     cProduct: CProduct;
     cOrder: COrder;
-    cUser: CUser;
+    //cSelectContact: CSelectContact;
     cProductCategory: CProductCategory;
     cMember: CMember;
 
@@ -68,7 +67,7 @@ export class CCartApp extends CApp {
         this.cHome = new CHome(this, undefined);
         this.cProduct = new CProduct(this, undefined);
         this.cOrder = new COrder(this, undefined);
-        this.cUser = new CUser(this, undefined);
+        //this.cSelectContact = new CSelectContact(this, undefined);
         this.cMember = new CMember(this, undefined);
 
         let promises: PromiseLike<void>[] = [];
