@@ -1,14 +1,15 @@
 import * as React from 'react';
+import { tv } from 'tonva-react-uq';
 
 export const contactUI = {
     content: (values: any) => {
-        let { name, mobile, organizationName, addressString } = values;
+        let { name, mobile, organizationName, address, addressString } = values;
         return <div className="flex-grow-1">
             <b>
                 {name}
             </b>
             &nbsp; {mobile} &nbsp; {organizationName}<br />
-            <small>{addressString}</small>
+            <small>{tv(address)} {addressString}</small>
         </div>
     }
 }

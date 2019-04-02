@@ -1,8 +1,7 @@
-import { productUI } from 'ui/common';
 import { productCategoryUI } from './productCategory';
+import { productUI } from './product';
 
 export default {
-    product: productUI,
     productx: productUI,
     productCategory: productCategoryUI,
 }

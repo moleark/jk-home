@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Image } from 'tonva-tools';
 
-const imagePath = "http://www.jkchemical.com/static/Structure_mini/";
+const imagePath = "http://www.jkchemical.com/static/Structure/";
 
 interface ProductImageProps {
     className?: string;

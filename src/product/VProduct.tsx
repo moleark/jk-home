@@ -35,11 +35,12 @@ export class VProduct extends VPage<CProduct> {
         let { brand, description, descriptionC, CAS, purity, molecularFomula, molecularWeight, origin, imageUrl } = product;
         return <div className="mb-3 px-2">
             <div className="py-2"><strong>{description}</strong></div>
-            <div className="row">
-                <div className="col-3">
-                    <ProductImage chemicalId={imageUrl} className="w-4c h-4c" />
+            <div>{descriptionC}</div>
+            <div className="row mt-3">
+                <div className="col-sm-3">
+                    <ProductImage chemicalId={imageUrl} className="w-100" />
                 </div>
-                <div className="col-9">
+                <div className="col-sm-9">
                     <div className="row">
                         {this.item('CAS', CAS)}
                         {this.item('纯度', purity)}

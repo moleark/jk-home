@@ -1,26 +1,15 @@
 import * as React from 'react';
 import { TuidUI } from "tonva-react-uq";
-import { productUI, countryUI } from 'ui/common';
-
-const address: TuidUI = {
-    content: (values: any) => {
-        let {description } = values;
-        return <div>
-            {description}
-        </div>
-    }
-}
-
-const contact: TuidUI = {
-    content: (values: any) => {
-        return <div>gee</div>
-    }
-}
+import { countryUI, addressUI } from 'ui/common';
+import { productUI } from 'ui/product/tuid/product';
+import { contactUI } from 'ui/customer/tuid/contact';
 
 export default {
-    product: productUI,
     productx: productUI,
-    contry: countryUI,
-    address: address,
-    contact: contact,    
+    address: addressUI,
+    country: countryUI,
+    province: countryUI,
+    city: countryUI,
+    county: countryUI,
+    contact: contactUI,
 }
