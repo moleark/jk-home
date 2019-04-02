@@ -142,8 +142,8 @@ export class Form extends React.Component<FormProps> {
             }
             arr.push(r);
         }
-        //data[name] = observable(arr);
-        data[name] = arr;
+        data[name] = observable(arr);
+        //data[name] = arr;
         return;
     }
 

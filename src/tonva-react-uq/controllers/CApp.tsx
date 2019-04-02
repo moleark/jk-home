@@ -154,7 +154,8 @@ export class CApp extends Controller {
     protected async beforeStart():Promise<boolean> {
         try {
             let app = await loadAppUqs(this.appOwner, this.appName);
-            if (isDevelopment === true) {
+            // if (isDevelopment === true) {
+            // 这段代码原本打算只是在程序员调试方式下使用，实际上，也可以开放给普通用户，production方式下
                 let {predefinedUnit} = appInFrame;
                 let {id} = app;
                 this.id = id;
@@ -184,7 +185,7 @@ export class CApp extends Controller {
                             return false;
                     }
                 }
-            }
+            //}
 
             let retErrors = await this.loadUqs(app);
             if (retErrors !== undefined) {
