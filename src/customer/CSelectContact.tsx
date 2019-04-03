@@ -35,13 +35,13 @@ export abstract class CSelectContact extends Controller {
         }
     }
 
-    protected abstract async getIsDefault(userSetting:any, userContactId:number):Promise<boolean>;
+    protected abstract async getIsDefault(userSetting: any, userContactId: number): Promise<boolean>;
 
     /**
      * 打开地址新建或编辑界面
      */
     onNewContact = async () => {
-        this.openVPage(VContact, {contact: undefined});
+        this.openVPage(VContact, { contact: undefined });
     }
 
     onEditContact = async (userContact: any) => {
@@ -49,15 +49,7 @@ export abstract class CSelectContact extends Controller {
         let contact = await this.contactTuid.load(userContactId);
         let userSetting = await this.cApp.currentUser.getSetting();
         contact.isDefault = this.getIsDefault(userSetting, userContactId);
-        /*
-        contact.isDefault = 
-            ((this.contactType === ContactType.ShippingContact
-                && shippingContact && shippingContact.id === userContactId)
-            ||
-            (this.contactType === ContactType.InvoiceContact
-                && invoiceContact && invoiceContact.id === userContactId));
-        */
-        let userContactData: any = {contact: contact};
+        let userContactData: any = { contact: contact };
         this.openVPage(VContact, userContactData);
     }
 
@@ -68,31 +60,27 @@ export abstract class CSelectContact extends Controller {
 
     saveContact = async (contact: any) => {
 
-        let contactWithId = await this.contactTuid.save(contact.id, contact);
-        let { id: contactId } = contactWithId;
+        let newContact = await this.contactTuid.save(undefined, contact);
+        let { id: newContactId } = newContact;
 
-        /*
         let { currentUser } = this.cApp;
-        await currentUser.addContact(contactId);
+        await currentUser.addContact(newContactId);
         if (contact.isDefault === true) {
-            if (this.contactType === ContactType.ShippingContact)
-                await currentUser.setDefaultShippingContact(contactId);
-            else
-                await currentUser.setDefaultInvoiceContact(contactId);
+            this.setDefaultContact(newContactId);
         }
+        // contact.id !== undefined表示是修改了已有的contact(我们只能用“替换”表示“修改”，所以此时需要删除原contact)
         if (contact.id !== undefined) {
             currentUser.delContact(contact.id);
         }
-        */
         this.backPage();
-        let contactBox = this.contactTuid.boxId(contactId);
+        let contactBox = this.contactTuid.boxId(newContactId);
         this.onContactSelected(contactBox);
     }
 
+    protected abstract async setDefaultContact(contactId: number);
+
     onContactSelected = (contact: BoxId) => {
 
-        //let { cOrder } = this.cApp;
-        //cOrder.setContact(contact, this.contactType);
         this.backPage();
         this.returnCall(contact);
     }
@@ -100,21 +88,29 @@ export abstract class CSelectContact extends Controller {
     pickAddress = async (context: Context, name: string, value: number): Promise<number> => {
         let cAddress = new CAddress(this.cApp, undefined);
         return await cAddress.call<number>();
-        //await caddress.start();
-        //return await caddress.vCall(VAddress);
     }
 }
 
 export class CSelectShippingContact extends CSelectContact {
-    protected async getIsDefault(userSetting:any, userContactId:number):Promise<boolean> {
-        let {shippingContact} = userSetting;
+    protected async getIsDefault(userSetting: any, userContactId: number): Promise<boolean> {
+        let { shippingContact } = userSetting;
         return shippingContact && shippingContact.id === userContactId;
+    }
+
+    protected async setDefaultContact(contactId: number) {
+        let { currentUser } = this.cApp;
+        await currentUser.setDefaultShippingContact(contactId);
     }
 }
 
 export class CSelectInvoiceContact extends CSelectContact {
-    protected async getIsDefault(userSetting:any, userContactId:number):Promise<boolean> {
-        let {invoiceContact} = userSetting;
+    protected async getIsDefault(userSetting: any, userContactId: number): Promise<boolean> {
+        let { invoiceContact } = userSetting;
         return invoiceContact && invoiceContact.id === userContactId;
+    }
+
+    protected async setDefaultContact(contactId: number) {
+        let { currentUser } = this.cApp;
+        await currentUser.setDefaultInvoiceContact(contactId);
     }
 }

@@ -126,7 +126,6 @@ export class COrder extends Controller {
 
     private onSelectContact = async (
         typeSelectContact: new (cApp: CCartApp, res: any) => CSelectContact,
-        setDefaultContact: (contactId: number) => Promise<void>
     ) => {
         //this.cApp.cSelectContact.start(contactType);
         /*
@@ -146,33 +145,18 @@ export class COrder extends Controller {
         */
         let cSelectContact = new typeSelectContact(this.cApp, undefined);
         let contact = await cSelectContact.call<any>();
-        if (contact === undefined) return;
-
-        let contactId = contact.id;
-        let { currentUser } = this.cApp;
-        await currentUser.addContact(contactId);
-        if (contact.isDefault === true) {
-            setDefaultContact(contactId);
-        }
-        if (contactId !== undefined) {
-            // 为什么要删除contact???!!!
-            // currentUser.delContact(contactId);
-        }
+        return contact;
     }
 
     onSelectShippingContact = async () => {
-        let { currentUser } = this.cApp;
-        let setDefaultContact: (contactId: number) => Promise<void>;
         let typeSelectContact: new (cApp: CCartApp, res: any) => CSelectContact = CSelectShippingContact;
-        setDefaultContact = async (contactId: number) => await currentUser.setDefaultShippingContact(contactId);
-        await this.onSelectContact(typeSelectContact, setDefaultContact);
+        let contactBox = await this.onSelectContact(typeSelectContact);
+        this.orderData.shippingContact = contactBox;
     }
 
     onSelectInvoiceContact = async () => {
-        let { currentUser } = this.cApp;
-        let setDefaultContact: (contactId: number) => Promise<void>;
         let typeSelectContact: new (cApp: CCartApp, res: any) => CSelectContact = CSelectInvoiceContact;
-        setDefaultContact = async (contactId: number) => await currentUser.setDefaultInvoiceContact(contactId);
-        await this.onSelectContact(typeSelectContact, setDefaultContact);
+        let contactBox = await this.onSelectContact(typeSelectContact);
+        this.orderData.invoiceContact = contactBox;
     }
 }
