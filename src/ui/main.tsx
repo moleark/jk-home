@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { VPage, TabCaptionComponent, Page, Tabs } from 'tonva-tools';
 import { CCartApp } from 'CCartApp';
-import { meTab } from '../me';
 
 export const store = {
     //homeCount: observable.box<number>(-1),
@@ -15,12 +14,12 @@ export class VHome extends VPage<CCartApp> {
         this.openPage(this.render);
     }
     render = (param?: any): JSX.Element => {
-        let { cHome, cMember, cCart, cartViewModel } = this.controller;
+        let { cHome, cMember, cCart, cMe, cartViewModel } = this.controller;
         let faceTabs = [
             { name: 'home', label: '首页', icon: 'home', content: cHome.tab, notify: undefined/*store.homeCount*/ },
             { name: 'member', label: '会员', icon: 'vcard', content: cMember.tab },
             { name: 'cart', label: '购物车', icon: 'shopping-cart', content: cCart.tab, notify: cartViewModel.count },
-            { name: 'me', label: '我的', icon: 'user', content: meTab }
+            { name: 'me', label: '我的', icon: 'user', content: cMe.tab }
         ].map(v => {
             let { name, label, icon, content, notify } = v;
             return {

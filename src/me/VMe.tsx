@@ -1,11 +1,17 @@
 import * as React from 'react';
-import { nav, User, Page, EditMeInfo, Image } from 'tonva-tools';
+import { nav, User, Page, Image, VPage } from 'tonva-tools';
 import { Prop, Media, IconText, FA, PropGrid, LMR } from 'tonva-react-form';
 import { About } from './about';
 import { observer } from 'mobx-react';
+import { EditMeInfo } from './EditMeInfo';
+import { CMe } from './CMe';
 
-@observer
-class Me extends React.Component {
+export class VMe extends VPage<CMe> {
+
+    async open(param?: any) {
+
+    }
+
     private exit() {
         nav.showLogout();
         /*
@@ -22,21 +28,22 @@ class Me extends React.Component {
         // nav.push(<ChangePasswordPage />);
     }
     private meInfo = observer(() => {
-        let {user} = nav;
+        let { user } = nav;
         if (user === undefined) return null;
-        let {id, name, nick, icon} = user;
+        let { id, name, nick, icon } = user;
         return <LMR className="py-2 cursor-pointer w-100"
             left={<Image className="w-3c h-3c mr-3" src={icon} />}
             right={<FA className="align-self-end" name="chevron-right" />}
             onClick={() => {
-                nav.push(<EditMeInfo />)
+                this.openVPage(EditMeInfo);
             }}>
             <div>
                 <div>{userSpan(name, nick)}</div>
-                <div className="small"><span className="text-muted">ID:</span> {id>10000?id:String(id+10000).substr(1)}</div>
+                <div className="small"><span className="text-muted">ID:</span> {id > 10000 ? id : String(id + 10000).substr(1)}</div>
             </div>
         </LMR>;
     });
+
     render() {
         const { user } = nav;
         let aboutRows: Prop[] = [
@@ -49,16 +56,6 @@ class Me extends React.Component {
             '',
         ];
 
-        let logOutRows: Prop[] = [
-            '',
-            {
-                type: 'component',
-                bk: '',
-                component: <button className="btn btn-danger w-100" onClick={this.exit}>
-                    <FA name="sign-out" size="lg" /> 退出登录
-                </button>
-            },
-        ];
         let rows: Prop[];
         if (user === undefined) {
             rows = aboutRows;
@@ -73,6 +70,17 @@ class Me extends React.Component {
             );
         }
         else {
+            let logOutRows: Prop[] = [
+                '',
+                {
+                    type: 'component',
+                    bk: '',
+                    component: <button className="btn btn-danger w-100" onClick={this.exit}>
+                        <FA name="sign-out" size="lg" /> 退出登录
+                </button>
+                },
+            ];
+
             rows = [
                 '',
                 {
@@ -92,7 +100,6 @@ class Me extends React.Component {
     }
 }
 
-export default Me;
 
 function userSpan(name: string, nick: string): JSX.Element {
     return nick ?
