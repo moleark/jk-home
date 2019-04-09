@@ -25,7 +25,7 @@ class PageProducts extends PageItems<any> {
     }
 
     protected setPageStart(item: any): any {
-        this.pageStart = item === undefined? 0 : item.id;
+        this.pageStart = item === undefined ? 0 : item.id;
     }
 }
 
@@ -88,25 +88,23 @@ export function productPropItem(caption: string, value: any) {
 
 export function renderProduct(product: any, index: number) {
     let { brand, description, descriptionC, CAS, purity, molecularFomula, molecularWeight, origin, imageUrl } = product;
-    return <div className="row d-flex mb-3 px-2">
-        <div className="col-12">
-            <div className="row py-2">
-                <div className="col-12"><strong>{description}</strong></div>
-                <div className="col-12 small muted">{descriptionC}</div>
+    return <div className="d-block mb-4 px-2">
+        <div className="py-2">
+            <div><strong>{description}</strong></div>
+            <div>{descriptionC}</div>
+        </div>
+        <div className="row">
+            <div className="col-3">
+                <ProductImage chemicalId={imageUrl} className="w-100" />
             </div>
-            <div className="row">
-                <div className="col-3">
-                    <ProductImage chemicalId={imageUrl} className="w-4c h-4c" />
-                </div>
-                <div className="col-9">
-                    <div className="row">
-                        {productPropItem('CAS', CAS)}
-                        {productPropItem('纯度', purity)}
-                        {productPropItem('分子式', molecularFomula)}
-                        {productPropItem('分子量', molecularWeight)}
-                        {productPropItem('产品编号', origin)}
-                        {tv(brand, renderBrand)}
-                    </div>
+            <div className="col-9">
+                <div className="row">
+                    {productPropItem('CAS', CAS)}
+                    {productPropItem('纯度', purity)}
+                    {productPropItem('分子式', molecularFomula)}
+                    {productPropItem('分子量', molecularWeight)}
+                    {productPropItem('产品编号', origin)}
+                    {tv(brand, renderBrand)}
                 </div>
             </div>
         </div>

@@ -6,6 +6,7 @@ import { tv, BoxId } from 'tonva-react-uq';
 import { observer } from 'mobx-react';
 import { MinusPlusWidget } from '../tools';
 import { renderBrand } from '../product/CProduct';
+import { ProductImage } from 'tools/productImage';
 
 const cartSchema = [
     {
@@ -178,7 +179,7 @@ function productPropItem(caption: string, value: any) {
 }
 
 export function renderCartProduct(product: any, index: number) {
-    let { id, brand, description, CAS, purity, molecularFomula, molecularWeight, origin } = product;
+    let { brand, description, descriptionC, CAS, purity, molecularFomula, molecularWeight, origin, imageUrl } = product;
     return <div className="row d-flex mb-3 px-2">
         <div className="col-12">
             <div className="row py-2">
@@ -186,7 +187,7 @@ export function renderCartProduct(product: any, index: number) {
             </div>
             <div className="row">
                 <div className="col-3">
-                    <img src="favicon.ico" alt="structure" />
+                    <ProductImage chemicalId={imageUrl} className="w-4c h-4c" />
                 </div>
                 <div className="col-9">
                     <div className="row">

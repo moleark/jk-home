@@ -65,7 +65,7 @@ export abstract class Entity {
         this.schema = schema;
         let {name} = schema;
         if (name !== this.name) this.jName = name;
-        //this.buildFieldsTuid();
+        this.buildFieldsTuid();
     }
 
     public buildFieldsTuid() {

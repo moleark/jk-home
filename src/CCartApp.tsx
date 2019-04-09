@@ -11,6 +11,7 @@ import { CMember } from 'member/CMember';
 import { WebUser } from 'CurrentUser';
 import { consts } from './home/consts';
 import { CartViewModel, CartService, CartRemoteService, CartLocalService, CartServiceFactory } from 'cart/Cart2';
+import { CMe } from 'me/CMe';
 
 export class CCartApp extends CApp {
     cartService: CartService;
@@ -37,6 +38,7 @@ export class CCartApp extends CApp {
     //cSelectContact: CSelectContact;
     cProductCategory: CProductCategory;
     cMember: CMember;
+    cMe: CMe;
 
     protected async internalStart() {
         this.cUqOrder = this.getCUq(consts.uqOrder);
@@ -69,6 +71,7 @@ export class CCartApp extends CApp {
         this.cOrder = new COrder(this, undefined);
         //this.cSelectContact = new CSelectContact(this, undefined);
         this.cMember = new CMember(this, undefined);
+        this.cMe = new CMe(this, undefined);
 
         let promises: PromiseLike<void>[] = [];
         promises.push(this.cProductCategory.start());

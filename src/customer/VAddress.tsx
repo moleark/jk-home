@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { VPage, Page } from 'tonva-tools';
 import { tv } from 'tonva-react-uq';
-import { List } from 'tonva-react-form';
+import { List, FA } from 'tonva-react-form';
 import { CAddress } from './CAddress';
 
 export class VAddress extends VPage<CAddress> {
@@ -17,21 +17,25 @@ export class VAddress extends VPage<CAddress> {
 
     private page = (provinces: any) => {
         this.backLevel++;
-        return <Page header="省">
-            <List items={provinces.items} item={{ render: this.renderProvince, onClick: this.onProvinceClick }} />
+        return <Page header="选择所在省市">
+            <div className="row no-gutters">
+                {provinces.items.map(v => this.renderPCC(v, this.onProvinceClick))}
+            </div>
         </Page>
     }
 
-    private renderProvince(province: any) {
-        return <div>{province.chineseName}</div>
-    }
-
-    private renderCity(city: any) {
-        return <div>{city.chineseName}</div>
-    }
-
-    private renderCounty(county: any) {
-        return <div>{county.chineseName}</div>
+    private renderPCC = (pcc: any, onClick: any) => {
+        let { id, chineseName } = pcc;
+        return <div key={id} className="col-6 col-md-4 col-lg-3 cursor-pointer" >
+            <div className="pt-1 pb-1 px-2" onClick={() => onClick(pcc)}
+                style={{ border: '1px solid #eeeeee', marginRight: '-1px', marginBottom: '-1px' }}
+            >
+                <span className="ml-1 align-middle">
+                    <FA name="chevron-right" className="text-info small" />
+                    &nbsp; {chineseName}
+                </span>
+            </div>
+        </div>;
     }
 
     private onProvinceClick = async (item: any) => {
@@ -45,8 +49,10 @@ export class VAddress extends VPage<CAddress> {
             }
             if (len > 0) {
                 this.backLevel++;
-                this.openPageElement(<Page header="市">
-                    <List items={cities} item={{ render: this.renderCity, onClick: this.onCityClick }} />
+                this.openPageElement(<Page header="选择所在城市">
+                    <div className="row no-gutters">
+                        {cities.map(v => this.renderPCC(v, this.onCityClick))}
+                    </div>
                 </Page>);
                 return;
             }
@@ -61,8 +67,10 @@ export class VAddress extends VPage<CAddress> {
         let counties = await this.controller.getCityCounties(this.cityId);
         if (counties && counties.length > 0) {
             this.backLevel++;
-            this.openPageElement(<Page header="区县">
-                <List items={counties} item={{ render: this.renderCounty, onClick: this.onCountyClick }} />
+            this.openPageElement(<Page header="选择所在区县">
+                <div className="row no-gutters">
+                    {counties.map(v => this.renderPCC(v, this.onCountyClick))}
+                </div>
             </Page>);
         } else {
             this.closePage(2);

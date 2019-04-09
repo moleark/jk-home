@@ -1,5 +1,5 @@
 import { User } from 'tonva-tools';
-import { Map, BoxId, CUq } from 'tonva-react-uq';
+import { Map, BoxId, CUq, Tuid } from 'tonva-react-uq';
 
 export class WebUser {
 
@@ -9,8 +9,16 @@ export class WebUser {
     icon?: string;
     guest: number;
     token: string;
+
+    firstName: string;
+    gender: string;
+    salutation: string;
+    organizationName: string;
+    departmentName: string;
+
     private _user: User;
 
+    private webUserTuid: Tuid;
     private webUserCustomerMap: Map;
     private webUserContactMap: Map;
     private webUserSettingMap: Map;
@@ -18,6 +26,7 @@ export class WebUser {
     private cUsqCustomer: CUq;
 
     constructor(cUsqWebUser: CUq, cUsqCustomer: CUq) {
+        this.webUserTuid = cUsqWebUser.tuid("webUser");
         this.webUserCustomerMap = cUsqWebUser.map('webUserCustomer');
         this.webUserContactMap = cUsqWebUser.map('webUserContacts');
         this.webUserSettingMap = cUsqWebUser.map('webUserSetting');
@@ -35,6 +44,15 @@ export class WebUser {
             this.token = user.token;
 
             if (this._user !== undefined) {
+                let webUser = await this.webUserTuid.load(this.id);
+                if (webUser) {
+                    let { firstName, gender, salutation, organizationName, departmentName } = webUser;
+                    this.firstName = firstName;
+                    this.gender = gender;
+                    this.salutation = salutation;
+                    this.organizationName = organizationName;
+                    this.departmentName = departmentName;
+                }
                 let value = await this.webUserCustomerMap.obj({ webUser: this.id });
                 if (value != undefined)
                     this.currentCustomer = new Customer(value.customer, this.cUsqCustomer);
@@ -102,6 +120,10 @@ export class WebUser {
             return;
         }
         await this.webUserSettingMap.add({ webUser: this.id, arr1: [{ invoiceContact: contactId }] });
+    }
+
+    async changeWebUser(webUser: any) {
+        await this.webUserTuid.save(this.id, webUser);
     }
 };
 

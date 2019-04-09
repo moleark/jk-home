@@ -48,7 +48,7 @@ export class COrder extends Controller {
             this.orderData.invoiceContact = await this.getDefaultInvoiceContact();
             //this.invoiceAddressIsBlank = false;
         }
-    
+
         if (cartItem !== undefined && cartItem.length > 0) {
             this.orderData.currency = cartItem[0].currency;
             this.orderData.orderItems = cartItem.map((element: any, index: number) => {
@@ -64,7 +64,7 @@ export class COrder extends Controller {
         }
     }
 
-    private defaultSetting:any;
+    private defaultSetting: any;
     private async getDefaultSetting() {
         if (this.defaultSetting) return this.defaultSetting;
         let { currentUser } = this.cApp;
@@ -72,7 +72,7 @@ export class COrder extends Controller {
     }
 
     private contact0: BoxId;
-    private async getContact():Promise<BoxId> {
+    private async getContact(): Promise<BoxId> {
         if (this.contact0 === null) return;
         if (this.contact0 !== undefined) return this.contact0;
         let { currentUser } = this.cApp;
@@ -125,8 +125,7 @@ export class COrder extends Controller {
     }
 
     private onSelectContact = async (
-        typeSelectContact:new (cApp:CCartApp, res:any)=>CSelectContact,
-        setDefaultContact: (contactId:number) => Promise<void>
+        typeSelectContact: new (cApp: CCartApp, res: any) => CSelectContact,
     ) => {
         //this.cApp.cSelectContact.start(contactType);
         /*
@@ -146,33 +145,18 @@ export class COrder extends Controller {
         */
         let cSelectContact = new typeSelectContact(this.cApp, undefined);
         let contact = await cSelectContact.call<any>();
-        if (contact === undefined) return;
-
-        let contactId = contact.id;
-        let { currentUser } = this.cApp;
-        await currentUser.addContact(contactId);
-        if (contact.isDefault === true) {
-            setDefaultContact(contactId);
-        }
-        if (contactId !== undefined) {
-            // 为什么要删除contact???!!!
-            // currentUser.delContact(contactId);
-        }
+        return contact;
     }
 
     onSelectShippingContact = async () => {
-        let { currentUser } = this.cApp;
-        let setDefaultContact: (contactId:number) => Promise<void>;
-        let typeSelectContact:new (cApp:CCartApp, res:any)=>CSelectContact = CSelectShippingContact;
-        setDefaultContact = async (contactId:number) => await currentUser.setDefaultShippingContact(contactId);
-        await this.onSelectContact(typeSelectContact, setDefaultContact);
+        let typeSelectContact: new (cApp: CCartApp, res: any) => CSelectContact = CSelectShippingContact;
+        let contactBox = await this.onSelectContact(typeSelectContact);
+        this.orderData.shippingContact = contactBox;
     }
 
     onSelectInvoiceContact = async () => {
-        let { currentUser } = this.cApp;
-        let setDefaultContact: (contactId:number) => Promise<void>;
-        let typeSelectContact:new (cApp:CCartApp, res:any)=>CSelectContact = CSelectInvoiceContact;
-        setDefaultContact = async (contactId:number) => await currentUser.setDefaultInvoiceContact(contactId);
-        await this.onSelectContact(typeSelectContact, setDefaultContact);
+        let typeSelectContact: new (cApp: CCartApp, res: any) => CSelectContact = CSelectInvoiceContact;
+        let contactBox = await this.onSelectContact(typeSelectContact);
+        this.orderData.invoiceContact = contactBox;
     }
 }

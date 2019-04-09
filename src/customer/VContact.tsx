@@ -11,7 +11,7 @@ const schema: Schema = [
     { name: 'mobile', type: 'string', required: true },
     { name: 'telephone', type: 'string', required: false },
     { name: 'email', type: 'string', required: false },
-    { name: 'address', type: 'id', required: false },
+    { name: 'address', type: 'id', required: true },
     { name: 'addressString', type: 'string', required: true },
     { name: 'isDefault', type: 'boolean', required: false },
     // { name: 'submit', type: 'submit' },
@@ -53,7 +53,7 @@ export class VContact extends VPage<CSelectContact> {
                         {tv(province, (v) => <>{v.chineseName}</>)}
                         {tv(city, (v) => <>{v.chineseName}</>)}
                         {tv(county, (v) => <>{v.chineseName}</>)}
-                    </>; 
+                    </>;
                 }
             } as UiIdItem,
             addressString: {
@@ -110,16 +110,16 @@ export class VContact extends VPage<CSelectContact> {
         if (contactData !== undefined) {
             buttonDel = <button className="btn btn-sm btn-info" onClick={this.onDelContact}>删除</button>;
         }
-        let footer = <button type="button" 
-            className="btn btn-primary w-100" 
+        let footer = <button type="button"
+            className="btn btn-primary w-100"
             onClick={this.onSaveContact}>保存并使用</button>;
         return <Page header="收件信息" footer={footer} right={buttonDel}>
             <div className="App-container container text-left">
-                <Form ref={v => this.form = v} className="my-3" 
-                    schema={schema} 
-                    uiSchema={this.uiSchema} 
+                <Form ref={v => this.form = v} className="my-3"
+                    schema={schema}
+                    uiSchema={this.uiSchema}
                     formData={contactData}
-                    onButtonClick={this.onFormButtonClick} 
+                    onButtonClick={this.onFormButtonClick}
                     fieldLabelSize={3} />
             </div>
         </Page>
