@@ -297,6 +297,7 @@ export abstract class Tuid extends Entity {
         let params = _.clone(props);
         params["$id"] = id;
         let ret = await this.tvApi.tuidSave(this.name, params);
+        /*
         let {id:retId, inId} = ret;
         if (retId === undefined) {
             params.id = id;
@@ -306,6 +307,7 @@ export abstract class Tuid extends Entity {
             params.id = retId;
             this.cacheValue(params);
         }
+        */
         return ret;
     }
     async search(key:string, pageStart:string|number, pageSize:number):Promise<any> {

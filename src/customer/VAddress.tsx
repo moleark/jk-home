@@ -23,19 +23,19 @@ export class VAddress extends VPage<CAddress> {
     }
 
     private renderProvince(province: any) {
-        return <div>{tv(province.province)}</div>
+        return <div>{province.chineseName}</div>
     }
 
     private renderCity(city: any) {
-        return <div>{tv(city.city)}</div>
+        return <div>{city.chineseName}</div>
     }
 
     private renderCounty(county: any) {
-        return <div>{tv(county.county)}</div>
+        return <div>{county.chineseName}</div>
     }
 
     private onProvinceClick = async (item: any) => {
-        this.provinceId = item.province.id;
+        this.provinceId = item.id;
         let cities = await this.controller.getProvinceCities(this.provinceId);
         if (cities) {
             let len = cities.length;
@@ -57,7 +57,7 @@ export class VAddress extends VPage<CAddress> {
     }
 
     private onCityClick = async (item: any) => {
-        this.cityId = item.city.id;
+        this.cityId = item.id;
         let counties = await this.controller.getCityCounties(this.cityId);
         if (counties && counties.length > 0) {
             this.backLevel++;
@@ -71,7 +71,7 @@ export class VAddress extends VPage<CAddress> {
     }
 
     private onCountyClick = async (item: any) => {
-        this.countyId = item.county.id;
+        this.countyId = item.id;
         this.closePage(this.backLevel);
         this.saveAddress();
     }
