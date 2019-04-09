@@ -52,7 +52,7 @@ const Tv = observer(({tuidValue, ui, x, nullUI}:Props) => {
             break;
         case 'number':
             return <>id...{tuidValue}</>;
-    }       
+    }
     if (nullUI === undefined) return <>.</>;
     return nullUI();
 });
