@@ -62,6 +62,7 @@ export abstract class Tuid extends Entity {
         prototype.toJSON = function() {return this.id};
     }
     boxId(id:number):BoxId {
+        if (typeof id === 'object') return id as any;
         this.useId(id);
         let ret:BoxId = new this.BoxId();
         ret.id = id;
