@@ -49,7 +49,7 @@ export class VContact extends VPage<CSelectContact> {
                     let {country, province, city, county} = obj;
                     //, (v) => <>{v.chineseName}</>
                     return <>
-                        {tv(country)}
+                        {tv(country, v => <>{v.chineseName}</>)}
                         {tv(province, (v) => <>{v.chineseName}</>)}
                         {tv(city, (v) => <>{v.chineseName}</>)}
                         {tv(county, (v) => <>{v.chineseName}</>)}

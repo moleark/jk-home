@@ -27,6 +27,7 @@ export class VMe extends VPage<CMe> {
         await nav.changePassword();
         // nav.push(<ChangePasswordPage />);
     }
+
     private meInfo = observer(() => {
         let { user } = nav;
         if (user === undefined) return null;
@@ -43,6 +44,23 @@ export class VMe extends VPage<CMe> {
             </div>
         </LMR>;
     });
+
+    private orderStates = () => {
+        return <>
+            <div className="col-4 my-3">
+                <Image className="w-3c h-3c" src="" />
+                <small>待付款</small>
+            </div>
+            <div className="col-4 my-3">
+                <Image className="w-3c h-3c" src="" />
+                <small>待收货</small>
+            </div>
+            <div className="col-4 my-3">
+                <Image className="w-3c h-3c" src="" />
+                <small>所有订单</small>
+            </div>
+        </>
+    }
 
     render() {
         const { user } = nav;
@@ -86,6 +104,11 @@ export class VMe extends VPage<CMe> {
                 {
                     type: 'component',
                     component: <this.meInfo />
+                },
+                '',
+                {
+                    type: 'component',
+                    component: <this.orderStates />,
                 },
                 '',
                 {
