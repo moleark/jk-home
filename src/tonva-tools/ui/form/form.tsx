@@ -142,6 +142,8 @@ export class Form extends React.Component<FormProps> {
             }
             arr.push(r);
         }
+        // 如果没有observable，行删除标志点击不管用
+        // 不知道这里为什么要去掉observable。有可能会有别的问题
         data[name] = observable(arr);
         //data[name] = arr;
         return;
