@@ -3,6 +3,8 @@ import { Controller } from 'tonva-tools';
 import { CCartApp } from 'CCartApp';
 import { VMe } from './VMe';
 import { Sheet } from 'tonva-react-uq';
+import { VMyOrders } from 'order/VMyOrders';
+import { COrder } from 'order/COrder';
 
 export class CMe extends Controller {
 
@@ -30,5 +32,11 @@ export class CMe extends Controller {
 
     private renderMe = () => {
         return this.renderView(VMe);
+    }
+
+    openMyOrders = async () => {
+
+        let { cOrder } = this.cApp;
+        await cOrder.openMyOrders();
     }
 }

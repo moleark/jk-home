@@ -46,20 +46,22 @@ export class VMe extends VPage<CMe> {
     });
 
     private orderStates = () => {
-        return <>
-            <div className="col-4 my-3">
-                <Image className="w-3c h-3c" src="" />
+
+        let { openMyOrders } = this.controller;
+        return <div className="d-flex justify-content-around w-100 my-3">
+            <div className="d-flex flex-column align-items-center" onClick={openMyOrders}>
+                <FA name="file-text-o" className="text-info fa-2x" />
                 <small>待付款</small>
             </div>
-            <div className="col-4 my-3">
-                <Image className="w-3c h-3c" src="" />
+            <div className="d-flex flex-column align-items-center" onClick={openMyOrders}>
+                <FA name="file-text-o" className="text-info fa-2x" />
                 <small>待收货</small>
             </div>
-            <div className="col-4 my-3">
-                <Image className="w-3c h-3c" src="" />
+            <div className="d-flex flex-column align-items-center" onClick={openMyOrders}>
+                <FA name="file-text-o" className="text-info fa-2x" />
                 <small>所有订单</small>
             </div>
-        </>
+        </div>
     }
 
     render() {

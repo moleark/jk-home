@@ -16,6 +16,12 @@ export const countryUI: TuidUI = {
     }
 }
 
+export const currencyUI: TuidUI = {
+    content: (values: any) => {
+        return <> {values.name} </>;
+    }
+}
+
 const uqUI: UqUI = {
     tuid: {
         address: addressUI,
@@ -23,6 +29,7 @@ const uqUI: UqUI = {
         province: countryUI,
         city: countryUI,
         county: countryUI,
+        currency: currencyUI,
     },
 }
 

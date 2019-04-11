@@ -6,6 +6,8 @@ import { VCreateOrder } from './VCreateOrder';
 import { Order, OrderItem } from './Order';
 import { OrderSuccess } from './OrderSuccess';
 import { CSelectShippingContact, CSelectInvoiceContact, CSelectContact } from 'customer/CSelectContact';
+import { VMyOrders } from './VMyOrders';
+import { VOrderDetail } from './VOrderDetail';
 
 /*
 export enum ContactType {
@@ -158,5 +160,18 @@ export class COrder extends Controller {
         let typeSelectContact: new (cApp: CCartApp, res: any) => CSelectContact = CSelectInvoiceContact;
         let contactBox = await this.onSelectContact(typeSelectContact);
         this.orderData.invoiceContact = contactBox;
+    }
+
+    /*
+    */
+    openMyOrders = async () => {
+
+        let myOrders = await this.orderSheet.mySheets(undefined, 1, 20);
+        this.openVPage(VMyOrders, myOrders);
+    }
+    openOrderDetail = async (orderId: number) => {
+
+        let order = await this.orderSheet.getSheet(orderId);
+        this.openVPage(VOrderDetail, order);
     }
 }

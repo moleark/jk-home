@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { TuidUI, tv } from 'tonva-react-uq';
+import { ProductImage } from 'tools/productImage';
 
 export const productUI: TuidUI = {
     content: (values: any) => {
         let product = values;
-        let { brand, description, CAS, purity, molecularFomula, molecularWeight, origin } = product;
+        let { brand, description, CAS, purity, molecularFomula, molecularWeight, origin, imageUrl } = product;
         return <div className="row d-flex">
             <div className="col-12">
                 <div className="row py-2">
@@ -12,7 +13,7 @@ export const productUI: TuidUI = {
                 </div>
                 <div className="row">
                     <div className="col-3">
-                        <img src="favicon.ico" alt="structure" />
+                        <ProductImage chemicalId={imageUrl} className="w-100" />
                     </div>
                     <div className="col-9">
                         <div className="row">
