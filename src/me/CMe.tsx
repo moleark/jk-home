@@ -5,6 +5,8 @@ import { VMe } from './VMe';
 import { Sheet } from 'tonva-react-uq';
 import { VMyOrders } from 'order/VMyOrders';
 import { COrder } from 'order/COrder';
+import { async } from 'q';
+import { CSelectContact, CSelectShippingContact } from 'customer/CSelectContact';
 
 export class CMe extends Controller {
 
@@ -38,5 +40,10 @@ export class CMe extends Controller {
 
         let { cOrder } = this.cApp;
         await cOrder.openMyOrders();
+    }
+
+    openContactList = async () => {
+        let contactList = new CSelectShippingContact(this.cApp, undefined, false);
+        await contactList.start();
     }
 }

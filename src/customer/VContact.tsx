@@ -44,9 +44,9 @@ export class VContact extends VPage<CSelectContact> {
                 widget: 'id', label: '所在地区', placeholder: '所在地区',
                 pickId: async (context: Context, name: string, value: number) => await this.controller.pickAddress(context, name, value),
                 Templet: (item: any) => {
-                    let {obj} = item;
+                    let { obj } = item;
                     if (!obj) return <small className="text-muted">请选择地区</small>;
-                    let {country, province, city, county} = obj;
+                    let { country, province, city, county } = obj;
                     //, (v) => <>{v.chineseName}</>
                     return <>
                         {tv(country, v => <>{v.chineseName}</>)}
@@ -58,7 +58,6 @@ export class VContact extends VPage<CSelectContact> {
             } as UiIdItem,
             addressString: {
                 widget: 'text', label: '详细地址',
-                rules: (value: any) => { if (value && value.length < 8) return "详细地址不能小于8个字符。"; else return undefined; },
                 placeholder: '详细地址'
             } as UiInputItem,
             isDefault: { widget: 'checkbox', label: '作为默认地址' },
@@ -81,7 +80,7 @@ export class VContact extends VPage<CSelectContact> {
     }
 
     private onDelContact = async () => {
-        let {contact} = this.userContactData;
+        let { contact } = this.userContactData;
         if (await this.vCall(VConfirmDeleteContact, contact) === true) {
             await this.controller.delContact(contact);
             this.closePage();
@@ -89,30 +88,16 @@ export class VContact extends VPage<CSelectContact> {
     }
 
     private page = () => {
-        /*
-        let { contact } = userContactData;
-        if (contact !== undefined) {
-            this.contactData = {
-                id: contact.id,
-                name: contact.name,
-                organizationName: contact.organizationName,
-                mobile: contact.mobile,
-                telephone: contact.telephone,
-                email: contact.email,
-                addressString: contact.addressString,
-                isDefault: contact.isDefault,
-            };
-        }
-        */
         let contactData = _.clone(this.userContactData.contact);
 
-        let buttonDel:any;
+        let buttonDel: any;
         if (contactData !== undefined) {
             buttonDel = <button className="btn btn-sm btn-info" onClick={this.onDelContact}>删除</button>;
         }
+        let { autoSelectMode } = this.controller;
         let footer = <button type="button"
             className="btn btn-primary w-100"
-            onClick={this.onSaveContact}>保存并使用</button>;
+            onClick={this.onSaveContact}>{autoSelectMode ? '保存并使用' : '保存'}</button>;
         return <Page header="收件信息" footer={footer} right={buttonDel}>
             <div className="App-container container text-left">
                 <Form ref={v => this.form = v} className="my-3"
@@ -136,11 +121,11 @@ class VConfirmDeleteContact extends VPage<CSelectContact> {
         this.closePage();
     }
 
-    private page = (contact:any) => {
+    private page = (contact: any) => {
         return <Page header="确认" back="close">
             <div className="w-50 mx-auto border border-primary rounded my-3 p-3 bg-white">
                 <div className="p-4 text-center position-relative">
-                    <i className="fa fa-question-circle position-absolute fa-2x text-warning" style={{left:0,top:0}} />
+                    <i className="fa fa-question-circle position-absolute fa-2x text-warning" style={{ left: 0, top: 0 }} />
                     <b className="">{contact.name}</b>
                 </div>
                 <button className="btn btn-danger w-50 mx-auto d-block mt-3" onClick={this.onConfirm}>确认删除</button>

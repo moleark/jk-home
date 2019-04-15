@@ -10,20 +10,17 @@ import { CAddress } from './CAddress';
 export abstract class CSelectContact extends Controller {
     protected cApp: CCartApp;
     private contactTuid: TuidMain;
-    //private contactType: ContactType;
-
-    //private currentUser: any;
-    //private customer: any;
-    //userInvoiceContacts: any[] = [];
+    autoSelectMode: boolean;
 
     userContacts: any[] = [];
 
-    constructor(cApp: CCartApp, res: any) {
+    constructor(cApp: CCartApp, res: any, autoSelectMode: boolean) {
         super(res);
         this.cApp = cApp;
         let { cUqCustomer } = cApp;
 
         this.contactTuid = cUqCustomer.tuid('contact');
+        this.autoSelectMode = autoSelectMode;
     }
 
     async internalStart(/*contactType: ContactType*/) {
@@ -38,12 +35,15 @@ export abstract class CSelectContact extends Controller {
     protected abstract async getIsDefault(userSetting: any, userContactId: number): Promise<boolean>;
 
     /**
-     * 打开地址新建或编辑界面
+     * 打开地址新建界面
      */
     onNewContact = async () => {
         this.openVPage(VContact, { contact: undefined });
     }
 
+    /**
+     * 打开地址编辑界面
+     */
     onEditContact = async (userContact: any) => {
         let userContactId = userContact.contact.id;
         let contact = await this.contactTuid.load(userContactId);
@@ -73,16 +73,19 @@ export abstract class CSelectContact extends Controller {
             currentUser.delContact(contact.id);
         }
         this.backPage();
-        let contactBox = this.contactTuid.boxId(newContactId);
-        this.onContactSelected(contactBox);
+        if (this.autoSelectMode) {
+            let contactBox = this.contactTuid.boxId(newContactId);
+            this.onContactSelected(contactBox);
+        }
     }
 
     protected abstract async setDefaultContact(contactId: number);
 
     onContactSelected = (contact: BoxId) => {
-
-        this.backPage();
-        this.returnCall(contact);
+        if (this.autoSelectMode) {
+            this.backPage();
+            this.returnCall(contact);
+        }
     }
 
     pickAddress = async (context: Context, name: string, value: number): Promise<number> => {

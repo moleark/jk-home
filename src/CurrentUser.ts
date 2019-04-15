@@ -1,4 +1,4 @@
-import { User } from 'tonva-tools';
+import { User, loadAppUqs } from 'tonva-tools';
 import { Map, BoxId, CUq, Tuid } from 'tonva-react-uq';
 
 export class WebUser {
@@ -43,20 +43,24 @@ export class WebUser {
             this.guest = user.guest;
             this.token = user.token;
 
-            if (this._user !== undefined) {
-                let webUser = await this.webUserTuid.load(this.id);
-                if (webUser) {
-                    let { firstName, gender, salutation, organizationName, departmentName } = webUser;
-                    this.firstName = firstName;
-                    this.gender = gender;
-                    this.salutation = salutation;
-                    this.organizationName = organizationName;
-                    this.departmentName = departmentName;
-                }
-                let value = await this.webUserCustomerMap.obj({ webUser: this.id });
-                if (value != undefined)
-                    this.currentCustomer = new Customer(value.customer, this.cUsqCustomer);
+            await this.loadWebUser();
+        }
+    }
+
+    private async loadWebUser() {
+        if (this._user !== undefined) {
+            let webUser = await this.webUserTuid.load(this.id);
+            if (webUser) {
+                let { firstName, gender, salutation, organizationName, departmentName } = webUser;
+                this.firstName = firstName;
+                this.gender = gender;
+                this.salutation = salutation;
+                this.organizationName = organizationName;
+                this.departmentName = departmentName;
             }
+            let value = await this.webUserCustomerMap.obj({ webUser: this.id });
+            if (value != undefined)
+                this.currentCustomer = new Customer(value.customer, this.cUsqCustomer);
         }
     }
 
@@ -124,6 +128,7 @@ export class WebUser {
 
     async changeWebUser(webUser: any) {
         await this.webUserTuid.save(this.id, webUser);
+        await this.loadWebUser();
     }
 };
 

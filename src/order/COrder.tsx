@@ -9,13 +9,6 @@ import { CSelectShippingContact, CSelectInvoiceContact, CSelectContact } from 'c
 import { VMyOrders } from './VMyOrders';
 import { VOrderDetail } from './VOrderDetail';
 
-/*
-export enum ContactType {
-    ShippingContact = "ShippingContact",
-    InvoiceContact = "InvoiceContact",
-}
-*/
-
 export class COrder extends Controller {
     private cApp: CCartApp;
     @observable orderData: Order = new Order();
@@ -96,17 +89,6 @@ export class COrder extends Controller {
         return defaultSetting.defaultInvoiceContact || await this.getContact();
     }
 
-    /*
-    setContact = (contactBox: BoxId, contactType: ContactType) => {
-        if (contactType === ContactType.ShippingContact) {
-            this.orderData.shippingContact = contactBox;
-            //this.shippingAddressIsBlank = false;
-        } else {
-            this.orderData.invoiceContact = contactBox;
-            //this.invoiceAddressIsBlank = false;
-        }
-    }
-    */
     submitOrder = async () => {
         let { orderItems } = this.orderData;
 
@@ -127,37 +109,21 @@ export class COrder extends Controller {
     }
 
     private onSelectContact = async (
-        typeSelectContact: new (cApp: CCartApp, res: any) => CSelectContact,
+        typeSelectContact: new (cApp: CCartApp, res: any, autoSelectMode: boolean) => CSelectContact,
     ) => {
-        //this.cApp.cSelectContact.start(contactType);
-        /*
-        let typeSelectContact:new (cApp:CCartApp, res:any)=>CSelectContact;
-        let setDefaultContact: (contactId:number) => Promise<void>;
-        switch (contactType) {
-            default: throw 'impossible';
-            case ContactType.ShippingContact:
-                typeSelectContact = CSelectShippingContact;
-                setDefaultContact = async (contactId:number) => await currentUser.setDefaultShippingContact(contactId);
-                break;
-            case ContactType.InvoiceContact:
-                typeSelectContact = CSelectInvoiceContact;
-                setDefaultContact = async (contactId:number) => await currentUser.setDefaultInvoiceContact(contactId);
-                break;
-        }
-        */
-        let cSelectContact = new typeSelectContact(this.cApp, undefined);
+        let cSelectContact = new typeSelectContact(this.cApp, undefined, true);
         let contact = await cSelectContact.call<any>();
         return contact;
     }
 
     onSelectShippingContact = async () => {
-        let typeSelectContact: new (cApp: CCartApp, res: any) => CSelectContact = CSelectShippingContact;
+        let typeSelectContact: new (cApp: CCartApp, res: any, autoSelectMode: boolean) => CSelectContact = CSelectShippingContact;
         let contactBox = await this.onSelectContact(typeSelectContact);
         this.orderData.shippingContact = contactBox;
     }
 
     onSelectInvoiceContact = async () => {
-        let typeSelectContact: new (cApp: CCartApp, res: any) => CSelectContact = CSelectInvoiceContact;
+        let typeSelectContact: new (cApp: CCartApp, res: any, autoSelectMode: boolean) => CSelectContact = CSelectInvoiceContact;
         let contactBox = await this.onSelectContact(typeSelectContact);
         this.orderData.invoiceContact = contactBox;
     }

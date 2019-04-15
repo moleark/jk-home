@@ -5,6 +5,8 @@ import { About } from './about';
 import { observer } from 'mobx-react';
 import { EditMeInfo } from './EditMeInfo';
 import { CMe } from './CMe';
+import { async } from 'q';
+import { CSelectShippingContact } from 'customer/CSelectContact';
 
 export class VMe extends VPage<CMe> {
 
@@ -14,11 +16,6 @@ export class VMe extends VPage<CMe> {
 
     private exit() {
         nav.showLogout();
-        /*
-        if (confirm('退出当前账号不会删除任何历史数据，下次登录依然可以使用本账号')) {
-            nav.logout();
-        }
-        */
     }
 
     private about = () => nav.push(<About />);
@@ -26,6 +23,10 @@ export class VMe extends VPage<CMe> {
     private changePassword = async () => {
         await nav.changePassword();
         // nav.push(<ChangePasswordPage />);
+    }
+
+    private openContactList = async () => {
+        let contactList = this.controller.openContactList();
     }
 
     private meInfo = observer(() => {
@@ -62,7 +63,7 @@ export class VMe extends VPage<CMe> {
                 <small>所有订单</small>
             </div>
         </div>
-    }
+    };
 
     render() {
         const { user } = nav;
@@ -111,6 +112,12 @@ export class VMe extends VPage<CMe> {
                 {
                     type: 'component',
                     component: <this.orderStates />,
+                },
+                '',
+                {
+                    type: 'component',
+                    component: <IconText iconClass="text-info mr-2" icon="address-book-o" text="地址管理" />,
+                    onClick: this.openContactList
                 },
                 '',
                 {
