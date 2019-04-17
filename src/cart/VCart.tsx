@@ -182,8 +182,8 @@ export function renderCartProduct(product: any, index: number) {
     let { brand, description, descriptionC, CAS, purity, molecularFomula, molecularWeight, origin, imageUrl } = product;
     return <div className="row d-flex mb-3 px-2">
         <div className="col-12">
-            <div className="row py-2">
-                <div className="col-12"><strong>{description}</strong></div>
+            <div className="py-2">
+                <strong>{description}</strong>
             </div>
             <div className="row">
                 <div className="col-3">
