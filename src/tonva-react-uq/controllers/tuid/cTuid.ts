@@ -182,7 +182,12 @@ export class CTuidMain extends CTuidBase {
 export class CTuidEdit extends CTuidBase {
     protected async internalStart(id:number):Promise<void> {
         this.isFrom = this.entity.schemaFrom !== undefined;
-        await this.onEdit(id);
+        if (typeof(id) === 'number') {
+            await this.onEdit(id);
+        }
+        else {
+            await this.edit(id);
+        }
     }
 
     protected async edit(values:any) {
