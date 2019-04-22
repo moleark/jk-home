@@ -58,8 +58,10 @@ export class CCart extends Controller {
     };
 
     onProductClick(productId: number) {
-        let { cProduct } = this.cApp;
-        cProduct.showProductDetail(productId);
+        let { cartViewModel, cProduct } = this.cApp;
+        if (!cartViewModel.isDeleted(productId)) {
+            cProduct.showProductDetail(productId);
+        }
     }
 
     checkOut = async () => {

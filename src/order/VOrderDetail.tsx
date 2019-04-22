@@ -23,10 +23,8 @@ export class VOrderDetail extends VPage<COrder> {
         let { brief, data } = order;
         let { id, no, state, description, date } = brief;
         let { orderItems, currency, shippingContact, invoiceContact, amount, webUser } = data;
-        return <Page header="订单详情">
-            <div className="bg-white p-3 my-1">
-                订单编号: {no}
-            </div>
+        let header = <>订单详情: {no}</>
+        return <Page header={header}>
             <List items={orderItems} item={{ render: this.renderOrderItem }} />
             <div className="bg-white row no-gutters p-3 my-1">
                 <div className="col-3">收货地址:</div>

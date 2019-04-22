@@ -5,8 +5,6 @@ import { About } from './about';
 import { observer } from 'mobx-react';
 import { EditMeInfo } from './EditMeInfo';
 import { CMe } from './CMe';
-import { async } from 'q';
-import { CSelectShippingContact } from 'customer/CSelectContact';
 
 export class VMe extends VPage<CMe> {
 

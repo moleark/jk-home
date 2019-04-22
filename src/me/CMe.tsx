@@ -3,10 +3,7 @@ import { Controller } from 'tonva-tools';
 import { CCartApp } from 'CCartApp';
 import { VMe } from './VMe';
 import { Sheet } from 'tonva-react-uq';
-import { VMyOrders } from 'order/VMyOrders';
-import { COrder } from 'order/COrder';
-import { async } from 'q';
-import { CSelectContact, CSelectShippingContact } from 'customer/CSelectContact';
+import { CSelectShippingContact } from 'customer/CSelectContact';
 
 export class CMe extends Controller {
 

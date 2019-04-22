@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { VPage, Page } from 'tonva-tools';
 import { COrder } from './COrder';
-import { List } from 'tonva-react-form';
+import { List, EasyDate } from 'tonva-react-form';
 
 export class VMyOrders extends VPage<COrder> {
 
@@ -15,8 +15,8 @@ export class VMyOrders extends VPage<COrder> {
         let { openOrderDetail } = this.controller;
         let { id, no, date, discription, flow } = order;
         return <div className="m-3 justify-content-between" onClick={() => openOrderDetail(id)}>
-            <div><strong>{discription}</strong></div>
-            <div>{new Date(date).toLocaleString()}</div>
+            <div><span className="small text-muted">订单编号: </span><strong>{no}</strong></div>
+            <div className="small text-muted"><EasyDate date={date} /></div>
         </div>;
     }
 

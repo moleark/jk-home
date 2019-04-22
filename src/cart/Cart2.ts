@@ -51,6 +51,11 @@ export class CartViewModel {
         return packItem.quantity;
     }
 
+    isDeleted(productId: number): boolean {
+        let i = this.cartItems.findIndex(v => v.$isDeleted === true && v.product.id === productId);
+        return i !== -1;
+    }
+
     getSelectedItem(): CartItem[] {
         return this.cartItems.filter(v => {
             let { $isSelected, $isDeleted } = v;
