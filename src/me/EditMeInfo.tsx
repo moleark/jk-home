@@ -3,6 +3,7 @@ import { observable } from 'mobx';
 import { ItemSchema, StringSchema, ImageSchema, UiTextItem, UiImageItem, nav, Page, Edit, UiSchema, VPage } from 'tonva-tools';
 import userApi from 'tonva-tools/entry/userApi';
 import { CMe } from './CMe';
+import { UiInputItem } from 'tonva-tools/ui/form/uiSchema';
 
 export class EditMeInfo extends VPage<CMe>{
 
@@ -40,6 +41,30 @@ export class EditMeInfo extends VPage<CMe>{
     }
     @observable private webUserData: any;
 
+    // 个人联系方式信息
+    private webUserContactSchema: ItemSchema[] = [
+        { name: 'telephone', type: 'string' } as StringSchema,
+        { name: 'mobile', type: 'string' } as StringSchema,
+        { name: 'email', type: 'string' } as StringSchema,
+    ];
+    private webUserContactUiSchema: UiSchema = {
+        items: {
+            telephone: { widget: 'text', label: '固定电话' } as UiTextItem,
+            mobile: { widget: 'text', label: '移动电话' } as UiTextItem,
+            email: {
+                widget: 'text', label: 'Email',
+                rules: (value: any) => {
+                    if (value && !/\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/.test(value))
+                        return "Email格式不正确。";
+                    else
+                        return undefined;
+                },
+                placeholder: 'Email'
+            } as UiInputItem,
+        }
+    }
+    @observable private webUserContactData: any;
+
     constructor(props: any) {
         super(props);
         let { nick, icon } = nav.user;
@@ -49,7 +74,7 @@ export class EditMeInfo extends VPage<CMe>{
         };
 
         let { cApp } = this.controller;
-        let { firstName, gender, salutation, organizationName, departmentName } = cApp.currentUser;
+        let { firstName, gender, salutation, organizationName, departmentName, telephone, mobile, email } = cApp.currentUser;
         this.webUserData = {
             firstName: firstName,
             gender: gender,
@@ -57,6 +82,12 @@ export class EditMeInfo extends VPage<CMe>{
             organizationName: organizationName,
             departmentName: departmentName
         };
+
+        this.webUserContactData = {
+            telephone: telephone,
+            mobile: mobile,
+            email: email
+        }
     }
 
     private onItemChanged = async (itemSchema: ItemSchema, newValue: any, preValue: any) => {
@@ -73,6 +104,12 @@ export class EditMeInfo extends VPage<CMe>{
         await this.controller.changeWebUser(this.webUserData);
     }
 
+    private onWebUserContactChanged = async (itemSchema: ItemSchema, newValue: any, preValue: any) => {
+        let { name } = itemSchema;
+        this.webUserContactData[name] = newValue;
+        await this.controller.changeWebUserContact(this.webUserContactData);
+    }
+
     private page = () => {
         return <Page header="个人信息">
             <Edit schema={this.schema} uiSchema={this.uiSchema}
@@ -81,6 +118,9 @@ export class EditMeInfo extends VPage<CMe>{
             <Edit schema={this.webUserSchema} uiSchema={this.webUserUiSchema}
                 data={this.webUserData}
                 onItemChanged={this.onWebUserChanged} />
+            <Edit schema={this.webUserContactSchema} uiSchema={this.webUserContactUiSchema}
+                data={this.webUserContactData}
+                onItemChanged={this.onWebUserContactChanged} />
         </Page>;
     }
 }

@@ -94,11 +94,11 @@ export class VContact extends VPage<CSelectContact> {
         if (contactData !== undefined) {
             buttonDel = <button className="btn btn-sm btn-info" onClick={this.onDelContact}>删除</button>;
         }
-        let { autoSelectMode } = this.controller;
+        let { fromOrderCreation } = this.controller;
         let footer = <button type="button"
             className="btn btn-primary w-100"
-            onClick={this.onSaveContact}>{autoSelectMode ? '保存并使用' : '保存'}</button>;
-        return <Page header="收件信息" footer={footer} right={buttonDel}>
+            onClick={this.onSaveContact}>{fromOrderCreation ? '保存并使用' : '保存'}</button>;
+        return <Page header="地址信息" footer={footer} right={buttonDel}>
             <div className="App-container container text-left">
                 <Form ref={v => this.form = v} className="my-3"
                     schema={schema}

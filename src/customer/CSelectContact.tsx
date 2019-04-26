@@ -4,23 +4,23 @@ import { TuidMain, BoxId } from 'tonva-react-uq';
 import { VContactList } from './VContactList';
 import { CCartApp } from 'CCartApp';
 import { VContact } from './VContact';
-import { Controller, Context } from 'tonva-tools';
+import { Controller, Context, nav } from 'tonva-tools';
 import { CAddress } from './CAddress';
 
 export abstract class CSelectContact extends Controller {
     protected cApp: CCartApp;
     private contactTuid: TuidMain;
-    autoSelectMode: boolean;
+    fromOrderCreation: boolean;
 
     userContacts: any[] = [];
 
-    constructor(cApp: CCartApp, res: any, autoSelectMode: boolean) {
+    constructor(cApp: CCartApp, res: any, fromOrderCreation: boolean) {
         super(res);
         this.cApp = cApp;
         let { cUqCustomer } = cApp;
 
         this.contactTuid = cUqCustomer.tuid('contact');
-        this.autoSelectMode = autoSelectMode;
+        this.fromOrderCreation = fromOrderCreation;
     }
 
     async internalStart(/*contactType: ContactType*/) {
@@ -73,7 +73,7 @@ export abstract class CSelectContact extends Controller {
             currentUser.delContact(contact.id);
         }
         this.backPage();
-        if (this.autoSelectMode) {
+        if (this.fromOrderCreation) {
             let contactBox = this.contactTuid.boxId(newContactId);
             this.onContactSelected(contactBox);
         }
@@ -82,7 +82,7 @@ export abstract class CSelectContact extends Controller {
     protected abstract async setDefaultContact(contactId: number);
 
     onContactSelected = (contact: BoxId) => {
-        if (this.autoSelectMode) {
+        if (this.fromOrderCreation) {
             this.backPage();
             this.returnCall(contact);
         }

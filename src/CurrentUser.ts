@@ -1,5 +1,6 @@
 import { User, loadAppUqs } from 'tonva-tools';
 import { Map, BoxId, CUq, Tuid } from 'tonva-react-uq';
+import { observable, computed } from 'mobx';
 
 export class WebUser {
 
@@ -10,17 +11,26 @@ export class WebUser {
     guest: number;
     token: string;
 
-    firstName: string;
+    @observable firstName: string;
     gender: string;
     salutation: string;
-    organizationName: string;
+    @observable organizationName: string;
     departmentName: string;
+
+    @observable telephone: string;
+    @observable mobile: string;
+    email: string;
+    @computed get allowOrdering() {
+        return this.currentCustomer !== undefined ||
+            (this.telephone && this.mobile && this.firstName && this.organizationName);
+    }
 
     private _user: User;
 
     private webUserTuid: Tuid;
     private webUserCustomerMap: Map;
     private webUserContactMap: Map;
+    private webUserContactsMap: Map;
     private webUserSettingMap: Map;
 
     private cUsqCustomer: CUq;
@@ -28,7 +38,8 @@ export class WebUser {
     constructor(cUsqWebUser: CUq, cUsqCustomer: CUq) {
         this.webUserTuid = cUsqWebUser.tuid("webUser");
         this.webUserCustomerMap = cUsqWebUser.map('webUserCustomer');
-        this.webUserContactMap = cUsqWebUser.map('webUserContacts');
+        this.webUserContactMap = cUsqWebUser.map('webUserContact');
+        this.webUserContactsMap = cUsqWebUser.map('webUserContacts');
         this.webUserSettingMap = cUsqWebUser.map('webUserSetting');
         this.cUsqCustomer = cUsqCustomer;
     }
@@ -58,6 +69,13 @@ export class WebUser {
                 this.organizationName = organizationName;
                 this.departmentName = departmentName;
             }
+            let contact = await this.webUserContactMap.obj({ webUser: this.id });
+            if (contact) {
+                let { telephone, mobile, email } = contact;
+                this.telephone = telephone;
+                this.mobile = mobile;
+                this.email = email;
+            }
             let value = await this.webUserCustomerMap.obj({ webUser: this.id });
             if (value != undefined)
                 this.currentCustomer = new Customer(value.customer, this.cUsqCustomer);
@@ -77,7 +95,7 @@ export class WebUser {
         if (this.currentCustomer !== undefined) {
             return await this.currentCustomer.getContacts()
         }
-        return await this.webUserContactMap.table({ webUser: this.id });
+        return await this.webUserContactsMap.table({ webUser: this.id });
     }
 
     async addContact(contactId: number) {
@@ -85,7 +103,7 @@ export class WebUser {
             await this.currentCustomer.addContact(contactId);
             return;
         }
-        await this.webUserContactMap.add({ webUser: this.id, arr1: [{ contact: contactId }] });
+        await this.webUserContactsMap.add({ webUser: this.id, arr1: [{ contact: contactId }] });
     }
 
     async delContact(contactId: number) {
@@ -93,7 +111,7 @@ export class WebUser {
             await this.currentCustomer.delContact(contactId);
             return;
         }
-        await this.webUserContactMap.del({ webUser: this.id, arr1: [{ contact: contactId }] });
+        await this.webUserContactsMap.del({ webUser: this.id, arr1: [{ contact: contactId }] });
     }
 
     async getSetting() {
@@ -128,6 +146,12 @@ export class WebUser {
 
     async changeWebUser(webUser: any) {
         await this.webUserTuid.save(this.id, webUser);
+        await this.loadWebUser();
+    }
+
+    async changeWebUserContact(webUserContact: any) {
+        webUserContact.webUser = this.id;
+        await this.webUserContactMap.add(webUserContact);
         await this.loadWebUser();
     }
 };

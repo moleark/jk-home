@@ -4,6 +4,8 @@ import { CCartApp } from 'CCartApp';
 import { VMe } from './VMe';
 import { Sheet } from 'tonva-react-uq';
 import { CSelectShippingContact } from 'customer/CSelectContact';
+import { async } from 'q';
+import { EditMeInfo } from './EditMeInfo';
 
 export class CMe extends Controller {
 
@@ -27,6 +29,11 @@ export class CMe extends Controller {
         await currentUser.changeWebUser(webUser);
     }
 
+    async changeWebUserContact(webUserContact: any) {
+        let { currentUser } = this.cApp;
+        await currentUser.changeWebUserContact(webUserContact);
+    }
+
     tab = () => <this.renderMe />
 
     private renderMe = () => {
@@ -42,5 +49,9 @@ export class CMe extends Controller {
     openContactList = async () => {
         let contactList = new CSelectShippingContact(this.cApp, undefined, false);
         await contactList.start();
+    }
+
+    openMeInof = async() => {
+        await this.openVPage(EditMeInfo);
     }
 }

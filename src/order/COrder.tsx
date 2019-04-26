@@ -8,17 +8,20 @@ import { OrderSuccess } from './OrderSuccess';
 import { CSelectShippingContact, CSelectInvoiceContact, CSelectContact } from 'customer/CSelectContact';
 import { VMyOrders } from './VMyOrders';
 import { VOrderDetail } from './VOrderDetail';
+import { WebUser } from 'CurrentUser';
 
 export class COrder extends Controller {
     private cApp: CCartApp;
     @observable orderData: Order = new Order();
     private orderSheet: Sheet;
+    currentUser: WebUser;
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
         this.cApp = cApp;
-        let { cUqOrder } = cApp;
+        let { cUqOrder, currentUser } = cApp;
         this.orderSheet = cUqOrder.sheet('order');
+        this.currentUser = currentUser;
     }
 
     protected async internalStart(param: any) {
@@ -103,7 +106,7 @@ export class COrder extends Controller {
             })
         });
         cartService.removeFromCart(cartViewModel, param);
-        // 打开订单显示界面
+        // 打开下单成功显示界面
         nav.popTo(this.cApp.topKey);
         this.openVPage(OrderSuccess, result);
     }
@@ -139,5 +142,10 @@ export class COrder extends Controller {
 
         let order = await this.orderSheet.getSheet(orderId);
         this.openVPage(VOrderDetail, order);
+    }
+
+    openMeInfo = async () => {
+        let { cMe } = this.cApp;
+        await cMe.openMeInof();
     }
 }
