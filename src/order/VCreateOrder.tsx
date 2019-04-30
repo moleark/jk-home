@@ -86,7 +86,7 @@ export class VCreateOrder extends VPage<COrder> {
 
     private page = observer(() => {
 
-        let { orderData, onSelectShippingContact, onSelectInvoiceContact, openMeInfo, currentUser } = this.controller;
+        let { orderData, onSelectShippingContact, onSelectInvoiceContact, openMeInfo, currentUser, onSelectInvoiceInfo } = this.controller;
         let fillMeInfo = <div onClick={openMeInfo} className="text-primary">
             首次提交订单，请点击此处完善您的个人信息
         </div>
@@ -126,9 +126,9 @@ export class VCreateOrder extends VPage<COrder> {
             }
         }
 
-        let invoiceContactUI = <div className="row py-1 bg-white mb-1">
+        let invoiceContactUI = <div className="row py-3 bg-white mb-1">
             <div className="col-4 col-sm-2 pb-2 text-muted">发票地址:</div>
-            <div className="col-8 col-sm-8">
+            <div className="col-8 col-sm-10">
                 <div>
                     <label className="cursor-pointer">
                         <input type="checkbox"
@@ -143,10 +143,20 @@ export class VCreateOrder extends VPage<COrder> {
             </div>
             {divInvoice}
         </div>
+
+        let invoiceInfoUI = <div className="row py-3 bg-white mb-1" onClick={onSelectInvoiceInfo}>
+            <div className="col-4 col-sm-2 pb-2 text-muted">发票信息:</div>
+            <div className="col-8 col-sm-10">
+                <LMR className="w-100 align-items-center" right={chevronRight}>
+                    {tv(orderData.invoiceType, (v) => <>{v.name}</>, undefined, () => <span className="text-primary">选择发票类型</span>)}
+                    {tv(orderData.invoiceInfo, (v) => <>{v.title}</>, undefined, () => <span className="text-primary">填写发票内容</span>)}
+                </LMR>
+            </div>
+        </div>
+
         return <Page header="订单预览" footer={footer}>
             <div className="px-2">
-                <div className="row py-3 bg-white mb-1"
-                    onClick={onSelectShippingContact}>
+                <div className="row py-3 bg-white mb-1" onClick={onSelectShippingContact}>
                     <div className="col-12 col-sm-2 pb-2 text-muted">收货地址:</div>
                     <div className="col-12 col-sm-10">
                         <LMR className="w-100 align-items-center" right={chevronRight}>{tv(orderData.shippingContact, undefined, undefined, this.nullContact)}</LMR>
@@ -154,6 +164,7 @@ export class VCreateOrder extends VPage<COrder> {
                     </div>
                 </div>
                 {invoiceContactUI}
+                {invoiceInfoUI}
             </div>
             <List items={orderData.orderItems} item={{ render: this.renderOrderItem, key: this.orderItemKey }} />
         </Page>

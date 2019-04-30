@@ -32,6 +32,7 @@ export class WebUser {
     private webUserContactMap: Map;
     private webUserContactsMap: Map;
     private webUserSettingMap: Map;
+    private webUserInvoiceInfoMap: Map;
 
     private cUsqCustomer: CUq;
 
@@ -41,6 +42,7 @@ export class WebUser {
         this.webUserContactMap = cUsqWebUser.map('webUserContact');
         this.webUserContactsMap = cUsqWebUser.map('webUserContacts');
         this.webUserSettingMap = cUsqWebUser.map('webUserSetting');
+        this.webUserInvoiceInfoMap = cUsqWebUser.map('webUserInvoiceInfo');
         this.cUsqCustomer = cUsqCustomer;
     }
 
@@ -116,6 +118,10 @@ export class WebUser {
 
     async getSetting() {
         return await this.webUserSettingMap.obj({ webUser: this.id });
+    }
+
+    async getDefaultInvoiceInfo() {
+        return await this.webUserInvoiceInfoMap.obj({ webuser: this.id });
     }
 
     async setDefaultShippingContact(contactId: number) {

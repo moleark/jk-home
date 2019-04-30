@@ -9,6 +9,7 @@ import { CSelectShippingContact, CSelectInvoiceContact, CSelectContact } from 'c
 import { VMyOrders } from './VMyOrders';
 import { VOrderDetail } from './VOrderDetail';
 import { WebUser } from 'CurrentUser';
+import { CInvoiceInfo } from 'customer/CInvoiceInfo';
 
 export class COrder extends Controller {
     private cApp: CCartApp;
@@ -39,12 +40,18 @@ export class COrder extends Controller {
 
         if (this.orderData.shippingContact === undefined) {
             this.orderData.shippingContact = await this.getDefaultShippingContact();
-            //this.shippingAddressIsBlank = false;
         }
 
         if (this.orderData.invoiceContact === undefined) {
             this.orderData.invoiceContact = await this.getDefaultInvoiceContact();
-            //this.invoiceAddressIsBlank = false;
+        }
+
+        if (this.orderData.invoiceType === undefined) {
+            this.orderData.invoiceType = await this.getDefaultInvoiceType();
+        }
+
+        if (this.orderData.invoiceInfo === undefined) {
+            this.orderData.invoiceInfo = await this.getDefaultInvoiceInfo();
         }
 
         if (cartItem !== undefined && cartItem.length > 0) {
@@ -90,6 +97,16 @@ export class COrder extends Controller {
     private async getDefaultInvoiceContact() {
         let defaultSetting = await this.getDefaultSetting();
         return defaultSetting.defaultInvoiceContact || await this.getContact();
+    }
+
+    private async getDefaultInvoiceType() {
+        let defaultSetting = await this.getDefaultSetting();
+        return defaultSetting.defaultInvoiceType;
+    }
+
+    private async getDefaultInvoiceInfo() {
+        let { currentUser } = this.cApp;
+        return await currentUser.getDefaultInvoiceInfo();
     }
 
     submitOrder = async () => {
@@ -138,6 +155,14 @@ export class COrder extends Controller {
         let myOrders = await this.orderSheet.mySheets(undefined, 1, 20);
         this.openVPage(VMyOrders, myOrders);
     }
+
+    onSelectInvoiceInfo = async () => {
+        let cInvoiceInfo = new CInvoiceInfo(this.cApp, undefined);
+        let invoice = await cInvoiceInfo.call<any>();
+        this.orderData.invoiceType = invoice.invoiceType;
+        this.orderData.invoiceInfo = invoice.invoiceInfo;
+    }
+
     openOrderDetail = async (orderId: number) => {
 
         let order = await this.orderSheet.getSheet(orderId);

@@ -10,6 +10,8 @@ export class Order {
 
     @observable shippingContact: BoxId;
     @observable invoiceContact: BoxId;
+    @observable invoiceType: BoxId;
+    @observable invoiceInfo: BoxId;
     @observable orderItems: OrderItem[] = [];
 
     @computed get amount() {
@@ -34,6 +36,8 @@ export class Order {
             customer: this.customer,
             shippingContact: this.shippingContact,
             invoiceContact: this.invoiceContact,
+            invoiceType: this.invoiceType,
+            invoiceInfo: this.invoiceInfo,
             amount: this.amount,
             currency: this.currency,
             orderItems: orderItems,
