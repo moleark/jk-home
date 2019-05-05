@@ -86,7 +86,7 @@ export class VCreateOrder extends VPage<COrder> {
 
     private page = observer(() => {
 
-        let { orderData, onSelectShippingContact, onSelectInvoiceContact, openMeInfo, currentUser, onSelectInvoiceInfo } = this.controller;
+        let { orderData, onSelectShippingContact, onSelectInvoiceContact, openMeInfo, currentUser, onInvoiceInfoEdit } = this.controller;
         let fillMeInfo = <div onClick={openMeInfo} className="text-primary">
             首次提交订单，请点击此处完善您的个人信息
         </div>
@@ -115,7 +115,7 @@ export class VCreateOrder extends VPage<COrder> {
             if (orderData.invoiceContact !== undefined) {
                 divInvoice = <div className="col-12 col-sm-10 offset-sm-2 d-flex">
                     {tv(orderData.invoiceContact, undefined, undefined, this.nullContact)}
-                    <div className="">{chevronRight}</div>
+                    <div>{chevronRight}</div>
                 </div>
             } else {
                 divInvoice = <div className="col-8 offset-4 offset-sm-2">
@@ -144,12 +144,12 @@ export class VCreateOrder extends VPage<COrder> {
             {divInvoice}
         </div>
 
-        let invoiceInfoUI = <div className="row py-3 bg-white mb-1" onClick={onSelectInvoiceInfo}>
+        let invoiceInfoUI = <div className="row py-3 bg-white mb-1" onClick={() => onInvoiceInfoEdit()}>
             <div className="col-4 col-sm-2 pb-2 text-muted">发票信息:</div>
             <div className="col-8 col-sm-10">
                 <LMR className="w-100 align-items-center" right={chevronRight}>
-                    {tv(orderData.invoiceType, (v) => <>{v.name}</>, undefined, () => <span className="text-primary">选择发票类型</span>)}
-                    {tv(orderData.invoiceInfo, (v) => <>{v.title}</>, undefined, () => <span className="text-primary">填写发票内容</span>)}
+                    {tv(orderData.invoiceType, (v) => <>{v.description}</>, undefined, () => <span className="text-primary">填写发票内容</span>)}
+                    {tv(orderData.invoiceInfo, (v) => <> -- {v.title}</>, undefined, () => <></>)}
                 </LMR>
             </div>
         </div>

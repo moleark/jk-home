@@ -32,7 +32,6 @@ export class WebUser {
     private webUserContactMap: Map;
     private webUserContactsMap: Map;
     private webUserSettingMap: Map;
-    private webUserInvoiceInfoMap: Map;
 
     private cUsqCustomer: CUq;
 
@@ -42,7 +41,6 @@ export class WebUser {
         this.webUserContactMap = cUsqWebUser.map('webUserContact');
         this.webUserContactsMap = cUsqWebUser.map('webUserContacts');
         this.webUserSettingMap = cUsqWebUser.map('webUserSetting');
-        this.webUserInvoiceInfoMap = cUsqWebUser.map('webUserInvoiceInfo');
         this.cUsqCustomer = cUsqCustomer;
     }
 
@@ -120,10 +118,6 @@ export class WebUser {
         return await this.webUserSettingMap.obj({ webUser: this.id });
     }
 
-    async getDefaultInvoiceInfo() {
-        return await this.webUserInvoiceInfoMap.obj({ webuser: this.id });
-    }
-
     async setDefaultShippingContact(contactId: number) {
         if (this.currentCustomer !== undefined) {
             await this.currentCustomer.setDefaultShippingContact(contactId);
@@ -148,6 +142,14 @@ export class WebUser {
             return;
         }
         await this.webUserSettingMap.add({ webUser: this.id, arr1: [{ invoiceContact: contactId }] });
+    }
+
+    async setDefaultInvoice(invoiceTypeId: number, invoiceInfoId: number) {
+        if (this.currentCustomer !== undefined) {
+            await this.currentCustomer.setDefaultInvoice(invoiceTypeId, invoiceInfoId);
+            return;
+        }
+        await this.webUserSettingMap.add({ webUser: this.id, arr1: [{ invoiceType: invoiceTypeId, invoiceInfo: invoiceInfoId }] });
     }
 
     async changeWebUser(webUser: any) {
@@ -197,5 +199,9 @@ export class Customer {
 
     async setDefaultInvoiceContact(contactId: number) {
         await this.customerSettingMap.add({ customer: this.id, arr1: [{ defaultInvoiceContact: contactId }] });
+    }
+
+    async setDefaultInvoice(invoiceTypeId: number, invoiceInfoId: number) {
+        await this.customerSettingMap.add({ customer: this.id, arr1: [{ invoiceType: invoiceTypeId, invoiceInfo: invoiceInfoId }] });
     }
 }

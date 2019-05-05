@@ -17,17 +17,31 @@ export class CInvoiceInfo extends Controller {
         this.invoiceInfoTuid = cUqCustomer.tuid('invoiceInfo');
     }
 
-    async internalStart(param?: any) {
-        this.openVPage(VInvoiceInfo);
+    async internalStart(origInvoice?: any) {
+        if (origInvoice !== undefined) {
+            let { invoiceInfo: invoiceInfoBox } = origInvoice;
+            if (invoiceInfoBox !== undefined) {
+                let invoiceInfo = await this.invoiceInfoTuid.load(invoiceInfoBox.id);
+                origInvoice.invoiceInfo = invoiceInfo;
+            }
+        }
+        this.openVPage(VInvoiceInfo, origInvoice);
     }
 
     async saveInvoiceInfo(invoice: any) {
-        let newInvoiceInfo = await this.invoiceInfoTuid.save(undefined, invoice.invoiceInfo);
-        let newInvoice = {
-            invoiceInfo: this.invoiceInfoTuid.boxId(newInvoiceInfo.id),
-            invoiceType: this.invoiceTypeTuid.boxId(invoice.invoiceType)
+        let { invoiceType, invoiceInfo, isDefault } = invoice;
+        let newInvoiceInfo = await this.invoiceInfoTuid.save(undefined, invoiceInfo);
+        let { id: newInvoiceInfoId } = newInvoiceInfo;
+        if (isDefault === true) {
+            let { currentUser } = this.cApp;
+            await currentUser.setDefaultInvoice(invoiceType, newInvoiceInfoId);
         }
-        this.returnCall(newInvoice);
+
+        let invoiceBox = {
+            invoiceType: this.invoiceTypeTuid.boxId(invoiceType),
+            invoiceInfo: this.invoiceInfoTuid.boxId(newInvoiceInfoId),
+        }
         this.backPage();
+        this.returnCall(invoiceBox);
     }
 }

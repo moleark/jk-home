@@ -13,8 +13,8 @@ export class VContactList extends VPage<CSelectContact> {
 
     private onContactRender = (userContact: any) => {
         let { contact } = userContact;
-        let { onEditContact: onContactEdit, onContactSelected } = this.controller;
-        let right = <div className="p-2 cursor-pointer text-info" onClick={() => onContactEdit(userContact)}>
+        let { onEditContact, onContactSelected } = this.controller;
+        let right = <div className="p-2 cursor-pointer text-info" onClick={() => onEditContact(userContact)}>
             <FA name="edit" />
         </div>
         return <LMR right={right} className="px-3 py-2">

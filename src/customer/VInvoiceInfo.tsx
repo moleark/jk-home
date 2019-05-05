@@ -4,7 +4,6 @@ import { CInvoiceInfo } from './CInvoiceInfo';
 import { Schema } from 'tonva-tools';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
-import { number } from 'prop-types';
 
 const schema: Schema = [
     { name: 'id', type: 'id', required: false },
@@ -14,6 +13,7 @@ const schema: Schema = [
     { name: 'telephone', type: 'string', required: false },
     { name: 'bank', type: 'string', required: false },
     { name: 'accountNo', type: 'string', required: false },
+    { name: 'isDefault', type: 'boolean', required: false },
 ];
 
 const commonRequired = {
@@ -24,6 +24,7 @@ const commonRequired = {
     telephone: false,
     bank: false,
     accountNo: false,
+    isDefault: false,
 };
 
 const valueAddedRequired = {
@@ -34,12 +35,35 @@ const valueAddedRequired = {
     telephone: true,
     bank: true,
     accountNo: true,
+    isDefault: false,
 }
+
+const commonVisible = {
+    id: false,
+    title: true,
+    taxNo: true,
+    address: false,
+    telephone: false,
+    bank: false,
+    accountNo: false,
+    isDefault: true,
+};
+
+const valueAddedVisible = {
+    id: false,
+    title: true,
+    taxNo: true,
+    address: true,
+    telephone: true,
+    bank: true,
+    accountNo: true,
+    isDefault: true,
+}
+
 
 
 export class VInvoiceInfo extends VPage<CInvoiceInfo> {
     private form: Form;
-    private invoice: any;
 
     private uiSchema: UiSchema = {
         items: {
@@ -51,16 +75,26 @@ export class VInvoiceInfo extends VPage<CInvoiceInfo> {
             bank: { widget: 'text', label: '开户银行', placeholder: '必填' } as UiInputItem,
             accountNo: { widget: 'text', label: '银行账号', placeholder: '必填' } as UiInputItem,
             submit: { widget: 'button', label: '提交' },
+            isDefault: { widget: 'checkbox', label: '作为默认发票信息' },
         }
     }
 
-    async open(param?: any) {
-        this.invoiceType = 1;
-        this.openPage(this.page);
+    async open(origInvoice?: any) {
+        if (origInvoice  !== undefined && origInvoice.invoiceType !== undefined)
+            this.invoiceType = origInvoice.invoiceType.id;
+        else
+            this.invoiceType = 1;
+        this.openPage(this.page, origInvoice);
     }
 
     private onFormButtonClick = async (name: string, context: Context) => {
-        let invoice = { invoiceType: this.invoiceType, invoiceInfo: context.form.data };
+        let { form } = context;
+        let { data } = form;
+        let invoice = {
+            invoiceType: this.invoiceType,
+            invoiceInfo: data,
+            isDefault: data.isDefault,
+        };
         await this.controller.saveInvoiceInfo(invoice);
     }
 
@@ -71,17 +105,18 @@ export class VInvoiceInfo extends VPage<CInvoiceInfo> {
 
     @observable invoiceType: number;
 
-    private buildForm(): JSX.Element {
+    private buildForm(invoiceInfo: any): JSX.Element {
         let requiredFields = this.invoiceType === 1 ? commonRequired : valueAddedRequired;
+        let visibleFields = this.invoiceType === 1 ? commonVisible : valueAddedVisible;
         schema.forEach(e => {
             let { items } = this.uiSchema;
             e.required = requiredFields[e.name];
-            items[e.name].visible = requiredFields[e.name];
+            items[e.name].visible = visibleFields[e.name];
         });
         return <Form ref={v => this.form = v} className="my-3"
             schema={schema}
             uiSchema={this.uiSchema}
-            formData={this.invoice}
+            formData={invoiceInfo}
             onButtonClick={this.onFormButtonClick}
             fieldLabelSize={3} />
     }
@@ -90,8 +125,8 @@ export class VInvoiceInfo extends VPage<CInvoiceInfo> {
         this.invoiceType = parseInt(event.currentTarget.value);
     }
 
-    private page = observer(() => {
-        let frm = this.buildForm();
+    private page = observer((origInvoice: any) => {
+        let frm = this.buildForm(origInvoice.invoiceInfo);
         return <Page header="发票">
             <div className="px-3">
                 <div className="form-group row py-3 mb-1 bg-white">

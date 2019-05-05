@@ -66,11 +66,11 @@ export abstract class CSelectContact extends Controller {
         let { currentUser } = this.cApp;
         await currentUser.addContact(newContactId);
         if (contact.isDefault === true) {
-            this.setDefaultContact(newContactId);
+            await this.setDefaultContact(newContactId);
         }
         // contact.id !== undefined表示是修改了已有的contact(我们只能用“替换”表示“修改”，所以此时需要删除原contact)
         if (contact.id !== undefined) {
-            currentUser.delContact(contact.id);
+            await currentUser.delContact(contact.id);
         }
         this.backPage();
         if (this.fromOrderCreation) {

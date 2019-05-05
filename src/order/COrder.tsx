@@ -101,12 +101,12 @@ export class COrder extends Controller {
 
     private async getDefaultInvoiceType() {
         let defaultSetting = await this.getDefaultSetting();
-        return defaultSetting.defaultInvoiceType;
+        return defaultSetting.invoiceType;
     }
 
     private async getDefaultInvoiceInfo() {
-        let { currentUser } = this.cApp;
-        return await currentUser.getDefaultInvoiceInfo();
+        let defaultSetting = await this.getDefaultSetting();
+        return defaultSetting.invoiceInfo;
     }
 
     submitOrder = async () => {
@@ -156,11 +156,16 @@ export class COrder extends Controller {
         this.openVPage(VMyOrders, myOrders);
     }
 
-    onSelectInvoiceInfo = async () => {
+    onInvoiceInfoEdit = async () => {
         let cInvoiceInfo = new CInvoiceInfo(this.cApp, undefined);
-        let invoice = await cInvoiceInfo.call<any>();
-        this.orderData.invoiceType = invoice.invoiceType;
-        this.orderData.invoiceInfo = invoice.invoiceInfo;
+        let { invoiceType, invoiceInfo } = this.orderData;
+        let origInvoice = {
+            invoiceType: invoiceType,
+            invoiceInfo: invoiceInfo,
+        }
+        let newInvoice = await cInvoiceInfo.call<any>(origInvoice);
+        this.orderData.invoiceType = newInvoice.invoiceType;
+        this.orderData.invoiceInfo = newInvoice.invoiceInfo;
     }
 
     openOrderDetail = async (orderId: number) => {
