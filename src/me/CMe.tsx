@@ -2,22 +2,17 @@ import * as React from 'react';
 import { Controller } from 'tonva-tools';
 import { CCartApp } from 'CCartApp';
 import { VMe } from './VMe';
-import { Sheet } from 'tonva-react-uq';
 import { CSelectShippingContact } from 'customer/CSelectContact';
-import { async } from 'q';
-import { EditMeInfo } from './EditMeInfo';
+import { EditMeInfoFirstOrder } from './EditMeInfoFirstOrder';
 
 export class CMe extends Controller {
 
     cApp: CCartApp;
-    private orderSheet: Sheet;
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
 
         this.cApp = cApp;
-        let { cUqOrder } = cApp;
-        this.orderSheet = cUqOrder.sheet("order");
     }
 
     protected async internalStart() {
@@ -51,7 +46,7 @@ export class CMe extends Controller {
         await contactList.start();
     }
 
-    openMeInof = async() => {
-        await this.openVPage(EditMeInfo);
+    openMeInfoFirstOrder = async () => {
+        await this.openVPage(EditMeInfoFirstOrder);
     }
 }

@@ -176,6 +176,6 @@ export class COrder extends Controller {
 
     openMeInfo = async () => {
         let { cMe } = this.cApp;
-        await cMe.openMeInof();
+        await cMe.openMeInfoFirstOrder();
     }
 }

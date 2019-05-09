@@ -23,46 +23,8 @@ export class EditMeInfo extends VPage<CMe>{
     }
     @observable private data: any;
 
-    private webUserSchema: ItemSchema[] = [
-        { name: 'firstName', type: 'string' } as StringSchema,
-        { name: 'gender', type: 'string' } as StringSchema,
-        { name: 'salutation', type: 'string' } as StringSchema,
-        { name: 'organizationName', type: 'string' } as StringSchema,
-        { name: 'departmentName', type: 'string' } as StringSchema,
-    ];
-    private webUserUiSchema: UiSchema = {
-        items: {
-            firstName: { widget: 'text', label: '真实姓名', placeholder: '化学品是受国家安全法规限制的特殊商品，百灵威提供技术咨询、资料以及化学产品的对象必须是具有化学管理和应用能力的专业单位（非个人）。为此，需要您重新提供非虚拟的、可核查的信息。' } as UiTextItem,
-            gender: { widget: 'text', label: '性别' } as UiTextItem,
-            salutation: { widget: 'text', label: '称谓' } as UiTextItem,
-            organizationName: { widget: 'text', label: '单位名称' } as UiTextItem,
-            departmentName: { widget: 'text', label: '部门名称' } as UiTextItem,
-        }
-    }
     @observable private webUserData: any;
 
-    // 个人联系方式信息
-    private webUserContactSchema: ItemSchema[] = [
-        { name: 'telephone', type: 'string' } as StringSchema,
-        { name: 'mobile', type: 'string' } as StringSchema,
-        { name: 'email', type: 'string' } as StringSchema,
-    ];
-    private webUserContactUiSchema: UiSchema = {
-        items: {
-            telephone: { widget: 'text', label: '固定电话' } as UiTextItem,
-            mobile: { widget: 'text', label: '移动电话' } as UiTextItem,
-            email: {
-                widget: 'text', label: 'Email',
-                rules: (value: any) => {
-                    if (value && !/\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/.test(value))
-                        return "Email格式不正确。";
-                    else
-                        return undefined;
-                },
-                placeholder: 'Email'
-            } as UiInputItem,
-        }
-    }
     @observable private webUserContactData: any;
 
     constructor(props: any) {
@@ -115,12 +77,53 @@ export class EditMeInfo extends VPage<CMe>{
             <Edit schema={this.schema} uiSchema={this.uiSchema}
                 data={this.data}
                 onItemChanged={this.onItemChanged} />
-            <Edit schema={this.webUserSchema} uiSchema={this.webUserUiSchema}
+            <Edit schema={webUserSchema} uiSchema={webUserUiSchema}
                 data={this.webUserData}
                 onItemChanged={this.onWebUserChanged} />
-            <Edit schema={this.webUserContactSchema} uiSchema={this.webUserContactUiSchema}
+            <Edit schema={webUserContactSchema} uiSchema={webUserContactUiSchema}
                 data={this.webUserContactData}
                 onItemChanged={this.onWebUserContactChanged} />
         </Page>;
+    }
+}
+
+export const webUserSchema: ItemSchema[] = [
+    { name: 'firstName', type: 'string' } as StringSchema,
+    { name: 'gender', type: 'string' } as StringSchema,
+    { name: 'salutation', type: 'string' } as StringSchema,
+    { name: 'organizationName', type: 'string' } as StringSchema,
+    { name: 'departmentName', type: 'string' } as StringSchema,
+];
+
+export const webUserUiSchema: UiSchema = {
+    items: {
+        firstName: { widget: 'text', label: '真实姓名', placeholder: '化学品是受国家安全法规限制的特殊商品，百灵威提供技术咨询、资料以及化学产品的对象必须是具有化学管理和应用能力的专业单位（非个人）。为此，需要您重新提供非虚拟的、可核查的信息。' } as UiTextItem,
+        gender: { widget: 'text', label: '性别' } as UiTextItem,
+        salutation: { widget: 'text', label: '称谓' } as UiTextItem,
+        organizationName: { widget: 'text', label: '单位名称' } as UiTextItem,
+        departmentName: { widget: 'text', label: '部门名称' } as UiTextItem,
+    }
+}
+
+// 个人联系方式信息
+export const webUserContactSchema: ItemSchema[] = [
+    { name: 'telephone', type: 'string' } as StringSchema,
+    { name: 'mobile', type: 'string' } as StringSchema,
+    { name: 'email', type: 'string' } as StringSchema,
+];
+export const webUserContactUiSchema: UiSchema = {
+    items: {
+        telephone: { widget: 'text', label: '固定电话' } as UiTextItem,
+        mobile: { widget: 'text', label: '移动电话' } as UiTextItem,
+        email: {
+            widget: 'text', label: 'Email',
+            rules: (value: any) => {
+                if (value && !/\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/.test(value))
+                    return "Email格式不正确。";
+                else
+                    return undefined;
+            },
+            placeholder: 'Email'
+        } as UiInputItem,
     }
 }

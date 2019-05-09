@@ -87,12 +87,13 @@ export class VCreateOrder extends VPage<COrder> {
     private page = observer(() => {
 
         let { orderData, onSelectShippingContact, onSelectInvoiceContact, openMeInfo, currentUser, onInvoiceInfoEdit } = this.controller;
-        let fillMeInfo = <div onClick={openMeInfo} className="text-primary">
+        let fillMeInfo = <div onClick={openMeInfo} className="alert alert-warning text-primary" role="alert">
             首次提交订单，请点击此处完善您的个人信息
         </div>
         if (currentUser.allowOrdering)
             fillMeInfo = null;
         let footer = <div className="d-block">
+            {fillMeInfo}
             <div className="w-100 px-3">
                 <div className="d-flex justify-content-left flex-grow-1">
                     <span className="text-danger" style={{ fontSize: '1.8rem' }}><small>¥</small>{orderData.amount}</span>
@@ -102,7 +103,6 @@ export class VCreateOrder extends VPage<COrder> {
                     onClick={this.onSubmit} disabled={!currentUser.allowOrdering}>提交订单
                 </button>
             </div>
-            {fillMeInfo}
         </div>;
         let chevronRight = <FA name="chevron-right" className="cursor-pointer" />
 
