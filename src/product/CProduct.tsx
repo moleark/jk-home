@@ -47,18 +47,18 @@ export class CProduct extends Controller {
     }
 
     searchByKey(key: string) {
-        let { cUqProduct } = this.cApp;
+        let { cUqProduct, currentSalesRegion } = this.cApp;
         let searchProductQuery = cUqProduct.query("searchProduct");
         this.pageProducts = new PageProducts(searchProductQuery);
-        this.pageProducts.first({ key: key });
+        this.pageProducts.first({ key: key, salesRegion: currentSalesRegion.id });
         this.openVPage(VProductList);
     }
 
     searchByCategory(category: any) {
-        let { cUqProduct } = this.cApp;
+        let { cUqProduct, currentSalesRegion } = this.cApp;
         let searchProductQuery = cUqProduct.query("searchProductByCategory");
         this.pageProducts = new PageProducts(searchProductQuery);
-        this.pageProducts.first({ productCategory: category.id, salesRegion: this.cApp.currentSalesRegion.id });
+        this.pageProducts.first({ productCategory: category.id, salesRegion: currentSalesRegion.id });
         this.openVPage(VProductList);
     }
 

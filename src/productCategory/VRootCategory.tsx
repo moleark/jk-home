@@ -30,7 +30,7 @@ export class VRootCategory extends View<CProductCategory> {
     }
 
     private renderRootCategory = (item: any, parent: any) => {
-        let { name, children } = item;
+        let { name, children, total } = item;
         return <div className="bg-white mb-3" key={name}>
             <div className="py-2 px-3 cursor-pointer" onClick={() => this.categoryClick(item, undefined)}>
                 <b>{name}</b>
@@ -46,7 +46,7 @@ export class VRootCategory extends View<CProductCategory> {
     }
 
     private renderSubCategory = (item: any, parent: any) => {
-        let { name, children } = item;
+        let { name, children, total } = item;
         return <div key={name}
             className="col-6 col-md-4 col-lg-3 cursor-pointer"
             //style={{borderRight:'1px solid gray', borderBottom:'1px solid gray'}}
@@ -60,7 +60,7 @@ export class VRootCategory extends View<CProductCategory> {
                         &nbsp; {name}
                     </span>
                 </div>
-                {renderThirdCategory(children)}
+                {renderThirdCategory(children, total)}
             </div>
         </div>;
         // <img src={consts.appIcon} alt="structure" style={imgStyle} />
@@ -73,8 +73,8 @@ export class VRootCategory extends View<CProductCategory> {
 }
 
 
-export function renderThirdCategory(items: any) {
+export function renderThirdCategory(items: any, total: number) {
     return <div className="py-2 px-1 text-muted small" style={subStyle}>
-        {items.length === 0 ? <>&nbsp;</> : items.map(v => v.name).join(' / ')}
+        {items.length === 0 ? <>该类产品总数: {total}</> : items.map(v => v.name).join(' / ')}
     </div>
 }

@@ -56,7 +56,7 @@ export class VCategory extends VPage<CProductCategory> {
     }
 
     private renderSubCategory = (item: any, parent: any) => {
-        let { name, children } = item;
+        let { name, children, total } = item;
         return <div key={name}
             className="col-6 col-md-4 col-lg-3 cursor-pointer"
             //style={{borderRight:'1px solid gray', borderBottom:'1px solid gray'}}
@@ -70,7 +70,7 @@ export class VCategory extends VPage<CProductCategory> {
                         &nbsp; {name}
                     </span>
                 </div>
-                {renderThirdCategory(children)}
+                {renderThirdCategory(children, total)}
             </div>
         </div>;
         // <img src={consts.appIcon} alt="structure" style={imgStyle} />
