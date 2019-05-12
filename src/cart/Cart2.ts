@@ -4,6 +4,7 @@ import { Action, Query, TuidDiv } from 'tonva-react-uq';
 import { CCartApp } from '../CCartApp';
 import { LoaderProductChemical } from 'product/itemLoader';
 import { CartItem, CartPackRow } from './Cart';
+import { groupByProduct } from 'tools/groupByProduct';
 
 export class CartViewModel {
 
@@ -207,22 +208,7 @@ export class CartRemoteService extends CartService {
 
     async load(): Promise<CartViewModel> {
         let cartData = await this.getCartQuery.page(undefined, 0, 100);
-        let cartData2: any[] = [];
-        for (let cd of cartData) {
-            let { product, pack, quantity, price, currency } = cd;
-            let packRow: any = {
-                pack: pack.id,
-                price: price,
-                quantity: quantity,
-                currency: currency && currency.id
-            }
-            let cpi = cartData2.find(e => e.product === product.id);
-            if (cpi === undefined) {
-                cpi = { product: product.id, packs: [] };
-                cartData2.push(cpi);
-            }
-            cpi.packs.push(packRow);
-        }
+        let cartData2 = groupByProduct(cartData);
         return await this.generateCartItems(cartData2);
     }
 

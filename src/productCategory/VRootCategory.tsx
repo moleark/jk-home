@@ -75,6 +75,6 @@ export class VRootCategory extends View<CProductCategory> {
 
 export function renderThirdCategory(items: any, total: number) {
     return <div className="py-2 px-1 text-muted small" style={subStyle}>
-        {items.length === 0 ? <>该类产品总数: {total}</> : items.map(v => v.name).join(' / ')}
+        {items.length === 0 ? <>该类产品数量: {total > 1000 ? '>1000' : total}</> : items.map(v => v.name).join(' / ')}
     </div>
 }

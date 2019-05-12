@@ -5,9 +5,10 @@ import { List, EasyDate } from 'tonva-react-form';
 
 export class VMyOrders extends VPage<COrder> {
 
-    private myOrders: any;
+    private myOrders: any[];
     async open(param: any) {
         this.myOrders = param;
+        this.myOrders.reverse();
         this.openPage(this.page);
     }
 
