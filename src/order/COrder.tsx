@@ -10,6 +10,8 @@ import { VMyOrders } from './VMyOrders';
 import { VOrderDetail } from './VOrderDetail';
 import { WebUser } from 'CurrentUser';
 import { CInvoiceInfo } from 'customer/CInvoiceInfo';
+import { orderItemGroupByProduct } from 'tools/groupByProduct';
+import { LoaderProductChemical } from 'product/itemLoader';
 
 export class COrder extends Controller {
     private cApp: CCartApp;
@@ -171,6 +173,15 @@ export class COrder extends Controller {
     openOrderDetail = async (orderId: number) => {
 
         let order = await this.orderSheet.getSheet(orderId);
+        let { data } = order;
+        let { orderItems } = data;
+        let orderItemsGrouped = orderItemGroupByProduct(orderItems);
+        let loaderProduct = new LoaderProductChemical(this.cApp);
+        for (let i = 0; i < orderItemsGrouped.length; i++) {
+            let productId = orderItemsGrouped[i].product.id;
+            orderItemsGrouped[i].product = await loaderProduct.load(productId);
+        }
+        data.orderItems = orderItemsGrouped;
         this.openVPage(VOrderDetail, order);
     }
 
