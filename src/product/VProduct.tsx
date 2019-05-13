@@ -143,7 +143,7 @@ export class VProduct extends VPage<CProduct> {
             quantity: {
                 widget: 'custom',
                 className: 'text-center',
-                WidgetClass: MinusPlusWidget,
+                WidgetClass: MinusPlusWidget as any,
                 onChanged: this.onQuantityChanged
             } as UiCustom
         },

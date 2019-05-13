@@ -166,7 +166,7 @@ export class VCreateOrder extends VPage<COrder> {
                 {invoiceContactUI}
                 {invoiceInfoUI}
             </div>
-            <List items={orderData.orderItems} item={{ render: this.renderOrderItem, key: this.orderItemKey }} />
+            <List items={orderData.orderItems} item={{ render: this.renderOrderItem, key: this.orderItemKey as any }} />
         </Page>
     })
 }
