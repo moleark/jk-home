@@ -72,14 +72,16 @@ export class LoaderProductChemicalWithPrices extends Loader<MainSubs<MainProduct
     private priceMap: Map;
     private getInventoryAllocationQuery: Query;
     private getFutureDeliveryTime: Query;
+    private getPromotionPackQuery: Query;
 
     protected initEntities() {
 
-        let { cUqProduct, cUqCustomerDiscount, cUqWarehouse } = this.cApp;
+        let { cUqProduct, cUqCustomerDiscount, cUqWarehouse, cUqPromotion } = this.cApp;
         this.getCustomerDiscount = cUqCustomerDiscount.query("getdiscount");
         this.priceMap = cUqProduct.map('pricex');
         this.getInventoryAllocationQuery = cUqWarehouse.query("getInventoryAllocation");
         this.getFutureDeliveryTime = cUqProduct.query("getFutureDeliveryTime");
+        this.getPromotionPackQuery = cUqPromotion.query("getPromotionPack");
     }
 
     protected initData(): MainSubs<MainProductChemical, ProductPackRow> {
@@ -92,7 +94,7 @@ export class LoaderProductChemicalWithPrices extends Loader<MainSubs<MainProduct
         data.main = await productLoader.load(productId);
 
         let discount = 0;
-        let { currentUser, currentSalesRegion, cartViewModel } = this.cApp;
+        let { currentUser, currentSalesRegion, cartViewModel, currentLanguage } = this.cApp;
         if (currentUser.hasCustomer) {
             let discountSetting = await this.getCustomerDiscount.obj({ brand: data.main.brand.id, customer: currentUser.currentCustomer });
             discount = discountSetting && discountSetting.discount;
@@ -114,13 +116,18 @@ export class LoaderProductChemicalWithPrices extends Loader<MainSubs<MainProduct
         let promises: PromiseLike<any>[] = [];
         data.subs.forEach(v => {
             promises.push(this.getInventoryAllocationQuery.table({ product: productId, pack: v.pack, salesRegion: currentSalesRegion }));
+            promises.push(this.getPromotionPackQuery.obj({ product: productId, pack: v.pack, salesRegion: currentSalesRegion, language: currentLanguage }));
         })
         let results = await Promise.all(promises);
 
         let fd = await this.getFutureDeliveryTimeDescription(productId, currentSalesRegionId);
-        for (let i = 0; i < results.length; i++) {
+        for (let i = 0; i < data.subs.length; i++) {
             data.subs[i].futureDeliveryTimeDescription = fd;
-            data.subs[i].inventoryAllocation = results[i];
+            data.subs[i].inventoryAllocation = results[i * 2];
+            let promotion = results[i * 2 + 1];
+            let discount = promotion && promotion.discount;
+            if (discount)
+                data.subs[i].promotionPrice = Math.round((1 - discount) * data.subs[i].retail);
         }
     }
 

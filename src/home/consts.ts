@@ -6,6 +6,7 @@ export const consts = {
     uqWebUser: '百灵威系统工程部/webuser',
     uqCustomer: '百灵威系统工程部/customer',
     uqCustomerDiscount: '百灵威系统工程部/customerDiscount',
+    uqPromotion: '百灵威系统工程部/promotion',
     uqWarehouse: "百灵威系统工程部/warehouse",
     uqMember: '百灵威系统工程部/member',
 

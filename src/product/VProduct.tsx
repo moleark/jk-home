@@ -16,6 +16,7 @@ const schema: ItemSchema[] = [
     { name: 'pack', type: 'object' } as ObjectSchema,
     { name: 'retail', type: 'number' } as NumSchema,
     { name: 'vipPrice', type: 'number' } as NumSchema,
+    { name: 'promotionPrice', type: 'number' } as NumSchema,
     { name: 'currency', type: 'string' },
     { name: 'quantity', type: 'number' } as NumSchema,
     { name: 'inventoryAllocation', type: 'object' } as ObjectSchema,
@@ -63,20 +64,22 @@ export class VProduct extends VPage<CProduct> {
     }
 
     private arrTemplet = (item: any) => {
-        let { pack, retail, vipPrice, inventoryAllocation, futureDeliveryTimeDescription } = item;
+        let { pack, retail, vipPrice, promotionPrice, inventoryAllocation, futureDeliveryTimeDescription } = item;
         let right = null;
         if (retail) {
-            let price: number;
+            let price: number = this.minPrice(vipPrice, promotionPrice);
             let retailUI: any;
-            if (vipPrice) {
-                price = vipPrice;
+            if (price) {
                 retailUI = <small className="text-muted"><del>¥{retail}</del></small>;
             }
             else {
                 price = retail;
             }
             right = <div className="row">
-                <div className="col-sm-6 pb-2 d-flex justify-content-end align-items-center"><small className="text-muted">{retailUI}</small>&nbsp; &nbsp; <span className="text-danger">¥ <span className="h5">{price}</span></span></div>
+                <div className="col-sm-6 pb-2 d-flex justify-content-end align-items-center">
+                    <small className="text-muted">{retailUI}</small>&nbsp; &nbsp;
+                    <span className="text-danger">¥ <span className="h5">{price}</span></span>
+                </div>
                 <div className="col-sm-6 pb-2 d-flex justify-content-end align-items-center"><Field name="quantity" /></div>
             </div >
         } else {
@@ -118,8 +121,8 @@ export class VProduct extends VPage<CProduct> {
 
     private onQuantityChanged = async (context: RowContext, value: any, prev: any) => {
         let { data } = context;
-        let { pack, retail, vipPrice, currency } = data;
-        let price = vipPrice || retail;
+        let { pack, retail, vipPrice, promotionPrice, currency } = data;
+        let price = this.minPrice(vipPrice, promotionPrice) || retail;
         let { cApp } = this.controller;
         let { cartService, cartViewModel } = cApp;
         if (value > 0) {
@@ -127,6 +130,11 @@ export class VProduct extends VPage<CProduct> {
         } else {
             await cartService.removeFromCart(cartViewModel, [{ productId: this.product.id, packId: pack.id }]);
         }
+    }
+
+    private minPrice(vipPrice: any, promotionPrice: any) {
+        if (vipPrice || promotionPrice)
+            return Math.min(typeof (vipPrice) === 'number' ? vipPrice : Infinity, typeof (promotionPrice) === 'number' ? promotionPrice : Infinity);
     }
 
     private uiSchema: UiSchema = {

@@ -87,8 +87,8 @@ export class VCreateOrder extends VPage<COrder> {
     private page = observer(() => {
 
         let { orderData, onSelectShippingContact, onSelectInvoiceContact, openMeInfo, currentUser, onInvoiceInfoEdit } = this.controller;
-        let fillMeInfo = <div onClick={openMeInfo} className="alert alert-warning text-primary" role="alert">
-            首次提交订单，请点击此处完善您的个人信息
+        let fillMeInfo = <div onClick={openMeInfo} className="alert alert-warning text-primary py-1" role="alert">
+            点击完善您的个人信息
         </div>
         if (currentUser.allowOrdering)
             fillMeInfo = null;
