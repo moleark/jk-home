@@ -17,12 +17,12 @@ export class WebUser {
     @observable organizationName: string;
     departmentName: string;
 
-    @observable telephone: string;
+    telephone: string;
     @observable mobile: string;
     email: string;
     @computed get allowOrdering() {
         return this.currentCustomer !== undefined ||
-            (this.telephone && this.mobile && this.firstName && this.organizationName);
+            (this.mobile && this.firstName && this.organizationName);
     }
 
     private _user: User;
@@ -32,6 +32,8 @@ export class WebUser {
     private webUserContactMap: Map;
     private webUserContactsMap: Map;
     private webUserSettingMap: Map;
+
+    private webUserSettings: any;
 
     private cUsqCustomer: CUq;
 
@@ -115,28 +117,21 @@ export class WebUser {
     }
 
     async getSetting() {
-        return await this.webUserSettingMap.obj({ webUser: this.id });
+        this.webUserSettings = await this.webUserSettingMap.obj({ webUser: this.id });
+        return this.webUserSettings;
     }
 
-    async setDefaultShippingContact(contactId: number) {
+    async setDefaultShippingContact(contactId: BoxId) {
         if (this.currentCustomer !== undefined) {
             await this.currentCustomer.setDefaultShippingContact(contactId);
             return;
         }
-        await this.webUserSettingMap.add({ webUser: this.id, shippingContact: contactId });
+        // await this.webUserSettingMap.add({ webUser: this.id, shippingContact: contactId });
+        this.webUserSettings.shippingContact = contactId;
+        this.saveDefaultSettings();
     }
 
-    /*
-    async unsetDefaultShippingContact() {
-        if (this.currentCustomer !== undefined) {
-            await this.currentCustomer.unsetDefaultShippingContact();
-            return;
-        }
-        await this.webUserSettingMap.del?();
-    }
-    */
-
-    async setDefaultInvoiceContact(contactId: number) {
+    async setDefaultInvoiceContact(contactId: BoxId) {
         if (this.currentCustomer !== undefined) {
             await this.currentCustomer.setDefaultInvoiceContact(contactId);
             return;
@@ -144,13 +139,21 @@ export class WebUser {
         await this.webUserSettingMap.add({ webUser: this.id, arr1: [{ invoiceContact: contactId }] });
     }
 
-    async setDefaultInvoice(invoiceTypeId: number, invoiceInfoId: number) {
+    async setDefaultInvoice(invoiceTypeId: BoxId, invoiceInfoId: BoxId) {
         if (this.currentCustomer !== undefined) {
             await this.currentCustomer.setDefaultInvoice(invoiceTypeId, invoiceInfoId);
             return;
         }
-        await this.webUserSettingMap.add({ webUser: this.id, arr1: [{ invoiceType: invoiceTypeId, invoiceInfo: invoiceInfoId }] });
+        // await this.webUserSettingMap.add({ webUser: this.id, arr1: [{ invoiceType: invoiceTypeId, invoiceInfo: invoiceInfoId }] });
+        this.webUserSettings.invoiceType = invoiceTypeId;
+        this.webUserSettings.InvoiceInfo = invoiceInfoId;
+        this.saveDefaultSettings();
     }
+
+    async saveDefaultSettings() {
+        await this.webUserSettingMap.add(this.webUserSettings);
+    }
+
 
     async changeWebUser(webUser: any) {
         await this.webUserTuid.save(this.id, webUser);
@@ -171,6 +174,8 @@ export class Customer {
 
     private customerSettingMap: Map;
 
+    private customerSettings: any;
+
     constructor(customer: BoxId, cUsqCustomer: CUq) {
         this.id = customer.id;
         this.contactMap = cUsqCustomer.map('customerContacts');
@@ -190,18 +195,30 @@ export class Customer {
     }
 
     async getSetting() {
-        return await this.customerSettingMap.obj({ customer: this.id });
+        this.customerSettings = await this.customerSettingMap.obj({ customer: this.id });
+        return this.customerSettings;
     }
 
-    async setDefaultShippingContact(contactId: number) {
-        await this.customerSettingMap.add({ customer: this.id, arr1: [{ defaultShippingContact: contactId }] });
+    async setDefaultShippingContact(contactId: BoxId) {
+        // await this.customerSettingMap.add({ customer: this.id, arr1: [{ defaultShippingContact: contactId }] });
+        this.customerSettings.shippingContact = contactId;
+        await this.setDefaultSettings();
     }
 
-    async setDefaultInvoiceContact(contactId: number) {
-        await this.customerSettingMap.add({ customer: this.id, arr1: [{ defaultInvoiceContact: contactId }] });
+    async setDefaultInvoiceContact(contactId: BoxId) {
+        // await this.customerSettingMap.add({ customer: this.id, arr1: [{ defaultInvoiceContact: contactId }] });
+        this.customerSettings.invoiceContact = contactId;
+        await this.setDefaultSettings();
     }
 
-    async setDefaultInvoice(invoiceTypeId: number, invoiceInfoId: number) {
-        await this.customerSettingMap.add({ customer: this.id, arr1: [{ invoiceType: invoiceTypeId, invoiceInfo: invoiceInfoId }] });
+    async setDefaultInvoice(invoiceTypeId: BoxId, invoiceInfoId: BoxId) {
+        this.customerSettings.invoiceType = invoiceTypeId;
+        this.customerSettings.invoiceInfo = invoiceInfoId;
+        // await this.customerSettingMap.add({ customer: this.id, arr1: [{ invoiceType: invoiceTypeId, invoiceInfo: invoiceInfoId }] });
+        await this.setDefaultSettings();
+    }
+
+    async setDefaultSettings() {
+        await this.customerSettingMap.add(this.customerSettings);
     }
 }

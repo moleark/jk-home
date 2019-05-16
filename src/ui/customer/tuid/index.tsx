@@ -1,5 +1,6 @@
 import { contactUI } from './contact';
 import { addressUI, countryUI } from 'ui/common';
+import { invoiceInfoUI, invoiceTypeUI } from './invoice';
 
 export default {
     contact: contactUI,
@@ -8,4 +9,6 @@ export default {
     province: countryUI,
     city: countryUI,
     county: countryUI,
+    invoiceInfo: invoiceInfoUI,
+    invoiceType: invoiceTypeUI
 }

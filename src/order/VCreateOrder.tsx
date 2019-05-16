@@ -157,8 +157,8 @@ export class VCreateOrder extends VPage<COrder> {
         return <Page header="订单预览" footer={footer}>
             <div className="px-2">
                 <div className="row py-3 bg-white mb-1" onClick={onSelectShippingContact}>
-                    <div className="col-12 col-sm-2 pb-2 text-muted">收货地址:</div>
-                    <div className="col-12 col-sm-10">
+                    <div className="col-4 col-sm-2 pb-2 text-muted">收货地址:</div>
+                    <div className="col-8 col-sm-10">
                         <LMR className="w-100 align-items-center" right={chevronRight}>{tv(orderData.shippingContact, undefined, undefined, this.nullContact)}</LMR>
                         {shippingAddressBlankTip}
                     </div>

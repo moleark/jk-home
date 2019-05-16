@@ -35,10 +35,9 @@ export class CMe extends Controller {
         return this.renderView(VMe);
     }
 
-    openMyOrders = async () => {
-
+    openMyOrders = async (state: string) => {
         let { cOrder } = this.cApp;
-        await cOrder.openMyOrders();
+        await cOrder.openMyOrders(state);
     }
 
     openContactList = async () => {

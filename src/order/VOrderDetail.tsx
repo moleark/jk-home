@@ -50,15 +50,15 @@ export class VOrderDetail extends VPage<COrder> {
         return <Page header={header}>
             <List items={orderItems} item={{ render: this.renderOrderItem }} />
             <div className="bg-white row no-gutters p-3 my-1">
-                <div className="col-3">收货地址:</div>
+                <div className="col-3 text-muted">收货地址:</div>
                 <div className="col-9">{tv(shippingContact)}</div>
             </div>
             <div className="bg-white row no-gutters p-3 my-1">
-                <div className="col-3">发票地址:</div>
+                <div className="col-3 text-muted">发票地址:</div>
                 <div className="col-9">{tv(invoiceContact)}</div>
             </div>
             <div className="bg-white row no-gutters p-3 my-1">
-                <div className="col-3">发票信息:</div>
+                <div className="col-3 text-muted">发票信息:</div>
                 <div className="col-9">{tv(invoiceInfo)}</div>
             </div>
             <div className="bg-white p-3 my-1 text-right">

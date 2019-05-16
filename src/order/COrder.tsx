@@ -1,5 +1,5 @@
 import { observable } from 'mobx';
-import { Sheet, BoxId } from 'tonva-react-uq';
+import { Sheet, BoxId, Query } from 'tonva-react-uq';
 import { Controller, nav } from 'tonva-tools';
 import { CCartApp } from 'CCartApp';
 import { VCreateOrder } from './VCreateOrder';
@@ -12,11 +12,13 @@ import { WebUser } from 'CurrentUser';
 import { CInvoiceInfo } from 'customer/CInvoiceInfo';
 import { orderItemGroupByProduct } from 'tools/groupByProduct';
 import { LoaderProductChemical } from 'product/itemLoader';
+import { async } from 'q';
 
 export class COrder extends Controller {
     private cApp: CCartApp;
     @observable orderData: Order = new Order();
     private orderSheet: Sheet;
+    private getPendingPaymentQuery: Query;
     currentUser: WebUser;
 
     constructor(cApp: CCartApp, res: any) {
@@ -24,6 +26,7 @@ export class COrder extends Controller {
         this.cApp = cApp;
         let { cUqOrder, currentUser } = cApp;
         this.orderSheet = cUqOrder.sheet('order');
+        this.getPendingPaymentQuery = cUqOrder.query('getpendingPayment');
         this.currentUser = currentUser;
     }
 
@@ -152,10 +155,21 @@ export class COrder extends Controller {
 
     /*
     */
-    openMyOrders = async () => {
+    openMyOrders = async (state: string) => {
 
-        let myOrders = await this.orderSheet.mySheets(undefined, 1, 20);
-        this.openVPage(VMyOrders, myOrders);
+        this.openVPage(VMyOrders, state);
+    }
+
+    getMyOrders = async (state: string) => {
+
+        switch (state) {
+            case 'pendingpayment':
+                return await this.getPendingPaymentQuery.table(undefined);
+                break;
+            default:
+                return await this.orderSheet.mySheets(undefined, 1, 20);
+                break;
+        }
     }
 
     onInvoiceInfoEdit = async () => {

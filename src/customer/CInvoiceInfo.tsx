@@ -32,14 +32,13 @@ export class CInvoiceInfo extends Controller {
         let { invoiceType, invoiceInfo, isDefault } = invoice;
         let newInvoiceInfo = await this.invoiceInfoTuid.save(undefined, invoiceInfo);
         let { id: newInvoiceInfoId } = newInvoiceInfo;
-        if (isDefault === true) {
-            let { currentUser } = this.cApp;
-            await currentUser.setDefaultInvoice(invoiceType, newInvoiceInfoId);
-        }
-
         let invoiceBox = {
             invoiceType: this.invoiceTypeTuid.boxId(invoiceType),
             invoiceInfo: this.invoiceInfoTuid.boxId(newInvoiceInfoId),
+        }
+        if (isDefault === true) {
+            let { currentUser } = this.cApp;
+            await currentUser.setDefaultInvoice(invoiceBox.invoiceType, invoiceBox.invoiceInfo);
         }
         this.backPage();
         this.returnCall(invoiceBox);

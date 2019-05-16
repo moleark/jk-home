@@ -48,7 +48,7 @@ export abstract class CSelectContact extends Controller {
         let userContactId = userContact.contact.id;
         let contact = await this.contactTuid.load(userContactId);
         let userSetting = await this.cApp.currentUser.getSetting();
-        contact.isDefault = this.getIsDefault(userSetting, userContactId);
+        contact.isDefault = await this.getIsDefault(userSetting, userContactId);
         let userContactData: any = { contact: contact };
         this.openVPage(VContact, userContactData);
     }
@@ -62,24 +62,25 @@ export abstract class CSelectContact extends Controller {
 
         let newContact = await this.contactTuid.save(undefined, contact);
         let { id: newContactId } = newContact;
+        let contactBox = this.contactTuid.boxId(newContactId);
 
         let { currentUser } = this.cApp;
         await currentUser.addContact(newContactId);
-        if (contact.isDefault === true) {
-            await this.setDefaultContact(newContactId);
+        let { id, isDefault } = contact;
+        if (isDefault === true) {
+            await this.setDefaultContact(contactBox);
         }
         // contact.id !== undefined表示是修改了已有的contact(我们只能用“替换”表示“修改”，所以此时需要删除原contact)
-        if (contact.id !== undefined) {
-            await currentUser.delContact(contact.id);
+        if (id !== undefined) {
+            await currentUser.delContact(id);
         }
         this.backPage();
         if (this.fromOrderCreation) {
-            let contactBox = this.contactTuid.boxId(newContactId);
             this.onContactSelected(contactBox);
         }
     }
 
-    protected abstract async setDefaultContact(contactId: number);
+    protected abstract async setDefaultContact(contactId: BoxId);
 
     onContactSelected = (contact: BoxId) => {
         if (this.fromOrderCreation) {
@@ -100,7 +101,7 @@ export class CSelectShippingContact extends CSelectContact {
         return shippingContact && shippingContact.id === userContactId;
     }
 
-    protected async setDefaultContact(contactId: number) {
+    protected async setDefaultContact(contactId: BoxId) {
         let { currentUser } = this.cApp;
         await currentUser.setDefaultShippingContact(contactId);
     }
@@ -112,7 +113,7 @@ export class CSelectInvoiceContact extends CSelectContact {
         return invoiceContact && invoiceContact.id === userContactId;
     }
 
-    protected async setDefaultContact(contactId: number) {
+    protected async setDefaultContact(contactId: BoxId) {
         let { currentUser } = this.cApp;
         await currentUser.setDefaultInvoiceContact(contactId);
     }

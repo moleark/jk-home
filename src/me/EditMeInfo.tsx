@@ -88,10 +88,10 @@ export class EditMeInfo extends VPage<CMe>{
 }
 
 export const webUserSchema: ItemSchema[] = [
-    { name: 'firstName', type: 'string' } as StringSchema,
+    { name: 'firstName', type: 'string', required: true } as StringSchema,
     { name: 'gender', type: 'string' } as StringSchema,
     { name: 'salutation', type: 'string' } as StringSchema,
-    { name: 'organizationName', type: 'string' } as StringSchema,
+    { name: 'organizationName', type: 'string', required: true } as StringSchema,
     { name: 'departmentName', type: 'string' } as StringSchema,
 ];
 
@@ -108,7 +108,7 @@ export const webUserUiSchema: UiSchema = {
 // 个人联系方式信息
 export const webUserContactSchema: ItemSchema[] = [
     { name: 'telephone', type: 'string' } as StringSchema,
-    { name: 'mobile', type: 'string' } as StringSchema,
+    { name: 'mobile', type: 'string', required: true } as StringSchema,
     { name: 'email', type: 'string' } as StringSchema,
 ];
 export const webUserContactUiSchema: UiSchema = {

@@ -6,9 +6,11 @@ import { List, EasyDate } from 'tonva-react-form';
 export class VMyOrders extends VPage<COrder> {
 
     private myOrders: any[];
+    private currentState: string;
     async open(param: any) {
-        this.myOrders = param;
-        this.myOrders.reverse();
+        // this.myOrders = param;
+        // this.myOrders.reverse();
+        this.currentState = param;
         this.openPage(this.page);
     }
 
@@ -23,8 +25,27 @@ export class VMyOrders extends VPage<COrder> {
 
     private page = () => {
 
-        return <Page header="我的订单">
-            <List items={this.myOrders} item={{ render: this.renderOrder }} />
-        </Page>
+        let tabs = [{
+            title: '待付款',
+            content: () => {
+                return <List items={this.myOrders} item={{ render: this.renderOrder }} />
+            },
+            isSelected: this.currentState === 'pendingpayment',
+            load: async () => {
+                this.currentState = 'pendingpayment';
+                this.myOrders = await this.controller.getMyOrders(this.currentState);
+            }
+        }, {
+            title: '所有订单',
+            content: () => {
+                return <List items={this.myOrders} item={{ render: this.renderOrder }} />
+            },
+            isSelected: this.currentState === 'all',
+            load: async () => {
+                this.currentState = 'all';
+                this.myOrders = await this.controller.getMyOrders(this.currentState);
+            }
+        }];
+        return <Page header="我的订单" tabs={tabs} />
     }
 }
