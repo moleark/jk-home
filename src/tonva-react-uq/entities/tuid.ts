@@ -41,7 +41,7 @@ export abstract class Tuid extends Entity {
         this.BoxId = function():void {};
         let prototype = this.BoxId.prototype;
         Object.defineProperty(prototype, '_$tuid', {
-            value: this.from(),
+            value: this, //.from(),
             writable: false,
             enumerable: false,
         });

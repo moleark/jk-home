@@ -19,6 +19,10 @@ export interface CartPackRow extends PackRow {
     currency: any;
 }
 
+export class CartView {
+
+}
+
 export class Cart {
     cApp: CCartApp;
     private getInventoryAllocationQuery: Query;
@@ -28,9 +32,9 @@ export class Cart {
     private disposer: IReactionDisposer;
 
     @observable data: any = {
-        list: observable<CartItem>([]),
+        list: observable<any>([]),
     };
-    items: CartItem[];
+    items: any[];
     count = observable.box<number>(0);
     amount = observable.box<number>(0);
 
@@ -66,82 +70,31 @@ export class Cart {
         this.amount.set(amount);
     }
 
-    async load(): Promise<void> {
+    change() {
 
-        if (this.cApp.isLogined) {
-            if ((this.cartStore === undefined) || (this.cartStore && this.cartStore.isLocal)) {
-                let tempItems: CartItem[] = [];
-                if (this.cartStore && this.cartStore.isLocal) {
-                    tempItems = this.items.splice(0);
-                }
-                this.cartStore = new CartRemote(this, this.cApp);
-                let items = await this.cartStore.load();
-                this.items.push(...items);
-                if (tempItems.length > 0) {
-                    // merge
-                    for (let i = 0; i < tempItems.length; i++) {
-                        let { product: tempProduct, packs: tempPacks } = tempItems[i];
-                        let cartItemExits = this.items.find(v => v.product.id === tempProduct.id);
-                        if (cartItemExits) {
-                            for (let j = 0; j < tempPacks.length; j++) {
-                                // 如果本地购物车中的产品已经过期，则要删除
-                                if (cartItemExits.packs.findIndex(vp => vp.pack.id === tempPacks[j].pack.id) < 0) {
-                                    let { pack, quantity, price, currency } = tempPacks[j];
-                                    this.AddToCart(cartItemExits.product.id, pack.id, quantity, price, currency);
-                                }
-                            }
-                        } else {
-                            for (let j = 0; j < tempPacks.length; j++) {
-                                let { pack, quantity, price, currency } = tempPacks[j];
-                                this.AddToCart(tempItems[i].product.id, pack.id, quantity, price, currency);
-                            }
-                        }
+    }
+
+    async initItems(): Promise<void> {
+
+        let items = await this.cartStore.load();
+        let originlength = this.items.length;
+        let newlength = items.length;
+        if (newlength > 0) {
+            if (originlength > 0) {
+                // 合并，谁覆盖谁？
+                for (let i = 0; i < originlength; i++) {
+                    let { product: tempProduct, pack: tempPack } = this.items[i];
+                    let cartItemExits = this.items.find(v => v.product === tempProduct && v.pack === tempPack);
+                    if (cartItemExits) {
+                        // 如果本地购物车中的产品已经过期，则要删除
+                    } else {
+                        // this.AddToCart(tempItems[i].product.id, pack.id, quantity, price, currency);
                     }
                 }
-            }
-        } else {
-            if (this.cartStore === undefined) {
-                this.cartStore = new CartLocal(this, this.cApp);
-                let items = await this.cartStore.load();
-                this.items.push(...items);
-                return;
             } else {
-                if (!this.cartStore.isLocal) {
-                    // 清除localstorage
-                    this.cartStore = new CartLocal(this, this.cApp);
-                    this.clear();
-                }
+                this.items.push(...items);
             }
         }
-
-        /*
-        if (this.cApp.isLogined === false) {
-            this.cartStore = new CartLocal(this, this.cApp);
-            let items = await this.cartStore.load();
-            this.items.push(...items);
-            return;
-        }
-        if (this.cartStore === undefined) {
-            this.cartStore = new CartRemote(this, this.cApp);
-            let items = await this.cartStore.load();
-            this.items.push(...items);
-            return;
-        }
-        // 已登录但是cartStore !== undefined时继续执行，这是合并购物车？
-        let cartLocal = this.cartStore as CartLocal;
-        let items = this.items.splice(0);
-        this.cartStore = new CartRemote(this, this.cApp);
-        (this.items as IObservableArray).replace(await this.cartStore.load());
-
-        for (let item of items) {
-            let { product, packs } = item;
-            for (let packItem of packs) {
-                let { pack, quantity, price, currency } = packItem;
-                await this.AddToCart(product.id, pack.id, quantity, price, currency);
-            }
-        }
-        cartLocal.clear();
-        */
     }
 
     getQuantity(productId: number, packId: number): number {
@@ -159,43 +112,20 @@ export class Cart {
      */
     AddToCart = async (productId: number, packId: number, quantity: number, price: number, currency: any) => {
 
-        let cartItem: CartItem = this.items.find((element) => element.product.id === productId);
+        let cartItem = this.items.find((e) => e.product === productId);
         if (!cartItem) {
-            let productLoader = new LoaderProductChemical(this.cApp);
-            cartItem.product = await productLoader.load(productId);
-            cartItem.packs = [];
+            cartItem = { product: productId, pack: packId, quantity: quantity, price: price, currency: currency };
             this.items.push(cartItem);
-        }
-        let { $isDeleted, packs } = cartItem;
-        if ($isDeleted === true) {
-            packs.splice(0);
+        } else {
+            cartItem.quantity = quantity;
+            cartItem.price = price;
+            cartItem.currency = currency;
         }
         cartItem.$isSelected = true;
         cartItem.$isDeleted = false;
         cartItem.createdate = Date.now();
 
-        let piPack: CartPackRow = packs.find(v => v.pack.id === packId);
-        if (piPack === undefined) {
-            piPack = {
-                pack: this.packTuid.boxId(packId),
-                price: price,
-                quantity: quantity,
-                currency: currency,
-            };
-            piPack.inventoryAllocation =
-                await this.getInventoryAllocationQuery.table({ product: productId, pack: packId, salesRegion: this.cApp.currentSalesRegion })
-            packs.push(piPack);
-        }
-        else {
-            piPack.price = price;
-            piPack.quantity = quantity;
-        }
-
-        await this.storeCart(productId, piPack);
-    }
-
-    async storeCart(product: number, packItem: CartPackRow): Promise<void> {
-        await this.cartStore.storeCart(product, packItem);
+        await this.cartStore.storeCart(cartItem);
     }
 
     /**
@@ -216,7 +146,7 @@ export class Cart {
             }
         }
         if (rows.length === 0) return;
-        await this.removeFromCart(rows);
+        await this.cartStore.removeFromCart(rows);
 
         // 下面是从本地数据结构中删除
         for (let cp of this.items) {
@@ -236,10 +166,6 @@ export class Cart {
             if ($isDeleted === true || packs.length === 0) itemIndexes.push(i);
         }
         for (let i = itemIndexes.length - 1; i >= 0; i--) this.items.splice(itemIndexes[i], 1);
-    }
-
-    private async removeFromCart(rows: { product: number, packItem: CartPackRow }[]): Promise<void> {
-        await this.cartStore.removeFromCart(rows);
     }
 
     async clear() {
@@ -270,7 +196,7 @@ abstract class CartStore {
     }
     abstract get isLocal(): boolean;
     abstract async load(): Promise<CartItem[]>;
-    abstract async storeCart(product: number, packItem: CartPackRow): Promise<void>;
+    abstract async storeCart(cartItem: any): Promise<void>;
     abstract async removeFromCart(rows: { product: number, packItem: CartPackRow }[]): Promise<void>;
 
     protected async generateItems(cartData: any): Promise<CartItem[]> {
@@ -322,55 +248,9 @@ class CartRemote extends CartStore {
         this.removeFromCartAction = cUqOrder.action('removefromcart');
     }
 
-    async load(): Promise<CartItem[]> {
+    async load(): Promise<any[]> {
 
-        let cartData = await this.getCartQuery.page(undefined, 0, 100);
-        let cartData2: any[] = [];
-        for (let cd of cartData) {
-            let { product, pack, quantity, price, currency } = cd;
-            let packRow: any = {
-                pack: pack.id,
-                price: price,
-                quantity: quantity,
-                currency: currency && currency.id
-            }
-            let cpi = cartData2.find(e => e.product === product.id);
-            if (cpi === undefined) {
-                cpi = { product: product.id, packs: [] };
-                cartData2.push(cpi);
-            }
-            cpi.packs.push(packRow);
-        }
-        return await this.generateItems(cartData2);
-        /*
-        let cartDict: { [product: number]: CartItem } = {};
-        let cartProducts: CartItem[] = [];
-        for (let cd of cartData) {
-            let { product, createdate, pack, price, quantity, currency } = cd;
-            let packItem: PackItem = {
-                pack: pack,
-                price: price,
-                quantity: quantity,
-                currency: currency
-            };
-            let cpi = cartDict[product.id];
-            if (cpi === undefined) {
-                cpi = {} as any; //new CartProduct;
-                cpi.product = product;
-                // cpi.product.load(product.id);
-                cpi.packs = [];
-                cpi.packs.push(packItem);
-                cpi.createdate = createdate;
-                cpi.$isSelected = false;
-                cpi.$isDeleted = false;
-                cartProducts.push(cpi);
-                cartDict[product.id] = cpi;
-                continue;
-            }
-            cpi.packs.push(packItem);
-        }
-        return cartProducts;
-        */
+        return await this.getCartQuery.page(undefined, 0, 100);
     }
 
     /**
@@ -378,12 +258,8 @@ class CartRemote extends CartStore {
      * @param pack 要添加到购物车中的包装
      * @param quantity 要添加到购物车中包装的个数
      */
-    async storeCart(product: number, packItem: CartPackRow) {
-        let param = {
-            product: product,
-            ...packItem
-        }
-        await this.setCartAction.submit(param);
+    async storeCart(cartItem: any) {
+        await this.setCartAction.submit(cartItem);
     }
 
     async removeFromCart(rows: { product: number, packItem: CartPackRow }[]) {
@@ -407,34 +283,11 @@ class CartLocal extends CartStore {
 
     get isLocal(): boolean { return true }
 
-    async load(): Promise<CartItem[]> {
+    async load(): Promise<any[]> {
         try {
             let cartstring = localStorage.getItem(LOCALCARTNAME);
             if (cartstring === null) return [];
-            let cartData = JSON.parse(cartstring);
-            return await this.generateItems(cartData);
-            /*
-            let items: CartItem[] = [];
-            for (let i=0; i<cartData.length; i++){
-                let cartProduct: CartItem = {} as any;
-                let { product, packs, createdate } = cartData[i];
-                if (packs !== undefined) {
-                    for (let p of packs) {
-                        p.pack = this.packTuid.boxId(p.pack);
-                    }
-                }
-                cartProduct.product = this.productTuid.boxId(product);
-                // cartProduct.product = new Product(this.cart.cCartApp);
-                // await cartProduct.product.load(product);
-                cartProduct.packs = [];
-                cartProduct.packs.push(...packs);
-                cartProduct.$isSelected = false;
-                cartProduct.$isDeleted = false;
-                cartProduct.createdate = createdate;
-                items.push(cartProduct);
-            };
-            return items;
-            */
+            return JSON.parse(cartstring);
         }
         catch {
             localStorage.removeItem(LOCALCARTNAME);
@@ -442,29 +295,13 @@ class CartLocal extends CartStore {
         }
     }
 
-    async storeCart(product: number, packItem: CartPackRow) {
-        let items = this.cart.items.map(e => {
-            let { product, packs } = e;
-            return {
-                product: product.id,
-                packs: packs && packs.map(v => {
-                    let { pack, price, currency, quantity } = v;
-                    return {
-                        pack: pack.id,
-                        price: price,
-                        currency: currency && currency.id,
-                        quantity: quantity,
-                    }
-                }),
-            }
-        });
-
-        let text = JSON.stringify(items);
+    async storeCart(cartItem: any) {
+        let text = JSON.stringify(cartItem);
         localStorage.setItem(LOCALCARTNAME, text);
     }
 
     async removeFromCart(rows: { product: number, packItem: CartPackRow }[]) {
-        await this.storeCart(undefined, undefined);
+        await this.storeCart(undefined);
     }
 
     clear() {

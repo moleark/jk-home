@@ -5,7 +5,7 @@ export const addressUI: TuidUI = {
     content: (values: any) => {
         let { country, province, city, county } = values;
         return <>
-            {tv(country)}{tv(province)}{tv(city)}{tv(county)}
+            {tv(country)}{tv(province, undefined, undefined, () => <></>)}{tv(city, undefined, undefined, () => <></>)}{tv(county, undefined, undefined, () => <></>)}
         </>
     }
 }

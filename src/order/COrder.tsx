@@ -12,7 +12,6 @@ import { WebUser } from 'CurrentUser';
 import { CInvoiceInfo } from 'customer/CInvoiceInfo';
 import { orderItemGroupByProduct } from 'tools/groupByProduct';
 import { LoaderProductChemical } from 'product/itemLoader';
-import { async } from 'q';
 
 export class COrder extends Controller {
     private cApp: CCartApp;
