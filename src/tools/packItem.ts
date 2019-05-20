@@ -1,5 +1,5 @@
 /*
-import { BoxId } from 'tonva-react-uq';
+import { BoxId } from 'tonva';
 
 export interface PackItem {
     pack: BoxId;

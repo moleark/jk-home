@@ -2,7 +2,7 @@ import * as React from 'react';
 import { VCartLabel } from './VCartLabel';
 import { CCartApp } from 'CCartApp';
 import { VCart } from './VCart';
-import { Controller, RowContext, nav, User } from 'tonva-tools';
+import { Controller, RowContext, nav, User } from 'tonva';
 import { CartPackRow, CartItem } from './Cart';
 
 export class CCart extends Controller {

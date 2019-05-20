@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { VPage, Page } from 'tonva-tools';
+import { VPage, Page } from 'tonva';
 import { COrder } from './COrder';
 
 export class OrderSuccess extends VPage<COrder> {

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { CProductCategory } from './CProductCategory';
-import { VPage, Page } from 'tonva-tools';
-import { List, FA } from 'tonva-react-form';
-import { tv } from 'tonva-react-uq';
+import { VPage, Page } from 'tonva';
+import { List, FA } from 'tonva';
+import { tv } from 'tonva';
 import { titleTitle, subStyle, renderThirdCategory } from './VRootCategory';
 
 export class VCategory extends VPage<CProductCategory> {

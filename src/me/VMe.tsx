@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { nav, User, Page, Image, VPage } from 'tonva-tools';
-import { Prop, Media, IconText, FA, PropGrid, LMR } from 'tonva-react-form';
+import { nav, User, Page, Image, VPage } from 'tonva';
+import { Prop, Media, IconText, FA, PropGrid, LMR } from 'tonva';
 import { About } from './about';
 import { observer } from 'mobx-react';
 import { EditMeInfo } from './EditMeInfo';

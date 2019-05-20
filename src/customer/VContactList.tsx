@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { VPage, Page } from 'tonva-tools';
+import { VPage, Page } from 'tonva';
 import { CSelectContact } from './CSelectContact';
-import { List, LMR, FA } from 'tonva-react-form';
-import { tv } from 'tonva-react-uq';
+import { List, LMR, FA } from 'tonva';
+import { tv } from 'tonva';
 
 export class VContactList extends VPage<CSelectContact> {
 

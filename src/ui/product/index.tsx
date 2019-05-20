@@ -1,4 +1,4 @@
-import { UqUI, Tuid } from "tonva-react-uq";
+import { UqUI, Tuid } from 'tonva';
 import tuid from './tuid';
 
 const uqUI: UqUI = {

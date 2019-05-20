@@ -1,8 +1,8 @@
 
 import * as React from 'react';
 import './App.css';
-import { NavView, nav, Page, Tabs } from 'tonva-tools';
-import { startApp } from 'tonva-react-uq';
+import { NavView, nav, Page, Tabs } from 'tonva';
+import { startApp } from 'tonva';
 import ui from './ui';
 //import { faceTabs } from 'facetabs';
 

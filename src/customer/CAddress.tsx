@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Controller } from 'tonva-tools';
+import { Controller } from 'tonva';
 import { CCartApp } from 'CCartApp';
-import { Query, Tuid } from 'tonva-react-uq';
+import { Query, Tuid } from 'tonva';
 import { VAddress } from './VAddress';
 
 export class CAddress extends Controller {

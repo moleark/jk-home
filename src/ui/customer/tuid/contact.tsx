@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { tv } from 'tonva-react-uq';
+import { tv } from 'tonva';
 
 export const contactUI = {
     content: (values: any) => {

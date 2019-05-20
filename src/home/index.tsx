@@ -2,7 +2,7 @@ export { CHome } from './CHome';
 
 //import * as React from 'react';
 //import Loadable from 'react-loadable';
-//import { Loading } from 'tonva-tools';
+//import { Loading } from 'tonva';
 //import { cCartApp } from '../ui/CCartApp';
 
 /*

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TuidUI, tv, UqUI } from 'tonva-react-uq';
+import { TuidUI, tv, UqUI } from 'tonva';
 
 export const addressUI: TuidUI = {
     content: (values: any) => {

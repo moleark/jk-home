@@ -1,6 +1,6 @@
 //import * as React from 'react';
-import { User, nav } from 'tonva-tools';
-import { CApp, CUq } from 'tonva-react-uq';
+import { User, nav } from 'tonva';
+import { CApp, CUq } from 'tonva';
 import { CCart } from 'cart/CCart';
 import { CProduct } from 'product';
 import { COrder } from 'order/COrder';
@@ -12,8 +12,10 @@ import { WebUser } from 'CurrentUser';
 import { consts } from './home/consts';
 import { CartViewModel, CartService, CartRemoteService, CartLocalService, CartServiceFactory } from 'cart/Cart2';
 import { CMe } from 'me/CMe';
+import { Cart } from 'cart/Cart';
 
 export class CCartApp extends CApp {
+    cart: Cart;
     cartService: CartService;
     cartViewModel: CartViewModel;
     topKey: any;

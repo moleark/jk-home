@@ -2,10 +2,10 @@ import * as React from 'react';
 import { CProduct, renderBrand } from './CProduct';
 import {
     VPage, Page, Form, ItemSchema, NumSchema, UiSchema, Field,
-    ObjectSchema, RowContext, UiCustom
-} from 'tonva-tools';
-import { LMR } from 'tonva-react-form';
-import { tv } from 'tonva-react-uq';
+    ObjectSchema, RowContext, UiCustom, FormField
+} from 'tonva';
+import { LMR } from 'tonva';
+import { tv } from 'tonva';
 import { observer } from 'mobx-react';
 import { MinusPlusWidget } from '../tools/minusPlusWidget';
 import { ProductPackRow } from './Product';
@@ -80,7 +80,7 @@ export class VProduct extends VPage<CProduct> {
                     <small className="text-muted">{retailUI}</small>&nbsp; &nbsp;
                     <span className="text-danger">¥ <span className="h5">{price}</span></span>
                 </div>
-                <div className="col-sm-6 pb-2 d-flex justify-content-end align-items-center"><Field name="quantity" /></div>
+                <div className="col-sm-6 pb-2 d-flex justify-content-end align-items-center"><FormField name="quantity" /></div>
             </div >
         } else {
             right = <small>请询价</small>

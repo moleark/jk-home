@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { VPage, Page, View } from 'tonva-tools';
+import { VPage, Page, View } from 'tonva';
 import { observer } from 'mobx-react';
 import { CHome } from './CHome';
 import { observable } from 'mobx';

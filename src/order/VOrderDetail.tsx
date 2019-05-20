@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { VPage, Page } from 'tonva-tools';
+import { VPage, Page } from 'tonva';
 import { COrder } from './COrder';
-import { tv } from 'tonva-react-uq';
-import { List, LMR } from 'tonva-react-form';
+import { tv } from 'tonva';
+import { List, LMR } from 'tonva';
 import { renderProduct } from 'product';
 
 export class VOrderDetail extends VPage<COrder> {

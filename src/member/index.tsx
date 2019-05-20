@@ -2,7 +2,7 @@ export { CMember } from './CMember';
 
 //import * as React from 'react';
 //import Loadable from 'react-loadable';
-//import { Loading } from 'tonva-tools';
+//import { Loading } from 'tonva';
 
 /*
 export const memberTab = () => {

@@ -4,7 +4,7 @@ export { CCart } from './CCart';
 
 /*
 import Loadable from 'react-loadable';
-import { Loading } from 'tonva-tools';
+import { Loading } from 'tonva';
 
 export const cartTab = () => {
     let LoadableComponent = Loadable.Map({

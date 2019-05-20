@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { VPage, Page } from 'tonva-tools';
-import { tv } from 'tonva-react-uq';
-import { List, FA } from 'tonva-react-form';
+import { VPage, Page } from 'tonva';
+import { tv } from 'tonva';
+import { List, FA } from 'tonva';
 import { CAddress } from './CAddress';
 
 export class VAddress extends VPage<CAddress> {

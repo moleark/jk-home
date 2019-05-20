@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Page, nav } from 'tonva-tools';
+import { Page, nav } from 'tonva';
 import logo from '../images/logo.png';
 
 export class About extends React.Component {

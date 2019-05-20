@@ -1,6 +1,6 @@
 import { observable, computed, autorun, IReactionDisposer, IObservableArray } from 'mobx';
 import _ from 'lodash';
-import { Action, Query, TuidDiv } from 'tonva-react-uq';
+import { Action, Query, TuidDiv } from 'tonva';
 import { CCartApp } from '../CCartApp';
 import { LoaderProductChemical } from 'product/itemLoader';
 import { MainProductChemical } from 'mainSubs';
@@ -77,23 +77,27 @@ export class Cart {
     async initItems(): Promise<void> {
 
         let items = await this.cartStore.load();
-        let originlength = this.items.length;
-        let newlength = items.length;
-        if (newlength > 0) {
-            if (originlength > 0) {
+    }
+
+    private mergeToRemote(localItems: any[]) {
+        let originLength = localItems.length;
+        let nowLength = this.items.length;
+        if (originLength > 0) {
+            if (nowLength > 0) {
                 // 合并，谁覆盖谁？
-                for (let i = 0; i < originlength; i++) {
-                    let { product: tempProduct, pack: tempPack } = this.items[i];
+                for (let i = 0; i < originLength; i++) {
+                    let { product: tempProduct, pack: tempPack } = localItems[i];
                     let cartItemExits = this.items.find(v => v.product === tempProduct && v.pack === tempPack);
                     if (cartItemExits) {
                         // 如果本地购物车中的产品已经过期，则要删除
                     } else {
-                        // this.AddToCart(tempItems[i].product.id, pack.id, quantity, price, currency);
+                        this.items.push(localItems[i]);
                     }
                 }
             } else {
-                this.items.push(...items);
+                this.items.push(...localItems);
             }
+            // 保存到远程
         }
     }
 

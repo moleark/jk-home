@@ -2,17 +2,17 @@ import * as React from 'react';
 import classNames from 'classnames';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
-import { UpdownWidget } from 'tonva-tools/ui/form/widgets';
+import { UpdownWidget } from 'tonva';
 
 const keys = [107, 109, 110, 187, 189];
 
 export class MinusPlusWidget extends UpdownWidget {
     @observable protected value: any;
-    @observable protected disabled:boolean;
+    @observable protected disabled: boolean;
     @observable protected hasFocus: boolean;
 
-    protected isValidKey(key:number):boolean {
-        if (keys.find(v => v===key) !== undefined) return false;
+    protected isValidKey(key: number): boolean {
+        if (keys.find(v => v === key) !== undefined) return false;
         return super.isValidKey(key);
     }
 
@@ -40,7 +40,7 @@ export class MinusPlusWidget extends UpdownWidget {
         this.setValue(v + 1);
     }
 
-    private ref = (input:HTMLInputElement) => {
+    private ref = (input: HTMLInputElement) => {
         this.input = input;
         if (this.input === null) return;
         let p: HTMLElement;
@@ -54,7 +54,7 @@ export class MinusPlusWidget extends UpdownWidget {
         }
     }
 
-    private renderContent = observer(():JSX.Element => {
+    private renderContent = observer((): JSX.Element => {
         let renderTemplet = this.renderTemplet();
         if (renderTemplet !== undefined) return renderTemplet;
         let cn = {
@@ -69,10 +69,10 @@ export class MinusPlusWidget extends UpdownWidget {
         let hasFocus = this.hasFocus; // document.hasFocus() && document.activeElement === this.input;
         let hasAction = this.readOnly !== true && this.disabled !== true;
         let hasValue = this.value !== NaN && this.value !== undefined && this.value > 0;
-        let cursorPointer:string, 
-            minusColor:string, minusClick:any, 
-            plusColor:string, plusClick:any;
-        if (this.disabled===true) {
+        let cursorPointer: string,
+            minusColor: string, minusClick: any,
+            plusColor: string, plusClick: any;
+        if (this.disabled === true) {
             cursorPointer = 'cursor-pointer';
             minusColor = plusColor = 'text-light';
         }
@@ -83,26 +83,26 @@ export class MinusPlusWidget extends UpdownWidget {
             plusColor = 'text-danger';
         }
         let minus = <i className={classNames('fa',
-                    'fa-minus-circle', 'fa-lg', minusColor, cursorPointer,
-                    {invisible: !(hasFocus === true || hasAction === true && hasValue === true)})}
-                onClick={minusClick} />;
+            'fa-minus-circle', 'fa-lg', minusColor, cursorPointer,
+            { invisible: !(hasFocus === true || hasAction === true && hasValue === true) })}
+            onClick={minusClick} />;
         let input = <input ref={this.ref}
             className={classNames(this.className, cn, 'mx-1 w-4c form-control',
-                {invisible: !(hasFocus === true || hasValue === true)})}
+                { invisible: !(hasFocus === true || hasValue === true) })}
             type="text"
             defaultValue={this.value}
             onChange={this.onChange}
             placeholder={this.placeholder}
             readOnly={this.readOnly}
             disabled={this.disabled}
-            onKeyDown = {this.onKeyDown}
-            onFocus = {(evt: React.FocusEvent<any>) => this.onFocus(evt)}
+            onKeyDown={this.onKeyDown}
+            onFocus={(evt: React.FocusEvent<any>) => this.onFocus(evt)}
             onBlur={(evt: React.FocusEvent<any>) => this.onBlur(evt)}
             maxLength={10} />;
 
         let plus = <i className={classNames('fa fa-plus-circle fa-lg',
             plusColor, cursorPointer,
-            {invisible: !(hasAction === true)})}
+            { invisible: !(hasAction === true) })}
             onClick={plusClick} />;
         return <div className="d-flex align-items-center">{minus}{input}{plus}
             {this.renderErrors()}

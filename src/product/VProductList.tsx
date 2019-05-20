@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { VPage, Page } from 'tonva-tools';
+import { VPage, Page } from 'tonva';
 import { CProduct, renderProduct } from './CProduct';
-import { List } from 'tonva-react-form';
+import { List } from 'tonva';
 import { observer } from 'mobx-react';
 //import { cCartApp } from 'ui/CCartApp';
 

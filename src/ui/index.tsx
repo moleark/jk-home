@@ -1,4 +1,4 @@
-import { AppUI, CApp } from "tonva-react-uq";
+import { AppUI, CApp } from 'tonva';
 import { VHome } from './main';
 import { CCartApp } from '../CCartApp';
 import commonUI from './common';

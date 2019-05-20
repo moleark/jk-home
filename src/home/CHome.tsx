@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { TuidMain } from 'tonva-react-uq';
+import { TuidMain } from 'tonva';
 import { VSiteHeader } from './VSiteHeader';
 import { CCartApp } from '../CCartApp';
-import { PageItems, Controller } from 'tonva-tools';
+import { PageItems, Controller } from 'tonva';
 import { VSearchHeader } from './VSearchHeader';
 import { VHome } from './VHome';
 

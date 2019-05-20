@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { VPage, Page, Form, ObjectSchema, NumSchema, ArrSchema, UiSchema, UiArr, Field, UiCustom, RowContext } from 'tonva-tools';
+import { VPage, Page, Form, ObjectSchema, NumSchema, ArrSchema, UiSchema, UiArr, FormField } from 'tonva';
 import { CCart } from './CCart';
-import { List, LMR, FA } from 'tonva-react-form';
-import { tv, BoxId } from 'tonva-react-uq';
+import { List, LMR, FA } from 'tonva';
+import { tv, BoxId } from 'tonva';
 import { observer } from 'mobx-react';
 import { MinusPlusWidget } from '../tools';
 import { renderBrand } from '../product/CProduct';
@@ -58,7 +58,7 @@ export class VCart extends VPage<CCart> {
                 <div className="col-lg-6 pb-3" onClick={() => this.controller.onProductClick(product.id)}>
                     {renderCartProduct(product, 0)}
                 </div>
-                <div className="col-lg-6"><Field name="packs" /></div>
+                <div className="col-lg-6"><FormField name="packs" /></div>
             </div>
         </div>;
     }
@@ -75,7 +75,7 @@ export class VCart extends VPage<CCart> {
             <div className="d-flex align-items-center">
                 <div className="flex-grow-1"><b>{tv(pack)}</b></div>
                 <div className="w-6c mr-4 text-right"><span className="text-danger h5">¥{price}</span></div>
-                <Field name="quantity" />
+                <FormField name="quantity" />
             </div>
             <div>{deliveryTimeUI}</div>
         </div>;

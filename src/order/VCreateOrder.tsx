@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { VPage, Page } from 'tonva-tools';
+import { VPage, Page } from 'tonva';
 import { COrder } from './COrder';
-import { List, LMR, FA } from 'tonva-react-form';
-import { tv, BoxId } from 'tonva-react-uq';
+import { List, LMR, FA } from 'tonva';
+import { tv, BoxId } from 'tonva';
 import { observer } from 'mobx-react';
 import { OrderItem } from './Order';
 import { renderCartProduct } from 'cart/VCart';

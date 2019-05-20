@@ -1,5 +1,5 @@
 
-import { BoxId, tv } from 'tonva-react-uq';
+import { BoxId, tv } from 'tonva';
 
 /*
 export interface Product {

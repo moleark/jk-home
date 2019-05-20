@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { Query } from 'tonva-react-uq';
+import { Query } from 'tonva';
 import { observable } from 'mobx';
 import { VRootCategory } from './VRootCategory';
 import { VCategory } from './VCategory';
 import { CCartApp } from 'CCartApp';
-import { Controller } from 'tonva-tools';
+import { Controller } from 'tonva';
 
 export class CProductCategory extends Controller {
 

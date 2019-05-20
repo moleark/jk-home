@@ -1,6 +1,6 @@
 import { observable, autorun, IReactionDisposer } from 'mobx';
 import _ from 'lodash';
-import { Action, Query, TuidDiv } from 'tonva-react-uq';
+import { Action, Query, TuidDiv } from 'tonva';
 import { CCartApp } from '../CCartApp';
 import { LoaderProductChemical } from 'product/itemLoader';
 import { CartItem, CartPackRow } from './Cart';

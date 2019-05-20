@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { VPage, Page } from 'tonva-tools';
+import { VPage, Page } from 'tonva';
 import { COrder } from './COrder';
-import { List, EasyDate } from 'tonva-react-form';
+import { List, EasyDate } from 'tonva';
 
 export class VMyOrders extends VPage<COrder> {
 

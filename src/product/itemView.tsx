@@ -1,13 +1,13 @@
 /*
 import * as React from 'react';
 import { VMSub, VMMain, VMSubInventory } from './item';
-import { tv } from 'tonva-react-uq';
+import { tv } from 'tonva';
 import { setReactionScheduler } from 'mobx/lib/internal';
-import { Form, NumSchema, UiSchema, RowContext, Field } from 'tonva-tools';
-import { ItemSchema, ObjectSchema } from 'tonva-tools';
+import { Form, NumSchema, UiSchema, RowContext, Field } from 'tonva';
+import { ItemSchema, ObjectSchema } from 'tonva';
 import { ArrSchema } from 'tonva-tools/ui/form/schema';
 import { MinusPlusWidget } from 'tools';
-import { LMR } from 'tonva-react-form';
+import { LMR } from 'tonva';
 import { UiArr } from 'tonva-tools/ui/form/uiSchema';
 
 export class ViewMain<T extends VMMain<S>, S extends VMSub> {
@@ -114,46 +114,46 @@ export class ViewProductChemicalBase extends ViewMain<VMProductChemical, VMSub> 
                 </div>
             });
             */
-           /*
-            deliveryTimeUI = <div className="text-success">国内现货</div>
-        } else {
-            deliveryTimeUI = <div>期货:{futureDeliveryTimeDescription}</div>
-        }
-        let packLabel = <small className="text-muted">包装：</small>;
-        return <LMR className="mx-3" right={right}>
-            <div><b>{tv(pack)}</b></div>
-            {deliveryTimeUI}
-        </LMR>;
-    }
+/*
+ deliveryTimeUI = <div className="text-success">国内现货</div>
+} else {
+ deliveryTimeUI = <div>期货:{futureDeliveryTimeDescription}</div>
+}
+let packLabel = <small className="text-muted">包装：</small>;
+return <LMR className="mx-3" right={right}>
+ <div><b>{tv(pack)}</b></div>
+ {deliveryTimeUI}
+</LMR>;
+}
 
-    render(): JSX.Element {
-        let uiSchema: UiSchema = {
-            items: {
-                subs: {
-                    widget: 'arr',
-                    Templet: this.arrTemplet,
-                    items: {
-                        quantity: {
-                            widget: 'custom',
-                            className: 'text-center',
-                            WidgetClass: MinusPlusWidget,
-                            onChanged: this.onQuantityChanged
-                        }
-                    },
-                    ArrContainer: (label: string, content: JSX.Element) => { return <div className="bg-white">{content}</div>; },
-                    RowContainer: (content: JSX.Element) => { return <div className="py-2">{content}</div> },
-                    Rowseperator: (<div className="border border-danger border-top"></div>),
-                } as UiArr,
-            }
-        };
+render(): JSX.Element {
+let uiSchema: UiSchema = {
+ items: {
+     subs: {
+         widget: 'arr',
+         Templet: this.arrTemplet,
+         items: {
+             quantity: {
+                 widget: 'custom',
+                 className: 'text-center',
+                 WidgetClass: MinusPlusWidget,
+                 onChanged: this.onQuantityChanged
+             }
+         },
+         ArrContainer: (label: string, content: JSX.Element) => { return <div className="bg-white">{content}</div>; },
+         RowContainer: (content: JSX.Element) => { return <div className="py-2">{content}</div> },
+         Rowseperator: (<div className="border border-danger border-top"></div>),
+     } as UiArr,
+ }
+};
 
-        return <>
-            <div className="px-2 py-2 bg-white mb-3">
-                {tv(this.main.product)}
-            </div>
-            <Form schema={schema} uiSchema={uiSchema} formData={this.main} />
-        </>
-    }
+return <>
+ <div className="px-2 py-2 bg-white mb-3">
+     {tv(this.main.product)}
+ </div>
+ <Form schema={schema} uiSchema={uiSchema} formData={this.main} />
+</>
+}
 }
 
 export class ViewProductChemical extends ViewProductChemicalBase<VMSub> {

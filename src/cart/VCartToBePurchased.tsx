@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { View } from 'tonva-tools';
+import { View } from 'tonva';
 import { CCart } from './CCart';
-import { List } from 'tonva-react-form';
-import { tv } from 'tonva-react-uq';
+import { List } from 'tonva';
+import { tv } from 'tonva';
 
 export class VCartToBePurchased extends View<CCart> {
 

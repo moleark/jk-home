@@ -1,6 +1,6 @@
 /*
 import * as React from 'react';
-import { TabCaptionComponent} from 'tonva-tools';
+import { TabCaptionComponent} from 'tonva';
 import { observable } from 'mobx';
 import { homeTab } from './home';
 import { cartTab } from 'cart';

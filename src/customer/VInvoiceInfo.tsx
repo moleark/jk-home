@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { VPage, Page, UiSchema, UiInputItem, Form, Context } from 'tonva-tools';
+import { VPage, Page, UiSchema, UiInputItem, Form, Context } from 'tonva';
 import { CInvoiceInfo } from './CInvoiceInfo';
-import { Schema } from 'tonva-tools';
+import { Schema } from 'tonva';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 

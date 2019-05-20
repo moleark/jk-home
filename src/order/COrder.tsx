@@ -1,6 +1,6 @@
 import { observable } from 'mobx';
-import { Sheet, BoxId, Query } from 'tonva-react-uq';
-import { Controller, nav } from 'tonva-tools';
+import { Sheet, BoxId, Query } from 'tonva';
+import { Controller, nav } from 'tonva';
 import { CCartApp } from 'CCartApp';
 import { VCreateOrder } from './VCreateOrder';
 import { Order, OrderItem } from './Order';

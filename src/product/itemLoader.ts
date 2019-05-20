@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { TuidMain, TuidDiv, Map, Query } from 'tonva-react-uq';
+import { TuidMain, TuidDiv, Map, Query } from 'tonva';
 import { ProductPackRow } from './Product';
 import { Loader } from 'mainSubs/loader';
 import { MainSubs, MainProductChemical, MainBrand } from 'mainSubs';

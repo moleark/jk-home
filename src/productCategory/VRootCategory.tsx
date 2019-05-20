@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { View } from 'tonva-tools';
+import { View } from 'tonva';
 import { CProductCategory } from './CProductCategory';
 import { consts } from '../home/consts';
-import { FA } from 'tonva-react-form';
+import { FA } from 'tonva';
 
 const imgStyle: React.CSSProperties = {
     height: '1.5rem', width: '1.5rem',

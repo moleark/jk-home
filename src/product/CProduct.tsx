@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
-import { Query, tv } from 'tonva-react-uq';
-import { PageItems, Controller, nav, Page, Image } from 'tonva-tools';
+import { Query, tv } from 'tonva';
+import { PageItems, Controller, nav, Page, Image } from 'tonva';
 import { CCartApp } from '../CCartApp';
 import { VProduct } from './VProduct';
 import { VProductList } from './VProductList';

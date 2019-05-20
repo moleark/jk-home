@@ -1,10 +1,10 @@
 import * as React from 'react';
 import _ from 'lodash';
-import { TuidMain, BoxId } from 'tonva-react-uq';
+import { TuidMain, BoxId } from 'tonva';
 import { VContactList } from './VContactList';
 import { CCartApp } from 'CCartApp';
 import { VContact } from './VContact';
-import { Controller, Context, nav } from 'tonva-tools';
+import { Controller, Context, nav } from 'tonva';
 import { CAddress } from './CAddress';
 
 export abstract class CSelectContact extends Controller {

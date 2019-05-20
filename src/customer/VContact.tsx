@@ -1,7 +1,7 @@
 import * as React from 'react';
 import _ from 'lodash';
-import { VPage, Page, Form, Schema, UiSchema, Context, UiInputItem, UiIdItem } from 'tonva-tools';
-import { tv } from 'tonva-react-uq';
+import { VPage, Page, Form, Schema, UiSchema, Context, UiInputItem, UiIdItem } from 'tonva';
+import { tv } from 'tonva';
 import { CSelectContact } from './CSelectContact';
 
 const schema: Schema = [

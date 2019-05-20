@@ -1,7 +1,7 @@
-import { Controller } from 'tonva-tools';
+import { Controller } from 'tonva';
 import { VInvoiceInfo } from './VInvoiceInfo';
 import { CCartApp } from 'CCartApp';
-import { TuidMain } from 'tonva-react-uq';
+import { TuidMain } from 'tonva';
 
 export class CInvoiceInfo extends Controller {
     protected cApp: CCartApp;

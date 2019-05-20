@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Page, PageProps } from 'tonva-tools';
+import { Page, PageProps } from 'tonva';
 
 export class HomeMasterPage extends Page {
 

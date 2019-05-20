@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { VPage, TabCaptionComponent, Page, Tabs } from 'tonva-tools';
+import { VPage, TabCaptionComponent, Page, Tabs } from 'tonva';
 import { CCartApp } from 'CCartApp';
 
 export const store = {

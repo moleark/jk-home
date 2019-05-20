@@ -1,13 +1,13 @@
 import * as React from 'react';
 import Loadable from 'react-loadable';
-import { Controller, Loading, nav } from 'tonva-tools';
+import { Controller, Loading, nav } from 'tonva';
 import { VMember } from './VMember';
 import { CCartApp } from 'CCartApp';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
-import { FA } from 'tonva-react-form';
+import { FA } from 'tonva';
 import { jnkTop } from 'me/loginTop';
-import { Action, Map, BoxId } from 'tonva-react-uq';
+import { Action, Map, BoxId } from 'tonva';
 
 export class CMember extends Controller {
 

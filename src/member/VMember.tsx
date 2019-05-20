@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { VPage, Image } from 'tonva-tools';
+import { VPage, Image } from 'tonva';
 import { CMember } from './CMember';
-import { LMR, Muted, FA, Media } from 'tonva-react-form';
+import { LMR, Muted, FA, Media } from 'tonva';
 import pig from '../images/pig.png';
 import { observer } from 'mobx-react';
 

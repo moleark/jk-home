@@ -1,4 +1,4 @@
-import { Entity } from "tonva-react-uq";
+import { Entity } from 'tonva';
 import { CCartApp } from 'CCartApp';
 
 export abstract class Loader<T> {

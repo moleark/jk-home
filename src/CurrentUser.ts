@@ -1,5 +1,5 @@
-import { User, loadAppUqs } from 'tonva-tools';
-import { Map, BoxId, CUq, Tuid } from 'tonva-react-uq';
+import { User, loadAppUqs } from 'tonva';
+import { Map, BoxId, CUq, Tuid } from 'tonva';
 import { observable, computed } from 'mobx';
 
 export class WebUser {
