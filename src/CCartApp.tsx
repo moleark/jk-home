@@ -83,6 +83,7 @@ export class CCartApp extends CApp {
     }
 
     showMain(initTabName?: string) {
+        // eeee
         this.openVPage(this.VAppMain, initTabName);
     }
 
