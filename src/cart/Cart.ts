@@ -98,11 +98,8 @@ export class Cart {
     }
 
     getQuantity(productId: number, packId: number): number {
-        let cp = this.items.find(v => v.$isDeleted !== true && v.product.id === productId);
-        if (cp === undefined) return 0;
-        let packItem = cp.packs.find(v => v.pack.id === packId);
-        if (packItem === undefined) return 0;
-        return packItem.quantity;
+        let cp = this.items.find(v => v.$isDeleted !== true && v.product === productId && v.pack === packId);
+        return cp === undefined ? 0 : cp.quantity;
     }
 
     /**
@@ -112,7 +109,7 @@ export class Cart {
      */
     AddToCart = async (productId: number, packId: number, quantity: number, price: number, currency: any) => {
 
-        let cartItem = this.items.find((e) => e.product === productId);
+        let cartItem = this.items.find((e) => e.product === productId && e.pack === packId);
         if (!cartItem) {
             cartItem = { product: productId, pack: packId, quantity: quantity, price: price, currency: currency };
             this.items.push(cartItem);
@@ -128,6 +125,12 @@ export class Cart {
         await this.cartStore.storeCart(cartItem);
     }
 
+    setDeletedMark(productId: number, packId: number) {
+        let cp = this.items.find(v => v.$isDeleted !== true && v.product === productId && v.pack === packId);
+        if (cp !== undefined)
+            cp.$isDeleted = true;
+    }
+
     /**
      *
      * @param item
@@ -135,14 +138,9 @@ export class Cart {
     async removeDeletedItem() {
         let rows: { product: number, packItem: CartPackRow }[] = [];
         for (let cp of this.items) {
-            let { product, packs, $isDeleted } = cp;
-            for (let pi of packs) {
-                if ($isDeleted === true || pi.quantity === 0) {
-                    rows.push({
-                        product: product.id,
-                        packItem: pi
-                    });
-                }
+            let { quantity, $isDeleted } = cp;
+            if ($isDeleted === true || quantity === 0) {
+                // TODO:
             }
         }
         if (rows.length === 0) return;
