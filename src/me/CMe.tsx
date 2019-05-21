@@ -4,6 +4,7 @@ import { CCartApp } from 'CCartApp';
 import { VMe } from './VMe';
 import { CSelectShippingContact } from 'customer/CSelectContact';
 import { EditMeInfoFirstOrder } from './EditMeInfoFirstOrder';
+import { CInvoiceInfo } from 'customer/CInvoiceInfo';
 
 export class CMe extends Controller {
 
@@ -43,6 +44,11 @@ export class CMe extends Controller {
     openContactList = async () => {
         let contactList = new CSelectShippingContact(this.cApp, undefined, false);
         await contactList.start();
+    }
+
+    openInvoice = async () => {
+        let cInvoiceInfo = new CInvoiceInfo(this.cApp, undefined);
+        cInvoiceInfo.start();
     }
 
     openMeInfoFirstOrder = async () => {

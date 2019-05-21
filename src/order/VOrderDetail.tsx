@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { VPage, Page } from 'tonva';
+import { VPage, Page, BoxId } from 'tonva';
 import { COrder } from './COrder';
 import { tv } from 'tonva';
 import { List, LMR } from 'tonva';
@@ -59,11 +59,28 @@ export class VOrderDetail extends VPage<COrder> {
             </div>
             <div className="bg-white row no-gutters p-3 my-1">
                 <div className="col-3 text-muted">发票信息:</div>
-                <div className="col-9">{tv(invoiceInfo)}</div>
+                <div className="col-9">{invoiceTemplate(invoiceType, invoiceInfo)}</div>
             </div>
             <div className="bg-white p-3 my-1 text-right">
                 <span className="text-danger font-weight-bold">总金额: {amount}{tv(currency)}</span>
             </div>
         </Page>
     }
+}
+
+function invoiceTemplate(invoiceType: BoxId, invoiceInfo: BoxId): JSX.Element {
+    return <>
+        {tv(invoiceType, invoiceTypeUI, undefined, () => <></>)}<br />
+        {tv(invoiceInfo, invoiceInfoUI, undefined, () => <></>)}
+    </>
+}
+
+function invoiceTypeUI(values: any) {
+    let { id, description } = values;
+    return <>{description}</>;
+}
+
+function invoiceInfoUI(values: any) {
+    let { id, title, taxNo, address, telephone, bank, accountNo } = values;
+    return <>{title}</>;
 }

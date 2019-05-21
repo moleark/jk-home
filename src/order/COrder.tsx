@@ -95,12 +95,12 @@ export class COrder extends Controller {
 
     private async getDefaultShippingContact() {
         let defaultSetting = await this.getDefaultSetting();
-        return defaultSetting.defaultShippingContact || await this.getContact();
+        return defaultSetting.shippingContact || await this.getContact();
     }
 
     private async getDefaultInvoiceContact() {
         let defaultSetting = await this.getDefaultSetting();
-        return defaultSetting.defaultInvoiceContact || await this.getContact();
+        return defaultSetting.invoiceContact || await this.getContact();
     }
 
     private async getDefaultInvoiceType() {

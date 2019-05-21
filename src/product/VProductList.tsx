@@ -13,7 +13,7 @@ export class VProductList extends VPage<CProduct> {
     }
 
     private onProductClick = async (product: any) => {
-        this.controller.showProductDetail(product.id);
+        this.controller.showProductDetail(product.productid);
     }
 
     private onScrollBottom = async () => {

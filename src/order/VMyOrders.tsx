@@ -8,8 +8,6 @@ export class VMyOrders extends VPage<COrder> {
     private myOrders: any[];
     private currentState: string;
     async open(param: any) {
-        // this.myOrders = param;
-        // this.myOrders.reverse();
         this.currentState = param;
         this.openPage(this.page);
     }

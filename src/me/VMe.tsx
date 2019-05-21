@@ -24,7 +24,11 @@ export class VMe extends VPage<CMe> {
     }
 
     private openContactList = async () => {
-        let contactList = this.controller.openContactList();
+        this.controller.openContactList();
+    }
+
+    private openInvoice = async () => {
+        this.controller.openInvoice();
     }
 
     private meInfo = observer(() => {
@@ -112,6 +116,12 @@ export class VMe extends VPage<CMe> {
                     type: 'component',
                     component: <IconText iconClass="text-info mr-2" icon="address-book-o" text="地址管理" />,
                     onClick: this.openContactList
+                },
+                '',
+                {
+                    type: 'component',
+                    component: <IconText iconClass="text-info mr-2" icon="address-book-o" text="发票管理" />,
+                    onClick: this.openInvoice
                 },
                 '',
                 {
