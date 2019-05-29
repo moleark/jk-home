@@ -20,7 +20,7 @@ export class VOrderDetail extends VPage<COrder> {
             <div className="d-flex align-items-center">
                 <div className="flex-grow-1"><b>{tv(pack)}</b></div>
                 <div className="w-12c mr-4 text-right">
-                    <span className="text-danger h5"><small>¥</small>{price * quantity}</span>
+                    <span className="text-danger h5"><small>¥</small>{price * quantity}</span> &nbsp;
                     <small className="text-muted">(¥{price} × {quantity})</small>
                 </div>
             </div>

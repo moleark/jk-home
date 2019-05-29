@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observable } from 'mobx';
-import { userApi, ItemSchema, StringSchema, ImageSchema, UiTextItem, UiImageItem, nav, Page, Edit, UiSchema, VPage, UiRadio } from 'tonva';
+import { userApi, ItemSchema, StringSchema, ImageSchema, UiTextItem, UiImageItem, nav, Page, Edit, UiSchema, VPage, UiRadio, IdSchema, UiIdItem } from 'tonva';
 import { CMe } from './CMe';
 
 export class EditMeInfo extends VPage<CMe>{
@@ -34,7 +34,8 @@ export class EditMeInfo extends VPage<CMe>{
         };
 
         let { cApp } = this.controller;
-        let { firstName, gender, salutation, organizationName, departmentName, telephone, mobile, email } = cApp.currentUser;
+        let { firstName, gender, salutation, organizationName, departmentName, telephone
+            , mobile, email, fax, zipCode } = cApp.currentUser;
         this.webUserData = {
             firstName: firstName,
             gender: gender,
@@ -46,7 +47,9 @@ export class EditMeInfo extends VPage<CMe>{
         this.webUserContactData = {
             telephone: telephone,
             mobile: mobile,
-            email: email
+            email: email,
+            fax: fax,
+            zipCode: zipCode,
         }
     }
 
@@ -108,6 +111,9 @@ export const webUserContactSchema: ItemSchema[] = [
     { name: 'telephone', type: 'string' } as StringSchema,
     { name: 'mobile', type: 'string', required: true } as StringSchema,
     { name: 'email', type: 'string' } as StringSchema,
+    { name: 'fax', type: 'string', required: false } as StringSchema,
+    { name: 'address', type: 'id', required: false } as IdSchema,
+    { name: 'zipCode', type: 'string', required: false } as StringSchema,
 ];
 export const webUserContactUiSchema: UiSchema = {
     items: {
@@ -123,5 +129,8 @@ export const webUserContactUiSchema: UiSchema = {
             },
             placeholder: 'Email'
         } as UiTextItem,
+        fax: { widget: 'text', label: '传真' } as UiTextItem,
+        address: { widget: 'id', label: '地址' } as UiIdItem,
+        zipCode: { widget: 'text', label: '邮编' } as UiTextItem,
     }
 }

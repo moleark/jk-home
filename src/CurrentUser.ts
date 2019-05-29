@@ -20,6 +20,8 @@ export class WebUser {
     telephone: string;
     @observable mobile: string;
     email: string;
+    fax: string;
+    zipCode: string;
     @computed get allowOrdering() {
         return this.currentCustomer !== undefined ||
             (this.mobile && this.firstName && this.organizationName);
@@ -73,10 +75,12 @@ export class WebUser {
             }
             let contact = await this.webUserContactMap.obj({ webUser: this.id });
             if (contact) {
-                let { telephone, mobile, email } = contact;
+                let { telephone, mobile, email, fax, zipCode } = contact;
                 this.telephone = telephone;
                 this.mobile = mobile;
                 this.email = email;
+                this.fax = fax;
+                this.zipCode = zipCode;
             }
             let value = await this.webUserCustomerMap.obj({ webUser: this.id });
             if (value != undefined)
