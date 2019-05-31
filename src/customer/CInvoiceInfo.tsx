@@ -1,12 +1,12 @@
 import { Controller } from 'tonva';
 import { VInvoiceInfo } from './VInvoiceInfo';
 import { CCartApp } from 'CCartApp';
-import { TuidMain } from 'tonva';
+import { Tuid } from 'tonva';
 
 export class CInvoiceInfo extends Controller {
     protected cApp: CCartApp;
-    private invoiceTypeTuid: TuidMain;
-    private invoiceInfoTuid: TuidMain;
+    private invoiceTypeTuid: Tuid;
+    private invoiceInfoTuid: Tuid;
 
     constructor(cApp: CCartApp, res: any) {
         super(res);

@@ -1,11 +1,11 @@
 import _ from 'lodash';
-import { TuidMain, TuidDiv, Map, Query } from 'tonva';
+import { Tuid, TuidDiv, Map, Query } from 'tonva';
 import { ProductPackRow } from './Product';
 import { Loader } from 'mainSubs/loader';
 import { MainSubs, MainProductChemical, MainBrand } from 'mainSubs';
 
 export class LoaderBrand extends Loader<MainBrand> {
-    private brandTuid: TuidMain;
+    private brandTuid: Tuid;
 
     protected initEntities() {
         let { cUqProduct } = this.cApp;
@@ -24,15 +24,13 @@ export class LoaderBrand extends Loader<MainBrand> {
 }
 
 export class LoaderProductChemical extends Loader<MainProductChemical> {
-    private productTuid: TuidMain;
-    private packTuid: TuidDiv;
+    private productTuid: Tuid;
     private productChemicalMap: Map;
 
     protected initEntities() {
 
         let { cUqProduct } = this.cApp;
         this.productTuid = cUqProduct.tuid('productx');
-        this.packTuid = this.productTuid.divs['packx'];
         this.productChemicalMap = cUqProduct.map('productChemical');
     }
 

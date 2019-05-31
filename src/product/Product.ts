@@ -1,4 +1,4 @@
-import { BoxId, TuidMain, TuidDiv, Map, Query } from 'tonva';
+import { BoxId, Map, Query } from 'tonva';
 import { CCartApp } from 'CCartApp';
 
 export interface PackRow {

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TuidMain } from 'tonva';
+import { Tuid } from 'tonva';
 import { VSiteHeader } from './VSiteHeader';
 import { CCartApp } from '../CCartApp';
 import { PageItems, Controller } from 'tonva';
@@ -8,9 +8,9 @@ import { VHome } from './VHome';
 
 class HomeSections extends PageItems<any> {
 
-    private sectionTuid: TuidMain;
+    private sectionTuid: Tuid;
 
-    constructor(sectionTuid: TuidMain) {
+    constructor(sectionTuid: Tuid) {
         super();
         this.firstSize = this.pageSize = 13;
         this.sectionTuid = sectionTuid;
@@ -32,7 +32,7 @@ export class CHome extends Controller {
 
     cApp: CCartApp;
     homeSections: HomeSections;
-    sectionTuid: TuidMain;
+    sectionTuid: Tuid;
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
@@ -51,7 +51,7 @@ export class CHome extends Controller {
         return this.renderView(VSiteHeader);
     }
 
-    renderSearchHeader = (size?:string) => {
+    renderSearchHeader = (size?: string) => {
         return this.renderView(VSearchHeader, size);
     }
 
@@ -62,10 +62,6 @@ export class CHome extends Controller {
 
     renderHome = () => {
         return this.renderView(VHome);
-    }
-
-    openMetaView = () => {
-        this.cApp.startDebug();
     }
 
     tab = () => <this.renderHome />;

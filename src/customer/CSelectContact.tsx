@@ -1,6 +1,6 @@
 import * as React from 'react';
 import _ from 'lodash';
-import { TuidMain, BoxId } from 'tonva';
+import { Tuid, BoxId } from 'tonva';
 import { VContactList } from './VContactList';
 import { CCartApp } from 'CCartApp';
 import { VContact } from './VContact';
@@ -9,7 +9,7 @@ import { CAddress } from './CAddress';
 
 export abstract class CSelectContact extends Controller {
     protected cApp: CCartApp;
-    private contactTuid: TuidMain;
+    private contactTuid: Tuid;
     fromOrderCreation: boolean;
 
     userContacts: any[] = [];

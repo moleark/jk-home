@@ -187,8 +187,8 @@ export class COrder extends Controller {
 
         let order = await this.orderSheet.getSheet(orderId);
         let { data } = order;
-        let { orderItems } = data;
-        let orderItemsGrouped = orderItemGroupByProduct(orderItems);
+        let { orderitems } = data;
+        let orderItemsGrouped = orderItemGroupByProduct(orderitems);
         let loaderProduct = new LoaderProductChemical(this.cApp);
         for (let i = 0; i < orderItemsGrouped.length; i++) {
             let productId = orderItemsGrouped[i].product.id;

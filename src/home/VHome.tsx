@@ -4,8 +4,6 @@ import { observer } from 'mobx-react';
 import { CHome } from './CHome';
 import { observable } from 'mobx';
 
-const LIGUOSHENG = 5;
-
 export class VHome extends View<CHome> {
 
     async open(param?: any) {
@@ -24,13 +22,7 @@ export class VHome extends View<CHome> {
     }
 
     private page = observer(() => {
-        let { openMetaView } = this.controller;
-        let viewMetaButton = <></>;
-        if (this.controller.isLogined && this.controller.user.id === LIGUOSHENG) {
-            viewMetaButton = <button type="button" className="btn w-100" onClick={openMetaView}>view</button>
-        }
-
-        return <Page header={false} footer={viewMetaButton}>
+        return <Page header={false}>
             <this.content />
         </Page>;
     })

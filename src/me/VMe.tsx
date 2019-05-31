@@ -78,11 +78,10 @@ export class VMe extends VPage<CMe> {
         let rows: Prop[];
         if (user === undefined) {
             rows = aboutRows;
-            rows.push('');
             rows.push(
                 {
                     type: 'component',
-                    component: <button className="btn btn-success w-100" onClick={() => nav.showLogin(undefined, true)}>
+                    component: <button className="btn btn-success w-100 my-2" onClick={() => nav.showLogin(undefined, true)}>
                         <FA name="sign-out" size="lg" /> 请登录
                     </button>
                 },
