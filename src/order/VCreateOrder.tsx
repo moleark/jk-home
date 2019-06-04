@@ -14,6 +14,7 @@ export class VCreateOrder extends VPage<COrder> {
     @observable private useShippingAddress: boolean = true;
     @observable private shippingAddressIsBlank: boolean = false;
     @observable private invoiceAddressIsBlank: boolean = false;
+    @observable private invoiceIsBlank: boolean = false;
 
     async open(param: any) {
         this.openPage(this.page);
@@ -63,7 +64,8 @@ export class VCreateOrder extends VPage<COrder> {
 
     private onSubmit = async () => {
         let { orderData } = this.controller;
-        let { shippingContact, invoiceContact } = orderData;
+        // 必填项验证
+        let { shippingContact, invoiceContact, invoiceType, invoiceInfo } = orderData;
         if (!shippingContact) {
             this.shippingAddressIsBlank = true;
             setTimeout(() => this.shippingAddressIsBlank = false, blankTime);
@@ -71,7 +73,6 @@ export class VCreateOrder extends VPage<COrder> {
         }
         if (!invoiceContact) {
             if (this.useShippingAddress) {
-                //this.setContact(shippingContact, ContactType.InvoiceContact);
                 orderData.invoiceContact = shippingContact; //contactBox;
                 this.invoiceAddressIsBlank = false;
             } else {
@@ -79,6 +80,11 @@ export class VCreateOrder extends VPage<COrder> {
                 setTimeout(() => this.invoiceAddressIsBlank = false, blankTime);
                 return;
             }
+        }
+        if (!invoiceType || !invoiceInfo) {
+            this.invoiceIsBlank = true;
+            setTimeout(() => this.invoiceIsBlank = false, blankTime);
+            return;
         }
 
         this.controller.submitOrder();
@@ -110,15 +116,15 @@ export class VCreateOrder extends VPage<COrder> {
             <div className="text-danger small my-2"><FA name="exclamation-circle" /> 必须填写收货地址</div>
             : null;
         let invoiceAddressBlankTip = this.invoiceAddressIsBlank ? <div className="text-danger small my-2"><FA name="exclamation-circle" /> 必须填写发票地址</div> : null;
-        let divInvoice: any = null;
+        let divInvoiceContact: any = null;
         if (this.useShippingAddress === false) {
             if (orderData.invoiceContact !== undefined) {
-                divInvoice = <div className="col-12 col-sm-10 offset-sm-2 d-flex">
+                divInvoiceContact = <div className="col-12 col-sm-10 offset-sm-2 d-flex">
                     {tv(orderData.invoiceContact, undefined, undefined, this.nullContact)}
                     <div>{chevronRight}</div>
                 </div>
             } else {
-                divInvoice = <div className="col-8 offset-4 offset-sm-2">
+                divInvoiceContact = <div className="col-8 offset-4 offset-sm-2">
                     <button className="btn btn-outline-primary"
                         onClick={onSelectInvoiceContact}>选择发票地址</button>
                     {invoiceAddressBlankTip}
@@ -141,15 +147,17 @@ export class VCreateOrder extends VPage<COrder> {
                     </label>
                 </div>
             </div>
-            {divInvoice}
+            {divInvoiceContact}
         </div>
 
+        let invoiceBlankTip = this.invoiceIsBlank ? <div className="text-danger small my-2"><FA name="exclamation-circle" /> 必须填写发票信息</div> : null;
         let invoiceInfoUI = <div className="row py-3 bg-white mb-1" onClick={() => onInvoiceInfoEdit()}>
             <div className="col-4 col-sm-2 pb-2 text-muted">发票信息:</div>
             <div className="col-8 col-sm-10">
                 <LMR className="w-100 align-items-center" right={chevronRight}>
-                    {tv(orderData.invoiceType, (v) => <>{v.description}</>, undefined, () => <span className="text-primary">填写发票内容</span>)}
+                    {tv(orderData.invoiceType, (v) => <>{v.description}</>, undefined, () => <span className="text-primary">填写发票信息</span>)}
                     {tv(orderData.invoiceInfo, (v) => <> -- {v.title}</>, undefined, () => <></>)}
+                    {invoiceBlankTip}
                 </LMR>
             </div>
         </div>

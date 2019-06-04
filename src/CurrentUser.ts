@@ -150,7 +150,7 @@ export class WebUser {
         }
         // await this.webUserSettingMap.add({ webUser: this.id, arr1: [{ invoiceType: invoiceTypeId, invoiceInfo: invoiceInfoId }] });
         this.webUserSettings.invoiceType = invoiceTypeId;
-        this.webUserSettings.InvoiceInfo = invoiceInfoId;
+        this.webUserSettings.invoiceInfo = invoiceInfoId;
         this.saveDefaultSettings();
     }
 

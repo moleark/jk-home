@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { tv } from 'tonva';
 
 export const invoiceTypeUI = {
     content: (values: any) => {

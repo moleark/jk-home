@@ -1,4 +1,3 @@
-import { BoxId } from 'tonva';
 
 export interface Id {
     id: number;
@@ -26,13 +25,13 @@ export interface MainProductChemical extends MainProduct {
     packs: Pack[];
 }
 
-// 下面这些都还没有用，以后可能会用到
 export interface Pack extends Id {
     radiox: number;
     radioy: number;
     unit: string;
 }
 
+// 下面这些都还没有用，以后可能会用到
 export interface Inventory extends Id {
     name: string;
 }
