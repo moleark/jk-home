@@ -162,6 +162,21 @@ export class VCreateOrder extends VPage<COrder> {
             </div>
         </div>
 
+        let freightFeeUI = <></>;
+        let freightFeeRemittedUI = <></>;
+        if (orderData.freightFee) {
+            freightFeeUI = <>
+                <div className="col-4 col-sm-2 pb-2 text-muted">运费:</div>
+                <div className="col-8 col-sm-10 text-right"><small>¥</small>{orderData.freightFee}</div>
+            </>
+            if (orderData.freightFeeRemitted) {
+                freightFeeRemittedUI = <>
+                    <div className="col-4 col-sm-2 pb-2 text-muted">运费减免:</div>
+                    <div className="col-8 col-sm-10 text-right"><small>¥</small>{orderData.freightFeeRemitted}</div>
+                </>
+            }
+        }
+
         return <Page header="订单预览" footer={footer}>
             <div className="px-2">
                 <div className="row py-3 bg-white mb-1" onClick={onSelectShippingContact}>
@@ -175,6 +190,14 @@ export class VCreateOrder extends VPage<COrder> {
                 {invoiceInfoUI}
             </div>
             <List items={orderData.orderItems} item={{ render: this.renderOrderItem, key: this.orderItemKey as any }} />
-        </Page>
+            <div className="px-2">
+                <div className="row py-3 pr-3 bg-white my-1">
+                    <div className="col-4 col-sm-2 pb-2 text-muted">商品总额:</div>
+                    <div className="col-8 col-sm-10 text-right"><small>¥</small>{orderData.productAmount}</div>
+                    {freightFeeUI}
+                    {freightFeeRemittedUI}
+                </div >
+            </div >
+        </Page >
     })
 }

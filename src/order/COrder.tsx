@@ -13,6 +13,9 @@ import { CInvoiceInfo } from 'customer/CInvoiceInfo';
 import { orderItemGroupByProduct } from 'tools/groupByProduct';
 import { LoaderProductChemical } from 'product/itemLoader';
 
+const FREIGHTFEEFIXED = 12;
+const FREIGHTFEEREMITTEDSTARTPOINT = 100;
+
 export class COrder extends Controller {
     private cApp: CCartApp;
     @observable orderData: Order = new Order();
@@ -64,12 +67,13 @@ export class COrder extends Controller {
                 var item = new OrderItem();
                 item.product = element.product;
                 item.packs = element.packs.filter(v => v.quantity > 0);
-                //item.price = element.price;
-                //item.quantity = element.quantity;
                 return item;
             });
 
             // 运费和运费减免
+            this.orderData.freightFee = FREIGHTFEEFIXED;
+            if (this.orderData.productAmount > FREIGHTFEEREMITTEDSTARTPOINT)
+                this.orderData.freightFeeRemitted = FREIGHTFEEFIXED * -1;
         }
     }
 
