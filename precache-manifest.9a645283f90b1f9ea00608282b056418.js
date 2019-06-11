@@ -4,32 +4,32 @@ self.__precacheManifest = [
     "url": "./static/media/fontawesome-webfont.af7ae505.woff2"
   },
   {
-    "revision": "fa9bdcb94636c4e81745",
-    "url": "./static/css/main.aadbcc26.chunk.css"
+    "revision": "b192eec6aaf63e1d6996",
+    "url": "./static/css/main.0a68f817.chunk.css"
   },
   {
-    "revision": "4048d62b0f14453c2057",
-    "url": "./static/js/1.4048d62b.chunk.js"
+    "revision": "e26a3c00b55c81ee1dfa",
+    "url": "./static/js/1.e26a3c00.chunk.js"
   },
   {
     "revision": "ee7cd8ed2dcec943251eb2763684fc6f",
     "url": "./static/media/logo.ee7cd8ed.svg"
   },
   {
-    "revision": "719c5dbed424d4128b65",
-    "url": "./static/js/2.719c5dbe.chunk.js"
+    "revision": "ff659732cca0482ac0b3",
+    "url": "./static/js/2.ff659732.chunk.js"
   },
   {
-    "revision": "f0263018d8c319aed6fc",
-    "url": "./static/js/3.f0263018.chunk.js"
+    "revision": "d268dc20b7bb10615a9f",
+    "url": "./static/js/3.d268dc20.chunk.js"
   },
   {
-    "revision": "1a97e89202a9134601d9",
-    "url": "./static/js/runtime~main.1a97e892.js"
+    "revision": "0bbd86405d97e653309c",
+    "url": "./static/js/runtime~main.0bbd8640.js"
   },
   {
-    "revision": "fa9bdcb94636c4e81745",
-    "url": "./static/js/main.fa9bdcb9.chunk.js"
+    "revision": "b192eec6aaf63e1d6996",
+    "url": "./static/js/main.b192eec6.chunk.js"
   },
   {
     "revision": "fee66e712a8a08eef5805a46892932ad",
@@ -52,11 +52,11 @@ self.__precacheManifest = [
     "url": "./static/media/pig.772a31a6.png"
   },
   {
-    "revision": "719c5dbed424d4128b65",
-    "url": "./static/css/2.297e8eef.chunk.css"
+    "revision": "ff659732cca0482ac0b3",
+    "url": "./static/css/2.3d5e26be.chunk.css"
   },
   {
-    "revision": "a57726e0b1b51478de5bf852ab782591",
+    "revision": "934df056f794a662a7bdd0b5e93cdf4e",
     "url": "./index.html"
   }
 ];
