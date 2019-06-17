@@ -185,6 +185,9 @@ export function renderCartProduct(product: any, index: number) {
             <div className="py-2">
                 <strong>{description}</strong>
             </div>
+            <div className="pb-2">
+                <strong>{descriptionC}</strong>
+            </div>
             <div className="row">
                 <div className="col-3">
                     <ProductImage chemicalId={imageUrl} className="w-4c h-4c" />
