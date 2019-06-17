@@ -48,7 +48,7 @@ export class Order {
             invoiceInfo: this.invoiceInfo,
             amount: this.amount,
             currency: this.currency,
-            orderItems: orderItems,
+            orderitems: orderItems, // 前面的必须是小写的orderitems
         }
     }
 }
