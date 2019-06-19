@@ -1,7 +1,8 @@
 import * as React from 'react';
 import * as _ from 'lodash';
-import { Query, tv } from 'tonva';
+import { Query, tv, BoxId } from 'tonva';
 import { PageItems, Controller, nav, Page, Image } from 'tonva';
+import classNames from 'classnames';
 import { CCartApp } from '../CCartApp';
 import { VProduct } from './VProduct';
 import { VProductList } from './VProductList';
@@ -51,15 +52,16 @@ export class CProduct extends Controller {
         let searchProductQuery = cUqProduct.query("searchProduct");
         this.pageProducts = new PageProducts(searchProductQuery);
         this.pageProducts.first({ key: key, salesRegion: currentSalesRegion.id });
-        this.openVPage(VProductList);
+        this.openVPage(VProductList, key);
     }
 
-    searchByCategory(category: any) {
+    async searchByCategory(category: any) {
         let { cUqProduct, currentSalesRegion } = this.cApp;
         let searchProductQuery = cUqProduct.query("searchProductByCategory");
         this.pageProducts = new PageProducts(searchProductQuery);
-        this.pageProducts.first({ productCategory: category.id, salesRegion: currentSalesRegion.id });
-        this.openVPage(VProductList);
+        let { productCategoryId, name } = category;
+        this.pageProducts.first({ productCategory: productCategoryId, salesRegion: currentSalesRegion.id });
+        this.openVPage(VProductList, name);
     }
 
     showProductDetail = async (id: number) => {
@@ -78,17 +80,19 @@ export function renderBrand(brand: any) {
     return productPropItem('品牌', brand.name);
 }
 
-export function productPropItem(caption: string, value: any) {
+export function productPropItem(caption: string, value: any, captionClass?: string) {
     if (value === null || value === undefined) return null;
+    let capClass = captionClass ? classNames(captionClass) : classNames("text-muted");
+    let valClass = captionClass ? classNames(captionClass) : "";
     return <>
-        <div className="col-4 col-sm-2 col-lg-4 text-muted pr-0 small">{caption}</div>
-        <div className="col-8 col-sm-4 col-lg-8">{value}</div>
+        <div className={classNames("col-6 col-sm-2 pr-0 small", capClass)}> {caption}</div>
+        <div className={classNames("col-6 col-sm-4", valClass)}>{value}</div>
     </>;
 }
 
 export function renderProduct(product: any, index: number) {
     let { brand, description, descriptionC, CAS, purity, molecularFomula, molecularWeight, origin, imageUrl } = product;
-    return <div className="d-block mb-4 px-2">
+    return <div className="d-block mb-4 px-3">
         <div className="py-2">
             <div><strong>{description}</strong></div>
             <div>{descriptionC}</div>
@@ -100,10 +104,10 @@ export function renderProduct(product: any, index: number) {
             <div className="col-9">
                 <div className="row">
                     {productPropItem('CAS', CAS)}
+                    {productPropItem('产品编号', origin)}
                     {productPropItem('纯度', purity)}
                     {productPropItem('分子式', molecularFomula)}
                     {productPropItem('分子量', molecularWeight)}
-                    {productPropItem('产品编号', origin)}
                     {tv(brand, renderBrand)}
                 </div>
             </div>

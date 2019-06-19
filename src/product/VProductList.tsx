@@ -7,8 +7,9 @@ import { observer } from 'mobx-react';
 
 export class VProductList extends VPage<CProduct> {
 
-    async open(param: any) {
-
+    private searchKey: string;
+    async open(key: string) {
+        this.searchKey = key;
         this.openPage(this.page);
     }
 
@@ -28,6 +29,7 @@ export class VProductList extends VPage<CProduct> {
         let cart = cApp.cCart.renderCartLabel();
         let none = <div className="my-3 mx-2 text-warning">抱歉，未找到相关产品，请重新搜索！</div>
         return <Page header={header} right={cart} onScrollBottom={this.onScrollBottom}>
+            <div className="bg-white p-2 mb-1">搜索条件: <strong>{this.searchKey}</strong></div>
             <List before={''} none={none} items={pageProducts} item={{ render: renderProduct, onClick: this.onProductClick }} />
         </Page>
     });

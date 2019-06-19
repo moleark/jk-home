@@ -50,14 +50,15 @@ export class CProductCategory extends Controller {
 
     async openMainPage(categoryWaper: any, parent: any) {
 
-        let { productCategory } = categoryWaper;
-        let results = await this.getCategoryChildren(productCategory.id);
+        let { productCategory, name } = categoryWaper;
+        let { id: productCategoryId } = productCategory;
+        let results = await this.getCategoryChildren(productCategoryId);
         if (results.first.length !== 0) {
             this.buildCategories(categoryWaper, results.first, results.secend);
             this.openVPage(VCategory, { categoryWaper, parent });
         } else {
             let { cProduct } = this.cApp;
-            cProduct.searchByCategory(productCategory);
+            await cProduct.searchByCategory({ productCategoryId, name });
         }
     }
 }

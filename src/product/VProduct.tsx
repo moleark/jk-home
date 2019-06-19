@@ -1,10 +1,9 @@
 import * as React from 'react';
-import { CProduct, renderBrand } from './CProduct';
+import { CProduct, renderBrand, productPropItem } from './CProduct';
 import {
     VPage, Page, Form, ItemSchema, NumSchema, UiSchema, Field,
     ObjectSchema, RowContext, UiCustom, FormField
 } from 'tonva';
-import { LMR } from 'tonva';
 import { tv } from 'tonva';
 import { observer } from 'mobx-react';
 import { MinusPlusWidget } from '../tools/minusPlusWidget';
@@ -38,29 +37,21 @@ export class VProduct extends VPage<CProduct> {
             <div className="py-2"><strong>{description}</strong></div>
             <div>{descriptionC}</div>
             <div className="row mt-3">
-                <div className="col-sm-3">
+                <div className="col-12 col-sm-3">
                     <ProductImage chemicalId={imageUrl} className="w-100" />
                 </div>
-                <div className="col-sm-9">
-                    <div className="row">
-                        {this.item('CAS', CAS)}
-                        {this.item('纯度', purity)}
-                        {this.item('分子式', molecularFomula)}
-                        {this.item('分子量', molecularWeight)}
-                        {this.item('产品编号', origin)}
+                <div className="col-12 col-sm-9">
+                    <div className="row mx-3">
+                        {productPropItem('CAS', CAS, "font-weight-bold")}
+                        {productPropItem('产品编号', origin, "font-weight-bold")}
+                        {productPropItem('纯度', purity)}
+                        {productPropItem('分子式', molecularFomula)}
+                        {productPropItem('分子量', molecularWeight)}
                         {renderBrand(brand)}
                     </div>
                 </div>
             </div>
         </div>
-    }
-
-    private item = (caption: string, value: any) => {
-        if (value === null || value === undefined) return null;
-        return <>
-            <div className="col-4 col-sm-2 text-muted pr-0 small">{caption}</div>
-            <div className="col-8 col-sm-4">{value}</div>
-        </>;
     }
 
     private arrTemplet = (item: any) => {
@@ -98,14 +89,6 @@ export class VProduct extends VPage<CProduct> {
         } else {
             deliveryTimeUI = <div>{futureDeliveryTimeDescription && '期货: ' + futureDeliveryTimeDescription}</div>
         }
-        /*
-        return <LMR className="mx-3" right={right}>
-            <div className="d-flex flex-column justify-content-between h-100">
-                <div><b>{tv(pack)}</b></div>
-                <div>{deliveryTimeUI}</div>
-            </div>
-        </LMR>;
-        */
         return <div className="px-2">
             <div className="row">
                 <div className="col-6">
@@ -152,7 +135,7 @@ export class VProduct extends VPage<CProduct> {
     private renderPack = (pack: ProductPackRow) => {
         return <>
             <div className="sep-product-select" />
-            <Form className="my-3" schema={schema} uiSchema={this.uiSchema} formData={pack} />
+            <Form className="mx-3" schema={schema} uiSchema={this.uiSchema} formData={pack} />
         </>;
     }
 
@@ -161,10 +144,6 @@ export class VProduct extends VPage<CProduct> {
         let { cApp } = this.controller;
         let header = cApp.cHome.renderSearchHeader();
         let cartLabel = cApp.cCart.renderCartLabel();
-        /*
-            <div className="px-2 py-2 bg-white mb-3">{renderProduct(product.main, 0)}</div>
-            <Form schema={schema} uiSchema={this.uiSchema} formData={this.data} />
-        */
         let viewProduct = new ViewMainSubs<MainProductChemical, ProductPackRow>(this.renderProduct, this.renderPack);
         viewProduct.model = product;
         return <Page header={header} right={cartLabel}>
