@@ -1,5 +1,5 @@
 import { observable } from 'mobx';
-import { Sheet, BoxId, Query } from 'tonva';
+import { Sheet, BoxId, Query, Action, Tuid, Map } from 'tonva';
 import { Controller, nav } from 'tonva';
 import { CCartApp } from 'CCartApp';
 import { VCreateOrder } from './VCreateOrder';
@@ -12,6 +12,7 @@ import { WebUser } from 'CurrentUser';
 import { CInvoiceInfo } from 'customer/CInvoiceInfo';
 import { orderItemGroupByProduct } from 'tools/groupByProduct';
 import { LoaderProductChemical } from 'product/itemLoader';
+import { CCoupon } from './CCoupon';
 
 const FREIGHTFEEFIXED = 12;
 const FREIGHTFEEREMITTEDSTARTPOINT = 100;
@@ -21,14 +22,16 @@ export class COrder extends Controller {
     @observable orderData: Order = new Order();
     private orderSheet: Sheet;
     private getPendingPaymentQuery: Query;
+    private priceMap: Map;
     currentUser: WebUser;
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
         this.cApp = cApp;
-        let { cUqOrder, currentUser } = cApp;
+        let { cUqOrder, currentUser, cUqSalesTask, cUqProduct } = cApp;
         this.orderSheet = cUqOrder.sheet('order');
         this.getPendingPaymentQuery = cUqOrder.query('getpendingPayment');
+        this.priceMap = cUqProduct.map('pricex');
         this.currentUser = currentUser;
     }
 
@@ -38,7 +41,7 @@ export class COrder extends Controller {
         this.openVPage(VCreateOrder);
     }
 
-    private createOrderFromCart = async (cartItem: any[]) => {
+    private createOrderFromCart = async (cartItems: any[]) => {
         let { currentUser } = this.cApp;
         this.orderData.webUser = currentUser.id;
         if (currentUser.currentCustomer !== undefined) {
@@ -61,9 +64,13 @@ export class COrder extends Controller {
             this.orderData.invoiceInfo = await this.getDefaultInvoiceInfo();
         }
 
-        if (cartItem !== undefined && cartItem.length > 0) {
-            this.orderData.currency = cartItem[0].currency;
-            this.orderData.orderItems = cartItem.map((element: any, index: number) => {
+        if (cartItems !== undefined && cartItems.length > 0) {
+            this.orderData.currency = cartItems[0].currency;
+            let { coupon } = this.orderData;
+            if (coupon) {
+                await this.applyCoupon(coupon);
+            }
+            this.orderData.orderItems = cartItems.map((element: any, index: number) => {
                 var item = new OrderItem();
                 item.product = element.product;
                 item.packs = element.packs.filter(v => v.quantity > 0);
@@ -154,6 +161,63 @@ export class COrder extends Controller {
         let typeSelectContact: new (cApp: CCartApp, res: any, autoSelectMode: boolean) => CSelectContact = CSelectInvoiceContact;
         let contactBox = await this.onSelectContact(typeSelectContact);
         this.orderData.invoiceContact = contactBox;
+    }
+
+    onCouponEdit = async () => {
+        let cCoupon = new CCoupon(this.cApp, undefined);
+        let coupon = await cCoupon.call<any>(this.orderData.coupon);
+        if (coupon) {
+            await this.applyCoupon(coupon);
+        }
+    }
+
+    /**
+     *
+     */
+    applyCoupon = async (coupon: any) => {
+
+        let { code, discount, preferential, validitydate, isValid } = coupon;
+        if (coupon !== undefined && isValid === 1 && validitydate > Date.now()) {
+            this.orderData.coupon = code;
+            if (discount) {
+                let { orderItems } = this.orderData;
+                if (orderItems !== undefined && orderItems.length > 0) {
+                    let promises: PromiseLike<any>[] = [];
+                    orderItems.forEach(e => {
+                        promises.push(this.priceMap.table({ product: e.product.id, salesRegion: 1 }));
+                    });
+                    let prices = await Promise.all(promises);
+
+                    for (let i = 0; i < orderItems.length; i++) {
+                        let oi = orderItems[i];
+                        let eachPrices = prices[i];
+                        let { product, packs } = oi;
+                        for (let j = 0; j < packs.length; j++) {
+                            let pk = packs[j];
+                            let price: any = eachPrices.find(
+                                p => p.product.id === product.id &&
+                                    p.pack.id === pk.pack.id &&
+                                    p.discountinued === 0 &&
+                                    p.expireDate > Date.now());
+                            if (price) {
+                                pk.price = Math.round(price.retail * (1 - discount));
+                            }
+                        };
+                    };
+                }
+            }
+            if (preferential) {
+                this.orderData.couponRemitted = preferential * -1;
+            }
+            // 运费和运费减免
+            this.orderData.freightFee = FREIGHTFEEFIXED;
+            if (this.orderData.productAmount > FREIGHTFEEREMITTEDSTARTPOINT)
+                this.orderData.freightFeeRemitted = FREIGHTFEEFIXED * -1;
+        }
+    }
+
+    removeCoupon = async () => {
+
     }
 
     /*

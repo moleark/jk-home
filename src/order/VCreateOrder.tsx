@@ -92,7 +92,7 @@ export class VCreateOrder extends VPage<COrder> {
 
     private page = observer(() => {
 
-        let { orderData, onSelectShippingContact, onSelectInvoiceContact, openMeInfo, currentUser, onInvoiceInfoEdit } = this.controller;
+        let { orderData, onSelectShippingContact, onSelectInvoiceContact, openMeInfo, currentUser, onInvoiceInfoEdit, onCouponEdit } = this.controller;
         let fillMeInfo = <div onClick={openMeInfo} className="alert alert-warning text-primary py-1" role="alert">
             点击完善您的个人信息
         </div>
@@ -151,7 +151,7 @@ export class VCreateOrder extends VPage<COrder> {
         </div>
 
         let invoiceBlankTip = this.invoiceIsBlank ? <div className="text-danger small my-2"><FA name="exclamation-circle" /> 必须填写发票信息</div> : null;
-        let invoiceInfoUI = <div className="row py-3 bg-white mb-1" onClick={() => onInvoiceInfoEdit()}>
+        let invoiceInfoUI = <div className="row py-3 bg-white mb-1" onClick={onInvoiceInfoEdit}>
             <div className="col-4 col-sm-2 pb-2 text-muted">发票信息:</div>
             <div className="col-8 col-sm-10">
                 <LMR className="w-100 align-items-center" right={chevronRight}>
@@ -177,6 +177,18 @@ export class VCreateOrder extends VPage<COrder> {
             }
         }
 
+        let couponUI = <></>;
+        if (1 === 1) {
+            couponUI = <div className="row py-3 bg-white mb-1" onClick={onCouponEdit}>
+                <div className="col-4 col-sm-2 pb-2 text-muted">优惠码:</div>
+                <div className="col-8 col-sm-10">
+                    <LMR className="w-100 align-items-center" right={chevronRight}>
+                        {tv(orderData.coupon, (v) => <>{v.discount}</>, undefined, () => <span className="text-primary">填写优惠码</span>)}
+                    </LMR>
+                </div>
+            </div>
+        }
+
         return <Page header="订单预览" footer={footer}>
             <div className="px-2">
                 <div className="row py-3 bg-white mb-1" onClick={onSelectShippingContact}>
@@ -197,7 +209,8 @@ export class VCreateOrder extends VPage<COrder> {
                     {freightFeeUI}
                     {freightFeeRemittedUI}
                 </div >
-            </div >
+            </div>
+            {couponUI}
         </Page >
     })
 }

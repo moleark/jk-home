@@ -32,6 +32,7 @@ export class CCartApp extends CApp {
     cUqCustomerDiscount: CUq;
     cUqPromotion: CUq;
     cUqWarehouse: CUq;
+    cUqSalesTask: CUq;
     cUqMember: CUq;
 
     cHome: CHome;
@@ -52,6 +53,7 @@ export class CCartApp extends CApp {
         this.cUqCustomerDiscount = this.getCUq(consts.uqCustomerDiscount);
         this.cUqPromotion = this.getCUq(consts.uqPromotion);
         this.cUqWarehouse = this.getCUq(consts.uqWarehouse);
+        this.cUqSalesTask = this.getCUq(consts.uqSalesTask);
         this.cUqMember = this.getCUq(consts.uqMember);
 
         let salesRegionTuid = this.cUqCommon.tuid('salesregion');

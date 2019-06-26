@@ -8,6 +8,7 @@ export const consts = {
     uqCustomerDiscount: '百灵威系统工程部/customerDiscount',
     uqPromotion: '百灵威系统工程部/promotion',
     uqWarehouse: "百灵威系统工程部/warehouse",
+    uqSalesTask: "百灵威系统工程部/salestask",
     uqMember: '百灵威系统工程部/member',
 
     appIcon: 'http://101.200.46.56/imgs/Bear-icon.png',

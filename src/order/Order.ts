@@ -14,18 +14,22 @@ export class Order {
     @observable invoiceInfo: BoxId;
     @observable orderItems: OrderItem[] = [];
 
-    freightFee: number;
-    freightFeeRemitted: number;
+    @observable freightFee: number;
+    @observable freightFeeRemitted: number;
 
     @computed get amount() {
         return this.orderItems.reduce((pv, cv) => pv + cv.subAmount, 0) +
             (this.freightFee ? this.freightFee : 0) +
-            (this.freightFeeRemitted ? this.freightFeeRemitted : 0);
+            (this.freightFeeRemitted ? this.freightFeeRemitted : 0) +
+            (this.couponRemitted ? this.couponRemitted : 0);
     };
     @computed get productAmount() {
-        return this.orderItems.reduce((pv, cv) => pv + cv.subAmount, 0);
+        return this.orderItems.reduce((pv, cv) => pv + cv.subAmount, 0) +
+            (this.couponRemitted ? this.couponRemitted : 0);
     };
     currency: BoxId;
+    coupon: BoxId;
+    @observable couponRemitted: number;
 
     getDataForSave() {
         let orderItems: any[] = [];

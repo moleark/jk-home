@@ -16,6 +16,7 @@ export interface CartItem {
 
 export interface CartPackRow extends PackRow {
     price: number;
+    retail?: number;
     currency: any;
 }
 
