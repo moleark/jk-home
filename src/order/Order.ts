@@ -21,14 +21,15 @@ export class Order {
         return this.orderItems.reduce((pv, cv) => pv + cv.subAmount, 0) +
             (this.freightFee ? this.freightFee : 0) +
             (this.freightFeeRemitted ? this.freightFeeRemitted : 0) +
+            (this.couponOffsetAmount ? this.couponOffsetAmount : 0) +
             (this.couponRemitted ? this.couponRemitted : 0);
     };
     @computed get productAmount() {
-        return this.orderItems.reduce((pv, cv) => pv + cv.subAmount, 0) +
-            (this.couponRemitted ? this.couponRemitted : 0);
+        return this.orderItems.reduce((pv, cv) => pv + cv.subAmount, 0);
     };
     currency: BoxId;
-    coupon: BoxId;
+    @observable coupon: BoxId;
+    @observable couponOffsetAmount: number;
     @observable couponRemitted: number;
 
     getDataForSave() {

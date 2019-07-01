@@ -5,7 +5,7 @@ import { List, LMR, FA } from 'tonva';
 import { tv, BoxId } from 'tonva';
 import { observer } from 'mobx-react';
 import { MinusPlusWidget } from '../tools';
-import { renderBrand } from '../product/CProduct';
+import { renderBrand, productPropItem } from '../product/CProduct';
 import { ProductImage } from 'tools/productImage';
 
 const cartSchema = [
@@ -168,14 +168,6 @@ export class VCart extends VPage<CCart> {
             <footer className="p-3"><this.CheckOutButton /></footer>
         </div>
     });
-}
-
-function productPropItem(caption: string, value: any) {
-    if (value === null || value === undefined) return null;
-    return <>
-        <div className="col-4 col-sm-2 col-lg-4 text-muted pr-0 small">{caption}</div>
-        <div className="col-8 col-sm-4 col-lg-8">{value}</div>
-    </>;
 }
 
 export function renderCartProduct(product: any, index: number) {

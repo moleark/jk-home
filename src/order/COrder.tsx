@@ -66,10 +66,6 @@ export class COrder extends Controller {
 
         if (cartItems !== undefined && cartItems.length > 0) {
             this.orderData.currency = cartItems[0].currency;
-            let { coupon } = this.orderData;
-            if (coupon) {
-                await this.applyCoupon(coupon);
-            }
             this.orderData.orderItems = cartItems.map((element: any, index: number) => {
                 var item = new OrderItem();
                 item.product = element.product;
@@ -180,6 +176,8 @@ export class COrder extends Controller {
         if (coupon !== undefined && isValid === 1 && validitydate > Date.now()) {
             this.orderData.coupon = code;
             if (discount) {
+                this.orderData.couponOffsetAmount = Math.round(this.orderData.productAmount * (1 - discount)) * -1;
+                /*
                 let { orderItems } = this.orderData;
                 if (orderItems !== undefined && orderItems.length > 0) {
                     let promises: PromiseLike<any>[] = [];
@@ -205,6 +203,7 @@ export class COrder extends Controller {
                         };
                     };
                 }
+                */
             }
             if (preferential) {
                 this.orderData.couponRemitted = preferential * -1;

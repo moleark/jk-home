@@ -1,10 +1,13 @@
 import * as React from 'react';
 import { VPage, FA, Page } from 'tonva';
 import { CCoupon } from './CCoupon';
+import { observer } from 'mobx-react';
+import { observable } from 'mobx';
 
 export class VCouponEdit extends VPage<CCoupon> {
 
     private couponInput: HTMLInputElement;
+    @observable tips: string;
     async open(param: any) {
         if (param !== undefined) {
 
@@ -19,26 +22,32 @@ export class VCouponEdit extends VPage<CCoupon> {
         let ret = await this.controller.applyCoupon(coupon);
         switch (ret) {
             case -1:
-                console.log('系统错误，稍后再试');
+                this.tips = '系统错误，稍后再试';
                 break;
             case 1:
-                console.log('有效');
+                this.tips = '有效';
                 break;
             case 0:
             case 2:
             case 3:
             case 5:
-                console.log('无效');
+                this.tips = '无效';
                 break;
             case 4:
-                console.log('用过了');
+                this.tips = '用过了';
                 break;
             default:
                 break;
         }
     }
 
-    private page = () => {
+    private page = observer(() => {
+        let tipsUI = <></>;
+        if (this.tips) {
+            tipsUI = <div className="text-danger">
+                {this.tips}
+            </div>
+        }
         return <Page header="填写优惠码">
             <div className="px-2">
                 <div className="row py-3 pr-3 bg-white my-1">
@@ -54,7 +63,8 @@ export class VCouponEdit extends VPage<CCoupon> {
                         </div>
                     </div>
                 </div>
+                {tipsUI}
             </div>
         </Page>
-    }
+    })
 }

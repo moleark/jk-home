@@ -167,12 +167,12 @@ export class VCreateOrder extends VPage<COrder> {
         if (orderData.freightFee) {
             freightFeeUI = <>
                 <div className="col-4 col-sm-2 pb-2 text-muted">运费:</div>
-                <div className="col-8 col-sm-10 text-right"><small>¥</small>{orderData.freightFee}</div>
+                <div className="col-8 col-sm-10 text-right text-danger"><small>¥</small>{orderData.freightFee}</div>
             </>
             if (orderData.freightFeeRemitted) {
                 freightFeeRemittedUI = <>
                     <div className="col-4 col-sm-2 pb-2 text-muted">运费减免:</div>
-                    <div className="col-8 col-sm-10 text-right"><small>¥</small>{orderData.freightFeeRemitted}</div>
+                    <div className="col-8 col-sm-10 text-right text-danger"><small>¥</small>{orderData.freightFeeRemitted}</div>
                 </>
             }
         }
@@ -183,7 +183,24 @@ export class VCreateOrder extends VPage<COrder> {
                 <div className="col-4 col-sm-2 pb-2 text-muted">优惠码:</div>
                 <div className="col-8 col-sm-10">
                     <LMR className="w-100 align-items-center" right={chevronRight}>
-                        {tv(orderData.coupon, (v) => <>{v.discount}</>, undefined, () => <span className="text-primary">填写优惠码</span>)}
+                        {tv(orderData.coupon, (v) => {
+                            let offsetUI, remittedUI;
+                            if (orderData.couponOffsetAmount) {
+                                offsetUI = <LMR right={<>{orderData.couponOffsetAmount}</>}>
+                                    <div>优惠码折扣:</div>
+                                </LMR>
+                            }
+                            if (orderData.couponRemitted) {
+                                remittedUI = <LMR right={<>{orderData.couponRemitted}</>}>
+                                    <div>优惠码减免:</div>
+                                </LMR>
+                            }
+                            return <div>
+                                <div>{v.code}</div>
+                                {offsetUI}
+                                {remittedUI}
+                            </div>
+                        }, undefined, () => <span className="text-primary">填写优惠码</span>)}
                     </LMR>
                 </div>
             </div>
@@ -209,8 +226,8 @@ export class VCreateOrder extends VPage<COrder> {
                     {freightFeeUI}
                     {freightFeeRemittedUI}
                 </div >
+                {couponUI}
             </div>
-            {couponUI}
         </Page >
     })
 }
