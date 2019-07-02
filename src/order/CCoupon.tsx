@@ -18,7 +18,7 @@ export class CCoupon extends Controller {
         let validationResult = await this.isValidCoupon.submit({ code: coupon, webuser: this.cApp.currentUser.id });
         let rtn = validationResult.result;
         if (rtn === 1) {
-            this.returnCall(1);
+            this.returnCall(validationResult);
             this.closePage();
         }
         return rtn;

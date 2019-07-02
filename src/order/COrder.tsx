@@ -172,11 +172,11 @@ export class COrder extends Controller {
      */
     applyCoupon = async (coupon: any) => {
 
-        let { code, discount, preferential, validitydate, isValid } = coupon;
-        if (coupon !== undefined && isValid === 1 && validitydate > Date.now()) {
-            this.orderData.coupon = code;
+        let { id, code, discount, preferential, validitydate, isValid } = coupon;
+        if (code !== undefined && isValid === 1 && new Date(validitydate).getTime() > Date.now()) {
+            this.orderData.coupon = id;
             if (discount) {
-                this.orderData.couponOffsetAmount = Math.round(this.orderData.productAmount * (1 - discount)) * -1;
+                this.orderData.couponOffsetAmount = Math.round(this.orderData.productAmount * discount) * -1;
                 /*
                 let { orderItems } = this.orderData;
                 if (orderItems !== undefined && orderItems.length > 0) {

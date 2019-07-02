@@ -53,6 +53,9 @@ export class Order {
             invoiceInfo: this.invoiceInfo,
             amount: this.amount,
             currency: this.currency,
+            coupon: this.coupon,
+            couponOffsetAmount: this.couponOffsetAmount,
+            couponRemitted: this.couponRemitted,
             orderitems: orderItems, // 前面的必须是小写的orderitems
         }
     }
