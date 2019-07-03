@@ -22,7 +22,7 @@ export class VCouponEdit extends VPage<CCoupon> {
         let ret = await this.controller.applyCoupon(coupon);
         switch (ret) {
             case -1:
-                this.tips = '系统错误，稍后再试';
+                this.tips = '对不起，当前服务器繁忙，请稍后再试。';
                 break;
             case 1:
                 this.tips = '有效';
@@ -31,10 +31,10 @@ export class VCouponEdit extends VPage<CCoupon> {
             case 2:
             case 3:
             case 5:
-                this.tips = '无效';
+                this.tips = '优惠码无效，请重新输入或与您的专属销售人员联系。';
                 break;
             case 4:
-                this.tips = '用过了';
+                this.tips = '该优惠码已经被使用过了，不允许重复使用。';
                 break;
             default:
                 break;
@@ -44,22 +44,19 @@ export class VCouponEdit extends VPage<CCoupon> {
     private page = observer(() => {
         let tipsUI = <></>;
         if (this.tips) {
-            tipsUI = <div className="text-danger">
+            tipsUI = <div className="alert alert-primary" role="alert">
+                <FA name="exclamation-circle" className="text-warning float-left mr-3" size="2x"></FA>
                 {this.tips}
             </div>
         }
         return <Page header="填写优惠码">
-            <div className="px-2">
-                <div className="row py-3 pr-3 bg-white my-1">
+            <div className="px-2 bg-white">
+                <div className="row py-3 pr-3 my-1">
                     <div className="col-4 col-sm-2 pb-2 text-muted">优惠码:</div>
                     <div className="col-8 col-sm-10 d-flex">
-                        <input ref={v => this.couponInput = v} type="number" className="form-control w-50" ></input>
-                        <button className="btn btn-primary ml-3" onClick={this.applyCoupon}>应用</button>
+                        <input ref={v => this.couponInput = v} type="number" className="form-control w-50"></input>
                         <div>
-                            <span className="fa-stack">
-                                <FA name="check-circle" className="text-success fa-stack-2x"></FA>
-                                <FA name="times-circle" className="text-danger fa-stack-2x"></FA>
-                            </span>
+                            <button className="btn btn-primary ml-3" onClick={this.applyCoupon}>应用</button>
                         </div>
                     </div>
                 </div>
