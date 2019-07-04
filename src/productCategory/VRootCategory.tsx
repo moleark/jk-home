@@ -1,8 +1,35 @@
 import * as React from 'react';
 import { View } from 'tonva';
 import { CProductCategory } from './CProductCategory';
-import { consts } from '../home/consts';
 import { FA } from 'tonva';
+import AnalyticalChemistry from '../images/AnalyticalChemistry.png';
+import LabSupplies from '../images/LabSupplies.png';
+import LifeScience from '../images/LifeScience.png';
+import MaterialScience from '../images/MaterialScience.png';
+import OrganicChemistry from '../images/OrganicChemistry.png';
+
+const x = {
+    685: {
+        src: OrganicChemistry,
+        labelColor: 'text-info',
+    },
+    1092: {
+        src: AnalyticalChemistry,
+        labelColor: 'text-success',
+    },
+    1626: {
+        src: LifeScience,
+        labelColor: 'text-danger',
+    },
+    1906: {
+        src: MaterialScience,
+        labelColor: 'text-warning',
+    },
+    2211: {
+        src: LabSupplies,
+        labelColor: 'text-primary',
+    },
+}
 
 const imgStyle: React.CSSProperties = {
     height: '1.5rem', width: '1.5rem',
@@ -30,22 +57,25 @@ export class VRootCategory extends View<CProductCategory> {
     }
 
     private renderRootCategory = (item: any, parent: any) => {
-        let { name, children, total } = item;
+        let { name, children, productCategory } = item;
+        let { id: productCategoryID } = productCategory;
+        let { src, labelColor } = x[productCategoryID];
         return <div className="bg-white mb-3" key={name}>
             <div className="py-2 px-3 cursor-pointer" onClick={() => this.categoryClick(item, undefined)}>
+                <img className="mr-5" src={src} alt={name} style={{ height: "2.5rem", width: "2.5rem" }} />
                 <b>{name}</b>
             </div>
             <div className=""
                 style={{ paddingRight: '1px' }}
             >
                 <div className="row no-gutters">
-                    {children.map(v => this.renderSubCategory(v, item))}
+                    {children.map(v => this.renderSubCategory(v, item, labelColor))}
                 </div>
             </div>
         </div>
     }
 
-    private renderSubCategory = (item: any, parent: any) => {
+    private renderSubCategory = (item: any, parent: any, color: string) => {
         let { name, children, total } = item;
         return <div key={name}
             className="col-6 col-md-4 col-lg-3 cursor-pointer"
@@ -56,7 +86,7 @@ export class VRootCategory extends View<CProductCategory> {
             >
                 <div style={titleTitle}>
                     <span className="ml-1 align-middle">
-                        <FA name="chevron-circle-right" className="text-info" />
+                        <FA name="chevron-circle-right" className={color} />
                         &nbsp; {name}
                     </span>
                 </div>
