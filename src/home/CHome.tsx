@@ -60,9 +60,5 @@ export class CHome extends Controller {
         return cProductCategory.renderRootList();
     }
 
-    renderHome = () => {
-        return this.renderView(VHome);
-    }
-
-    tab = () => <this.renderHome />;
+    tab = () => this.renderView(VHome);
 }

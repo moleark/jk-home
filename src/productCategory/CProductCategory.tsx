@@ -11,7 +11,9 @@ export class CProductCategory extends Controller {
     cApp: CCartApp;
     // categories: any[];
     @observable categories: any[] = [];
+    @observable categories2: any[] = [];
     private getRootCategoryQuery: Query;
+    private getRootCategoriesQuery: Query;
     private getChildrenCategoryQuery: Query;
 
     constructor(cApp: CCartApp, res: any) {
@@ -20,6 +22,7 @@ export class CProductCategory extends Controller {
         this.cApp = cApp;
         let { cUqProduct } = this.cApp;
         this.getRootCategoryQuery = cUqProduct.query('getRootCategory');
+        this.getRootCategoriesQuery = cUqProduct.query('getRootCategories');
         this.getChildrenCategoryQuery = cUqProduct.query('getChildrenCategory');
     }
 
@@ -30,6 +33,10 @@ export class CProductCategory extends Controller {
         this.categories.forEach(element => {
             this.buildCategories(element, results.secend, results.third);
         })
+
+        let result2 = await this.getRootCategoriesQuery.query({ salesRegion: currentSalesRegion.id, language: currentLanguage.id });
+        if (result2)
+            this.categories2 = result2.ret;
     }
 
     renderRootList = () => {
@@ -48,14 +55,14 @@ export class CProductCategory extends Controller {
         categoryWapper.children = firstCategory.filter(v => v.parent === categoryWapper.productCategory.id);
     }
 
-    async openMainPage(categoryWaper: any, parent: any) {
+    async openMainPage(categoryWaper: any, parent: any, labelColor: string) {
 
         let { productCategory, name } = categoryWaper;
         let { id: productCategoryId } = productCategory;
         let results = await this.getCategoryChildren(productCategoryId);
         if (results.first.length !== 0) {
             this.buildCategories(categoryWaper, results.first, results.secend);
-            this.openVPage(VCategory, { categoryWaper, parent });
+            this.openVPage(VCategory, { categoryWaper, parent, labelColor });
         } else {
             let { cProduct } = this.cApp;
             await cProduct.searchByCategory({ productCategoryId, name });

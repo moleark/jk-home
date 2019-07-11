@@ -17,8 +17,8 @@ export class VCategory extends VPage<CProductCategory> {
         return <div className="py-2"><FA name="hand-o-right mr-2"></FA>{childWapper.name}</div>
     }
 
-    private categoryClick = async (childWapper: any, parent: any) => {
-        await this.controller.openMainPage(childWapper, parent);
+    private categoryClick = async (childWapper: any, parent: any, labelColor: string) => {
+        await this.controller.openMainPage(childWapper, parent, labelColor);
     }
 
     private breadCrumb = (item: any, parent: any) => {
@@ -35,45 +35,43 @@ export class VCategory extends VPage<CProductCategory> {
             return <></>;
         return <>
             {tv(values.productCategory.parent, this.breadCrumbItem)}
-            <li className="breadcrumb-item" onClick={() => this.categoryClick(values, undefined)}>{values.name}</li>
+            <li className="breadcrumb-item" onClick={() => this.categoryClick(values, undefined, "")}>{values.name}</li>
         </>
     }
 
-    private renderRootCategory = (item: any, parent: any) => {
+    private renderRootCategory = (item: any, parent: any, labelColor: string) => {
         let { productCategory, name, children } = item;
         return <div className="bg-white mb-3" key={name}>
-            <div className="py-2 px-3 cursor-pointer" onClick={() => this.categoryClick(item, parent)}>
+            <div className="py-2 px-3 cursor-pointer" onClick={() => this.categoryClick(item, parent, labelColor)}>
                 <b>{name}</b>
             </div>
             <div className=""
                 style={{ paddingRight: '1px' }}
             >
                 <div className="row no-gutters">
-                    {children.map(v => this.renderSubCategory(v, item))}
+                    {children.map(v => this.renderSubCategory(v, item, labelColor))}
                 </div>
             </div>
         </div>
     }
 
-    private renderSubCategory = (item: any, parent: any) => {
+    private renderSubCategory = (item: any, parent: any, labelColor: string) => {
         let { name, children, total } = item;
         return <div key={name}
             className="col-6 col-md-4 col-lg-3 cursor-pointer"
-            //style={{borderRight:'1px solid gray', borderBottom:'1px solid gray'}}
-            onClick={() => this.categoryClick(item, parent)}>
+            onClick={() => this.categoryClick(item, parent, labelColor)}>
             <div className="pt-1 pb-1 px-2"
                 style={{ border: '1px solid #eeeeee', marginRight: '-1px', marginBottom: '-1px' }}
             >
                 <div style={titleTitle}>
                     <span className="ml-1 align-middle">
-                        <FA name="chevron-right" className="text-info small" />
+                        <FA name="chevron-circle-right" className={labelColor} />
                         &nbsp; {name}
                     </span>
                 </div>
                 {renderThirdCategory(children, total)}
             </div>
         </div>;
-        // <img src={consts.appIcon} alt="structure" style={imgStyle} />
     }
 
     private page = (categoryWaper: any) => {
@@ -82,9 +80,9 @@ export class VCategory extends VPage<CProductCategory> {
         let header = cHome.renderSearchHeader();
         let cartLabel = this.controller.cApp.cCart.renderCartLabel();
 
-        let { categoryWaper: item, parent } = categoryWaper;
+        let { categoryWaper: item, parent, labelColor } = categoryWaper;
         return <Page header={header} right={cartLabel}>
-            {this.renderRootCategory(item, parent)}
+            {this.renderRootCategory(item, parent, labelColor)}
         </Page>
     }
 }

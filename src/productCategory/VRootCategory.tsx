@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View } from 'tonva';
+import { View, tv } from 'tonva';
 import { CProductCategory } from './CProductCategory';
 import { FA } from 'tonva';
 import AnalyticalChemistry from '../images/AnalyticalChemistry.png';
@@ -7,6 +7,7 @@ import LabSupplies from '../images/LabSupplies.png';
 import LifeScience from '../images/LifeScience.png';
 import MaterialScience from '../images/MaterialScience.png';
 import OrganicChemistry from '../images/OrganicChemistry.png';
+import { observer } from 'mobx-react';
 
 const x = {
     685: {
@@ -52,8 +53,8 @@ export const subStyle: React.CSSProperties = {
 
 export class VRootCategory extends View<CProductCategory> {
 
-    private categoryClick = async (categoryWapper: any, parent: any) => {
-        await this.controller.openMainPage(categoryWapper, parent);
+    private categoryClick = async (categoryWapper: any, parent: any, labelColor: string) => {
+        await this.controller.openMainPage(categoryWapper, parent, labelColor);
     }
 
     private renderRootCategory = (item: any, parent: any) => {
@@ -61,7 +62,7 @@ export class VRootCategory extends View<CProductCategory> {
         let { id: productCategoryID } = productCategory;
         let { src, labelColor } = x[productCategoryID];
         return <div className="bg-white mb-3" key={name}>
-            <div className="py-2 px-3 cursor-pointer" onClick={() => this.categoryClick(item, undefined)}>
+            <div className="py-2 px-3 cursor-pointer" onClick={() => this.categoryClick(item, undefined, labelColor)}>
                 <img className="mr-5" src={src} alt={name} style={{ height: "2.5rem", width: "2.5rem" }} />
                 <b>{name}</b>
             </div>
@@ -79,8 +80,7 @@ export class VRootCategory extends View<CProductCategory> {
         let { name, children, total } = item;
         return <div key={name}
             className="col-6 col-md-4 col-lg-3 cursor-pointer"
-            //style={{borderRight:'1px solid gray', borderBottom:'1px solid gray'}}
-            onClick={() => this.categoryClick(item, parent)}>
+            onClick={() => this.categoryClick(item, parent, color)}>
             <div className="py-3 px-2"
                 style={{ border: '1px solid #eeeeee', marginRight: '-1px', marginBottom: '-1px' }}
             >
@@ -93,12 +93,23 @@ export class VRootCategory extends View<CProductCategory> {
                 {renderThirdCategory(children, total)}
             </div>
         </div>;
-        // <img src={consts.appIcon} alt="structure" style={imgStyle} />
     }
 
     render(param: any): JSX.Element {
-        let { categories } = this.controller;
+        return <this.content />
+    }
+
+    private content = observer(() => {
+        let { categories, categories2 } = this.controller;
         return <>{categories.map(v => this.renderRootCategory(v, undefined))}</>;
+        // return <>{categories2.map(v => <div key={v.productCategory.id}>{tv(v, e => this.renderRoot(e))}</div>)}</>;
+    });
+
+    private renderRoot(root: any) {
+        let { productCategory } = root;
+        let { id } = productCategory;
+        console.log(id);
+        return <div key={id}>{id}</div>
     }
 }
 
