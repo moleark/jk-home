@@ -54,10 +54,12 @@ export class VCouponEdit extends VPage<CCoupon> {
                 <div className="row py-3 pr-3 my-1">
                     <div className="col-4 col-sm-2 pb-2 text-muted">优惠码:</div>
                     <div className="col-8 col-sm-10 d-flex">
-                        <input ref={v => this.couponInput = v} type="number" className="form-control w-50"></input>
-                        <div>
-                            <button className="btn btn-primary ml-3" onClick={this.applyCoupon}>应用</button>
-                        </div>
+                        <input ref={v => this.couponInput = v} type="number" className="form-control"></input>
+                    </div>
+                </div>
+                <div className="row my-1">
+                    <div className="col-12">
+                        <button className="btn btn-primary w-100" onClick={this.applyCoupon}>应用</button>
                     </div>
                 </div>
                 {tipsUI}
