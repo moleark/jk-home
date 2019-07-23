@@ -33,10 +33,11 @@ export class CProductCategory extends Controller {
         this.categories.forEach(element => {
             this.buildCategories(element, results.secend, results.third);
         })
-
+        /*
         let result2 = await this.getRootCategoriesQuery.query({ salesRegion: currentSalesRegion.id, language: currentLanguage.id });
         if (result2)
             this.categories2 = result2.ret;
+        */
     }
 
     renderRootList = () => {
