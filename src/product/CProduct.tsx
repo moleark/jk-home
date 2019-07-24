@@ -26,7 +26,7 @@ class PageProducts extends PageItems<any> {
     }
 
     protected setPageStart(item: any): any {
-        this.pageStart = item === undefined ? 0 : item.id;
+        this.pageStart = item === undefined ? 0 : item.seq;
     }
 }
 
@@ -81,7 +81,7 @@ export function renderBrand(brand: any) {
 }
 
 export function productPropItem(caption: string, value: any, captionClass?: string) {
-    if (value === null || value === undefined) return null;
+    if (value === null || value === undefined || value === '0') return null;
     let capClass = captionClass ? classNames(captionClass) : classNames("text-muted");
     let valClass = captionClass ? classNames(captionClass) : "";
     return <>
