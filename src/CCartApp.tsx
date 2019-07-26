@@ -10,9 +10,10 @@ import { CProductCategory } from 'productCategory/CProductCategory';
 import { CMember } from 'member/CMember';
 import { WebUser } from 'CurrentUser';
 import { consts } from './home/consts';
-import { CartViewModel, CartService, CartRemoteService, CartLocalService, CartServiceFactory } from 'cart/Cart2';
+import { CartViewModel } from 'cart/Cart2';
 import { CMe } from 'me/CMe';
 import { Cart } from 'cart/Cart';
+import { CartService, CartServiceFactory } from 'cart/CartService';
 
 export class CCartApp extends CApp {
     cart: Cart;
