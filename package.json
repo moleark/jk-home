@@ -9,6 +9,7 @@
     "@types/react-loadable": "^5.4.3",
     "bootstrap": "^4.3.1",
     "classnames": "^2.2.6",
+    "decimal.js": "^10.2.0",
     "font-awesome": "^4.7.0",
     "fontawesome": "^4.7.2",
     "gh-pages": "^2.0.1",
@@ -22,7 +23,7 @@
     "react-markdown": "^4.0.8",
     "react-scripts-ts": "^4.0.8",
     "reactstrap": "^7.0.2",
-    "tonva": "^1.0.39"
+    "tonva": "^1.0.41"
   },
   "scripts": {
     "predeploy": "npm run build",
