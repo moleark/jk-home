@@ -7,6 +7,7 @@ import { observer } from 'mobx-react';
 import { OrderItem } from './Order';
 import { renderCartProduct } from 'cart/VCart';
 import { observable } from 'mobx';
+import { CartPackRow } from 'cart/Cart';
 
 const blankTime = 2000;
 
@@ -26,21 +27,31 @@ export class VCreateOrder extends VPage<COrder> {
 
     //private renderProduct = (product: any) => <strong>{product.description}</strong>
 
-    private packsRow = (item: any, index: number) => {
+    private packsRow = (item: CartPackRow, index: number) => {
         let { pack, quantity, price, currency, inventoryAllocation, futureDeliveryTimeDescription } = item;
-        let deliveryTimeUI = inventoryAllocation && inventoryAllocation.length > 0 ?
-            <div className="text-success">国内现货</div>
-            : <div>期货:{futureDeliveryTimeDescription}</div>;
+
+        let deliveryTimeUI = [];
+        if (inventoryAllocation && inventoryAllocation.length > 0) {
+            deliveryTimeUI = inventoryAllocation.map((v, index) => {
+                let { warehouse, quantity, deliveryTimeDescription } = v;
+                return <div key={index} className="text-success">
+                    {tv(warehouse, (values: any) => <>{values.name}</>)}: {quantity}
+                    {deliveryTimeDescription}
+                </div>
+            });
+        } else {
+            deliveryTimeUI.push(<div>{futureDeliveryTimeDescription && '期货: ' + futureDeliveryTimeDescription}</div>);
+        }
 
         return <div key={index} className="px-2 py-2 border-top">
             <div className="d-flex align-items-center">
                 <div className="flex-grow-1"><b>{tv(pack)}</b></div>
                 <div className="w-12c mr-4 text-right">
-                    <span className="text-danger h5"><small>¥</small>{price * quantity}</span>
-                    <small className="text-muted">(¥{price} × {quantity})</small>
+                    <span className="text-danger h5"><small>¥</small>{parseFloat((price * quantity).toFixed(2))}</span>
+                    <small className="text-muted">(¥{parseFloat(price.toFixed(2))} × {quantity})</small>
                 </div>
             </div>
-            <div>{deliveryTimeUI}</div>
+            <div>{deliveryTimeUI.map((v, index) => v)}</div>
         </div>;
     }
 

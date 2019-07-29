@@ -2,6 +2,60 @@ import { observable, autorun, IReactionDisposer } from 'mobx';
 import _ from 'lodash';
 import { CartItem, CartPackRow } from './Cart';
 
+export interface CartItemSimple {
+    product: number;
+    packs: CartPackRow[];
+    $isSelected?: boolean;
+    $isDeleted?: boolean;
+    createdate: number;
+}
+
+export class CartViewModelSimple {
+
+    constructor() {
+        this.cartItems = this.data.list;
+        this.disposer = autorun(this.calcSum);
+    }
+
+    private disposer: IReactionDisposer;
+    cartItems: CartItemSimple[];
+    @observable data = {
+        list: observable<CartItemSimple>([]),
+    };
+    count = observable.box<number>(0);
+    amount = observable.box<number>(0);
+
+    dispose() {
+        this.disposer();
+    }
+
+    protected calcSum = () => {
+        let count = 0, amount = 0;
+        for (let cp of this.cartItems) {
+            let { $isSelected, $isDeleted, packs } = cp;
+            if ($isDeleted === true) continue;
+            for (let pi of packs) {
+                let { price, quantity } = pi;
+                count += quantity;
+                if (price === Number.NaN || quantity === Number.NaN) continue;
+                if ($isSelected === true) {
+                    amount += quantity * price;
+                }
+            }
+        }
+        this.count.set(count);
+        this.amount.set(amount);
+    }
+
+    getQuantity(productId: number, packId: number): number {
+        let cp = this.cartItems.find(v => v.$isDeleted !== true && v.product === productId);
+        if (cp === undefined) return 0;
+        let packItem = cp.packs.find(v => v.pack.id === packId);
+        if (packItem === undefined) return 0;
+        return packItem.quantity;
+    }
+}
+
 export class CartViewModel {
 
     constructor() {
@@ -37,7 +91,7 @@ export class CartViewModel {
             }
         }
         this.count.set(count);
-        this.amount.set(amount);
+        this.amount.set(parseFloat(amount.toFixed(2)));
     }
 
     getQuantity(productId: number, packId: number): number {

@@ -1,6 +1,6 @@
 import { observable, computed, autorun, IReactionDisposer, IObservableArray } from 'mobx';
 import _ from 'lodash';
-import { Action, Query, TuidDiv } from 'tonva';
+import { Action, Query, TuidDiv, BoxId } from 'tonva';
 import { CCartApp } from '../CCartApp';
 import { LoaderProductChemical } from 'product/itemLoader';
 import { MainProductChemical } from 'mainSubs';
@@ -20,14 +20,8 @@ export interface CartPackRow extends PackRow {
     currency: any;
 }
 
-export class CartView {
-
-}
-
 export class Cart {
     cApp: CCartApp;
-    private getInventoryAllocationQuery: Query;
-    private packTuid: TuidDiv;
 
     private cartStore: CartStore;
     private disposer: IReactionDisposer;
@@ -43,14 +37,11 @@ export class Cart {
         this.cApp = cApp;
         this.items = this.data.list;
         this.disposer = autorun(this.calcSum);
-        let { cUqProduct, cUqWarehouse } = cApp;
-        this.getInventoryAllocationQuery = cUqWarehouse.query("getInventoryAllocation");
-        this.packTuid = cUqProduct.tuidDiv('productx', 'packx');
     }
 
     dispose() {
         this.disposer();
-        this.removeDeletedItem();
+        // this.removeDeletedItem();
     }
 
     protected calcSum = () => {
@@ -71,15 +62,12 @@ export class Cart {
         this.amount.set(amount);
     }
 
-    change() {
-
-    }
-
-    async initItems(): Promise<void> {
-
+    async init(cartStore: CartStore): Promise<void> {
+        this.cartStore = cartStore;
         let items = await this.cartStore.load();
     }
 
+    /*
     private mergeToRemote(localItems: any[]) {
         let originLength = localItems.length;
         let nowLength = this.items.length;
@@ -101,10 +89,23 @@ export class Cart {
             // 保存到远程
         }
     }
+    */
 
     getQuantity(productId: number, packId: number): number {
-        let cp = this.items.find(v => v.$isDeleted !== true && v.product === productId && v.pack === packId);
+        let cp = this.items.find(v => v.$isDeleted !== true && v.product.id === productId && v.pack.id === packId);
         return cp === undefined ? 0 : cp.quantity;
+    }
+
+    isDeleted(productId: number): boolean {
+        let i = this.items.findIndex(v => v.$isDeleted === true && v.product.id === productId);
+        return i !== -1;
+    }
+
+    getSelectedItem(): CartItem[] {
+        return this.items.filter(v => {
+            let { $isSelected, $isDeleted } = v;
+            return $isSelected === true && $isDeleted !== true;
+        });
     }
 
     /**
@@ -112,7 +113,7 @@ export class Cart {
      * @param packId 要添加到购物车中的包装
      * @param quantity 要添加到购物车中包装的个数
      */
-    AddToCart = async (productId: number, packId: number, quantity: number, price: number, currency: any) => {
+    add = async (productId: number, packId: number, quantity: number, price: number, currency: any) => {
 
         let cartItem = this.items.find((e) => e.product === productId && e.pack === packId);
         if (!cartItem) {
@@ -130,16 +131,31 @@ export class Cart {
         await this.cartStore.storeCart(cartItem);
     }
 
+    removeFromCart(rows: [{ productId: number, packId: number }]) {
+        if (rows && rows.length > 0) {
+            rows.forEach(pe => {
+                let cartItemIndex = this.items.findIndex(e => e.product.id === pe.productId);
+                if (cartItemIndex >= 0) {
+                    let cartItem = this.items[cartItemIndex];
+                    let i = cartItem.packs.findIndex(e => e.pack.id === pe.packId)
+                    if (i >= 0) {
+                        cartItem.packs.splice(i, 1);
+                        if (cartItem.packs.length === 0) {
+                            this.items.splice(cartItemIndex, 1);
+                        }
+                    }
+                }
+            })
+        }
+    }
+
+    /*
     setDeletedMark(productId: number, packId: number) {
         let cp = this.items.find(v => v.$isDeleted !== true && v.product === productId && v.pack === packId);
         if (cp !== undefined)
             cp.$isDeleted = true;
     }
 
-    /**
-     *
-     * @param item
-     */
     async removeDeletedItem() {
         let rows: { product: number, packItem: CartPackRow }[] = [];
         for (let cp of this.items) {
@@ -175,16 +191,12 @@ export class Cart {
         this.items.forEach(v => v.$isDeleted = true);
         await this.removeDeletedItem();
     }
+    */
 
-    getSelectItem(): CartItem[] {
-        return this.items.filter(v => {
-            let { $isSelected, $isDeleted } = v;
-            return $isSelected === true && $isDeleted !== true;
-        });
-    }
 }
 
 abstract class CartStore {
+
     protected cApp: CCartApp;
     private getInventoryAllocationQuery: Query;
     private packTuid: TuidDiv;

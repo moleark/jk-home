@@ -54,7 +54,7 @@ export class VProduct extends VPage<CProduct> {
         </div>
     }
 
-    private arrTemplet = (item: any) => {
+    private arrTemplet = (item: ProductPackRow) => {
         let { pack, retail, vipPrice, promotionPrice, inventoryAllocation, futureDeliveryTimeDescription } = item;
         let right = null;
         if (retail) {
@@ -77,7 +77,7 @@ export class VProduct extends VPage<CProduct> {
             right = <small>请询价</small>
         }
 
-        let deliveryTimeUI = <></>;
+        let deliveryTimeUI = [];
         if (inventoryAllocation && inventoryAllocation.length > 0) {
             deliveryTimeUI = inventoryAllocation.map((v, index) => {
                 let { warehouse, quantity, deliveryTimeDescription } = v;
@@ -87,13 +87,13 @@ export class VProduct extends VPage<CProduct> {
                 </div>
             });
         } else {
-            deliveryTimeUI = <div>{futureDeliveryTimeDescription && '期货: ' + futureDeliveryTimeDescription}</div>
+            deliveryTimeUI.push(<div>{futureDeliveryTimeDescription && '期货: ' + futureDeliveryTimeDescription}</div>);
         }
         return <div className="px-2">
             <div className="row">
                 <div className="col-6">
                     <div><b>{tv(pack)}</b></div>
-                    <div>{deliveryTimeUI}</div>
+                    <div>{deliveryTimeUI.map((v, index) => v)}</div>
                 </div>
                 <div className="col-6">
                     {right}

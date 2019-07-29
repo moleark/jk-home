@@ -1,7 +1,7 @@
 import { CCartApp } from 'CCartApp';
 import { Query, TuidDiv, Action } from 'tonva';
-import { CartViewModel } from './Cart2';
-import { CartItem, CartPackRow, Cart } from './Cart';
+import { CartViewModel, CartViewModelSimple } from './Cart2';
+import { CartItem, CartPackRow } from './Cart';
 import { LoaderProductChemical } from 'product/itemLoader';
 import { groupByProduct } from 'tools/groupByProduct';
 
@@ -29,7 +29,7 @@ export abstract class CartService {
 
     abstract get isLocal(): boolean;
     abstract async load(): Promise<CartViewModel>;
-    // abstract async loadSimple(): Promise<Cart>;
+    abstract async loadSimple(): Promise<CartViewModelSimple>;
 
     protected async generateCartItems(cartData: any): Promise<CartViewModel> {
 
@@ -38,6 +38,18 @@ export abstract class CartService {
             for (let cd of cartData) {
                 let { product: productId, createdate, packs } = cd;
                 result.cartItems.push(await this.generateCartItem(productId, packs))
+            }
+        }
+        return result;
+    }
+
+    protected async generateSimpleCartItems(cartData: any): Promise<CartViewModelSimple> {
+
+        let result = new CartViewModelSimple();
+        if (cartData) {
+            for (let cd of cartData) {
+                let { product, createdate, packs } = cd;
+                result.cartItems.push({ product: product, packs: packs, $isSelected: true, $isDeleted: false, createdate: createdate });
             }
         }
         return result;
@@ -101,6 +113,12 @@ export class CartRemoteService extends CartService {
         let cartData = await this.getCartQuery.page(undefined, 0, 100);
         let cartData2 = groupByProduct(cartData);
         return await this.generateCartItems(cartData2);
+    }
+
+    async loadSimple(): Promise<CartViewModelSimple> {
+        let cartData = await this.getCartQuery.page(undefined, 0, 100);
+        let cartData2 = groupByProduct(cartData);
+        return await this.generateSimpleCartItems(cartData2);
     }
 
     /**
@@ -173,6 +191,17 @@ export class CartLocalService extends CartService {
             let cartstring = localStorage.getItem(LOCALCARTNAME);
             let cartData = JSON.parse(cartstring);
             return await this.generateCartItems(cartData);
+        }
+        catch {
+            localStorage.removeItem(LOCALCARTNAME);
+        }
+    }
+
+    async loadSimple(): Promise<CartViewModelSimple> {
+        try {
+            let cartstring = localStorage.getItem(LOCALCARTNAME);
+            let cartData = JSON.parse(cartstring);
+            return await this.generateSimpleCartItems(cartData);
         }
         catch {
             localStorage.removeItem(LOCALCARTNAME);

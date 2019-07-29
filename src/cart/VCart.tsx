@@ -7,6 +7,7 @@ import { observer } from 'mobx-react';
 import { MinusPlusWidget } from '../tools';
 import { renderBrand, productPropItem } from '../product/CProduct';
 import { ProductImage } from 'tools/productImage';
+import { CartPackRow } from './Cart';
 
 const cartSchema = [
     {
@@ -63,21 +64,29 @@ export class VCart extends VPage<CCart> {
         </div>;
     }
 
-    private packsRow = (item: any) => {
+    private packsRow = (item: CartPackRow) => {
         let { pack, price, currency, inventoryAllocation, futureDeliveryTimeDescription } = item;
-        let deliveryTimeUI = <></>;
+
+        let deliveryTimeUI = [];
         if (inventoryAllocation && inventoryAllocation.length > 0) {
-            deliveryTimeUI = <div className="text-success">国内现货</div>
+            deliveryTimeUI = inventoryAllocation.map((v, index) => {
+                let { warehouse, quantity, deliveryTimeDescription } = v;
+                return <div key={index} className="text-success">
+                    {tv(warehouse, (values: any) => <>{values.name}</>)}: {quantity}
+                    {deliveryTimeDescription}
+                </div>
+            });
         } else {
-            deliveryTimeUI = <div>期货:{futureDeliveryTimeDescription}</div>
+            deliveryTimeUI.push(<div>{futureDeliveryTimeDescription && '期货: ' + futureDeliveryTimeDescription}</div>);
         }
+
         return <div className="px-2">
             <div className="d-flex align-items-center">
                 <div className="flex-grow-1"><b>{tv(pack)}</b></div>
                 <div className="w-6c mr-4 text-right"><span className="text-danger h5">¥{price}</span></div>
                 <FormField name="quantity" />
             </div>
-            <div>{deliveryTimeUI}</div>
+            <div>{deliveryTimeUI.map((v, index) => v)}</div>
         </div>;
     }
 
@@ -91,7 +100,6 @@ export class VCart extends VPage<CCart> {
                 Templet: this.renderCartItem,
                 ArrContainer: (label: any, content: JSX.Element) => content,
                 RowContainer: (content: JSX.Element) => <div className="py-3">{content}</div>,
-                //onStateChanged: this.controller.onRowStateChanged,
                 items: {
                     packs: {
                         widget: 'arr',
