@@ -10,8 +10,8 @@ import { VMyOrders } from './VMyOrders';
 import { VOrderDetail } from './VOrderDetail';
 import { WebUser } from 'CurrentUser';
 import { CInvoiceInfo } from 'customer/CInvoiceInfo';
-import { orderItemGroupByProduct } from 'tools/groupByProduct';
-import { LoaderProductChemical } from 'product/itemLoader';
+import { groupByProduct } from 'tools/groupByProduct';
+import { LoaderProductWithChemical } from 'product/itemLoader';
 import { CCoupon } from './CCoupon';
 
 const FREIGHTFEEFIXED = 12;
@@ -255,8 +255,8 @@ export class COrder extends Controller {
         let order = await this.orderSheet.getSheet(orderId);
         let { data } = order;
         let { orderitems } = data;
-        let orderItemsGrouped = orderItemGroupByProduct(orderitems);
-        let loaderProduct = new LoaderProductChemical(this.cApp);
+        let orderItemsGrouped = groupByProduct(orderitems);
+        let loaderProduct = new LoaderProductWithChemical(this.cApp);
         for (let i = 0; i < orderItemsGrouped.length; i++) {
             let productId = orderItemsGrouped[i].product.id;
             orderItemsGrouped[i].product = await loaderProduct.load(productId);

@@ -28,10 +28,11 @@ export class VHome extends View<CHome> {
     })
 
     private content = observer(() => {
-        let siteHeader = this.controller.renderSiteHeader();
+        let { controller } = this;
+        let siteHeader = controller.renderSiteHeader();
         return <>
             {siteHeader}
-            {this.controller.renderCategoryRootList()}
+            {controller.renderCategoryRootList()}
         </>
     });
 }

@@ -2,7 +2,7 @@ import { CCartApp } from 'CCartApp';
 import { Query, TuidDiv, Action } from 'tonva';
 import { CartViewModel, CartViewModelSimple } from './Cart2';
 import { CartItem, CartPackRow } from './Cart';
-import { LoaderProductChemical } from 'product/itemLoader';
+import { LoaderProductWithChemical } from 'product/itemLoader';
 import { groupByProduct } from 'tools/groupByProduct';
 
 export class CartServiceFactory {
@@ -36,8 +36,8 @@ export abstract class CartService {
         let result = new CartViewModel();
         if (cartData) {
             for (let cd of cartData) {
-                let { product: productId, createdate, packs } = cd;
-                result.cartItems.push(await this.generateCartItem(productId, packs))
+                let { product, createdate, packs } = cd;
+                result.cartItems.push(await this.generateCartItem(product.id, packs))
             }
         }
         return result;
@@ -58,7 +58,7 @@ export abstract class CartService {
     protected async generateCartItem(productId: number, packs: any[]): Promise<CartItem> {
 
         let cartItem: CartItem = {} as any;
-        let productService = new LoaderProductChemical(this.cApp);
+        let productService = new LoaderProductWithChemical(this.cApp);
         cartItem.product = await productService.load(productId);
         cartItem.createdate = Date.now();
         cartItem.$isSelected = true;
@@ -67,15 +67,15 @@ export abstract class CartService {
         cartItem.packs = [];
         if (packs !== undefined) {
             for (let p of packs) {
-                let { pack: packId, price, quantity, currency } = p;
+                let { pack, price, quantity, currency } = p;
                 let packItem: CartPackRow = {
-                    pack: this.packTuid.boxId(packId),
+                    pack: pack, // this.packTuid.boxId(packId),
                     price: price,
                     quantity: quantity,
                     currency: currency,
                 };
                 packItem.inventoryAllocation =
-                    await this.getInventoryAllocationQuery.table({ product: productId, pack: packId, salesRegion: this.cApp.currentSalesRegion })
+                    await this.getInventoryAllocationQuery.table({ product: productId, pack: pack.id, salesRegion: this.cApp.currentSalesRegion })
                 cartItem.packs.push(packItem);
             }
         }

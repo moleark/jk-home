@@ -3,6 +3,7 @@ import { Tuid, TuidDiv, Map, Query } from 'tonva';
 import { ProductPackRow } from './Product';
 import { Loader } from 'mainSubs/loader';
 import { MainSubs, MainProductChemical, MainBrand } from 'mainSubs';
+import { LoaderProductChemical } from 'tools/productChemical';
 
 export class LoaderBrand extends Loader<MainBrand> {
     private brandTuid: Tuid;
@@ -23,15 +24,13 @@ export class LoaderBrand extends Loader<MainBrand> {
     }
 }
 
-export class LoaderProductChemical extends Loader<MainProductChemical> {
+export class LoaderProductWithChemical extends Loader<MainProductChemical> {
     private productTuid: Tuid;
-    private productChemicalMap: Map;
 
     protected initEntities() {
 
         let { cUqProduct } = this.cApp;
         this.productTuid = cUqProduct.tuid('productx');
-        this.productChemicalMap = cUqProduct.map('productChemical');
     }
 
     protected async loadToData(productId: number, data: MainProductChemical): Promise<void> {
@@ -44,7 +43,8 @@ export class LoaderProductChemical extends Loader<MainProductChemical> {
         let brandLoader = new LoaderBrand(this.cApp);
         data.brand = await brandLoader.load(data.brand.id);
 
-        let productChemical = await this.productChemicalMap.obj({ product: productId });
+        let productChemicalLoader = new LoaderProductChemical(this.cApp);
+        let productChemical: any = await productChemicalLoader.load(productId);
         if (productChemical) {
             let { chemical, purity, CAS, molecularFomula, molecularWeight } = productChemical;
             data.chemical = chemical;
@@ -90,7 +90,7 @@ export class LoaderProductChemicalWithPrices extends Loader<MainSubs<MainProduct
 
     protected async loadToData(productId: any, data: MainSubs<MainProductChemical, ProductPackRow>): Promise<void> {
 
-        let productLoader = new LoaderProductChemical(this.cApp);
+        let productLoader = new LoaderProductWithChemical(this.cApp);
         data.main = await productLoader.load(productId);
 
         let discount = 0;
@@ -131,7 +131,7 @@ export class LoaderProductChemicalWithPrices extends Loader<MainSubs<MainProduct
         }
     }
 
-    private getFutureDeliveryTimeDescription = async (productId: number, salesRegionId: number) => {
+    getFutureDeliveryTimeDescription = async (productId: number, salesRegionId: number) => {
         let futureDeliveryTime = await this.getFutureDeliveryTime.table({ product: productId, salesRegion: salesRegionId });
         if (futureDeliveryTime.length > 0) {
             let { minValue, maxValue, unit, deliveryTimeDescription } = futureDeliveryTime[0];
