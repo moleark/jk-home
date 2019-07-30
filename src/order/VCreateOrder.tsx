@@ -30,7 +30,7 @@ export class VCreateOrder extends VPage<COrder> {
     private packsRow = (item: CartPackRow, index: number) => {
         let { pack, quantity, price, currency, inventoryAllocation, futureDeliveryTimeDescription } = item;
 
-        let deliveryTimeUI = [];
+        let deliveryTimeUI;
         if (inventoryAllocation && inventoryAllocation.length > 0) {
             deliveryTimeUI = inventoryAllocation.map((v, index) => {
                 let { warehouse, quantity, deliveryTimeDescription } = v;
@@ -40,7 +40,7 @@ export class VCreateOrder extends VPage<COrder> {
                 </div>
             });
         } else {
-            deliveryTimeUI.push(<div>{futureDeliveryTimeDescription && '期货: ' + futureDeliveryTimeDescription}</div>);
+            deliveryTimeUI = <div>{futureDeliveryTimeDescription && '期货: ' + futureDeliveryTimeDescription}</div>;
         }
 
         return <div key={index} className="px-2 py-2 border-top">
@@ -51,7 +51,7 @@ export class VCreateOrder extends VPage<COrder> {
                     <small className="text-muted">(¥{parseFloat(price.toFixed(2))} × {quantity})</small>
                 </div>
             </div>
-            <div>{deliveryTimeUI.map((v, index) => v)}</div>
+            <div>{deliveryTimeUI}</div>
         </div>;
     }
 

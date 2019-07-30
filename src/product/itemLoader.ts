@@ -37,6 +37,8 @@ export class LoaderProductChemical extends Loader<MainProductChemical> {
     protected async loadToData(productId: number, data: MainProductChemical): Promise<void> {
 
         let product = await this.productTuid.load(productId);
+        if (product === undefined)
+            return;
         _.merge(data, product);
 
         let brandLoader = new LoaderBrand(this.cApp);

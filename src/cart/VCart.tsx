@@ -67,7 +67,7 @@ export class VCart extends VPage<CCart> {
     private packsRow = (item: CartPackRow) => {
         let { pack, price, currency, inventoryAllocation, futureDeliveryTimeDescription } = item;
 
-        let deliveryTimeUI = [];
+        let deliveryTimeUI;
         if (inventoryAllocation && inventoryAllocation.length > 0) {
             deliveryTimeUI = inventoryAllocation.map((v, index) => {
                 let { warehouse, quantity, deliveryTimeDescription } = v;
@@ -77,7 +77,7 @@ export class VCart extends VPage<CCart> {
                 </div>
             });
         } else {
-            deliveryTimeUI.push(<div>{futureDeliveryTimeDescription && '期货: ' + futureDeliveryTimeDescription}</div>);
+            deliveryTimeUI = <div>{futureDeliveryTimeDescription && '期货: ' + futureDeliveryTimeDescription}</div>;
         }
 
         return <div className="px-2">
@@ -86,7 +86,7 @@ export class VCart extends VPage<CCart> {
                 <div className="w-6c mr-4 text-right"><span className="text-danger h5">¥{price}</span></div>
                 <FormField name="quantity" />
             </div>
-            <div>{deliveryTimeUI.map((v, index) => v)}</div>
+            <div>{deliveryTimeUI}</div>
         </div>;
     }
 
