@@ -21,6 +21,7 @@ const FREIGHTFEEREMITTEDSTARTPOINT = 100;
 export class COrder extends Controller {
     private cApp: CCartApp;
     @observable orderData: Order = new Order();
+    @observable couponData: any = {};
     private orderSheet: Sheet;
     private getPendingPaymentQuery: Query;
     private priceMap: Map;
@@ -45,6 +46,7 @@ export class COrder extends Controller {
     private createOrderFromCart = async (cartItems: CartItem2[]) => {
         let { currentUser } = this.cApp;
         this.orderData.webUser = currentUser.id;
+        this.removeCoupon();
         if (currentUser.currentCustomer !== undefined) {
             this.orderData.customer = currentUser.currentCustomer.id;
         }
@@ -177,6 +179,7 @@ export class COrder extends Controller {
         let { id, code, discount, preferential, validitydate, isValid } = coupon;
         if (code !== undefined && isValid === 1 && new Date(validitydate).getTime() > Date.now()) {
             this.orderData.coupon = id;
+            this.couponData = coupon;
             if (discount) {
                 this.orderData.couponOffsetAmount = Math.round(this.orderData.productAmount * discount) * -1;
                 /*
@@ -217,9 +220,13 @@ export class COrder extends Controller {
         }
     }
 
-    removeCoupon = async () => {
-
+    removeCoupon = () => {
+        this.orderData.coupon = undefined;
+        this.couponData = {};
+        this.orderData.couponOffsetAmount = 0;
+        this.orderData.couponRemitted = 0;
     }
+
 
     /*
     */

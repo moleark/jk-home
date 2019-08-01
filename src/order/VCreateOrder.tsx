@@ -57,6 +57,32 @@ export class VCreateOrder extends VPage<COrder> {
         return orderItem.product.id;
     }
 
+    private renderCoupon = observer((param: any) => {
+        let { couponData } = this.controller;
+        if (couponData['id'] === undefined) {
+            return <span className="text-primary">填写优惠码</span>;
+        } else {
+            let { id, code, discount, preferential, validitydate, isValid } = couponData;
+            let { couponOffsetAmount, couponRemitted } = param;
+            let offsetUI, remittedUI;
+            if (couponOffsetAmount) {
+                offsetUI = <LMR right={<><small>¥</small>{couponOffsetAmount}</>}>
+                    <div>折扣额:</div>
+                </LMR>
+            }
+            if (couponRemitted) {
+                remittedUI = <LMR right={<><small>¥</small>{couponRemitted}</>}>
+                    <div>减免额:</div>
+                </LMR>
+            }
+            return <div className="mr-2">
+                <div>{code}</div>
+                {offsetUI}
+                {remittedUI}
+            </div>
+        }
+    });
+
     private onSubmit = async () => {
         let { orderData } = this.controller;
         // 必填项验证
@@ -178,24 +204,7 @@ export class VCreateOrder extends VPage<COrder> {
                 <div className="col-4 col-sm-2 pb-2 text-muted">优惠码:</div>
                 <div className="col-8 col-sm-10">
                     <LMR className="w-100 align-items-center" right={chevronRight}>
-                        {tv(orderData.coupon, (v) => {
-                            let offsetUI, remittedUI;
-                            if (orderData.couponOffsetAmount) {
-                                offsetUI = <LMR right={<>{orderData.couponOffsetAmount}</>}>
-                                    <div>优惠码折扣:</div>
-                                </LMR>
-                            }
-                            if (orderData.couponRemitted) {
-                                remittedUI = <LMR right={<>{orderData.couponRemitted}</>}>
-                                    <div>优惠码减免:</div>
-                                </LMR>
-                            }
-                            return <div>
-                                <div>{v.code}</div>
-                                {offsetUI}
-                                {remittedUI}
-                            </div>
-                        }, undefined, () => <span className="text-primary">填写优惠码</span>)}
+                        <this.renderCoupon couponOffsetAmount={orderData.couponOffsetAmount} couponRemitted={orderData.couponRemitted} />
                     </LMR>
                 </div>
             </div>
