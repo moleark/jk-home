@@ -14,11 +14,11 @@ export class VHome extends VPage<CCartApp> {
         this.openPage(this.render);
     }
     render = (param?: any): JSX.Element => {
-        let { cHome, cMember, cCart, cMe, cartViewModel } = this.controller;
+        let { cHome, cMember, cCart, cMe, cart } = this.controller;
         let faceTabs = [
             { name: 'home', label: '首页', icon: 'home', content: cHome.tab, notify: undefined/*store.homeCount*/ },
             // { name: 'member', label: '会员', icon: 'vcard', content: cMember.tab },
-            { name: 'cart', label: '购物车', icon: 'shopping-cart', content: cCart.tab, notify: cartViewModel.count },
+            { name: 'cart', label: '购物车', icon: 'shopping-cart', content: cCart.tab, notify: cart.count },
             { name: 'me', label: '我的', icon: 'user', content: cMe.tab }
         ].map(v => {
             let { name, label, icon, content, notify } = v;

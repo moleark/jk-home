@@ -70,8 +70,6 @@ export class LoaderProductChemicalWithPrices extends Loader<MainSubs<MainProduct
 
     private getCustomerDiscount: Query;
     private priceMap: Map;
-    private getInventoryAllocationQuery: Query;
-    private getFutureDeliveryTime: Query;
     private getPromotionPackQuery: Query;
 
     protected initEntities() {
@@ -79,8 +77,6 @@ export class LoaderProductChemicalWithPrices extends Loader<MainSubs<MainProduct
         let { cUqProduct, cUqCustomerDiscount, cUqWarehouse, cUqPromotion } = this.cApp;
         this.getCustomerDiscount = cUqCustomerDiscount.query("getdiscount");
         this.priceMap = cUqProduct.map('pricex');
-        this.getInventoryAllocationQuery = cUqWarehouse.query("getInventoryAllocation");
-        this.getFutureDeliveryTime = cUqProduct.query("getFutureDeliveryTime");
         this.getPromotionPackQuery = cUqPromotion.query("getPromotionPack");
     }
 
@@ -94,7 +90,7 @@ export class LoaderProductChemicalWithPrices extends Loader<MainSubs<MainProduct
         data.main = await productLoader.load(productId);
 
         let discount = 0;
-        let { currentUser, currentSalesRegion, cartViewModel, currentLanguage } = this.cApp;
+        let { currentUser, currentSalesRegion, cart, currentLanguage } = this.cApp;
         if (currentUser.hasCustomer) {
             let discountSetting = await this.getCustomerDiscount.obj({ brand: data.main.brand.id, customer: currentUser.currentCustomer });
             discount = discountSetting && discountSetting.discount;
@@ -109,34 +105,21 @@ export class LoaderProductChemicalWithPrices extends Loader<MainSubs<MainProduct
             if (discount !== 0)
                 ret.vipPrice = Math.round(element.retail * (1 - discount));
             ret.currency = currentSalesRegion.currency;
-            ret.quantity = cartViewModel.getQuantity(productId, element.pack.id)
+            ret.quantity = cart.getQuantity(productId, element.pack.id)
             return ret;
         });
 
         let promises: PromiseLike<any>[] = [];
         data.subs.forEach(v => {
-            promises.push(this.getInventoryAllocationQuery.table({ product: productId, pack: v.pack, salesRegion: currentSalesRegion }));
             promises.push(this.getPromotionPackQuery.obj({ product: productId, pack: v.pack, salesRegion: currentSalesRegion, language: currentLanguage }));
         })
         let results = await Promise.all(promises);
 
-        let fd = await this.getFutureDeliveryTimeDescription(productId, currentSalesRegionId);
         for (let i = 0; i < data.subs.length; i++) {
-            data.subs[i].futureDeliveryTimeDescription = fd;
-            data.subs[i].inventoryAllocation = results[i * 2];
-            let promotion = results[i * 2 + 1];
+            let promotion = results[i];
             let discount = promotion && promotion.discount;
             if (discount)
                 data.subs[i].promotionPrice = Math.round((1 - discount) * data.subs[i].retail);
-        }
-    }
-
-    getFutureDeliveryTimeDescription = async (productId: number, salesRegionId: number) => {
-        let futureDeliveryTime = await this.getFutureDeliveryTime.table({ product: productId, salesRegion: salesRegionId });
-        if (futureDeliveryTime.length > 0) {
-            let { minValue, maxValue, unit, deliveryTimeDescription } = futureDeliveryTime[0];
-            return minValue + (maxValue > minValue ? '~' + maxValue : '') + ' ' + unit;
-            // return futureDeliveryTime[0].deliveryTimeDescription;
         }
     }
 }

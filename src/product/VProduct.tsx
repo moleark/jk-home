@@ -2,7 +2,7 @@ import * as React from 'react';
 import { CProduct, renderBrand, productPropItem } from './CProduct';
 import {
     VPage, Page, Form, ItemSchema, NumSchema, UiSchema, Field,
-    ObjectSchema, RowContext, UiCustom, FormField
+    ObjectSchema, RowContext, UiCustom, FormField, BoxId
 } from 'tonva';
 import { tv } from 'tonva';
 import { observer } from 'mobx-react';
@@ -23,11 +23,14 @@ const schema: ItemSchema[] = [
 ];
 
 export class VProduct extends VPage<CProduct> {
-    private product: MainProductChemical;
+    private productData: MainProductChemical;
+    private productBox: BoxId;
 
-    async open(product: any) {
-        this.product = product.main;
-        this.openPage(this.page, product);
+    async open(param: any) {
+        let { productData, product } = param;
+        this.productBox = product;
+        this.productData = productData.main;
+        this.openPage(this.page, productData);
     }
 
     private renderProduct = (product: MainProductChemical) => {
@@ -55,7 +58,7 @@ export class VProduct extends VPage<CProduct> {
     }
 
     private arrTemplet = (item: ProductPackRow) => {
-        let { pack, retail, vipPrice, promotionPrice, inventoryAllocation, futureDeliveryTimeDescription } = item;
+        let { pack, retail, vipPrice, promotionPrice } = item;
         let right = null;
         if (retail) {
             let price: number = this.minPrice(vipPrice, promotionPrice);
@@ -77,23 +80,11 @@ export class VProduct extends VPage<CProduct> {
             right = <small>请询价</small>
         }
 
-        let deliveryTimeUI;
-        if (inventoryAllocation && inventoryAllocation.length > 0) {
-            deliveryTimeUI = inventoryAllocation.map((v, index) => {
-                let { warehouse, quantity, deliveryTimeDescription } = v;
-                return <div key={index} className="text-success">
-                    {tv(warehouse, (values: any) => <>{values.name}</>)}: {quantity}
-                    {deliveryTimeDescription}
-                </div>
-            });
-        } else {
-            deliveryTimeUI = <div>{futureDeliveryTimeDescription && '期货: ' + futureDeliveryTimeDescription}</div>;
-        }
         return <div className="px-2">
             <div className="row">
                 <div className="col-6">
                     <div><b>{tv(pack)}</b></div>
-                    <div>{deliveryTimeUI}</div>
+                    <div>{this.controller.renderDeliveryTime(pack)}</div>
                 </div>
                 <div className="col-6">
                     {right}
@@ -107,12 +98,11 @@ export class VProduct extends VPage<CProduct> {
         let { pack, retail, vipPrice, promotionPrice, currency } = data;
         let price = this.minPrice(vipPrice, promotionPrice) || retail;
         let { cApp } = this.controller;
-        let { cartService, cartViewModel } = cApp;
-        if (value > 0) {
-            await cartService.addToCart(cartViewModel, this.product.id, pack.id, value, price, currency);
-        } else {
-            await cartService.removeFromCart(cartViewModel, [{ productId: this.product.id, packId: pack.id }]);
-        }
+        let { cart } = cApp;
+        if (value > 0)
+            await cart.add(this.productBox, pack, value, price, currency);
+        else
+            await cart.removeFromCart([{ productId: this.productBox.id, packId: pack.id }]);
     }
 
     private minPrice(vipPrice: any, promotionPrice: any) {
@@ -144,8 +134,10 @@ export class VProduct extends VPage<CProduct> {
         let { cApp } = this.controller;
         let header = cApp.cHome.renderSearchHeader();
         let cartLabel = cApp.cCart.renderCartLabel();
+
         let viewProduct = new ViewMainSubs<MainProductChemical, ProductPackRow>(this.renderProduct, this.renderPack);
         viewProduct.model = product;
+
         return <Page header={header} right={cartLabel}>
             <div className="px-2 py-2 bg-white mb-3">{viewProduct.render()}</div>
         </Page>

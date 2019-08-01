@@ -10,15 +10,11 @@ import { CProductCategory } from 'productCategory/CProductCategory';
 import { CMember } from 'member/CMember';
 import { WebUser } from 'CurrentUser';
 import { consts } from './home/consts';
-import { CartViewModel } from 'cart/Cart2';
 import { CMe } from 'me/CMe';
 import { Cart } from 'cart/Cart';
-import { CartService, CartServiceFactory } from 'cart/CartService';
 
 export class CCartApp extends CApp {
     cart: Cart;
-    cartService: CartService;
-    cartViewModel: CartViewModel;
     topKey: any;
 
     currentSalesRegion: any;
@@ -68,8 +64,8 @@ export class CCartApp extends CApp {
             this.currentUser.setUser(this.user);
         }
 
-        this.cartService = CartServiceFactory.getCartService(this);
-        this.cartViewModel = await this.cartService.load();
+        this.cart = new Cart(this);
+        await this.cart.init();
 
         this.cProductCategory = new CProductCategory(this, undefined);
         this.cCart = new CCart(this, undefined);
@@ -88,11 +84,11 @@ export class CCartApp extends CApp {
     }
 
     showMain(initTabName?: string) {
-        // eeee
         this.openVPage(this.VAppMain, initTabName);
     }
 
     async loginCallBack(user: User) {
+        /*
         if (this.cartService.isLocal) {
             let cartLocal = { ...this.cartViewModel } as CartViewModel;
             // this.cartService.clear(this.cartViewModel);
@@ -100,9 +96,10 @@ export class CCartApp extends CApp {
             this.cartViewModel = await this.cartService.load();
             // this.cartViewModel = await this.cartService.merge(cartLocal);
         }
+        */
     }
 
     protected onDispose() {
-        this.cartViewModel.dispose();
+        this.cart.dispose();
     }
 }

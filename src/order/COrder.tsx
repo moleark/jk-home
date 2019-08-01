@@ -13,6 +13,7 @@ import { CInvoiceInfo } from 'customer/CInvoiceInfo';
 import { groupByProduct } from 'tools/groupByProduct';
 import { LoaderProductWithChemical } from 'product/itemLoader';
 import { CCoupon } from './CCoupon';
+import { CartItem2 } from 'cart/Cart';
 
 const FREIGHTFEEFIXED = 12;
 const FREIGHTFEEREMITTEDSTARTPOINT = 100;
@@ -41,7 +42,7 @@ export class COrder extends Controller {
         this.openVPage(VCreateOrder);
     }
 
-    private createOrderFromCart = async (cartItems: any[]) => {
+    private createOrderFromCart = async (cartItems: CartItem2[]) => {
         let { currentUser } = this.cApp;
         this.orderData.webUser = currentUser.id;
         if (currentUser.currentCustomer !== undefined) {
@@ -65,7 +66,7 @@ export class COrder extends Controller {
         }
 
         if (cartItems !== undefined && cartItems.length > 0) {
-            this.orderData.currency = cartItems[0].currency;
+            this.orderData.currency = cartItems[0].packs[0].currency;
             this.orderData.orderItems = cartItems.map((element: any, index: number) => {
                 var item = new OrderItem();
                 item.product = element.product;
@@ -126,14 +127,15 @@ export class COrder extends Controller {
         let result: any = await this.orderSheet.save("order", this.orderData.getDataForSave());
         await this.orderSheet.action(result.id, result.flow, result.state, "submit");
 
-        let { cartViewModel, cartService } = this.cApp;
         let param: [{ productId: number, packId: number }] = [] as any;
         orderItems.forEach(e => {
             e.packs.forEach(v => {
                 param.push({ productId: e.product.id, packId: v.pack.id })
             })
         });
-        cartService.removeFromCart(cartViewModel, param);
+        let { cart } = this.cApp;
+        cart.removeFromCart(param);
+
         // 打开下单成功显示界面
         nav.popTo(this.cApp.topKey);
         this.openVPage(OrderSuccess, result);
@@ -268,5 +270,15 @@ export class COrder extends Controller {
     openMeInfo = async () => {
         let { cMe } = this.cApp;
         await cMe.openMeInfoFirstOrder();
+    }
+
+    renderDeliveryTime = (pack: BoxId) => {
+        let { cProduct } = this.cApp;
+        return cProduct.renderDeliveryTime(pack);
+    }
+
+    renderOrderItemProduct = (product: BoxId) => {
+        let { cProduct } = this.cApp;
+        return cProduct.renderCartProduct(product);
     }
 }

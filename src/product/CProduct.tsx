@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as _ from 'lodash';
-import { Query, tv, BoxId } from 'tonva';
+import { Query, tv, BoxId, Map } from 'tonva';
 import { PageItems, Controller, nav, Page, Image } from 'tonva';
 import classNames from 'classnames';
 import { CCartApp } from '../CCartApp';
@@ -8,6 +8,10 @@ import { VProduct } from './VProduct';
 import { VProductList } from './VProductList';
 import { LoaderProductChemicalWithPrices } from './itemLoader';
 import { ProductImage } from 'tools/productImage';
+import { VProductDelivery } from './VProductDelivery';
+import { observable } from 'mobx';
+import { VCartProuductView } from './VProductView';
+import { VChemicalInfo } from './VChemicalInfo';
 
 class PageProducts extends PageItems<any> {
 
@@ -37,10 +41,20 @@ export class CProduct extends Controller {
     cApp: CCartApp;
 
     pageProducts: PageProducts;
+    private getInventoryAllocationQuery: Query;
+    private getFutureDeliveryTime: Query;
+    private productChemicalMap: Map;
+    @observable inventoryAllocationContainer: { [packId: number]: any[] } = {};
+    @observable futureDeliveryTimeDescriptionContainer: { [productId: number]: string } = {};
+    @observable chemicalInfoContainer: { [productId: number]: any } = {};
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
         this.cApp = cApp;
+        let { cUqWarehouse, cUqProduct } = cApp;
+        this.getInventoryAllocationQuery = cUqWarehouse.query("getInventoryAllocation");
+        this.getFutureDeliveryTime = cUqProduct.query("getFutureDeliveryTime");
+        this.productChemicalMap = cUqProduct.map('productChemical');
     }
 
     protected async internalStart(param: any) {
@@ -64,15 +78,44 @@ export class CProduct extends Controller {
         this.openVPage(VProductList, name);
     }
 
-    showProductDetail = async (id: number) => {
+    showProductDetail = async (product: BoxId) => {
 
         let loader = new LoaderProductChemicalWithPrices(this.cApp);
-        let product = await loader.load(id);
-        /*
-        let product = new Product(this.cApp);
-        await product.load(id);
-        */
-        this.openVPage(VProduct, product);
+        let productData = await loader.load(product.id);
+        this.openVPage(VProduct, { productData, product });
+    }
+
+    renderDeliveryTime = (pack: BoxId) => {
+        return this.renderView(VProductDelivery, pack);
+    }
+
+    getInventoryAllocation = async (productId: number, packId: number, salesRegionId: number) => {
+        if (this.inventoryAllocationContainer[packId] === undefined)
+            this.inventoryAllocationContainer[packId] = await this.getInventoryAllocationQuery.table({ product: productId, pack: packId, salesRegion: this.cApp.currentSalesRegion });
+    }
+
+    getFutureDeliveryTimeDescription = async (productId: number, salesRegionId: number) => {
+        if (this.futureDeliveryTimeDescriptionContainer[productId] === undefined) {
+            let futureDeliveryTime = await this.getFutureDeliveryTime.table({ product: productId, salesRegion: salesRegionId });
+            if (futureDeliveryTime.length > 0) {
+                let { minValue, maxValue, unit, deliveryTimeDescription } = futureDeliveryTime[0];
+                this.futureDeliveryTimeDescriptionContainer[productId] = minValue + (maxValue > minValue ? '~' + maxValue : '') + ' ' + unit;
+            }
+        }
+    }
+
+    renderChemicalInfo = (product: BoxId) => {
+        return this.renderView(VChemicalInfo, product);
+    }
+
+    getChemicalInfo = async (productId: number) => {
+        if (this.chemicalInfoContainer[productId] === undefined) {
+            this.chemicalInfoContainer[productId] = await this.productChemicalMap.obj({ product: productId });
+        }
+    }
+
+    renderCartProduct = (product: BoxId) => {
+        return this.renderView(VCartProuductView, product);
     }
 }
 
@@ -90,7 +133,7 @@ export function productPropItem(caption: string, value: any, captionClass?: stri
     </>;
 }
 
-export function renderProduct(product: any, index: number) {
+export function renderProduct(product: any) {
     let { brand, description, descriptionC, CAS, purity, molecularFomula, molecularWeight, origin, imageUrl } = product;
     return <div className="d-block mb-4 px-3">
         <div className="py-2">

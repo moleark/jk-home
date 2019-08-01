@@ -5,7 +5,6 @@ import { List, LMR, FA } from 'tonva';
 import { tv, BoxId } from 'tonva';
 import { observer } from 'mobx-react';
 import { OrderItem } from './Order';
-import { renderCartProduct } from 'cart/VCart';
 import { observable } from 'mobx';
 import { CartPackRow } from 'cart/Cart';
 
@@ -25,23 +24,8 @@ export class VCreateOrder extends VPage<COrder> {
         return <span className="text-primary">选择收货地址</span>;
     }
 
-    //private renderProduct = (product: any) => <strong>{product.description}</strong>
-
     private packsRow = (item: CartPackRow, index: number) => {
-        let { pack, quantity, price, currency, inventoryAllocation, futureDeliveryTimeDescription } = item;
-
-        let deliveryTimeUI;
-        if (inventoryAllocation && inventoryAllocation.length > 0) {
-            deliveryTimeUI = inventoryAllocation.map((v, index) => {
-                let { warehouse, quantity, deliveryTimeDescription } = v;
-                return <div key={index} className="text-success">
-                    {tv(warehouse, (values: any) => <>{values.name}</>)}: {quantity}
-                    {deliveryTimeDescription}
-                </div>
-            });
-        } else {
-            deliveryTimeUI = <div>{futureDeliveryTimeDescription && '期货: ' + futureDeliveryTimeDescription}</div>;
-        }
+        let { pack, quantity, price, currency } = item;
 
         return <div key={index} className="px-2 py-2 border-top">
             <div className="d-flex align-items-center">
@@ -51,7 +35,7 @@ export class VCreateOrder extends VPage<COrder> {
                     <small className="text-muted">(¥{parseFloat(price.toFixed(2))} × {quantity})</small>
                 </div>
             </div>
-            <div>{deliveryTimeUI}</div>
+            <div>{this.controller.renderDeliveryTime(pack)}</div>
         </div>;
     }
 
@@ -59,7 +43,7 @@ export class VCreateOrder extends VPage<COrder> {
         let { product, packs } = orderItem;
         return <div>
             <div className="row">
-                <div className="col-lg-6 pb-3">{renderCartProduct(product, 0)}</div>
+                <div className="col-lg-6 pb-3">{this.controller.renderOrderItemProduct(product)}</div>
                 <div className="col-lg-6">{
                     packs.map((p, index) => {
                         return this.packsRow(p, index);

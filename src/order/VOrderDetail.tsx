@@ -31,7 +31,7 @@ export class VOrderDetail extends VPage<COrder> {
         let { product, packs } = orderItem;
         return <div>
             <div className="row p-1 my-1">
-                <div className="col-lg-6 pb-3">{renderProduct(product, 0)}</div>
+                <div className="col-lg-6 pb-3">{renderProduct(product)}</div>
                 <div className="col-lg-6">{
                     packs.map((p, index) => {
                         return this.packsRow(p, index);

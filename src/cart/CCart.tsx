@@ -2,13 +2,13 @@ import * as React from 'react';
 import { VCartLabel } from './VCartLabel';
 import { CCartApp } from 'CCartApp';
 import { VCart } from './VCart';
-import { Controller, RowContext, nav, User } from 'tonva';
-import { CartPackRow, CartItem } from './Cart';
+import { Controller, RowContext, nav, User, BoxId } from 'tonva';
+import { CartPackRow, CartItem2 } from './Cart';
 
 export class CCart extends Controller {
 
     cApp: CCartApp;
-    private selectedCartItems: CartItem[];
+    private selectedCartItems: CartItem2[];
 
     constructor(cApp: CCartApp, res: any) {
         super(res);
@@ -28,21 +28,15 @@ export class CCart extends Controller {
         return this.renderView(VCartLabel);
     }
 
-    renderCart = () => {
-        return this.renderView(VCart);
-    }
-
     onQuantityChanged = async (context: RowContext, value: any, prev: any) => {
         let { data, parentData } = context;
         let { product } = parentData;
         let { pack, price, currency } = data as CartPackRow;
-        // await this.cart.AddToCart(product.id, pack.id, value, price, currency);
-        let { cartViewModel, cartService } = this.cApp;
-        if (value > 0) {
-            await cartService.addToCart(cartViewModel, product.id, pack.id, value, price, currency);
-        } else {
-            await cartService.removeFromCart(cartViewModel, [{ productId: product.id, packId: pack.id }]);
-        }
+        let { cart } = this.cApp;
+        if (value > 0)
+            await cart.add(product, pack, value, price, currency);
+        else
+            await cart.removeFromCart([{ productId: product.id, packId: pack.id }]);
     }
 
     onRowStateChanged = async (context: RowContext, selected: boolean, deleted: boolean) => {
@@ -57,16 +51,16 @@ export class CCart extends Controller {
         await this.doCheckOut();
     };
 
-    onProductClick(productId: number) {
-        let { cartViewModel, cProduct } = this.cApp;
-        if (!cartViewModel.isDeleted(productId)) {
-            cProduct.showProductDetail(productId);
+    onProductClick(product: BoxId) {
+        let { cart, cProduct } = this.cApp;
+        if (!cart.isDeleted(product.id)) {
+            cProduct.showProductDetail(product);
         }
     }
 
     checkOut = async () => {
-        let { cartViewModel } = this.cApp;
-        this.selectedCartItems = cartViewModel.getSelectedItem();
+        let { cart } = this.cApp;
+        this.selectedCartItems = cart.getSelectedItems();
         if (this.selectedCartItems === undefined) return;
         if (!this.isLogined) {
             nav.showLogin(this.loginCallback, true);
@@ -85,5 +79,20 @@ export class CCart extends Controller {
         await cOrder.start(this.selectedCartItems);
     }
 
-    tab = () => <this.renderCart />
+    tab = () => this.renderView(VCart);
+
+    renderDeliveryTime = (pack: BoxId) => {
+        let { cProduct } = this.cApp;
+        return cProduct.renderDeliveryTime(pack);
+    }
+
+    renderChemicalInfo = (product: BoxId) => {
+        let { cProduct } = this.cApp;
+        return cProduct.renderChemicalInfo(product);
+    }
+
+    renderCartProduct = (product: BoxId) => {
+        let { cProduct } = this.cApp;
+        return cProduct.renderCartProduct(product);
+    }
 }

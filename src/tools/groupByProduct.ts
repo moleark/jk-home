@@ -9,7 +9,7 @@ export function groupByProduct(packItems: any[]) {
             quantity: quantity,
             currency: currency && currency.id
         }
-        let cpi = result.find(e => e.product === product);
+        let cpi = result.find(e => e.product.id === product.id);
         if (cpi === undefined) {
             cpi = { product: product, packs: [] };
             result.push(cpi);
