@@ -86,11 +86,6 @@ export class CCart extends Controller {
         return cProduct.renderDeliveryTime(pack);
     }
 
-    renderChemicalInfo = (product: BoxId) => {
-        let { cProduct } = this.cApp;
-        return cProduct.renderChemicalInfo(product);
-    }
-
     renderCartProduct = (product: BoxId) => {
         let { cProduct } = this.cApp;
         return cProduct.renderCartProduct(product);

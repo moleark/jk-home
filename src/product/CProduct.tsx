@@ -44,6 +44,9 @@ export class CProduct extends Controller {
     private getInventoryAllocationQuery: Query;
     private getFutureDeliveryTime: Query;
     private productChemicalMap: Map;
+    private getCustomerDiscount: Query;
+    private getPromotionPackQuery: Query;
+
     @observable inventoryAllocationContainer: { [packId: number]: any[] } = {};
     @observable futureDeliveryTimeDescriptionContainer: { [productId: number]: string } = {};
     @observable chemicalInfoContainer: { [productId: number]: any } = {};
@@ -51,10 +54,12 @@ export class CProduct extends Controller {
     constructor(cApp: CCartApp, res: any) {
         super(res);
         this.cApp = cApp;
-        let { cUqWarehouse, cUqProduct } = cApp;
+        let { cUqWarehouse, cUqProduct, cUqCustomerDiscount, cUqPromotion } = cApp;
         this.getInventoryAllocationQuery = cUqWarehouse.query("getInventoryAllocation");
         this.getFutureDeliveryTime = cUqProduct.query("getFutureDeliveryTime");
         this.productChemicalMap = cUqProduct.map('productChemical');
+        this.getCustomerDiscount = cUqCustomerDiscount.query("getdiscount");
+        this.getPromotionPackQuery = cUqPromotion.query("getPromotionPack");
     }
 
     protected async internalStart(param: any) {
@@ -65,7 +70,7 @@ export class CProduct extends Controller {
         let { cUqProduct, currentSalesRegion } = this.cApp;
         let searchProductQuery = cUqProduct.query("searchProduct");
         this.pageProducts = new PageProducts(searchProductQuery);
-        this.pageProducts.first({ key: key, salesRegion: currentSalesRegion.id });
+        this.pageProducts.first({ keyWord: key, salesRegion: currentSalesRegion.id });
         this.openVPage(VProductList, key);
     }
 
@@ -83,6 +88,10 @@ export class CProduct extends Controller {
         let loader = new LoaderProductChemicalWithPrices(this.cApp);
         let productData = await loader.load(product.id);
         this.openVPage(VProduct, { productData, product });
+    }
+
+    renderPrice = async (productId: number, packId: BoxId, salesRegion: number) => {
+
     }
 
     renderDeliveryTime = (pack: BoxId) => {

@@ -47,10 +47,6 @@ export class CHome extends Controller {
         this.openVPage(VHome);
     }
 
-    renderSiteHeader = () => {
-        return this.renderView(VSiteHeader);
-    }
-
     renderSearchHeader = (size?: string) => {
         return this.renderView(VSearchHeader, size);
     }

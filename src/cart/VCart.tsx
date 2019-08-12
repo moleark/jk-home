@@ -55,10 +55,11 @@ export class VCart extends VPage<CCart> {
     private renderCartItem = (item: any) => {
         let { product } = item;
         let { controller } = this;
+        let { onProductClick, renderCartProduct } = controller;
         return <div className="pr-1">
             <div className="row">
-                <div className="col-lg-6 pb-3" onClick={() => controller.onProductClick(product)}>
-                    {controller.renderCartProduct(product)}
+                <div className="col-lg-6 pb-3" onClick={() => onProductClick(product)}>
+                    {renderCartProduct(product)}
                 </div>
                 <div className="col-lg-6"><FormField name="packs" /></div>
             </div>

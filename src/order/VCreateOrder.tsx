@@ -41,12 +41,13 @@ export class VCreateOrder extends VPage<COrder> {
 
     private renderOrderItem = (orderItem: OrderItem) => {
         let { product, packs } = orderItem;
+        let { controller, packsRow } = this;
         return <div>
             <div className="row">
-                <div className="col-lg-6 pb-3">{this.controller.renderOrderItemProduct(product)}</div>
+                <div className="col-lg-6 pb-3">{controller.renderOrderItemProduct(product)}</div>
                 <div className="col-lg-6">{
                     packs.map((p, index) => {
-                        return this.packsRow(p, index);
+                        return packsRow(p, index);
                     })
                 }</div>
             </div>
@@ -131,8 +132,8 @@ export class VCreateOrder extends VPage<COrder> {
                 </button>
             </div>
         </div>;
-        let chevronRight = <FA name="chevron-right" className="cursor-pointer" />
 
+        let chevronRight = <FA name="chevron-right" className="cursor-pointer" />
         let shippingAddressBlankTip = this.shippingAddressIsBlank ?
             <div className="text-danger small my-2"><FA name="exclamation-circle" /> 必须填写收货地址</div>
             : null;
