@@ -1,6 +1,6 @@
 import * as React from 'react';
 import _ from 'lodash';
-import { VPage, Page, Form, Schema, UiSchema, Context, UiInputItem, UiIdItem } from 'tonva';
+import { VPage, Page, Form, Schema, UiSchema, Context, UiInputItem, UiIdItem, BoxId } from 'tonva';
 import { tv } from 'tonva';
 import { CSelectContact } from './CSelectContact';
 
@@ -14,12 +14,10 @@ const schema: Schema = [
     { name: 'address', type: 'id', required: true },
     { name: 'addressString', type: 'string', required: true },
     { name: 'isDefault', type: 'boolean', required: false },
-    // { name: 'submit', type: 'submit' },
 ];
 
 export class VContact extends VPage<CSelectContact> {
 
-    //private contactData: any = {};
     private userContactData: any;
     private form: Form;
 
@@ -28,7 +26,13 @@ export class VContact extends VPage<CSelectContact> {
             id: { visible: false },
             name: { widget: 'text', label: '姓名', placeholder: '姓名' } as UiInputItem,
             organizationName: { widget: 'text', label: '单位名称', placeholder: '单位名称' } as UiInputItem,
-            mobile: { widget: 'text', label: '手机号码', placeholder: '手机号码' } as UiInputItem,
+            mobile: {
+                widget: 'text', label: '手机号码', placeholder: '手机号码',
+                rules: (value: string) => {
+                    if (value && value.length !== 11) return '手机号码不正确。'
+                    else return undefined;
+                }
+            } as UiInputItem,
             telephone: { widget: 'text', label: '电话', placeholder: '电话' } as UiInputItem,
             email: {
                 widget: 'email', label: 'Email',
@@ -43,17 +47,19 @@ export class VContact extends VPage<CSelectContact> {
             address: {
                 widget: 'id', label: '所在地区', placeholder: '所在地区',
                 pickId: async (context: Context, name: string, value: number) => await this.controller.pickAddress(context, name, value),
-                Templet: (item: any) => {
-                    let { obj } = item;
-                    if (!obj) return <small className="text-muted">请选择地区</small>;
-                    let { country, province, city, county } = obj;
-                    //, (v) => <>{v.chineseName}</>
-                    return <>
-                        {tv(country, v => <>{v.chineseName}</>)}
-                        {tv(province, (v) => <>{v.chineseName}</>)}
-                        {tv(city, (v) => <>{v.chineseName}</>)}
-                        {tv(county, (v) => <>{v.chineseName}</>)}
-                    </>;
+                Templet: (address: BoxId) => {
+                    return tv(address, (addressValue) => {
+                        let { country, province, city, county } = addressValue;
+                        /* 下面这种在使用tv之前的一堆判断应该是tv或者什么的有bug, 应该让Henry改改 */
+                        return <>
+                            {country !== undefined && country.id !== undefined && tv(country, v => <>{v.chineseName}</>)}
+                            {province !== undefined && province.id !== undefined && tv(province, (v) => <>{v.chineseName}</>)}
+                            {city !== undefined && city.id !== undefined && tv(city, (v) => <>{v.chineseName}</>)}
+                            {county !== undefined && county.id !== undefined && tv(county, (v) => <>{v.chineseName}</>)}
+                        </>;
+                    }, () => {
+                        return <small className="text-muted">请选择地区</small>;
+                    })
                 }
             } as UiIdItem,
             addressString: {

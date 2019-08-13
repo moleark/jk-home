@@ -3,6 +3,7 @@ import { VPage, Page } from 'tonva';
 import { CSelectContact } from './CSelectContact';
 import { List, LMR, FA } from 'tonva';
 import { tv } from 'tonva';
+import { observer } from 'mobx-react';
 
 export class VContactList extends VPage<CSelectContact> {
 
@@ -11,10 +12,9 @@ export class VContactList extends VPage<CSelectContact> {
         this.openPage(this.page);
     }
 
-    private onContactRender = (userContact: any) => {
-        let { contact } = userContact;
+    private onContactRender = (contact: any) => {
         let { onEditContact, onContactSelected } = this.controller;
-        let right = <div className="p-2 cursor-pointer text-info" onClick={() => onEditContact(userContact)}>
+        let right = <div className="p-2 cursor-pointer text-info" onClick={() => onEditContact(contact)}>
             <FA name="edit" />
         </div>
         return <LMR right={right} className="px-3 py-2">
@@ -24,14 +24,12 @@ export class VContactList extends VPage<CSelectContact> {
         </LMR>
     }
 
-
-    private page = () => {
-
+    private page = observer(() => {
         let { onNewContact, userContacts } = this.controller;
         let footer = <button type="button" className="btn btn-primary w-100" onClick={() => onNewContact()} >添加新地址</button>;
         let contactList = <List items={userContacts} item={{ render: this.onContactRender }} none="无地址" />;
         return <Page footer={footer} header="管理地址">
             {contactList}
         </Page>
-    }
+    })
 }
