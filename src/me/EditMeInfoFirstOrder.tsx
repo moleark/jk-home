@@ -56,7 +56,7 @@ export class EditMeInfoFirstOrder extends VPage<CMe>{
             <Edit schema={webUserSchema} uiSchema={webUserUiSchema}
                 data={this.webUserData}
                 onItemChanged={this.onWebUserChanged} />
-            <Edit schema={webUserContactSchema} uiSchema={webUserContactUiSchema}
+            <Edit schema={webUserContactSchema} uiSchema={webUserContactUiSchema(this.controller.pickAddress)}
                 data={this.webUserContactData}
                 onItemChanged={this.onWebUserContactChanged} />
         </Page>;

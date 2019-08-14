@@ -1,10 +1,11 @@
 import * as React from 'react';
-import { Controller } from 'tonva';
+import { Controller, Context } from 'tonva';
 import { CCartApp } from 'CCartApp';
 import { VMe } from './VMe';
 import { CSelectShippingContact } from 'customer/CSelectContact';
 import { EditMeInfoFirstOrder } from './EditMeInfoFirstOrder';
 import { CInvoiceInfo } from 'customer/CInvoiceInfo';
+import { CAddress } from 'customer/CAddress';
 
 export class CMe extends Controller {
 
@@ -30,11 +31,7 @@ export class CMe extends Controller {
         await currentUser.changeWebUserContact(webUserContact);
     }
 
-    tab = () => <this.renderMe />
-
-    private renderMe = () => {
-        return this.renderView(VMe);
-    }
+    tab = () => this.renderView(VMe);
 
     openMyOrders = async (state: string) => {
         let { cOrder } = this.cApp;
@@ -53,5 +50,10 @@ export class CMe extends Controller {
 
     openMeInfoFirstOrder = async () => {
         await this.openVPage(EditMeInfoFirstOrder);
+    }
+
+    pickAddress = async (context: Context, name: string, value: number): Promise<number> => {
+        let cAddress = new CAddress(this.cApp, undefined);
+        return await cAddress.call<number>();
     }
 }

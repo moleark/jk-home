@@ -20,7 +20,6 @@ export class VMe extends VPage<CMe> {
 
     private changePassword = async () => {
         await nav.changePassword();
-        // nav.push(<ChangePasswordPage />);
     }
 
     private openContactList = async () => {

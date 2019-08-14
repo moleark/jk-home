@@ -141,7 +141,7 @@ export class VCreateOrder extends VPage<COrder> {
         let divInvoiceContact: any = null;
         if (this.useShippingAddress === false) {
             if (orderData.invoiceContact !== undefined) {
-                divInvoiceContact = <div className="col-12 col-sm-10 offset-sm-2 d-flex">
+                divInvoiceContact = <div className="col-8 col-sm-10 offset-sm-2 d-flex">
                     {tv(orderData.invoiceContact, undefined, undefined, this.nullContact)}
                     <div>{chevronRight}</div>
                 </div>

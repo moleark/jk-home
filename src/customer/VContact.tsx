@@ -27,9 +27,9 @@ export class VContact extends VPage<CSelectContact> {
             name: { widget: 'text', label: '姓名', placeholder: '姓名' } as UiInputItem,
             organizationName: { widget: 'text', label: '单位名称', placeholder: '单位名称' } as UiInputItem,
             mobile: {
-                widget: 'text', label: '手机号码', placeholder: '手机号码',
+                widget: 'text', label: '移动电话', placeholder: '移动电话',
                 rules: (value: string) => {
-                    if (value && value.length !== 11) return '手机号码不正确。'
+                    if (value && value.length !== 11) return '移动电话号码不正确'
                     else return undefined;
                 }
             } as UiInputItem,

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observable } from 'mobx';
-import { userApi, ItemSchema, StringSchema, ImageSchema, UiTextItem, UiImageItem, nav, Page, Edit, UiSchema, VPage, UiRadio, IdSchema, UiIdItem } from 'tonva';
+import { userApi, ItemSchema, StringSchema, ImageSchema, UiTextItem, UiImageItem, nav, Page, Edit, UiSchema, VPage, UiRadio, IdSchema, UiIdItem, Context, BoxId, tv } from 'tonva';
 import { CMe } from './CMe';
 
 export class EditMeInfo extends VPage<CMe>{
@@ -74,16 +74,17 @@ export class EditMeInfo extends VPage<CMe>{
     }
 
     private page = () => {
+        let { schema, uiSchema, data, onItemChanged, webUserData, onWebUserChanged, webUserContactData, onWebUserContactChanged, controller } = this;
         return <Page header="个人信息">
-            <Edit schema={this.schema} uiSchema={this.uiSchema}
-                data={this.data}
-                onItemChanged={this.onItemChanged} />
+            <Edit schema={schema} uiSchema={uiSchema}
+                data={data}
+                onItemChanged={onItemChanged} />
             <Edit schema={webUserSchema} uiSchema={webUserUiSchema}
-                data={this.webUserData}
-                onItemChanged={this.onWebUserChanged} />
-            <Edit schema={webUserContactSchema} uiSchema={webUserContactUiSchema}
-                data={this.webUserContactData}
-                onItemChanged={this.onWebUserContactChanged} />
+                data={webUserData}
+                onItemChanged={onWebUserChanged} />
+            <Edit schema={webUserContactSchema} uiSchema={webUserContactUiSchema(controller.pickAddress)}
+                data={webUserContactData}
+                onItemChanged={onWebUserContactChanged} />
         </Page>;
     }
 }
@@ -115,22 +116,48 @@ export const webUserContactSchema: ItemSchema[] = [
     { name: 'address', type: 'id', required: false } as IdSchema,
     { name: 'zipCode', type: 'string', required: false } as StringSchema,
 ];
-export const webUserContactUiSchema: UiSchema = {
-    items: {
-        telephone: { widget: 'text', label: '固定电话' } as UiTextItem,
-        mobile: { widget: 'text', label: '移动电话' } as UiTextItem,
-        email: {
-            widget: 'text', label: 'Email',
-            rules: (value: any) => {
-                if (value && !/\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/.test(value))
-                    return "Email格式不正确。";
-                else
-                    return undefined;
-            },
-            placeholder: 'Email'
-        } as UiTextItem,
-        fax: { widget: 'text', label: '传真' } as UiTextItem,
-        address: { widget: 'id', label: '地址' } as UiIdItem,
-        zipCode: { widget: 'text', label: '邮编' } as UiTextItem,
+
+export function webUserContactUiSchema(pickAddress: any) {
+    return {
+        items: {
+            telephone: { widget: 'text', label: '固定电话' } as UiTextItem,
+            mobile: {
+                widget: 'text', label: '移动电话',
+                rules: (value: string) => {
+                    if (value && value.length !== 11) return '移动电话号码不正确'
+                    else return undefined;
+                }
+            } as UiTextItem,
+            email: {
+                widget: 'text', label: 'Email',
+                rules: (value: any) => {
+                    if (value && !/\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/.test(value))
+                        return "Email格式不正确。";
+                    else
+                        return undefined;
+                },
+                placeholder: 'Email'
+            } as UiTextItem,
+            fax: { widget: 'text', label: '传真' } as UiTextItem,
+            address: {
+                widget: 'id', label: '地址',
+                pickId: async (context: Context, name: string, value: number) => await pickAddress(context, name, value),
+                Templet: (address: BoxId) => {
+                    return tv(address, (addressValue) => {
+                        let { country, province, city, county } = addressValue;
+                        /* 下面这种在使用tv之前的一堆判断应该是tv或者什么的有bug, 应该让Henry改改 */
+                        return <>
+                            {country !== undefined && country.id !== undefined && tv(country, v => <>{v.chineseName}</>)}
+                            {province !== undefined && province.id !== undefined && tv(province, (v) => <>{v.chineseName}</>)}
+                            {city !== undefined && city.id !== undefined && tv(city, (v) => <>{v.chineseName}</>)}
+                            {county !== undefined && county.id !== undefined && tv(county, (v) => <>{v.chineseName}</>)}
+                        </>;
+                    }, () => {
+                        return <small className="text-muted">请选择地区</small>;
+                    })
+                }
+            } as UiIdItem,
+            zipCode: { widget: 'text', label: '邮编' } as UiTextItem,
+        }
     }
 }
