@@ -127,14 +127,22 @@ class VConfirmDeleteContact extends VPage<CSelectContact> {
         this.closePage();
     }
 
+    private onCancel = async () => {
+        await this.returnCall(false);
+        this.closePage();
+    }
+
     private page = (contact: any) => {
-        return <Page header="确认" back="close">
-            <div className="w-50 mx-auto border border-primary rounded my-3 p-3 bg-white">
-                <div className="p-4 text-center position-relative">
+        return <Page header="删除地址" back="close">
+            <div className="w-75 mx-auto border border-primary rounded my-3 p-3 bg-white">
+                <div className="p-4 position-relative">
                     <i className="fa fa-question-circle position-absolute fa-2x text-warning" style={{ left: 0, top: 0 }} />
-                    <b className="">{contact.name}</b>
+                    <b className="">是否删除该地址？</b>
                 </div>
-                <button className="btn btn-danger w-50 mx-auto d-block mt-3" onClick={this.onConfirm}>确认删除</button>
+                <div className="d-flex mt-3 justify-content-end">
+                    <button className="btn btn-danger mr-3" onClick={this.onConfirm}>删除地址</button>
+                    <button className="btn btn-outline-info mr-3" onClick={this.onCancel}>取消</button>
+                </div>
             </div>
         </Page>;
     }

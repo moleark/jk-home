@@ -58,6 +58,9 @@ export abstract class CSelectContact extends Controller {
         let { id } = contact;
         let { currentUser } = this.cApp;
         await currentUser.delContact(id);
+        if (contact.isDefault) {
+            this.setDefaultContact(undefined);
+        }
         let index = this.userContacts.findIndex(v => v.id === id);
         if (index > -1)
             this.userContacts.splice(index, 1);
