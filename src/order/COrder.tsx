@@ -248,7 +248,7 @@ export class COrder extends Controller {
     }
 
     onInvoiceInfoEdit = async () => {
-        let cInvoiceInfo = new CInvoiceInfo(this.cApp, undefined);
+        let cInvoiceInfo = new CInvoiceInfo(this.cApp, undefined, true);
         let { invoiceType, invoiceInfo } = this.orderData;
         let origInvoice = {
             invoiceType: invoiceType,

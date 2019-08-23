@@ -7,40 +7,38 @@ export class CInvoiceInfo extends Controller {
     protected cApp: CCartApp;
     private invoiceTypeTuid: Tuid;
     private invoiceInfoTuid: Tuid;
+    fromOrderCreation: boolean;
 
-    constructor(cApp: CCartApp, res: any) {
+    constructor(cApp: CCartApp, res: any, fromOrderCreation: boolean) {
         super(res);
         this.cApp = cApp;
 
         let { cUqCommon, cUqCustomer } = cApp;
         this.invoiceTypeTuid = cUqCommon.tuid('invoiceType');
         this.invoiceInfoTuid = cUqCustomer.tuid('invoiceInfo');
+        this.fromOrderCreation = fromOrderCreation;
     }
 
     async internalStart(origInvoice?: any) {
-        if (origInvoice !== undefined) {
-            let { invoiceInfo: invoiceInfoBox } = origInvoice;
-            if (invoiceInfoBox !== undefined) {
-                let invoiceInfo = await this.invoiceInfoTuid.load(invoiceInfoBox.id);
-                origInvoice.invoiceInfo = invoiceInfo;
-            }
-        }
         this.openVPage(VInvoiceInfo, origInvoice);
     }
 
     async saveInvoiceInfo(invoice: any) {
         let { invoiceType, invoiceInfo, isDefault } = invoice;
         let newInvoiceInfo = await this.invoiceInfoTuid.save(undefined, invoiceInfo);
+
         let { id: newInvoiceInfoId } = newInvoiceInfo;
         let invoiceBox = {
             invoiceType: this.invoiceTypeTuid.boxId(invoiceType),
             invoiceInfo: this.invoiceInfoTuid.boxId(newInvoiceInfoId),
         }
-        if (isDefault === true) {
-            let { currentUser } = this.cApp;
-            await currentUser.setDefaultInvoice(invoiceBox.invoiceType, invoiceBox.invoiceInfo);
+        // if (isDefault === true || !this.fromOrderCreation) {
+        let { currentUser } = this.cApp;
+        await currentUser.setDefaultInvoice(invoiceBox.invoiceType, invoiceBox.invoiceInfo);
+        // }
+        if (this.fromOrderCreation) {
+            this.backPage();
+            this.returnCall(invoiceBox);
         }
-        this.backPage();
-        this.returnCall(invoiceBox);
     }
 }

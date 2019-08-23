@@ -1,4 +1,5 @@
 import * as React from 'react';
+import _ from 'lodash';
 import { Controller, Context } from 'tonva';
 import { CCartApp } from 'CCartApp';
 import { VMe } from './VMe';
@@ -44,8 +45,12 @@ export class CMe extends Controller {
     }
 
     openInvoice = async () => {
-        let cInvoiceInfo = new CInvoiceInfo(this.cApp, undefined);
-        cInvoiceInfo.start();
+        let cInvoiceInfo = new CInvoiceInfo(this.cApp, undefined, false);
+        let { currentUser } = this.cApp;
+        let defaultSetting = await currentUser.getSetting();
+
+        let origInvoice = _.pick(defaultSetting, ['invoiceType', 'invoiceInfo']);
+        cInvoiceInfo.start(origInvoice);
     }
 
     openMeInfoFirstOrder = async () => {

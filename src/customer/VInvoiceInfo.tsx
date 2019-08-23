@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { VPage, Page, UiSchema, UiInputItem, Form, Context } from 'tonva';
+import { VPage, Page, UiSchema, UiInputItem, Form, Context, tv, BoxId, FA } from 'tonva';
 import { CInvoiceInfo } from './CInvoiceInfo';
 import { Schema } from 'tonva';
 import { observable } from 'mobx';
@@ -13,8 +13,20 @@ const schema: Schema = [
     { name: 'telephone', type: 'string', required: false },
     { name: 'bank', type: 'string', required: false },
     { name: 'accountNo', type: 'string', required: false },
-    { name: 'isDefault', type: 'boolean', required: false },
 ];
+
+const uiSchema: UiSchema = {
+    items: {
+        id: { visible: false },
+        title: { widget: 'text', label: '单位名称', placeholder: '必填' } as UiInputItem,
+        taxNo: { widget: 'text', label: '纳税人识别码', placeholder: '必填' } as UiInputItem,
+        address: { widget: 'text', label: '注册地址', placeholder: '必填' } as UiInputItem,
+        telephone: { widget: 'text', label: '注册电话', placeholder: '必填' } as UiInputItem,
+        bank: { widget: 'text', label: '开户银行', placeholder: '必填' } as UiInputItem,
+        accountNo: { widget: 'text', label: '银行账号', placeholder: '必填' } as UiInputItem,
+        submit: { widget: 'button', label: '提交' },
+    }
+}
 
 const commonRequired = {
     id: false,
@@ -60,31 +72,20 @@ const valueAddedVisible = {
     isDefault: true,
 }
 
-
-
 export class VInvoiceInfo extends VPage<CInvoiceInfo> {
     private form: Form;
-
-    private uiSchema: UiSchema = {
-        items: {
-            id: { visible: false },
-            title: { widget: 'text', label: '单位名称', placeholder: '必填' } as UiInputItem,
-            taxNo: { widget: 'text', label: '纳税人识别码', placeholder: '必填' } as UiInputItem,
-            address: { widget: 'text', label: '注册地址', placeholder: '必填' } as UiInputItem,
-            telephone: { widget: 'text', label: '注册电话', placeholder: '必填' } as UiInputItem,
-            bank: { widget: 'text', label: '开户银行', placeholder: '必填' } as UiInputItem,
-            accountNo: { widget: 'text', label: '银行账号', placeholder: '必填' } as UiInputItem,
-            submit: { widget: 'button', label: '提交' },
-            isDefault: { widget: 'checkbox', label: '作为默认发票信息' },
-        }
-    }
+    @observable showTip: boolean = false;
+    saveTip: string = "";
+    private invoiceInfoData: any;
 
     async open(origInvoice?: any) {
-        if (origInvoice  !== undefined && origInvoice.invoiceType !== undefined)
-            this.invoiceType = origInvoice.invoiceType.id;
-        else
-            this.invoiceType = 1;
-        this.openPage(this.page, origInvoice);
+        let { invoiceType, invoiceInfo } = origInvoice;
+        this.invoiceType = (invoiceType && invoiceType.id) || 1;
+        if (invoiceInfo) {
+            invoiceInfo.assure();
+            this.invoiceInfoData = { ...invoiceInfo.obj };
+        }
+        this.openPage(this.page);
     }
 
     private onFormButtonClick = async (name: string, context: Context) => {
@@ -93,9 +94,17 @@ export class VInvoiceInfo extends VPage<CInvoiceInfo> {
         let invoice = {
             invoiceType: this.invoiceType,
             invoiceInfo: data,
-            isDefault: data.isDefault,
         };
-        await this.controller.saveInvoiceInfo(invoice);
+        this.invoiceInfoData = data;
+
+        try {
+            await this.controller.saveInvoiceInfo(invoice);
+            this.saveTip = "发票信息已经保存";
+        } catch (error) {
+            this.saveTip = "发票信息保存失败，请稍后再试";
+        }
+        this.showTip = true;
+        setTimeout(() => { this.showTip = false; }, 2000);
     }
 
     private onSaveInvoice = async () => {
@@ -105,28 +114,33 @@ export class VInvoiceInfo extends VPage<CInvoiceInfo> {
 
     @observable invoiceType: number;
 
-    private buildForm(invoiceInfo: any): JSX.Element {
+    private buildForm(): JSX.Element {
         let requiredFields = this.invoiceType === 1 ? commonRequired : valueAddedRequired;
         let visibleFields = this.invoiceType === 1 ? commonVisible : valueAddedVisible;
         schema.forEach(e => {
-            let { items } = this.uiSchema;
+            let { items } = uiSchema;
             e.required = requiredFields[e.name];
             items[e.name].visible = visibleFields[e.name];
         });
         return <Form ref={v => this.form = v} className="my-3"
             schema={schema}
-            uiSchema={this.uiSchema}
-            formData={invoiceInfo}
+            uiSchema={uiSchema}
+            formData={this.invoiceInfoData}
             onButtonClick={this.onFormButtonClick}
             fieldLabelSize={3} />
     }
 
-    private onInvoiceTypeClick = (event: React.MouseEvent<HTMLInputElement>) => {
+    private onInvoiceTypeClick = (event: React.ChangeEvent<HTMLInputElement>) => {
         this.invoiceType = parseInt(event.currentTarget.value);
     }
 
-    private page = observer((origInvoice: any) => {
-        let frm = this.buildForm(origInvoice.invoiceInfo);
+    private page = observer(() => {
+        let frm = this.buildForm();
+
+        let tipUI = this.showTip ? (<div className="alert alert-primary" role="alert">
+            <FA name="exclamation-circle" className="text-warning float-left mr-3" size="2x"></FA>
+            {this.saveTip}
+        </div>) : null;
         return <Page header="发票">
             <div className="px-3">
                 <div className="form-group row py-3 mb-1 bg-white">
@@ -134,12 +148,12 @@ export class VInvoiceInfo extends VPage<CInvoiceInfo> {
                     <div className="col-12 col-sm-9">
                         <div className="form-check form-check-inline">
                             <input className="form-check-input" type="radio" name="invoiceType" id="common" value="1"
-                                onClick={(event) => this.onInvoiceTypeClick(event)} defaultChecked></input>
+                                onChange={(event) => this.onInvoiceTypeClick(event)} checked={this.invoiceType === 1}></input>
                             <label className="form-check-label" htmlFor="common">普通发票</label>
                         </div>
                         <div className="form-check form-check-inline">
                             <input className="form-check-input" type="radio" name="invoiceType" id="valueAdded" value="2"
-                                onClick={(event) => this.onInvoiceTypeClick(event)}></input>
+                                onChange={(event) => this.onInvoiceTypeClick(event)} checked={this.invoiceType === 2}></input>
                             <label className="form-check-label" htmlFor="valueAdded">增值税发票</label>
                         </div>
                     </div>
@@ -150,6 +164,7 @@ export class VInvoiceInfo extends VPage<CInvoiceInfo> {
                 <button type="button"
                     className="btn btn-primary w-100"
                     onClick={this.onSaveInvoice}>确定</button>
+                {tipUI}
             </div>
         </Page>
     });
