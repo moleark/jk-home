@@ -67,14 +67,16 @@ export class VCreateOrder extends VPage<COrder> {
             let { couponOffsetAmount, couponRemitted } = param;
             let offsetUI, remittedUI;
             if (couponOffsetAmount) {
-                offsetUI = <LMR right={<><small>¥</small>{couponOffsetAmount}</>}>
+                offsetUI = <div className="d-flex flex-row justify-content-between">
                     <div>折扣额:</div>
-                </LMR>
+                    <div><small>¥</small>{couponOffsetAmount}</div>
+                </div>
             }
             if (couponRemitted) {
-                remittedUI = <LMR right={<><small>¥</small>{couponRemitted}</>}>
+                remittedUI = <div className="d-flex flex-row justify-content-between">
                     <div>减免额:</div>
-                </LMR>
+                    <div><small>¥</small>{couponRemitted}</div>
+                </div>
             }
             return <div className="mr-2">
                 <div>{code}</div>

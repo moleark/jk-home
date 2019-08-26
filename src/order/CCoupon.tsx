@@ -15,7 +15,8 @@ export class CCoupon extends Controller {
 
     applyCoupon = async (coupon: string) => {
 
-        let validationResult = await this.isValidCoupon.submit({ code: coupon, webuser: this.cApp.currentUser.id });
+        let { currentCustomer } = this.cApp.currentUser;
+        let validationResult = await this.isValidCoupon.submit({ code: coupon, customer: currentCustomer && currentCustomer.id });
         let rtn = validationResult.result;
         if (rtn === 1) {
             this.returnCall(validationResult);
