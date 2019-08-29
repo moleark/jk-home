@@ -21,6 +21,7 @@ const ui: AppUI = {
         '百灵威系统工程部/warehouse': warehouseUI,
     },
     loginTop: jnkTop,
+    version: "1.0.1"
 }
 
 export default ui;
