@@ -18,12 +18,42 @@ const schema: Schema = [
 const uiSchema: UiSchema = {
     items: {
         id: { visible: false },
-        title: { widget: 'text', label: '单位名称', placeholder: '必填' } as UiInputItem,
-        taxNo: { widget: 'text', label: '纳税人识别码', placeholder: '必填' } as UiInputItem,
-        address: { widget: 'text', label: '注册地址', placeholder: '必填' } as UiInputItem,
-        telephone: { widget: 'text', label: '注册电话', placeholder: '必填' } as UiInputItem,
-        bank: { widget: 'text', label: '开户银行', placeholder: '必填' } as UiInputItem,
-        accountNo: { widget: 'text', label: '银行账号', placeholder: '必填' } as UiInputItem,
+        title: {
+            widget: 'text', label: '单位名称', placeholder: '必填',
+            rules: (value: string) => {
+                return (value && value.length > 200) ? '单位名称过长，请修改后录入' : undefined;
+            }
+        } as UiInputItem,
+        taxNo: {
+            widget: 'text', label: '纳税人识别码', placeholder: '必填',
+            rules: (value: string) => {
+                return (value && value.length > 50) ? '纳税人识别码过长，请修改后录入' : undefined;
+            }
+        } as UiInputItem,
+        address: {
+            widget: 'text', label: '注册地址', placeholder: '必填',
+            rules: (value: string) => {
+                return (value && value.length > 200) ? '注册地址过长，请修改后录入' : undefined;
+            }
+        } as UiInputItem,
+        telephone: {
+            widget: 'text', label: '注册电话', placeholder: '必填',
+            rules: (value: string) => {
+                return (value && value.length > 20) ? '注册电话过长，请修改后录入' : undefined;
+            }
+        } as UiInputItem,
+        bank: {
+            widget: 'text', label: '开户银行', placeholder: '必填',
+            rules: (value: string) => {
+                return (value && value.length > 100) ? '开会银行过长，请修改后录入' : undefined;
+            }
+        } as UiInputItem,
+        accountNo: {
+            widget: 'text', label: '银行账号', placeholder: '必填',
+            rules: (value: string) => {
+                return (value && value.length > 50) ? '银行账号过长，请修改后录入' : undefined;
+            }
+        } as UiInputItem,
         submit: { widget: 'button', label: '提交' },
     }
 }

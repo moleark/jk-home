@@ -24,8 +24,18 @@ export class VContact extends VPage<CSelectContact> {
     private uiSchema: UiSchema = {
         items: {
             id: { visible: false },
-            name: { widget: 'text', label: '姓名', placeholder: '姓名' } as UiInputItem,
-            organizationName: { widget: 'text', label: '单位名称', placeholder: '单位名称' } as UiInputItem,
+            name: {
+                widget: 'text', label: '姓名', placeholder: '姓名',
+                rules: (value: string) => {
+                    return (value && value.length > 50) ? "姓名过长，请修改后录入" : undefined;
+                }
+            } as UiInputItem,
+            organizationName: {
+                widget: 'text', label: '单位名称', placeholder: '单位名称',
+                rules: (value: string) => {
+                    return (value && value.length > 200) ? '单位名称过长，请修改后录入' : undefined;
+                }
+            } as UiInputItem,
             mobile: {
                 widget: 'text', label: '移动电话', placeholder: '移动电话',
                 rules: (value: string) => {
@@ -33,7 +43,12 @@ export class VContact extends VPage<CSelectContact> {
                     else return undefined;
                 }
             } as UiInputItem,
-            telephone: { widget: 'text', label: '电话', placeholder: '电话' } as UiInputItem,
+            telephone: {
+                widget: 'text', label: '电话', placeholder: '电话',
+                rules: (value: string) => {
+                    if (value && value.length > 15) return '电话号码过长，请修改后录入'; else return undefined;
+                }
+            } as UiInputItem,
             email: {
                 widget: 'email', label: 'Email',
                 rules: (value: any) => {
@@ -63,8 +78,10 @@ export class VContact extends VPage<CSelectContact> {
                 }
             } as UiIdItem,
             addressString: {
-                widget: 'text', label: '详细地址',
-                placeholder: '详细地址'
+                widget: 'text', label: '详细地址', placeholder: '详细地址',
+                rules: (value: string) => {
+                    return (value && value.length > 200) ? '详细地址过长，请修改后录入' : undefined;
+                }
             } as UiInputItem,
             isDefault: { widget: 'checkbox', label: '作为默认地址' },
             submit: { widget: 'button', label: '提交' },

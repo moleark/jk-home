@@ -10,23 +10,23 @@ import OrganicChemistry from '../images/OrganicChemistry.png';
 import { observer } from 'mobx-react';
 
 const x = {
-    685: {
+    47: {
         src: OrganicChemistry,
         labelColor: 'text-info',
     },
-    1092: {
+    470: {
         src: AnalyticalChemistry,
         labelColor: 'text-success',
     },
-    1626: {
+    1013: {
         src: LifeScience,
         labelColor: 'text-danger',
     },
-    1906: {
+    1219: {
         src: MaterialScience,
         labelColor: 'text-warning',
     },
-    2211: {
+    1545: {
         src: LabSupplies,
         labelColor: 'text-primary',
     },
