@@ -1,12 +1,12 @@
 {
   "main.css": "./static/css/main.11a0d90e.chunk.css",
-  "main.js": "./static/js/main.1720dd46.chunk.js",
-  "main.js.map": "./static/js/main.1720dd46.chunk.js.map",
+  "main.js": "./static/js/main.f27e3c47.chunk.js",
+  "main.js.map": "./static/js/main.f27e3c47.chunk.js.map",
   "static/js/1.4ed3ea10.chunk.js": "./static/js/1.4ed3ea10.chunk.js",
   "static/js/1.4ed3ea10.chunk.js.map": "./static/js/1.4ed3ea10.chunk.js.map",
   "static/css/2.d1e71bb3.chunk.css": "./static/css/2.d1e71bb3.chunk.css",
-  "static/js/2.cf7bb3ad.chunk.js": "./static/js/2.cf7bb3ad.chunk.js",
-  "static/js/2.cf7bb3ad.chunk.js.map": "./static/js/2.cf7bb3ad.chunk.js.map",
+  "static/js/2.21fb41c9.chunk.js": "./static/js/2.21fb41c9.chunk.js",
+  "static/js/2.21fb41c9.chunk.js.map": "./static/js/2.21fb41c9.chunk.js.map",
   "static/js/3.74a24ced.chunk.js": "./static/js/3.74a24ced.chunk.js",
   "static/js/3.74a24ced.chunk.js.map": "./static/js/3.74a24ced.chunk.js.map",
   "runtime~main.js": "./static/js/runtime~main.2f4bfbf6.js",
@@ -19,9 +19,9 @@
   "static/media/OrganicChemistry.png": "./static/media/OrganicChemistry.6d56971c.png",
   "static/media/pig.png": "./static/media/pig.772a31a6.png",
   "static/media/logo.svg": "./static/media/logo.ee7cd8ed.svg",
-  "static/css/main.11a0d90e.chunk.css.map": "./static/css/main.11a0d90e.chunk.css.map",
   "static/css/2.d1e71bb3.chunk.css.map": "./static/css/2.d1e71bb3.chunk.css.map",
+  "static/css/main.11a0d90e.chunk.css.map": "./static/css/main.11a0d90e.chunk.css.map",
   "index.html": "./index.html",
-  "precache-manifest.22971a27dc63426d96df5de77e44c79c.js": "./precache-manifest.22971a27dc63426d96df5de77e44c79c.js",
+  "precache-manifest.95b75e2f248dada6eb9f5ccdabee7b19.js": "./precache-manifest.95b75e2f248dada6eb9f5ccdabee7b19.js",
   "service-worker.js": "./service-worker.js"
 }
