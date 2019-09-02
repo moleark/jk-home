@@ -27,33 +27,33 @@ export class VContact extends VPage<CSelectContact> {
             name: {
                 widget: 'text', label: '姓名', placeholder: '姓名',
                 rules: (value: string) => {
-                    return (value && value.length > 50) ? "姓名过长，请修改后录入" : undefined;
+                    return (value && value.length > 50) ? "姓名最多50个字！" : undefined;
                 }
             } as UiInputItem,
             organizationName: {
                 widget: 'text', label: '单位名称', placeholder: '单位名称',
                 rules: (value: string) => {
-                    return (value && value.length > 200) ? '单位名称过长，请修改后录入' : undefined;
+                    return (value && value.length > 200) ? '单位名称最多200个字！' : undefined;
                 }
             } as UiInputItem,
             mobile: {
-                widget: 'text', label: '移动电话', placeholder: '移动电话',
+                widget: 'text', label: '手机号', placeholder: '手机号',
                 rules: (value: string) => {
-                    if (value && value.length !== 11) return '移动电话号码不正确'
+                    if (value && value.length !== 11) return '手机号格式不正确，请重新输入！'
                     else return undefined;
                 }
             } as UiInputItem,
             telephone: {
                 widget: 'text', label: '电话', placeholder: '电话',
                 rules: (value: string) => {
-                    if (value && value.length > 15) return '电话号码过长，请修改后录入'; else return undefined;
+                    if (value && value.length > 15) return '电话号码最多15位！'; else return undefined;
                 }
             } as UiInputItem,
             email: {
                 widget: 'email', label: 'Email',
                 rules: (value: any) => {
                     if (value && !/\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/.test(value))
-                        return "Email格式不正确。";
+                        return "Email格式不正确，请重新输入！";
                     else
                         return undefined;
                 },
@@ -80,7 +80,7 @@ export class VContact extends VPage<CSelectContact> {
             addressString: {
                 widget: 'text', label: '详细地址', placeholder: '详细地址',
                 rules: (value: string) => {
-                    return (value && value.length > 200) ? '详细地址过长，请修改后录入' : undefined;
+                    return (value && value.length > 200) ? '详细地址最多200个字！' : undefined;
                 }
             } as UiInputItem,
             isDefault: { widget: 'checkbox', label: '作为默认地址' },

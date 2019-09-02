@@ -1,6 +1,4 @@
-import * as React from 'react';
 import { Tuid } from 'tonva';
-import { VSiteHeader } from './VSiteHeader';
 import { CCartApp } from '../CCartApp';
 import { PageItems, Controller } from 'tonva';
 import { VSearchHeader } from './VSearchHeader';

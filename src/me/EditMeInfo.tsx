@@ -103,26 +103,26 @@ export const webUserUiSchema: UiSchema = {
             widget: 'text', label: '真实姓名',
             placeholder: '化学品是受国家安全法规限制的特殊商品，百灵威提供技术咨询、资料以及化学产品的对象必须是具有化学管理和应用能力的专业单位（非个人）。为此，需要您重新提供非虚拟的、可核查的信息。',
             rules: (value: string) => {
-                return (value && value.length > 50) ? "姓名过长，请修改后录入" : undefined;
+                return (value && value.length > 50) ? "姓名过长，请修改后录入！" : undefined;
             }
         } as UiTextItem,
         gender: { widget: 'radio', label: '性别', list: [{ value: '1', title: '男' }, { value: '0', title: '女' }], defaultValue: 1 } as UiRadio,
         salutation: {
             widget: 'text', label: '称谓',
             rules: (value: string) => {
-                return (value && value.length > 10) ? "称谓过长，请修改后录入" : undefined;
+                return (value && value.length > 10) ? "称谓最多10个字！" : undefined;
             }
         } as UiTextItem,
         organizationName: {
             widget: 'text', label: '单位名称',
             rules: (value: string) => {
-                return (value && value.length > 100) ? "单位过长，请修改后录入" : undefined;
+                return (value && value.length > 100) ? "单位名称最多100个字！" : undefined;
             }
         } as UiTextItem,
         departmentName: {
             widget: 'text', label: '部门名称',
             rules: (value: string) => {
-                return (value && value.length > 100) ? "部门名称过长，请修改后录入" : undefined;
+                return (value && value.length > 100) ? "部门名称名称最多100个字！" : undefined;
             }
         } as UiTextItem,
     }
@@ -144,13 +144,13 @@ export function webUserContactUiSchema(pickAddress: any) {
             telephone: {
                 widget: 'text', label: '固定电话',
                 rules: (value: string) => {
-                    if (value && value.length > 15) return '固定电话号码过长，请修改后录入'; else return undefined;
+                    if (value && value.length > 15) return '固定电话号码最多15位！'; else return undefined;
                 }
             } as UiTextItem,
             mobile: {
-                widget: 'text', label: '移动电话',
+                widget: 'text', label: '手机号',
                 rules: (value: string) => {
-                    if (value && value.length !== 11) return '移动电话号码不正确'
+                    if (value && value.length !== 11) return '手机号格式不正确，请重新输入！'
                     else return undefined;
                 }
             } as UiTextItem,
@@ -158,7 +158,7 @@ export function webUserContactUiSchema(pickAddress: any) {
                 widget: 'text', label: 'Email',
                 rules: (value: any) => {
                     if (value && !/\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/.test(value))
-                        return "Email格式不正确。";
+                        return "Email格式不正确，请重新输入！";
                     else
                         return undefined;
                 },
@@ -167,7 +167,7 @@ export function webUserContactUiSchema(pickAddress: any) {
             fax: {
                 widget: 'text', label: '传真',
                 rules: (value: string) => {
-                    return (value && value.length > 15) ? "传真号码过长，请修改后录入" : undefined;
+                    return (value && value.length > 15) ? "传真号码最多15位！" : undefined;
                 }
             } as UiTextItem,
             address: {
@@ -191,7 +191,7 @@ export function webUserContactUiSchema(pickAddress: any) {
             zipCode: {
                 widget: 'text', label: '邮编',
                 rules: (value: string) => {
-                    return (value && value.length > 15) ? "邮编过长，请修改后录入" : undefined;
+                    return (value && value.length > 15) ? "邮编过长，请修改后录入！" : undefined;
                 }
             } as UiTextItem,
         }
