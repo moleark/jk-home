@@ -2,6 +2,7 @@ import * as React from 'react';
 import { observable } from 'mobx';
 import { userApi, ItemSchema, StringSchema, ImageSchema, UiTextItem, UiImageItem, nav, Page, Edit, UiSchema, VPage, UiRadio, IdSchema, UiIdItem, Context, BoxId, tv } from 'tonva';
 import { CMe } from './CMe';
+import { faxValidation, emailValidation, mobileValidation, telephoneValidation, addressDetailValidation, zipCodeValidation, organizationNameValidation, departmentNameValidation, salutationValidation, nameValidation } from 'tools/inputValidations';
 
 export class EditMeInfo extends VPage<CMe>{
 
@@ -35,13 +36,13 @@ export class EditMeInfo extends VPage<CMe>{
 
         let { cApp } = this.controller;
         let { firstName, gender, salutation, organizationName, departmentName, telephone
-            , mobile, email, fax, zipCode } = cApp.currentUser;
+            , mobile, email, fax, zipCode, address, addressString } = cApp.currentUser;
         this.webUserData = {
             firstName: firstName,
             gender: gender,
             salutation: salutation,
             organizationName: organizationName,
-            departmentName: departmentName
+            departmentName: departmentName,
         };
 
         this.webUserContactData = {
@@ -49,6 +50,8 @@ export class EditMeInfo extends VPage<CMe>{
             mobile: mobile,
             email: email,
             fax: fax,
+            address: address,
+            addressString: addressString,
             zipCode: zipCode,
         }
     }
@@ -102,29 +105,12 @@ export const webUserUiSchema: UiSchema = {
         firstName: {
             widget: 'text', label: '真实姓名',
             placeholder: '化学品是受国家安全法规限制的特殊商品，百灵威提供技术咨询、资料以及化学产品的对象必须是具有化学管理和应用能力的专业单位（非个人）。为此，需要您重新提供非虚拟的、可核查的信息。',
-            rules: (value: string) => {
-                return (value && value.length > 50) ? "姓名过长，请修改后录入！" : undefined;
-            }
+            rules: nameValidation
         } as UiTextItem,
         gender: { widget: 'radio', label: '性别', list: [{ value: '1', title: '男' }, { value: '0', title: '女' }], defaultValue: 1 } as UiRadio,
-        salutation: {
-            widget: 'text', label: '称谓',
-            rules: (value: string) => {
-                return (value && value.length > 10) ? "称谓最多10个字！" : undefined;
-            }
-        } as UiTextItem,
-        organizationName: {
-            widget: 'text', label: '单位名称',
-            rules: (value: string) => {
-                return (value && value.length > 100) ? "单位名称最多100个字！" : undefined;
-            }
-        } as UiTextItem,
-        departmentName: {
-            widget: 'text', label: '部门名称',
-            rules: (value: string) => {
-                return (value && value.length > 100) ? "部门名称名称最多100个字！" : undefined;
-            }
-        } as UiTextItem,
+        salutation: { widget: 'text', label: '称谓', rules: salutationValidation } as UiTextItem,
+        organizationName: { widget: 'text', label: '单位名称', rules: organizationNameValidation } as UiTextItem,
+        departmentName: { widget: 'text', label: '部门名称', rules: departmentNameValidation } as UiTextItem,
     }
 }
 
@@ -135,43 +121,19 @@ export const webUserContactSchema: ItemSchema[] = [
     { name: 'email', type: 'string' } as StringSchema,
     { name: 'fax', type: 'string', required: false } as StringSchema,
     { name: 'address', type: 'id', required: false } as IdSchema,
+    { name: 'addressString', type: 'string', required: false } as StringSchema,
     { name: 'zipCode', type: 'string', required: false } as StringSchema,
 ];
 
 export function webUserContactUiSchema(pickAddress: any) {
     return {
         items: {
-            telephone: {
-                widget: 'text', label: '固定电话',
-                rules: (value: string) => {
-                    if (value && value.length > 15) return '固定电话号码最多15位！'; else return undefined;
-                }
-            } as UiTextItem,
-            mobile: {
-                widget: 'text', label: '手机号',
-                rules: (value: string) => {
-                    if (value && value.length !== 11) return '手机号格式不正确，请重新输入！'
-                    else return undefined;
-                }
-            } as UiTextItem,
-            email: {
-                widget: 'text', label: 'Email',
-                rules: (value: any) => {
-                    if (value && !/\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/.test(value))
-                        return "Email格式不正确，请重新输入！";
-                    else
-                        return undefined;
-                },
-                placeholder: 'Email'
-            } as UiTextItem,
-            fax: {
-                widget: 'text', label: '传真',
-                rules: (value: string) => {
-                    return (value && value.length > 15) ? "传真号码最多15位！" : undefined;
-                }
-            } as UiTextItem,
+            telephone: { widget: 'text', label: '固定电话', rules: telephoneValidation } as UiTextItem,
+            mobile: { widget: 'text', label: '手机号', rules: mobileValidation } as UiTextItem,
+            email: { widget: 'text', label: 'Email', rules: emailValidation, placeholder: 'Email' } as UiTextItem,
+            fax: { widget: 'text', label: '传真', rules: faxValidation } as UiTextItem,
             address: {
-                widget: 'id', label: '地址',
+                widget: 'id', label: '所在地区',
                 pickId: async (context: Context, name: string, value: number) => await pickAddress(context, name, value),
                 Templet: (address: BoxId) => {
                     return tv(address, (addressValue) => {
@@ -188,12 +150,8 @@ export function webUserContactUiSchema(pickAddress: any) {
                     })
                 }
             } as UiIdItem,
-            zipCode: {
-                widget: 'text', label: '邮编',
-                rules: (value: string) => {
-                    return (value && value.length > 15) ? "邮编过长，请修改后录入！" : undefined;
-                }
-            } as UiTextItem,
+            addressString: { widget: 'text', label: '详细地址', rules: addressDetailValidation } as UiTextItem,
+            zipCode: { widget: 'text', label: '邮编', rules: zipCodeValidation } as UiTextItem,
         }
     }
 }

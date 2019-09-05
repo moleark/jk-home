@@ -76,7 +76,7 @@ export abstract class CSelectContact extends Controller {
         await currentUser.addContact(newContactId);
         this.userContacts.push(contactBox);
         let { id, isDefault } = contact;
-        if (isDefault === true) {
+        if (isDefault === true || this.userContacts.length === 1) {
             await this.setDefaultContact(contactBox);
         }
         // contact.id !== undefined表示是修改了已有的contact(我们只能用“替换”表示“修改”，所以此时需要删除原contact)
