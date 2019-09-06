@@ -68,18 +68,18 @@ export class VCreateOrder extends VPage<COrder> {
             let offsetUI, remittedUI;
             if (couponOffsetAmount) {
                 offsetUI = <div className="d-flex flex-row justify-content-between">
-                    <div>折扣额:</div>
-                    <div><small>¥</small>{couponOffsetAmount}</div>
+                    <div className="text-muted">折扣额:</div>
+                    <div className="text-right text-danger"><small>¥</small>{couponOffsetAmount}</div>
                 </div>
             }
             if (couponRemitted) {
                 remittedUI = <div className="d-flex flex-row justify-content-between">
-                    <div>减免额:</div>
-                    <div><small>¥</small>{couponRemitted}</div>
+                    <div className="text-muted">减免额:</div>
+                    <div className="text-right text-danger"><small>¥</small>{couponRemitted}</div>
                 </div>
             }
             return <div className="mr-2">
-                <div>{code}</div>
+                <div className="text-success">{code.substr(0, 4)} {code.substr(4)}</div>
                 {offsetUI}
                 {remittedUI}
             </div>
@@ -143,7 +143,7 @@ export class VCreateOrder extends VPage<COrder> {
         let divInvoiceContact: any = null;
         if (this.useShippingAddress === false) {
             if (orderData.invoiceContact !== undefined) {
-                divInvoiceContact = <div className="col-8 col-sm-10 offset-sm-2 d-flex">
+                divInvoiceContact = <div className="col-8 col-sm-10 offset-4 offset-sm-2 d-flex">
                     {tv(orderData.invoiceContact, undefined, undefined, this.nullContact)}
                     <div>{chevronRight}</div>
                 </div>

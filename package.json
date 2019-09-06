@@ -23,7 +23,7 @@
     "react-markdown": "^4.0.8",
     "react-scripts-ts": "^4.0.8",
     "reactstrap": "^7.0.2",
-    "tonva": "^1.0.55"
+    "tonva": "^1.0.60"
   },
   "scripts": {
     "predeploy": "npm run build",
