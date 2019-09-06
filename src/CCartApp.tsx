@@ -12,6 +12,7 @@ import { WebUser } from 'CurrentUser';
 import { consts } from './home/consts';
 import { CMe } from 'me/CMe';
 import { Cart } from 'cart/Cart';
+import { GLOABLE } from 'ui';
 
 export class CCartApp extends CApp {
     cart: Cart;
@@ -54,10 +55,10 @@ export class CCartApp extends CApp {
         this.cUqMember = this.getCUq(consts.uqMember);
 
         let salesRegionTuid = this.cUqCommon.tuid('salesregion');
-        this.currentSalesRegion = await salesRegionTuid.load(1);
+        this.currentSalesRegion = await salesRegionTuid.load(GLOABLE.SALESREGION_CN);
 
         let languageTuid = this.cUqCommon.tuid('language');
-        this.currentLanguage = await languageTuid.load(196);
+        this.currentLanguage = await languageTuid.load(GLOABLE.CHINESE);
 
         this.currentUser = new WebUser(this.cUqWebUser, this.cUqCustomer);
         if (this.isLogined) {

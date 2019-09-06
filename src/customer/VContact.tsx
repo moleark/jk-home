@@ -36,10 +36,10 @@ export class VContact extends VPage<CSelectContact> {
                         let { country, province, city, county } = addressValue;
                         /* 下面这种在使用tv之前的一堆判断应该是tv或者什么的有bug, 应该让Henry改改 */
                         return <>
-                            {country !== undefined && country.id !== undefined && tv(country, v => <>{v.chineseName}</>)}
-                            {province !== undefined && province.id !== undefined && tv(province, (v) => <>{v.chineseName}</>)}
-                            {city !== undefined && city.id !== undefined && tv(city, (v) => <>{v.chineseName}</>)}
-                            {county !== undefined && county.id !== undefined && tv(county, (v) => <>{v.chineseName}</>)}
+                            {country && country.id && tv(country, v => <>{v.chineseName}</>)}
+                            {province && province.id && tv(province, (v) => <>{v.chineseName}</>)}
+                            {city && city.id && tv(city, (v) => <>{v.chineseName}</>)}
+                            {county && county.id && tv(county, (v) => <>{v.chineseName}</>)}
                         </>;
                     }, () => {
                         return <small className="text-muted">请选择地区</small>;

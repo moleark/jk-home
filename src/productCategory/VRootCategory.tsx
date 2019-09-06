@@ -2,35 +2,8 @@ import * as React from 'react';
 import { View, tv } from 'tonva';
 import { CProductCategory } from './CProductCategory';
 import { FA } from 'tonva';
-import AnalyticalChemistry from '../images/AnalyticalChemistry.png';
-import LabSupplies from '../images/LabSupplies.png';
-import LifeScience from '../images/LifeScience.png';
-import MaterialScience from '../images/MaterialScience.png';
-import OrganicChemistry from '../images/OrganicChemistry.png';
 import { observer } from 'mobx-react';
-
-const x = {
-    47: {
-        src: OrganicChemistry,
-        labelColor: 'text-info',
-    },
-    470: {
-        src: AnalyticalChemistry,
-        labelColor: 'text-success',
-    },
-    1013: {
-        src: LifeScience,
-        labelColor: 'text-danger',
-    },
-    1219: {
-        src: MaterialScience,
-        labelColor: 'text-warning',
-    },
-    1545: {
-        src: LabSupplies,
-        labelColor: 'text-primary',
-    },
-}
+import { GLOABLE } from 'ui';
 
 const imgStyle: React.CSSProperties = {
     height: '1.5rem', width: '1.5rem',
@@ -60,7 +33,7 @@ export class VRootCategory extends View<CProductCategory> {
     private renderRootCategory = (item: any, parent: any) => {
         let { name, children, productCategory } = item;
         let { id: productCategoryID } = productCategory;
-        let { src, labelColor } = x[productCategoryID];
+        let { src, labelColor } = GLOABLE.ROOTCATEGORY[productCategoryID];
         return <div className="bg-white mb-3" key={name}>
             <div className="py-2 px-3 cursor-pointer" onClick={() => this.categoryClick(item, undefined, labelColor)}>
                 <img className="mr-5" src={src} alt={name} style={{ height: "2.5rem", width: "2.5rem" }} />

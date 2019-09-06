@@ -3,8 +3,7 @@ import { VPage, Page, BoxId } from 'tonva';
 import { tv } from 'tonva';
 import { List, FA } from 'tonva';
 import { CAddress } from './CAddress';
-
-const CHINAID = 43;
+import { GLOABLE } from 'ui';
 
 export class VAddress extends VPage<CAddress> {
     private provinceId: number;
@@ -13,7 +12,7 @@ export class VAddress extends VPage<CAddress> {
     private backLevel = 0;
 
     async open(param: any) {
-        let provinces = await this.controller.getCountryProvince(CHINAID);
+        let provinces = await this.controller.getCountryProvince(GLOABLE.CHINA);
         this.openPage(this.page, { provinces: provinces });
     }
 
@@ -89,6 +88,6 @@ export class VAddress extends VPage<CAddress> {
     }
 
     private saveAddress = async () => {
-        await this.controller.saveAddress(CHINAID, this.provinceId, this.cityId, this.countyId);
+        await this.controller.saveAddress(GLOABLE.CHINA, this.provinceId, this.cityId, this.countyId);
     }
 }

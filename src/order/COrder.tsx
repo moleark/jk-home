@@ -229,12 +229,16 @@ export class COrder extends Controller {
 
 
     /*
+    * 打开我的订单列表（在“我的”界面使用）
     */
     openMyOrders = async (state: string) => {
 
         this.openVPage(VMyOrders, state);
     }
 
+    /**
+     * 根据状态读取我的订单
+     */
     getMyOrders = async (state: string) => {
 
         switch (state) {
