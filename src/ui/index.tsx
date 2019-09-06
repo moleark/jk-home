@@ -29,7 +29,6 @@ const ui: AppUI = {
     version: "1.0.1"
 }
 
-/*
 export const GLOABLE = {
     CHINA: 44,
     CHINESE: 196,
@@ -57,8 +56,8 @@ export const GLOABLE = {
         },
     }
 }
-*/
 
+/*
 export const GLOABLE = {
     CHINA: 43,
     CHINESE: 197,
@@ -86,5 +85,5 @@ export const GLOABLE = {
         },
     }
 }
-
+*/
 export default ui;

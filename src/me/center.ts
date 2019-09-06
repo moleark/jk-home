@@ -1,3 +1,4 @@
+/*
 import {CenterApi, User} from 'tonva';
 
 class Center extends CenterApi {
@@ -8,3 +9,4 @@ class Center extends CenterApi {
 
 const center = new Center('tv/', undefined);
 export default center;
+*/
