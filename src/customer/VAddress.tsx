@@ -26,19 +26,21 @@ export class VAddress extends VPage<CAddress> {
     }
 
     private renderPCC = (pcc: BoxId, onClick: any) => {
-        return tv(pcc, (value) => {
-            let { id, chineseName } = value;
-            return <div key={id} className="col-6 col-md-4 col-lg-3 cursor-pointer" >
-                <div className="pt-1 pb-1 px-2" onClick={() => onClick(id)}
-                    style={{ border: '1px solid #eeeeee', marginRight: '-1px', marginBottom: '-1px' }}
-                >
-                    <span className="ml-1 align-middle">
-                        <FA name="chevron-right" className="text-info small" />
-                        &nbsp; {chineseName}
-                    </span>
-                </div>
-            </div>;
-        })
+        return <div key={pcc.id} className="col-6 col-md-4 col-lg-3 cursor-pointer">
+            {tv(pcc, (value) => {
+                let { id, chineseName } = value;
+                return <>
+                    <div className="pt-1 pb-1 px-2" onClick={() => onClick(id)}
+                        style={{ border: '1px solid #eeeeee', marginRight: '-1px', marginBottom: '-1px' }}
+                    >
+                        <span className="ml-1 align-middle">
+                            <FA name="chevron-right" className="text-info small" />
+                            &nbsp; {chineseName}
+                        </span>
+                    </div>
+                </>;
+            })}
+        </div>
     }
 
     private onProvinceClick = async (provinceId: any) => {
