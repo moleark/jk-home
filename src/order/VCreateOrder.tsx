@@ -68,13 +68,13 @@ export class VCreateOrder extends VPage<COrder> {
             let offsetUI, remittedUI;
             if (couponOffsetAmount) {
                 offsetUI = <div className="d-flex flex-row justify-content-between">
-                    <div className="text-muted">折扣额:</div>
+                    <div className="text-muted">折扣:</div>
                     <div className="text-right text-danger"><small>¥</small>{couponOffsetAmount}</div>
                 </div>
             }
             if (couponRemitted) {
                 remittedUI = <div className="d-flex flex-row justify-content-between">
-                    <div className="text-muted">减免额:</div>
+                    <div className="text-muted">抵扣:</div>
                     <div className="text-right text-danger"><small>¥</small>{couponRemitted}</div>
                 </div>
             }

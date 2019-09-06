@@ -179,12 +179,12 @@ export class VInvoiceInfo extends VPage<CInvoiceInfo> {
                         <div className="form-check form-check-inline">
                             <input className="form-check-input" type="radio" name="invoiceType" id="common" value="1"
                                 onChange={(event) => this.onInvoiceTypeClick(event)} checked={this.invoiceType === 1}></input>
-                            <label className="form-check-label" htmlFor="common">普通发票</label>
+                            <label className="form-check-label" htmlFor="common">增值税普通发票</label>
                         </div>
                         <div className="form-check form-check-inline">
                             <input className="form-check-input" type="radio" name="invoiceType" id="valueAdded" value="2"
                                 onChange={(event) => this.onInvoiceTypeClick(event)} checked={this.invoiceType === 2}></input>
-                            <label className="form-check-label" htmlFor="valueAdded">增值税发票</label>
+                            <label className="form-check-label" htmlFor="valueAdded">增值税专用发票</label>
                         </div>
                     </div>
                 </div>
