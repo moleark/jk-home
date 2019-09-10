@@ -59,6 +59,9 @@ export class EditMeInfoFirstOrder extends VPage<CMe>{
             <Edit schema={webUserContactSchema} uiSchema={webUserContactUiSchema(this.controller.pickAddress)}
                 data={this.webUserContactData}
                 onItemChanged={this.onWebUserContactChanged} />
+            <div className="p-3 bg-white">
+                <button type="button" className="btn btn-primary w-100" onClick={() => this.backPage()}>保存并返回</button>
+            </div>
         </Page>;
     }
 }

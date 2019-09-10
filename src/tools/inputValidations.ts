@@ -1,11 +1,17 @@
 
 
 export function telephoneValidation(value: string) {
-    return (value && value.length > 15) ? '固定电话号码最多15位！' : undefined;
+    if (value && !/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(value))
+        return "固定电话格式不正确，请重新输入！";
+    else
+        return undefined;
 }
 
 export function mobileValidation(value: string) {
-    return (value && value.length !== 11) ? '手机号格式不正确，请重新输入！' : undefined;
+    if (value && !/^[1][3,4,5,6,7,8,9][0-9]{9}$/.test(value))
+        return "手机号格式不正确，请重新输入！";
+    else
+        return undefined;
 }
 
 export function emailValidation(value: string) {
@@ -16,7 +22,10 @@ export function emailValidation(value: string) {
 }
 
 export function faxValidation(value: string) {
-    return (value && value.length > 15) ? "传真号码最多15位！" : undefined;
+    if (value && !/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(value))
+        return "传真号码格式不正确，请重新输入！";
+    else
+        return undefined;
 }
 
 export function addressDetailValidation(value: string) {
