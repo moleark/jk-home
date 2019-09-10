@@ -5,7 +5,7 @@ import {appUq, logoutUqTokens, buildAppUq} from './appBridge';
 import {ApiBase} from './apiBase';
 import { host } from './host';
 import { nav } from '../components';
-import { LocalCache, localDb, LocalMap } from '../tool';
+import { LocalCache, LocalMap, env } from '../tool';
 
 let channelUIs:{[name:string]: HttpChannel} = {};
 let channelNoUIs:{[name:string]: HttpChannel} = {};
@@ -411,43 +411,13 @@ export abstract class CenterApiBase extends ApiBase {
 
 const uqTokensName = 'uqTokens';
 export class UqTokenApi extends CenterApiBase {
-    private localMap: LocalMap = localDb.map(uqTokensName);
-    //private uqTokens: UqLocals;
-    /*
-    startInit(unitParam:number) {
-        this.uqTokens = this.local.get();
-        if (this.uqTokens !== undefined) {
-            let {unit, user} = this.uqTokens;
-            if (unit !== unitParam || user !== loginedUserId) {
-                //this.local.remove();
-                this.uqTokens = undefined;
-            }
-        }
-        if (this.uqTokens === undefined) {
-            this.uqTokens = {
-                user: loginedUserId,
-                unit: unitParam,
-                uqs: {}
-            };
-        }
-    }
-    endInit() {
-        this.local.set(this.uqTokens);
-    }
-    */
+    private localMap: LocalMap = env.localDb.map(uqTokensName);
+
     async uq(params: {unit:number, uqOwner:string, uqName:string}):Promise<any> {
         let {uqOwner, uqName} = params;
         let un = uqOwner+'/'+uqName;
         let localCache = this.localMap.child(un);
         try {
-            /*
-            if (this.local === undefined) {
-                let ls = localStorage.getItem(uqTokens);
-                if (ls !== null) {
-                    this.local = JSON.parse(ls);
-                }
-            }
-            */
             let uqToken:UqLocal = localCache.get();
             if (uqToken !== undefined) {
                 let {unit, user} = uqToken;
@@ -456,17 +426,7 @@ export class UqTokenApi extends CenterApiBase {
                     uqToken = undefined;
                 }
             }
-            /*
-            if (uqToken === undefined) {
-                uqToken = {
-                    user: loginedUserId,
-                    unit: params.unit,
-                    value: un
-                };
-            }
-            */
             let nowTick = Math.floor(Date.now() / 1000);
-            //let uq = this.uqTokens.uqs[un];
             if (uqToken !== undefined) {
                 let {tick, value} = uqToken;
                 if (value !== undefined && (nowTick - tick) < 24*3600) {
@@ -488,14 +448,10 @@ export class UqTokenApi extends CenterApiBase {
                 tick: nowTick,
                 value: ret,
             }
-            //localStorage.setItem(uqTokens, JSON.stringify(this.local));
-            //this.local.set(this.uqTokens);
             localCache.set(uqToken);
             return _.clone(ret);
         }
         catch (err) {
-            //this.local = undefined;
-            //localStorage.removeItem(uqTokens);
             localCache.remove();
             throw err;
         }
@@ -538,7 +494,7 @@ export interface UqServiceData {
 const appUqsName = 'appUqs';
 
 export class CenterAppApi extends CenterApiBase {
-    private local: LocalCache = localDb.item(appUqsName);
+    private local: LocalCache = env.localDb.item(appUqsName);
     //private cachedUqs: UqAppData;
     async uqs(appOwner:string, appName:string):Promise<UqAppData> {
         let ret:UqAppData;

@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import { Flatted } from './flatten';
 
 class _LocalStorage {
     getItem(key:string) {
@@ -14,29 +13,6 @@ class _LocalStorage {
 }
 
 const __ls = new _LocalStorage; // new Ls;
-
-/*
-function testCircular(obj:any, objs:object[], circular:any, path:string[]):boolean {
-    for (let i in obj) {
-        let v = obj[i];
-        if (typeof v === 'object') {
-            if (v === null) continue;
-            let len = objs.length;
-            for (let n=0; n<len; n++) {
-                if (objs[n] === v) {
-                    circular[i] = v;
-                    return true;
-                }
-            }
-            objs.push(v)
-            path.push(i);
-            if (testCircular(v, objs, circular, path) === true) return true;
-            path.pop();
-        }
-    }
-    return false;
-}
-*/
 
 export class LocalCache {
     private readonly local: Local;
@@ -276,5 +252,3 @@ export class LocalMap extends Local {
         return this.child(key);
     }
 }
-
-export const localDb = new LocalMap('$');

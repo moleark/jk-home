@@ -2,8 +2,8 @@ import {bridgeCenterApi, isBridged} from './appBridge';
 import {FetchError} from './fetchError';
 import {HttpChannelUI} from './httpChannelUI';
 import {nav} from '../components/nav';
-import { isDevelopment } from './host';
 import { Caller } from './caller';
+import { env } from '../tool';
 
 /*
 export async function httpGet(url:string, params?:any):Promise<any> {
@@ -31,7 +31,7 @@ export abstract class HttpChannel {
         this.hostUrl = hostUrl;
         this.apiToken = apiToken;
         this.ui = ui;
-        this.timeout = isDevelopment === true? 500000:5000;
+        this.timeout = env.isDevelopment === true? 500000:5000;
     }
 
     private startWait = () => {

@@ -114,7 +114,8 @@ export class VCreateOrder extends VPage<COrder> {
 
     private page = observer(() => {
 
-        let { orderData, onSelectShippingContact, onSelectInvoiceContact, openMeInfo, currentUser, onInvoiceInfoEdit, onCouponEdit } = this.controller;
+        let { cApp, orderData, onSelectShippingContact, onSelectInvoiceContact, openMeInfo, onInvoiceInfoEdit, onCouponEdit } = this.controller;
+        let { currentUser } = cApp;
         let fillMeInfo = <div onClick={openMeInfo} className="alert alert-warning text-primary py-1" role="alert">
             点击完善您的个人信息
         </div>

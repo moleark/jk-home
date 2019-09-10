@@ -6,8 +6,8 @@ import {netToken} from '../net/netToken';
 import FetchErrorView from './fetchErrorView';
 import {FetchError} from '../net/fetchError';
 import {appUrl, setAppInFrame, getExHash, getExHashPos} from '../net/appBridge';
-import {LocalData} from '../tool';
-import {guestApi, logoutApis, setCenterUrl, setCenterToken, WSChannel, appInFrame, isDevelopment, host, resUrlFromHost} from '../net';
+import {LocalData, env} from '../tool';
+import {guestApi, logoutApis, setCenterUrl, setCenterToken, WSChannel, appInFrame, host, resUrlFromHost} from '../net';
 import { WsBase, wsBridge } from '../net/wsChannel';
 import { resOptions } from './res';
 import { Loading } from './loading';
@@ -521,7 +521,7 @@ export class Nav {
         let unitName:string;
         let unit = this.local.unit.get();
         if (unit !== undefined) {
-            if (isDevelopment !== true) return unit.id;
+            if (env.isDevelopment !== true) return unit.id;
             unitName = await this.getPredefinedUnitName();
             if (unitName === undefined) return;
             if (unit.name === unitName) return unit.id;
@@ -558,17 +558,9 @@ export class Nav {
         }
         return href + '/unit.json';
     }
-    private isTesting():boolean {
-        let {pathname} = document.location;
-        let pn = pathname.toLowerCase();
-        for (let item of this.arrs) {
-            if (pn.endsWith(item) === true) return true;
-        }
-        return false;
-}
     async start() {
         try {
-            this.testing = this.isTesting();
+            this.testing = env.testing;
             await host.start(this.testing);
             let hash = document.location.hash;
             if (hash !== undefined && hash.length > 0) {

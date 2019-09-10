@@ -1,4 +1,4 @@
-export const isDevelopment = process.env.NODE_ENV === 'development';
+import { env } from '../tool';
 
 const centerHost = process.env['REACT_APP_CENTER_HOST'];
 const centerDebugHost = 'localhost:3000'; //'192.168.86.64';
@@ -74,7 +74,7 @@ class Host {
 
     async start(testing:boolean) {
         this.testing = testing;
-        if (isDevelopment === true) {
+        if (env.isDevelopment === true) {
             await this.tryLocal();
         }
         let host = this.getCenterHost();
@@ -125,7 +125,7 @@ class Host {
         if (hash.includes('sheet_debug') === true) {
             return value;
         }
-        if (isDevelopment === true) {
+        if (env.isDevelopment === true) {
             if (local === true) return value;
         }
         return centerHost;
@@ -137,14 +137,14 @@ class Host {
         if (hash.includes('sheet_debug') === true) {
             return value;
         }
-        if (isDevelopment === true) {
+        if (env.isDevelopment === true) {
             if (local === true) return value;
         }
         return resHost;
     }
 
     getUrlOrDebug(url:string, debugHost:string = 'uqhost'):string {
-        if (isDevelopment === false) return url;
+        if (env.isDevelopment === false) return url;
         let host = hosts[debugHost];
         if (host === undefined) return url;
         let {value, local} = host;

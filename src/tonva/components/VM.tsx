@@ -1,16 +1,15 @@
 import * as React from 'react';
 import _ from 'lodash';
-import {User} from '../tool/user';
 import {nav} from './nav';
 import {Page} from './page';
-import { isDevelopment } from '../net';
+import { User, env } from '../tool';
 
 export abstract class Controller {
     readonly res: any;
     readonly x: any;
     icon: string|JSX.Element;
     label:string;
-    readonly isDev:boolean = isDevelopment;
+    readonly isDev:boolean = env.isDevelopment;
     get user():User {return nav.user}
     get isLogined():boolean {
         let {user} = nav;
@@ -161,7 +160,7 @@ export abstract class View<C extends Controller> {
         this.x = controller.x;
     }
 
-    protected get isDev() {return isDevelopment}
+    protected get isDev() {return  env.isDevelopment}
 
     abstract render(param?:any): JSX.Element;
 
