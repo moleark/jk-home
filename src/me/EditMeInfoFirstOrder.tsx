@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { observable } from 'mobx';
-import { ItemSchema, StringSchema, ImageSchema, UiTextItem, UiImageItem, nav, Page, Edit, UiSchema, VPage } from 'tonva';
+import { ItemSchema, Page, Edit, VPage, FA } from 'tonva';
 import { CMe } from './CMe';
 import { webUserSchema, webUserUiSchema, webUserContactSchema, webUserContactUiSchema } from './EditMeInfo';
-import { FA, LMR } from 'tonva';
 
 export class EditMeInfoFirstOrder extends VPage<CMe>{
 

@@ -36,7 +36,7 @@ export class VMe extends VPage<CMe> {
         let { id, name, nick, icon } = user;
         return <LMR className="py-2 cursor-pointer w-100"
             left={<Image className="w-3c h-3c mr-3" src={icon} />}
-            right={<FA className="align-self-end" name="chevron-right" />}
+            right={<FA className="align-self-end" name="angle-right" />}
             onClick={() => {
                 this.openVPage(EditMeInfo);
             }}>
