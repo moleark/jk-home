@@ -1,9 +1,10 @@
 
 import * as React from 'react';
 import './App.css';
-import { NavView, nav, Page, Tabs } from 'tonva';
-import { startApp } from 'tonva';
-import ui from './ui';
+import { NavView, nav, Page, Tabs, start } from 'tonva';
+//import { startApp } from 'tonva';
+//import ui from './ui';
+import { CApp, appConfig } from 'nv';
 //import { faceTabs } from 'facetabs';
 
 //const tonvaApp = "bruce/TestApp";
@@ -11,7 +12,8 @@ import ui from './ui';
 class App extends React.Component {
 
   private onLogined = async () => {
-    await startApp(ui);
+    //await startApp(ui);
+    await start(CApp, appConfig);
     /*
     let page = <Page header={false}>
       <Tabs tabs={faceTabs} />
