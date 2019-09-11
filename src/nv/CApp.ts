@@ -11,7 +11,7 @@ import { CMember } from "./member";
 import { CMe } from "./me/CMe";
 import { GLOABLE } from "../ui";
 import { VMain } from "./ui/main";
-import { CBase } from "./CBase";
+import { CUqBase } from "./CBase";
 
 export class CApp extends CAppBase {
     readonly uqs: UQs;
@@ -45,7 +45,7 @@ export class CApp extends CAppBase {
     cMember: CMember;
     cMe: CMe;
 
-    protected newC<T extends CBase>(type: IConstructor<T>):T {
+    protected newC<T extends CUqBase>(type: IConstructor<T>):T {
         return new type(this);
     }
 

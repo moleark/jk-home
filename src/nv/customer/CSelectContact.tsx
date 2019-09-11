@@ -3,13 +3,13 @@ import { observable } from 'mobx';
 import _ from 'lodash';
 import { Tuid, BoxId } from 'tonva';
 import { Controller, Context, nav } from 'tonva';
-import { CBase } from '../CBase';
+import { CUqBase } from '../CBase';
 import { VContactList } from './VContactList';
 //import { CCartApp } from 'CCartApp';
 import { VContact } from './VContact';
 import { CAddress } from './CAddress';
 
-export abstract class CSelectContact extends CBase {
+export abstract class CSelectContact extends CUqBase {
     //protected cApp: CCartApp;
     //private contactTuid: Tuid;
     fromOrderCreation: boolean;

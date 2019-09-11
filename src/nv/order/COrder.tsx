@@ -3,7 +3,7 @@ import { Sheet, BoxId, Query, Action, Tuid, Map } from 'tonva';
 import { Controller, nav } from 'tonva';
 //import { CCartApp } from 'CCartApp';
 import { CApp } from '../CApp';
-import { CBase } from '../CBase';
+import { CUqBase } from '../CBase';
 import { VCreateOrder } from './VCreateOrder';
 import { Order, OrderItem } from './Order';
 import { OrderSuccess } from './OrderSuccess';
@@ -20,7 +20,7 @@ import { CartItem2 } from '../cart/Cart';
 const FREIGHTFEEFIXED = 12;
 const FREIGHTFEEREMITTEDSTARTPOINT = 100;
 
-export class COrder extends CBase {
+export class COrder extends CUqBase {
     //private cApp: CCartApp;
     cApp: CApp;
     @observable orderData: Order = new Order();

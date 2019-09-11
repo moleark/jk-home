@@ -2,7 +2,7 @@ import { Tuid } from 'tonva';
 //import { CCartApp } from '../CCartApp';
 import { PageItems, Controller } from 'tonva';
 import { CApp } from '../CApp';
-import { CBase } from '../CBase';
+import { CUqBase } from '../CBase';
 import { VSearchHeader } from './VSearchHeader';
 import { VHome } from './VHome';
 
@@ -28,7 +28,7 @@ class HomeSections extends PageItems<any> {
     }
 }
 
-export class CHome extends CBase {
+export class CHome extends CUqBase {
 
     //cApp: CCartApp;
     cApp: CApp;

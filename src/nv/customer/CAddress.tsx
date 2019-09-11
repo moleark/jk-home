@@ -5,9 +5,9 @@ import { CCartApp } from 'CCartApp';
 import { Query, Tuid } from 'tonva';
 */
 import { VAddress } from './VAddress';
-import { CBase } from '../CBase';
+import { CUqBase } from '../CBase';
 
-export class CAddress extends CBase {
+export class CAddress extends CUqBase {
     //private cApp: CCartApp;
     /*
     private getCountryProvincesQuery: Query;

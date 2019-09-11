@@ -1,10 +1,10 @@
 //import { Controller } from 'tonva';
-import { CBase } from '../CBase';
+import { CUqBase } from '../CBase';
 import { VInvoiceInfo } from './VInvoiceInfo';
 //import { CCartApp } from 'CCartApp';
 //import { Tuid } from 'tonva';
 
-export class CInvoiceInfo extends CBase {
+export class CInvoiceInfo extends CUqBase {
     //protected cApp: CCartApp;
     //private invoiceTypeTuid: Tuid;
     //private invoiceInfoTuid: Tuid;

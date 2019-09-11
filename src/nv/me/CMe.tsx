@@ -3,14 +3,14 @@ import _ from 'lodash';
 import { Controller, Context } from 'tonva';
 //import { CCartApp } from 'CCartApp';
 import { CApp } from '../CApp';
-import { CBase } from '../CBase';
+import { CUqBase } from '../CBase';
 import { VMe } from './VMe';
 import { CSelectShippingContact } from '../customer/CSelectContact';
 import { EditMeInfoFirstOrder } from './EditMeInfoFirstOrder';
 import { CInvoiceInfo } from '../customer/CInvoiceInfo';
 import { CAddress } from '../customer/CAddress';
 
-export class CMe extends CBase {
+export class CMe extends CUqBase {
     cApp: CApp;
     /*
     cApp: CCartApp;

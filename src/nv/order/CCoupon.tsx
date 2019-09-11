@@ -1,9 +1,9 @@
 //import { Controller, Action } from 'tonva';
 //import { CCartApp } from 'CCartApp';
-import { CBase } from '../CBase';
+import { CUqBase } from '../CBase';
 import { VCouponEdit } from './VCouponEdit';
 
-export class CCoupon extends CBase {
+export class CCoupon extends CUqBase {
     //private cApp: CCartApp;
     //private isValidCoupon: Action;
 

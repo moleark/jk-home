@@ -6,12 +6,12 @@ import { FA } from 'tonva';
 import { Controller, Loading, nav } from 'tonva';
 import { Action, Map, BoxId } from 'tonva';
 import { CApp } from '../CApp';
-import { CBase } from '../CBase';
+import { CUqBase } from '../CBase';
 import { VMember } from './VMember';
 //import { CCartApp } from 'CCartApp';
 //import { jnkTop } from 'me/loginTop';
 
-export class CMember extends CBase {
+export class CMember extends CUqBase {
 
     //cApp: CCartApp;
     cApp: CApp;

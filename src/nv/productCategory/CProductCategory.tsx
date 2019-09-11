@@ -2,13 +2,13 @@
 //import { Query } from 'tonva';
 import { observable } from 'mobx';
 import { CApp } from '../CApp';
-import { CBase } from '../CBase';
+import { CUqBase } from '../CBase';
 import { VRootCategory } from './VRootCategory';
 import { VCategory } from './VCategory';
 //import { CCartApp } from 'CCartApp';
 //import { Controller } from 'tonva';
 
-export class CProductCategory extends CBase {
+export class CProductCategory extends CUqBase {
 
     //cApp: CCartApp;
     // categories: any[];

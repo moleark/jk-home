@@ -5,7 +5,7 @@ import { Query, tv, BoxId, Map } from 'tonva';
 import { PageItems, Controller, nav, Page, Image } from 'tonva';
 import classNames from 'classnames';
 import { CApp } from '../CApp';
-import { CBase } from '../CBase';
+import { CUqBase } from '../CBase';
 //import { CCartApp } from '../CCartApp';
 import { VProduct } from './VProduct';
 import { VProductList } from './VProductList';
@@ -39,7 +39,7 @@ class PageProducts extends PageItems<any> {
 /**
  *
  */
-export class CProduct extends CBase {
+export class CProduct extends CUqBase {
     //cApp: CCartApp;
     cApp: CApp;
     pageProducts: PageProducts;

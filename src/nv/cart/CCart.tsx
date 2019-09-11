@@ -1,13 +1,13 @@
 //import * as React from 'react';
 import { Controller, RowContext, nav, User, BoxId } from 'tonva';
 import { CApp } from '../CApp';
-import { CBase } from '../CBase';
+import { CUqBase } from '../CBase';
 import { VCartLabel } from './VCartLabel';
 //import { CCartApp } from 'CCartApp';
 import { VCart } from './VCart';
 import { CartPackRow, CartItem2 } from './Cart';
 
-export class CCart extends CBase {
+export class CCart extends CUqBase {
 
     //cApp: CCartApp;
     cApp: CApp;
