@@ -67,6 +67,10 @@ export class UQsMan {
             //this.uqs.addUq(cUq.uq);
             let uq = new UqMan(this, uqData, undefined, this.tvs[uqFullName] || this.tvs[uqName]);
             this.collection[uqFullName] = uq;
+            let lower = uqFullName.toLowerCase();
+            if (lower !== uqFullName) {
+                this.collection[lower] = uq;
+            }
             promiseInits.push(uq.init());
         }
         await Promise.all(promiseInits);
