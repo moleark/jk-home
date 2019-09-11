@@ -1,5 +1,4 @@
 
-
 export function telephoneValidation(value: string) {
     if (value && !/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(value))
         return "固定电话格式不正确，请重新输入！";

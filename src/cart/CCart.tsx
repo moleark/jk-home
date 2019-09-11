@@ -1,20 +1,16 @@
-import * as React from 'react';
-import { VCartLabel } from './VCartLabel';
-import { CCartApp } from 'CCartApp';
-import { VCart } from './VCart';
+//import * as React from 'react';
 import { Controller, RowContext, nav, User, BoxId } from 'tonva';
+import { CApp } from '../CApp';
+import { CUqBase } from '../CBase';
+import { VCartLabel } from './VCartLabel';
+//import { CCartApp } from 'CCartApp';
+import { VCart } from './VCart';
 import { CartPackRow, CartItem2 } from './Cart';
 
-export class CCart extends Controller {
+export class CCart extends CUqBase {
 
-    cApp: CCartApp;
+    cApp: CApp;
     private selectedCartItems: CartItem2[];
-
-    constructor(cApp: CCartApp, res: any) {
-        super(res);
-
-        this.cApp = cApp;
-    }
 
     protected async internalStart(param: any) {
         this.openVPage(VCart);

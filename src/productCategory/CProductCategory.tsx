@@ -1,34 +1,18 @@
-import * as React from 'react';
-import { Query } from 'tonva';
 import { observable } from 'mobx';
+import { CApp } from '../CApp';
+import { CUqBase } from '../CBase';
 import { VRootCategory } from './VRootCategory';
 import { VCategory } from './VCategory';
-import { CCartApp } from 'CCartApp';
-import { Controller } from 'tonva';
 
-export class CProductCategory extends Controller {
+export class CProductCategory extends CUqBase {
 
-    cApp: CCartApp;
-    // categories: any[];
+    cApp: CApp;
     @observable categories: any[] = [];
     @observable categories2: any[] = [];
-    private getRootCategoryQuery: Query;
-    private getRootCategoriesQuery: Query;
-    private getChildrenCategoryQuery: Query;
-
-    constructor(cApp: CCartApp, res: any) {
-        super(res);
-
-        this.cApp = cApp;
-        let { cUqProduct } = this.cApp;
-        this.getRootCategoryQuery = cUqProduct.query('getRootCategory');
-        this.getRootCategoriesQuery = cUqProduct.query('getRootCategories');
-        this.getChildrenCategoryQuery = cUqProduct.query('getChildrenCategory');
-    }
 
     async internalStart(param: any) {
         let { currentSalesRegion, currentLanguage } = this.cApp;
-        let results = await this.getRootCategoryQuery.query({ salesRegion: currentSalesRegion.id, language: currentLanguage.id });
+        let results = await this.uqs.product.GetRootCategory.query({ salesRegion: currentSalesRegion.id, language: currentLanguage.id });
         this.categories = results.first;
         this.categories.forEach(element => {
             this.buildCategories(element, results.secend, results.third);
@@ -46,7 +30,7 @@ export class CProductCategory extends Controller {
 
     async getCategoryChildren(parentCategoryId: number) {
         let { currentSalesRegion, currentLanguage } = this.cApp;
-        return await this.getChildrenCategoryQuery.query({ parent: parentCategoryId, salesRegion: currentSalesRegion.id, language: currentLanguage.id });
+        return await this.uqs.product.GetChildrenCategory.query({ parent: parentCategoryId, salesRegion: currentSalesRegion.id, language: currentLanguage.id });
     }
 
     async buildCategories(categoryWapper: any, firstCategory: any, secendCategory: any) {

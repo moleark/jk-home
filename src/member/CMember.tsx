@@ -1,22 +1,26 @@
 import * as React from 'react';
-import Loadable from 'react-loadable';
-import { Controller, Loading, nav } from 'tonva';
-import { VMember } from './VMember';
-import { CCartApp } from 'CCartApp';
+//import Loadable from 'react-loadable';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import { FA } from 'tonva';
-import { jnkTop } from 'me/loginTop';
+import { Controller, Loading, nav } from 'tonva';
 import { Action, Map, BoxId } from 'tonva';
+import { CApp } from '../CApp';
+import { CUqBase } from '../CBase';
+import { VMember } from './VMember';
+//import { CCartApp } from 'CCartApp';
+//import { jnkTop } from 'me/loginTop';
 
-export class CMember extends Controller {
+export class CMember extends CUqBase {
 
-    cApp: CCartApp;
+    //cApp: CCartApp;
+    cApp: CApp;
     @observable member: any;
     private referrer: BoxId;
-    private memberAction: Action;
-    private memberRecommenverMap: Map;
+    //private memberAction: Action;
+    //private memberRecommenverMap: Map;
 
+    /*
     constructor(cApp: CCartApp, res: any) {
         super(res);
 
@@ -25,15 +29,24 @@ export class CMember extends Controller {
         this.memberAction = cUqMember.action('MemberAction');
         this.memberRecommenverMap = cUqMember.map('MemberRecommender');
     }
+    */
+    /*
+    protected init() {
+        let { cUqMember } = this.cApp;
+        this.memberAction = cUqMember.action('MemberAction');
+        this.memberRecommenverMap = cUqMember.map('MemberRecommender');
+    }
+    */
 
     protected async internalStart(param: any) {
 
         if (this.isLogined) {
+            let {member} = this.uqs;
             let { id: currentUserId } = this.user;
             let promises: PromiseLike<any>[] = [];
-            promises.push(this.memberAction.submit({}));
-            promises.push(this.memberRecommenverMap.table({ referrer: currentUserId }));
-            promises.push(this.memberRecommenverMap.table({ member: currentUserId }));
+            promises.push(member.MemberAction.submit({}));
+            promises.push(member.MemberRecommender.table({ referrer: currentUserId }));
+            promises.push(member.MemberRecommender.table({ member: currentUserId }));
             let result = await Promise.all(promises);
             let { code, point } = result[0];
             this.referrer = result[2];

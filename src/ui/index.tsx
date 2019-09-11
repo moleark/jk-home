@@ -1,6 +1,5 @@
 import { AppUI, CApp } from 'tonva';
-import { VHome } from './main';
-import { CCartApp } from '../CCartApp';
+//import { CCartApp } from '../CCartApp';
 import commonUI from './common';
 import orderUI from './order';
 import productUI from './product';
@@ -15,8 +14,8 @@ import OrganicChemistry from '../images/OrganicChemistry.png';
 
 const ui: AppUI = {
     appName: "百灵威系统工程部/cart",
-    CApp: CCartApp,
-    main: VHome,
+    CApp: undefined, // CCartApp,
+    main: undefined, // VHome,
     uqs: {
         '百灵威系统工程部/common': commonUI,
         '百灵威系统工程部/order': orderUI,

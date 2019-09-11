@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { VPage, Page, UiSchema, UiInputItem, Form, Context, tv, BoxId, FA } from 'tonva';
-import { CInvoiceInfo } from './CInvoiceInfo';
-import { Schema } from 'tonva';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
+import { VPage, Page, UiSchema, UiInputItem, Form, Context, tv, BoxId, FA } from 'tonva';
+import { Schema } from 'tonva';
+import { CInvoiceInfo } from './CInvoiceInfo';
 
 const schema: Schema = [
     { name: 'id', type: 'id', required: false },

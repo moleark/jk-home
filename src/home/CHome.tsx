@@ -1,6 +1,8 @@
 import { Tuid } from 'tonva';
-import { CCartApp } from '../CCartApp';
+//import { CCartApp } from '../CCartApp';
 import { PageItems, Controller } from 'tonva';
+import { CApp } from '../CApp';
+import { CUqBase } from '../CBase';
 import { VSearchHeader } from './VSearchHeader';
 import { VHome } from './VHome';
 
@@ -26,17 +28,11 @@ class HomeSections extends PageItems<any> {
     }
 }
 
-export class CHome extends Controller {
+export class CHome extends CUqBase {
 
-    cApp: CCartApp;
+    cApp: CApp;
     homeSections: HomeSections;
     sectionTuid: Tuid;
-
-    constructor(cApp: CCartApp, res: any) {
-        super(res);
-
-        this.cApp = cApp;
-    }
 
     async internalStart(param: any) {
 

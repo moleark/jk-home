@@ -1,12 +1,10 @@
 import * as React from 'react';
-import { VPage, Page } from 'tonva';
-import { COrder } from './COrder';
-import { List, LMR, FA } from 'tonva';
-import { tv, BoxId } from 'tonva';
-import { observer } from 'mobx-react';
-import { OrderItem } from './Order';
 import { observable } from 'mobx';
-import { CartPackRow } from 'cart/Cart';
+import { observer } from 'mobx-react';
+import { VPage, Page, tv, List, LMR, FA } from 'tonva';
+import { COrder } from './COrder';
+import { OrderItem } from './Order';
+import { CartPackRow } from '../cart/Cart';
 
 const blankTime = 2000;
 
@@ -116,7 +114,8 @@ export class VCreateOrder extends VPage<COrder> {
 
     private page = observer(() => {
 
-        let { orderData, onSelectShippingContact, onSelectInvoiceContact, openMeInfo, currentUser, onInvoiceInfoEdit, onCouponEdit } = this.controller;
+        let { cApp, orderData, onSelectShippingContact, onSelectInvoiceContact, openMeInfo, onInvoiceInfoEdit, onCouponEdit } = this.controller;
+        let { currentUser } = cApp;
         let fillMeInfo = <div onClick={openMeInfo} className="alert alert-warning text-primary py-1" role="alert">
             点击完善您的个人信息
         </div>

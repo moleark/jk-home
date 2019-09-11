@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { TuidUI, tv } from 'tonva';
-import { ProductImage } from 'tools/productImage';
+import { ProductImage } from '../../../tools/productImage';
 
 export const productUI: TuidUI = {
     content: (values: any) => {

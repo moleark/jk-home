@@ -1,12 +1,12 @@
 import * as React from 'react';
+import { observer } from 'mobx-react';
 import { VPage, Page, Form, ObjectSchema, NumSchema, ArrSchema, UiSchema, UiArr, FormField } from 'tonva';
-import { CCart } from './CCart';
 import { List, LMR, FA } from 'tonva';
 import { tv, BoxId } from 'tonva';
-import { observer } from 'mobx-react';
 import { MinusPlusWidget } from '../tools';
-import { renderBrand, productPropItem } from '../product/CProduct';
-import { ProductImage } from 'tools/productImage';
+//import { renderBrand, productPropItem } from '../product/CProduct';
+//import { ProductImage } from 'tools/productImage';
+import { CCart } from './CCart';
 import { CartPackRow } from './Cart';
 
 const cartSchema = [

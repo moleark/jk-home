@@ -1,5 +1,5 @@
 import { contactUI } from './contact';
-import { addressUI, countryUI } from 'ui/common';
+import { addressUI, countryUI } from '../../common';
 import { invoiceInfoUI, invoiceTypeUI } from './invoice';
 
 export default {

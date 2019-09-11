@@ -1,16 +1,17 @@
 import { Entity } from 'tonva';
-import { CCartApp } from 'CCartApp';
+import { CApp } from '../CApp';
+//import { CCartApp } from 'CCartApp';
 
 export abstract class Loader<T> {
-    protected cApp: CCartApp;
+    protected cApp: CApp;
     private entities: Entity[] = [];
     private schemaLoaded: boolean = false;
-    constructor(cApp: CCartApp) {
+    constructor(cApp: CApp) {
         this.cApp = cApp;
-        this.initEntities();
+        //this.initEntities();
     }
 
-    protected abstract initEntities(): void;
+    //protected abstract initEntities(): void;
 
     protected async loadSchemas() {
         if (this.schemaLoaded === true) return;

@@ -1,14 +1,15 @@
-import { Controller } from 'tonva';
+//import { Controller } from 'tonva';
+import { CUqBase } from '../CBase';
 import { VInvoiceInfo } from './VInvoiceInfo';
-import { CCartApp } from 'CCartApp';
-import { Tuid } from 'tonva';
+//import { CCartApp } from 'CCartApp';
+//import { Tuid } from 'tonva';
 
-export class CInvoiceInfo extends Controller {
-    protected cApp: CCartApp;
-    private invoiceTypeTuid: Tuid;
-    private invoiceInfoTuid: Tuid;
+export class CInvoiceInfo extends CUqBase {
+    //protected cApp: CCartApp;
+    //private invoiceTypeTuid: Tuid;
+    //private invoiceInfoTuid: Tuid;
     fromOrderCreation: boolean;
-
+    /*
     constructor(cApp: CCartApp, res: any, fromOrderCreation: boolean) {
         super(res);
         this.cApp = cApp;
@@ -18,19 +19,30 @@ export class CInvoiceInfo extends Controller {
         this.invoiceInfoTuid = cUqCustomer.tuid('invoiceInfo');
         this.fromOrderCreation = fromOrderCreation;
     }
+    */
 
-    async internalStart(origInvoice?: any) {
+    /*
+    protected init() {
+        let { cUqCommon, cUqCustomer } = this.cApp;
+        this.invoiceTypeTuid = cUqCommon.tuid('invoiceType');
+        this.invoiceInfoTuid = cUqCustomer.tuid('invoiceInfo');
+        //this.fromOrderCreation = fromOrderCreation;
+    }
+    */
+
+    async internalStart(origInvoice: any, fromOrderCreation: boolean) {
+        this.fromOrderCreation = fromOrderCreation;
         this.openVPage(VInvoiceInfo, origInvoice);
     }
 
     async saveInvoiceInfo(invoice: any) {
         let { invoiceType, invoiceInfo, isDefault } = invoice;
-        let newInvoiceInfo = await this.invoiceInfoTuid.save(undefined, invoiceInfo);
+        let newInvoiceInfo = await this.uqs.common.InvoiceInfo.save(undefined, invoiceInfo);
 
         let { id: newInvoiceInfoId } = newInvoiceInfo;
         let invoiceBox = {
-            invoiceType: this.invoiceTypeTuid.boxId(invoiceType),
-            invoiceInfo: this.invoiceInfoTuid.boxId(newInvoiceInfoId),
+            invoiceType: this.uqs.common.InvoiceType.boxId(invoiceType),
+            invoiceInfo: this.uqs.common.InvoiceInfo.boxId(newInvoiceInfoId),
         }
         // if (isDefault === true || !this.fromOrderCreation) {
         let { currentUser } = this.cApp;

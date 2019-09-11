@@ -1,6 +1,6 @@
-import { countryUI, addressUI, currencyUI } from 'ui/common';
-import { productUI } from 'ui/product/tuid/product';
-import { contactUI } from 'ui/customer/tuid/contact';
+import { countryUI, addressUI, currencyUI } from '../../common';
+import { productUI } from '../../product/tuid/product';
+import { contactUI } from '../../customer/tuid/contact';
 
 export default {
     productx: productUI,

@@ -1,15 +1,18 @@
 import * as React from 'react';
 import _ from 'lodash';
 import { Controller, Context } from 'tonva';
-import { CCartApp } from 'CCartApp';
+//import { CCartApp } from 'CCartApp';
+import { CApp } from '../CApp';
+import { CUqBase } from '../CBase';
 import { VMe } from './VMe';
-import { CSelectShippingContact } from 'customer/CSelectContact';
+import { CSelectShippingContact } from '../customer/CSelectContact';
 import { EditMeInfoFirstOrder } from './EditMeInfoFirstOrder';
-import { CInvoiceInfo } from 'customer/CInvoiceInfo';
-import { CAddress } from 'customer/CAddress';
+import { CInvoiceInfo } from '../customer/CInvoiceInfo';
+import { CAddress } from '../customer/CAddress';
 
-export class CMe extends Controller {
-
+export class CMe extends CUqBase {
+    cApp: CApp;
+    /*
     cApp: CCartApp;
 
     constructor(cApp: CCartApp, res: any) {
@@ -17,6 +20,7 @@ export class CMe extends Controller {
 
         this.cApp = cApp;
     }
+    */
 
     protected async internalStart() {
 
@@ -40,12 +44,12 @@ export class CMe extends Controller {
     }
 
     openContactList = async () => {
-        let contactList = new CSelectShippingContact(this.cApp, undefined, false);
-        await contactList.start();
+        let contactList = this.newC(CSelectShippingContact); // new CSelectShippingContact(this.cApp, undefined, false);
+        await contactList.start(false);
     }
 
     openInvoice = async () => {
-        let cInvoiceInfo = new CInvoiceInfo(this.cApp, undefined, false);
+        let cInvoiceInfo = this.newC(CInvoiceInfo); // new CInvoiceInfo(this.cApp, undefined, false);
         let { currentUser } = this.cApp;
         let defaultSetting = await currentUser.getSetting();
 
@@ -58,7 +62,7 @@ export class CMe extends Controller {
     }
 
     pickAddress = async (context: Context, name: string, value: number): Promise<number> => {
-        let cAddress = new CAddress(this.cApp, undefined);
+        let cAddress = this.newC(CAddress); // new CAddress(this.cApp, undefined);
         return await cAddress.call<number>();
     }
 }

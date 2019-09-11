@@ -1,13 +1,14 @@
-import { CCartApp } from 'CCartApp';
+//import { CCartApp } from 'CCartApp';
 import { Query, TuidDiv, Action } from 'tonva';
 import { CartViewModel, CartItem } from './Cart2';
 import { CartPackRow } from './Cart';
-import { LoaderProductWithChemical } from 'product/itemLoader';
-import { groupByProduct } from 'tools/groupByProduct';
+import { LoaderProductWithChemical } from '../product/itemLoader';
+import { groupByProduct } from '../tools/groupByProduct';
+import { CApp } from '../CApp';
 
 export class CartServiceFactory {
 
-    static getCartService(cApp: CCartApp) {
+    static getCartService(cApp: CApp) {
         if (cApp.isLogined)
             return new CartRemoteService(cApp);
         return new CartLocalService(cApp);
@@ -16,15 +17,15 @@ export class CartServiceFactory {
 
 export abstract class CartService {
 
-    protected cApp: CCartApp;
-    private getInventoryAllocationQuery: Query;
-    private packTuid: TuidDiv;
+    protected cApp: CApp;
+    //private getInventoryAllocationQuery: Query;
+    //private packTuid: TuidDiv;
 
-    constructor(cApp: CCartApp) {
+    constructor(cApp: CApp) {
         this.cApp = cApp;
-        let { cUqWarehouse, cUqProduct } = this.cApp;
-        this.getInventoryAllocationQuery = cUqWarehouse.query("getInventoryAllocation");
-        this.packTuid = cUqProduct.tuidDiv('productx', 'packx');
+        //let { cUqWarehouse, cUqProduct } = this.cApp;
+        //this.getInventoryAllocationQuery = cUqWarehouse.query("getInventoryAllocation");
+        //this.packTuid = cUqProduct.tuidDiv('productx', 'packx');
     }
 
     abstract get isLocal(): boolean;
@@ -62,7 +63,7 @@ export abstract class CartService {
                     currency: currency,
                 };
                 packItem.inventoryAllocation =
-                    await this.getInventoryAllocationQuery.table({ product: productId, pack: pack.id, salesRegion: this.cApp.currentSalesRegion })
+                    await this.cApp.uqs.warehouse.GetInventoryAllocation.table({ product: productId, pack: pack.id, salesRegion: this.cApp.currentSalesRegion })
                 cartItem.packs.push(packItem);
             }
         }
@@ -79,14 +80,17 @@ export abstract class CartService {
 }
 
 export class CartRemoteService extends CartService {
+    /*
     private getCartQuery: Query;
     private setCartAction: Action;
     private removeFromCartAction: Action;
     private mergeCartAction: Action;
+    */
 
     get isLocal(): boolean { return false }
-
-    constructor(cApp: CCartApp) {
+    
+    /*
+    constructor(cApp: CApp) {
         super(cApp);
 
         let { cUqOrder } = this.cApp;
@@ -95,9 +99,10 @@ export class CartRemoteService extends CartService {
         this.removeFromCartAction = cUqOrder.action('removefromcart');
         this.mergeCartAction = cUqOrder.action('mergeCartAction');
     }
+    */
 
     async load(): Promise<CartViewModel> {
-        let cartData = await this.getCartQuery.page(undefined, 0, 100);
+        let cartData = await this.cApp.uqs.order.GetCart.page(undefined, 0, 100);
         let cartData2 = groupByProduct(cartData);
         return await this.generateCartItems(cartData2);
     }
@@ -117,7 +122,7 @@ export class CartRemoteService extends CartService {
         }
 
         try {
-            await this.setCartAction.submit(param);
+            await this.cApp.uqs.order.SetCart.submit(param);
             let cartItem: CartItem = await this.generateCartItem(productId
                 , [{ pack: packId, price: price, quantity: quantity, currency: currency && currency.id }]);
             cartViewModel.add(cartItem);
@@ -130,7 +135,7 @@ export class CartRemoteService extends CartService {
         if (rows && rows.length > 0) {
             cartViewModel.removeFromCart(rows);
             let param = rows.map(e => { return { product: e.productId, pack: e.packId } });
-            await this.removeFromCartAction.submit({ rows: param })
+            await this.cApp.uqs.order.RemoveFromCart.submit({ rows: param })
         }
     }
 
@@ -142,7 +147,7 @@ export class CartRemoteService extends CartService {
                 ...packs
             }
         })
-        await this.removeFromCartAction.submit({ rows: param });
+        await this.cApp.uqs.order.RemoveFromCart.submit({ rows: param });
     }
 
     async merge(source: CartViewModel) {
@@ -153,7 +158,7 @@ export class CartRemoteService extends CartService {
                 ...packs
             }
         })
-        await this.mergeCartAction.submit({ rows: param });
+        await this.cApp.uqs.order.MergeCart.submit({ rows: param });
         return await this.load();
     }
 }
@@ -161,7 +166,7 @@ export class CartRemoteService extends CartService {
 const LOCALCARTNAME: string = "cart";
 export class CartLocalService extends CartService {
 
-    constructor(cApp: CCartApp) {
+    constructor(cApp: CApp) {
         super(cApp);
     }
 

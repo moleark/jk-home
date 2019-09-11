@@ -1,15 +1,17 @@
 import * as React from 'react';
 import * as _ from 'lodash';
+import { observable } from 'mobx';
 import { Query, tv, BoxId, Map } from 'tonva';
 import { PageItems, Controller, nav, Page, Image } from 'tonva';
 import classNames from 'classnames';
-import { CCartApp } from '../CCartApp';
+import { CApp } from '../CApp';
+import { CUqBase } from '../CBase';
+//import { CCartApp } from '../CCartApp';
 import { VProduct } from './VProduct';
 import { VProductList } from './VProductList';
 import { LoaderProductChemicalWithPrices } from './itemLoader';
-import { ProductImage } from 'tools/productImage';
+import { ProductImage } from '../tools/productImage';
 import { VProductDelivery } from './VProductDelivery';
-import { observable } from 'mobx';
 import { VCartProuductView } from './VProductView';
 import { VChemicalInfo } from './VChemicalInfo';
 
@@ -37,47 +39,30 @@ class PageProducts extends PageItems<any> {
 /**
  *
  */
-export class CProduct extends Controller {
-    cApp: CCartApp;
-
+export class CProduct extends CUqBase {
+    cApp: CApp;
     pageProducts: PageProducts;
-    private getInventoryAllocationQuery: Query;
-    private getFutureDeliveryTime: Query;
-    private productChemicalMap: Map;
-    private getCustomerDiscount: Query;
-    private getPromotionPackQuery: Query;
 
     @observable inventoryAllocationContainer: { [packId: number]: any[] } = {};
     @observable futureDeliveryTimeDescriptionContainer: { [productId: number]: string } = {};
     @observable chemicalInfoContainer: { [productId: number]: any } = {};
-
-    constructor(cApp: CCartApp, res: any) {
-        super(res);
-        this.cApp = cApp;
-        let { cUqWarehouse, cUqProduct, cUqCustomerDiscount, cUqPromotion } = cApp;
-        this.getInventoryAllocationQuery = cUqWarehouse.query("getInventoryAllocation");
-        this.getFutureDeliveryTime = cUqProduct.query("getFutureDeliveryTime");
-        this.productChemicalMap = cUqProduct.map('productChemical');
-        this.getCustomerDiscount = cUqCustomerDiscount.query("getdiscount");
-        this.getPromotionPackQuery = cUqPromotion.query("getPromotionPack");
-    }
 
     protected async internalStart(param: any) {
         this.searchByKey(param);
     }
 
     searchByKey(key: string) {
-        let { cUqProduct, currentSalesRegion } = this.cApp;
-        let searchProductQuery = cUqProduct.query("searchProduct");
-        this.pageProducts = new PageProducts(searchProductQuery);
+        let { currentSalesRegion } = this.cApp;
+        //let searchProductQuery = cUqProduct.query("searchProduct");
+        this.pageProducts = new PageProducts(this.uqs.product.SearchProduct);
         this.pageProducts.first({ keyWord: key, salesRegion: currentSalesRegion.id });
         this.openVPage(VProductList, key);
     }
 
     async searchByCategory(category: any) {
-        let { cUqProduct, currentSalesRegion } = this.cApp;
-        let searchProductQuery = cUqProduct.query("searchProductByCategory");
-        this.pageProducts = new PageProducts(searchProductQuery);
+        let { currentSalesRegion } = this.cApp;
+        //let searchProductQuery = .query("searchProductByCategory");
+        this.pageProducts = new PageProducts(this.uqs.product.SearchProductByCategory);
         let { productCategoryId, name } = category;
         this.pageProducts.first({ productCategory: productCategoryId, salesRegion: currentSalesRegion.id });
         this.openVPage(VProductList, name);
@@ -100,12 +85,12 @@ export class CProduct extends Controller {
 
     getInventoryAllocation = async (productId: number, packId: number, salesRegionId: number) => {
         if (this.inventoryAllocationContainer[packId] === undefined)
-            this.inventoryAllocationContainer[packId] = await this.getInventoryAllocationQuery.table({ product: productId, pack: packId, salesRegion: this.cApp.currentSalesRegion });
+            this.inventoryAllocationContainer[packId] = await this.uqs.warehouse.GetInventoryAllocation.table({ product: productId, pack: packId, salesRegion: this.cApp.currentSalesRegion });
     }
 
     getFutureDeliveryTimeDescription = async (productId: number, salesRegionId: number) => {
         if (this.futureDeliveryTimeDescriptionContainer[productId] === undefined) {
-            let futureDeliveryTime = await this.getFutureDeliveryTime.table({ product: productId, salesRegion: salesRegionId });
+            let futureDeliveryTime = await this.uqs.product.GetFutureDeliveryTime.table({ product: productId, salesRegion: salesRegionId });
             if (futureDeliveryTime.length > 0) {
                 let { minValue, maxValue, unit, deliveryTimeDescription } = futureDeliveryTime[0];
                 this.futureDeliveryTimeDescriptionContainer[productId] = minValue + (maxValue > minValue ? '~' + maxValue : '') + ' ' + unit;
@@ -119,7 +104,7 @@ export class CProduct extends Controller {
 
     getChemicalInfo = async (productId: number) => {
         if (this.chemicalInfoContainer[productId] === undefined) {
-            this.chemicalInfoContainer[productId] = await this.productChemicalMap.obj({ product: productId });
+            this.chemicalInfoContainer[productId] = await this.uqs.product.ProductChemical.obj({ product: productId });
         }
     }
 

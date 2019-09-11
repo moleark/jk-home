@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { VPage, TabCaptionComponent, Page, Tabs } from 'tonva';
-import { CCartApp } from 'CCartApp';
+import { CApp } from '../CApp';
+//import { CCartApp } from 'CCartApp';
 
 export const store = {
     //homeCount: observable.box<number>(-1),
@@ -9,7 +10,7 @@ export const store = {
 
 const color = (selected: boolean) => selected === true ? 'text-primary' : 'text-muted';
 
-export class VHome extends VPage<CCartApp> {
+export class VMain extends VPage<CApp> {
     async open(param?: any) {
         this.openPage(this.render);
     }

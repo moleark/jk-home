@@ -1,7 +1,7 @@
 import { observable, autorun, IReactionDisposer } from 'mobx';
 import _ from 'lodash';
 import { CartPackRow } from './Cart';
-import { MainProductChemical } from 'mainSubs';
+import { MainProductChemical } from '../mainSubs';
 
 export interface CartItem {
     product: MainProductChemical;

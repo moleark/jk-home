@@ -1,10 +1,10 @@
 import { observable, autorun, IReactionDisposer } from 'mobx';
 import _ from 'lodash';
 import { Action, Query, TuidDiv, BoxId, Tuid } from 'tonva';
-import { CCartApp } from '../CCartApp';
+//import { CCartApp } from '../CCartApp';
 import { PackRow } from 'product/Product';
 import { groupByProduct } from 'tools/groupByProduct';
-import { createDeflate } from 'zlib';
+import { CApp } from '../CApp';
 
 export interface CartItem2 {
     product: BoxId;
@@ -21,7 +21,7 @@ export interface CartPackRow extends PackRow {
 }
 
 export class Cart {
-    cApp: CCartApp;
+    cApp: CApp;
 
     private cartStore: CartStore;
     private disposer: IReactionDisposer;
@@ -33,7 +33,7 @@ export class Cart {
     count = observable.box<number>(0);
     amount = observable.box<number>(0);
 
-    constructor(cApp: CCartApp) {
+    constructor(cApp: CApp) {
         this.cApp = cApp;
         this.cartItems = this.data.list;
         this.disposer = autorun(this.calcSum);
@@ -233,8 +233,8 @@ export class Cart {
 
 abstract class CartStore {
 
-    protected cApp: CCartApp;
-    constructor(cApp: CCartApp) {
+    protected cApp: CApp;
+    constructor(cApp: CApp) {
         this.cApp = cApp;
     }
     abstract get isLocal(): boolean;
@@ -244,13 +244,14 @@ abstract class CartStore {
 }
 
 class CartRemote extends CartStore {
-    private getCartQuery: Query;
-    private setCartAction: Action;
-    private removeFromCartAction: Action;
+    //private getCartQuery: Query;
+    //private setCartAction: Action;
+    //private removeFromCartAction: Action;
 
     get isLocal(): boolean { return false }
 
-    constructor(cApp: CCartApp) {
+    /*
+    constructor(cApp: CApp) {
         super(cApp);
 
         let { cUqOrder } = this.cApp;
@@ -258,9 +259,10 @@ class CartRemote extends CartStore {
         this.setCartAction = cUqOrder.action('setcart');
         this.removeFromCartAction = cUqOrder.action('removefromcart');
     }
+    */
 
     async load(): Promise<CartItem2[]> {
-        return await this.getCartQuery.page(undefined, 0, 100);
+        return await this.cApp.uqs.order.GetCart.page(undefined, 0, 100);
     }
 
     /**
@@ -272,7 +274,7 @@ class CartRemote extends CartStore {
      * @param currency
      */
     async storeCart(product: BoxId, pack: BoxId, quantity: number, price: number, currency: any) {
-        await this.setCartAction.submit({
+        await this.cApp.uqs.order.SetCart.submit({
             product: product.id,
             pack: pack.id,
             price: price,
@@ -283,7 +285,7 @@ class CartRemote extends CartStore {
 
     async removeFromCart(rows: [{ productId: number, packId: number }]) {
         let param = rows.map(e => { return { product: e.productId, pack: e.packId } });
-        await this.removeFromCartAction.submit({ rows: param });
+        await this.cApp.uqs.order.RemoveFromCart.submit({ rows: param });
     }
 }
 
@@ -291,27 +293,31 @@ const LOCALCARTNAME: string = "cart";
 class CartLocal extends CartStore {
 
     private cartData: any[] = [];
+    /*
     private productTuid: Tuid;
     private packTuid: TuidDiv;
-    constructor(cApp: CCartApp) {
+    constructor(cApp: CApp) {
         super(cApp);
         let { cUqProduct } = cApp;
         this.productTuid = cUqProduct.tuid('productx');
         this.packTuid = cUqProduct.tuidDiv('productx', 'packx');
     }
+    */
 
     get isLocal(): boolean { return true }
 
     async load(): Promise<CartItem2[]> {
         try {
+            let productTuid = this.cApp.uqs.product.ProductX;
+            let packTuid = productTuid.div('packx');
             let cartstring = localStorage.getItem(LOCALCARTNAME);
             if (cartstring === null) return [];
             this.cartData = JSON.parse(cartstring);
             let cartDataBoxed = [];
             for (let i = 0; i < this.cartData.length; i++) {
                 let { product, pack, quantity, price, currency } = this.cartData[i];
-                let productbox = this.productTuid.boxId(product);
-                let packbox = this.packTuid.boxId(pack);
+                let productbox = productTuid.boxId(product);
+                let packbox = packTuid.boxId(pack);
                 cartDataBoxed.push({
                     product: productbox,
                     pack: packbox,

@@ -1,6 +1,7 @@
 import { User, loadAppUqs } from 'tonva';
 import { Map, BoxId, CUq, Tuid } from 'tonva';
 import { observable, computed } from 'mobx';
+import { UQs } from './uqs';
 
 export class WebUser {
 
@@ -31,23 +32,13 @@ export class WebUser {
 
     private _user: User;
 
-    private webUserTuid: Tuid;
-    private webUserCustomerMap: Map;
-    private webUserContactMap: Map;
-    private webUserContactsMap: Map;
-    private webUserSettingMap: Map;
-
     private webUserSettings: any;
 
-    private cUsqCustomer: CUq;
+    private uqs: UQs;
 
-    constructor(cUsqWebUser: CUq, cUsqCustomer: CUq) {
-        this.webUserTuid = cUsqWebUser.tuid("webUser");
-        this.webUserCustomerMap = cUsqWebUser.map('webUserCustomer');
-        this.webUserContactMap = cUsqWebUser.map('webUserContact');
-        this.webUserContactsMap = cUsqWebUser.map('webUserContacts');
-        this.webUserSettingMap = cUsqWebUser.map('webUserSetting');
-        this.cUsqCustomer = cUsqCustomer;
+
+    constructor(uqs: UQs) {// cUsqWebUser: CUq, cUsqCustomer: CUq) {
+        this.uqs = uqs;
     }
 
     setUser = async (user: User) => {
@@ -67,7 +58,7 @@ export class WebUser {
     private async loadWebUser() {
         let { id, _user } = this;
         if (this._user !== undefined) {
-            let webUser = await this.webUserTuid.load(this.id);
+            let webUser = await this.uqs.webuser.WebUser.load(this.id);
             if (webUser) {
                 let { firstName, gender, salutation, organizationName, departmentName } = webUser;
                 this.firstName = firstName;
@@ -76,7 +67,7 @@ export class WebUser {
                 this.organizationName = organizationName;
                 this.departmentName = departmentName;
             }
-            let contact = await this.webUserContactMap.obj({ webUser: this.id });
+            let contact = await this.uqs.webuser.WebUserContact.obj({ webUser: this.id });
             if (contact) {
                 let { telephone, mobile, email, fax, address, addressString, zipCode } = contact;
                 this.telephone = telephone;
@@ -87,10 +78,10 @@ export class WebUser {
                 this.addressString = addressString;
                 this.zipCode = zipCode;
             }
-            this.webUserSettings = await this.webUserSettingMap.obj({ webUser: this.id }) || { webUser: this.id };
-            let value = await this.webUserCustomerMap.obj({ webUser: this.id });
+            this.webUserSettings = await this.uqs.webuser.WebUserSetting.obj({ webUser: this.id }) || { webUser: this.id };
+            let value = await this.uqs.webuser.WebUserCustomer.obj({ webUser: this.id });
             if (value != undefined) {
-                this.currentCustomer = new Customer(value.customer, this.cUsqCustomer);
+                this.currentCustomer = new Customer(value.customer, this.uqs);
                 await this.currentCustomer.init();
             }
         }
@@ -110,7 +101,7 @@ export class WebUser {
             return await this.currentCustomer.getContacts()
         }
         */
-        return await this.webUserContactsMap.table({ webUser: this.id });
+        return await this.uqs.webuser.WebUserContacts.table({ webUser: this.id });
     }
 
     async addContact(contactId: number) {
@@ -120,7 +111,7 @@ export class WebUser {
             return;
         }
         */
-        await this.webUserContactsMap.add({ webUser: this.id, arr1: [{ contact: contactId }] });
+        await this.uqs.webuser.WebUserContacts.add({ webUser: this.id, arr1: [{ contact: contactId }] });
     }
 
     async delContact(contactId: number) {
@@ -130,7 +121,7 @@ export class WebUser {
             return;
         }
         */
-        await this.webUserContactsMap.del({ webUser: this.id, arr1: [{ contact: contactId }] });
+        await this.uqs.webuser.WebUserContacts.del({ webUser: this.id, arr1: [{ contact: contactId }] });
     }
 
     async getSetting() {
@@ -178,51 +169,54 @@ export class WebUser {
     }
 
     async saveDefaultSettings() {
-        await this.webUserSettingMap.add(this.webUserSettings);
+        await this.uqs.webuser.WebUserSetting.add(this.webUserSettings);
     }
 
 
     async changeWebUser(webUser: any) {
-        await this.webUserTuid.save(this.id, webUser);
+        await this.uqs.webuser.WebUser.save(this.id, webUser);
         await this.loadWebUser();
     }
 
     async changeWebUserContact(webUserContact: any) {
         webUserContact.webUser = this.id;
-        await this.webUserContactMap.add(webUserContact);
+        await this.uqs.webuser.WebUserContact.add(webUserContact);
         await this.loadWebUser();
     }
 };
 
 export class Customer {
-
-    private contactMap: Map;
+    private readonly uqs: UQs;
+    //private contactMap: Map;
     id: number;
 
-    private customerSettingMap: Map;
+    //private customerSettingMap: Map;
 
     private customerSettings: any;
 
-    constructor(customer: BoxId, cUsqCustomer: CUq) {
+    constructor(customer: BoxId, uqs: UQs) {
         this.id = customer.id;
+        this.uqs = uqs;
+        /*
         this.contactMap = cUsqCustomer.map('customerContacts');
         this.customerSettingMap = cUsqCustomer.map('customerSetting');
+        */
     };
 
     async getContacts(): Promise<any[]> {
-        return await this.contactMap.table({ customer: this.id });
+        return await this.uqs.customer.CustomerContacts.table({ customer: this.id });
     }
 
     async addContact(contactId: number) {
-        await this.contactMap.add({ customer: this.id, arr1: [{ contact: contactId }] });
+        await this.uqs.customer.CustomerContacts.add({ customer: this.id, arr1: [{ contact: contactId }] });
     }
 
     async delContact(contactId: number) {
-        await this.contactMap.del({ customer: this.id, arr1: [{ contact: contactId }] });
+        await this.uqs.customer.CustomerContacts.del({ customer: this.id, arr1: [{ contact: contactId }] });
     }
 
     async init() {
-        this.customerSettings = await this.customerSettingMap.obj({ customer: this.id }) || { customer: this.id };
+        this.customerSettings = await this.uqs.customer.CustomerSetting.obj({ customer: this.id }) || { customer: this.id };
     }
 
     getSetting() {
@@ -246,6 +240,6 @@ export class Customer {
     }
 
     async setDefaultSettings() {
-        await this.customerSettingMap.add(this.customerSettings);
+        await this.uqs.customer.CustomerSetting.add(this.customerSettings);
     }
 }

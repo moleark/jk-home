@@ -1,41 +1,30 @@
 import { observable } from 'mobx';
 import { Sheet, BoxId, Query, Action, Tuid, Map } from 'tonva';
 import { Controller, nav } from 'tonva';
-import { CCartApp } from 'CCartApp';
+//import { CCartApp } from 'CCartApp';
+import { CApp } from '../CApp';
+import { CUqBase } from '../CBase';
 import { VCreateOrder } from './VCreateOrder';
 import { Order, OrderItem } from './Order';
 import { OrderSuccess } from './OrderSuccess';
-import { CSelectShippingContact, CSelectInvoiceContact, CSelectContact } from 'customer/CSelectContact';
+import { CSelectShippingContact, CSelectInvoiceContact, CSelectContact } from '../customer/CSelectContact';
 import { VMyOrders } from './VMyOrders';
 import { VOrderDetail } from './VOrderDetail';
-import { WebUser } from 'CurrentUser';
-import { CInvoiceInfo } from 'customer/CInvoiceInfo';
-import { groupByProduct } from 'tools/groupByProduct';
-import { LoaderProductWithChemical } from 'product/itemLoader';
+//import { WebUser } from '../CurrentUser';
+import { CInvoiceInfo } from '../customer/CInvoiceInfo';
+import { groupByProduct } from '../tools/groupByProduct';
+import { LoaderProductWithChemical } from '../product/itemLoader';
 import { CCoupon } from './CCoupon';
-import { CartItem2 } from 'cart/Cart';
+import { CartItem2 } from '../cart/Cart';
 
 const FREIGHTFEEFIXED = 12;
 const FREIGHTFEEREMITTEDSTARTPOINT = 100;
 
-export class COrder extends Controller {
-    private cApp: CCartApp;
+export class COrder extends CUqBase {
+    //private cApp: CCartApp;
+    cApp: CApp;
     @observable orderData: Order = new Order();
     @observable couponData: any = {};
-    private orderSheet: Sheet;
-    private getPendingPaymentQuery: Query;
-    private priceMap: Map;
-    currentUser: WebUser;
-
-    constructor(cApp: CCartApp, res: any) {
-        super(res);
-        this.cApp = cApp;
-        let { cUqOrder, currentUser, cUqSalesTask, cUqProduct } = cApp;
-        this.orderSheet = cUqOrder.sheet('order');
-        this.getPendingPaymentQuery = cUqOrder.query('getpendingPayment');
-        this.priceMap = cUqProduct.map('pricex');
-        this.currentUser = currentUser;
-    }
 
     protected async internalStart(param: any) {
         let cart = param;
@@ -126,8 +115,8 @@ export class COrder extends Controller {
     submitOrder = async () => {
         let { orderItems } = this.orderData;
 
-        let result: any = await this.orderSheet.save("order", this.orderData.getDataForSave());
-        await this.orderSheet.action(result.id, result.flow, result.state, "submit");
+        let result: any = await this.uqs.order.Order.save("order", this.orderData.getDataForSave());
+        await this.uqs.order.Order.action(result.id, result.flow, result.state, "submit");
 
         let param: [{ productId: number, packId: number }] = [] as any;
         orderItems.forEach(e => {
@@ -143,6 +132,7 @@ export class COrder extends Controller {
         this.openVPage(OrderSuccess, result);
     }
 
+    /*
     private onSelectContact = async (
         typeSelectContact: new (cApp: CCartApp, res: any, autoSelectMode: boolean) => CSelectContact,
     ) => {
@@ -150,21 +140,25 @@ export class COrder extends Controller {
         let contact = await cSelectContact.call<any>();
         return contact;
     }
-
+    */
     onSelectShippingContact = async () => {
-        let typeSelectContact: new (cApp: CCartApp, res: any, autoSelectMode: boolean) => CSelectContact = CSelectShippingContact;
-        let contactBox = await this.onSelectContact(typeSelectContact);
+        //let typeSelectContact: new (cApp: CCartApp, res: any, autoSelectMode: boolean) => CSelectContact = CSelectShippingContact;
+        //let contactBox = await this.onSelectContact(typeSelectContact);
+        let cSelect = this.newC(CSelectShippingContact);
+        let contactBox = await cSelect.call<BoxId>(true);
         this.orderData.shippingContact = contactBox;
     }
 
     onSelectInvoiceContact = async () => {
-        let typeSelectContact: new (cApp: CCartApp, res: any, autoSelectMode: boolean) => CSelectContact = CSelectInvoiceContact;
-        let contactBox = await this.onSelectContact(typeSelectContact);
+        //let typeSelectContact: new (cApp: CCartApp, res: any, autoSelectMode: boolean) => CSelectContact = CSelectInvoiceContact;
+        //let contactBox = await this.onSelectContact(typeSelectContact);
+        let cSelect = this.newC(CSelectInvoiceContact);
+        let contactBox = await cSelect.call<BoxId>(true);
         this.orderData.invoiceContact = contactBox;
     }
 
     onCouponEdit = async () => {
-        let cCoupon = new CCoupon(this.cApp, undefined);
+        let cCoupon = this.newC(CCoupon); // new CCoupon(this.cApp, undefined);
         let coupon = await cCoupon.call<any>(this.orderData.coupon);
         if (coupon) {
             await this.applyCoupon(coupon);
@@ -243,29 +237,29 @@ export class COrder extends Controller {
 
         switch (state) {
             case 'pendingpayment':
-                return await this.getPendingPaymentQuery.table(undefined);
+                return await this.uqs.order.GetPendingPayment.table(undefined);
                 break;
             default:
-                return await this.orderSheet.mySheets(undefined, 1, 20);
+                return await this.uqs.order.Order.mySheets(undefined, 1, 20);
                 break;
         }
     }
 
     onInvoiceInfoEdit = async () => {
-        let cInvoiceInfo = new CInvoiceInfo(this.cApp, undefined, true);
+        let cInvoiceInfo = this.newC(CInvoiceInfo); // new CInvoiceInfo(this.cApp, undefined, true);
         let { invoiceType, invoiceInfo } = this.orderData;
         let origInvoice = {
             invoiceType: invoiceType,
             invoiceInfo: invoiceInfo,
         }
-        let newInvoice = await cInvoiceInfo.call<any>(origInvoice);
+        let newInvoice = await cInvoiceInfo.call<any>(origInvoice, true);
         this.orderData.invoiceType = newInvoice.invoiceType;
         this.orderData.invoiceInfo = newInvoice.invoiceInfo;
     }
 
     openOrderDetail = async (orderId: number) => {
 
-        let order = await this.orderSheet.getSheet(orderId);
+        let order = await this.uqs.order.Order.getSheet(orderId);
         let { data } = order;
         let { orderitems } = data;
         let orderItemsGrouped = groupByProduct(orderitems);

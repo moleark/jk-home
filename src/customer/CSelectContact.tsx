@@ -1,20 +1,22 @@
-import * as React from 'react';
+//import * as React from 'react';
+import { observable } from 'mobx';
 import _ from 'lodash';
 import { Tuid, BoxId } from 'tonva';
-import { VContactList } from './VContactList';
-import { CCartApp } from 'CCartApp';
-import { VContact } from './VContact';
 import { Controller, Context, nav } from 'tonva';
+import { CUqBase } from '../CBase';
+import { VContactList } from './VContactList';
+//import { CCartApp } from 'CCartApp';
+import { VContact } from './VContact';
 import { CAddress } from './CAddress';
-import { observable } from 'mobx';
 
-export abstract class CSelectContact extends Controller {
-    protected cApp: CCartApp;
-    private contactTuid: Tuid;
+export abstract class CSelectContact extends CUqBase {
+    //protected cApp: CCartApp;
+    //private contactTuid: Tuid;
     fromOrderCreation: boolean;
 
     @observable userContacts: BoxId[] = [];
 
+    /*
     constructor(cApp: CCartApp, res: any, fromOrderCreation: boolean) {
         super(res);
         this.cApp = cApp;
@@ -23,8 +25,18 @@ export abstract class CSelectContact extends Controller {
         this.contactTuid = cUqCustomer.tuid('contact');
         this.fromOrderCreation = fromOrderCreation;
     }
+    */
+    /*
+    protected init() {
+        let { cUqCustomer } = this.cApp;
 
-    async internalStart(/*contactType: ContactType*/) {
+        this.contactTuid = cUqCustomer.tuid('contact');
+        //this.fromOrderCreation = fromOrderCreation;
+    }
+    */
+
+    async internalStart(fromOrderCreation: boolean/*contactType: ContactType*/) {
+        this.fromOrderCreation = fromOrderCreation;
         let userContactMaps = await this.cApp.currentUser.getContacts();
         this.userContacts = userContactMaps.map(v => v.contact);
         this.openVPage(VContactList);
@@ -47,7 +59,7 @@ export abstract class CSelectContact extends Controller {
      */
     onEditContact = async (userContact: BoxId) => {
         let userContactId = userContact.id;
-        let contact = await this.contactTuid.load(userContactId);
+        let contact = await this.uqs.customer.Contact.load(userContactId);
         let userSetting = await this.cApp.currentUser.getSetting();
         contact.isDefault = await this.getIsDefault(userSetting, userContactId);
         let userContactData: any = { contact: contact };
@@ -67,10 +79,10 @@ export abstract class CSelectContact extends Controller {
     }
 
     saveContact = async (contact: any) => {
-
-        let newContact = await this.contactTuid.save(undefined, contact);
+        let {Contact:contactTuid} = this.uqs.customer;
+        let newContact = await contactTuid.save(undefined, contact);
         let { id: newContactId } = newContact;
-        let contactBox = this.contactTuid.boxId(newContactId);
+        let contactBox = contactTuid.boxId(newContactId);
 
         let { currentUser } = this.cApp;
         await currentUser.addContact(newContactId);
@@ -102,7 +114,7 @@ export abstract class CSelectContact extends Controller {
     }
 
     pickAddress = async (context: Context, name: string, value: number): Promise<number> => {
-        let cAddress = new CAddress(this.cApp, undefined);
+        let cAddress = this.newC(CAddress); // new CAddress(this.cApp, undefined);
         return await cAddress.call<number>();
     }
 }

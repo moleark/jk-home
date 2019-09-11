@@ -1,20 +1,21 @@
 import _ from 'lodash';
-import { Tuid, TuidDiv, Map, Query } from 'tonva';
+//import { Tuid, TuidDiv, Map, Query } from 'tonva';
 import { ProductPackRow } from './Product';
-import { Loader } from 'mainSubs/loader';
-import { MainSubs, MainProductChemical, MainBrand } from 'mainSubs';
-import { LoaderProductChemical } from 'tools/productChemical';
+import { Loader } from '../mainSubs/loader';
+import { MainSubs, MainProductChemical, MainBrand } from '../mainSubs';
+import { LoaderProductChemical } from '../tools/productChemical';
 
 export class LoaderBrand extends Loader<MainBrand> {
+    /*
     private brandTuid: Tuid;
 
     protected initEntities() {
         let { cUqProduct } = this.cApp;
         this.brandTuid = cUqProduct.tuid('brand');
     }
-
+    */
     protected async loadToData(brandId: number, data: MainBrand): Promise<void> {
-        let brand = await this.brandTuid.load(brandId);
+        let brand = await this.cApp.uqs.product.Brand.load(brandId);
         data.id = brand.id;
         data.name = brand.name;
     }
@@ -25,6 +26,7 @@ export class LoaderBrand extends Loader<MainBrand> {
 }
 
 export class LoaderProductWithChemical extends Loader<MainProductChemical> {
+    /*
     private productTuid: Tuid;
 
     protected initEntities() {
@@ -32,10 +34,11 @@ export class LoaderProductWithChemical extends Loader<MainProductChemical> {
         let { cUqProduct } = this.cApp;
         this.productTuid = cUqProduct.tuid('productx');
     }
+    */
 
     protected async loadToData(productId: number, data: MainProductChemical): Promise<void> {
 
-        let product = await this.productTuid.load(productId);
+        let product = await this.cApp.uqs.product.ProductX.load(productId);
         if (product === undefined)
             return;
         _.merge(data, product);
@@ -68,36 +71,38 @@ export class LoaderProductWithChemical extends Loader<MainProductChemical> {
 
 export class LoaderProductChemicalWithPrices extends Loader<MainSubs<MainProductChemical, ProductPackRow>> {
 
-    private getCustomerDiscount: Query;
-    private priceMap: Map;
-    private getPromotionPackQuery: Query;
+    //private getCustomerDiscount: Query;
+    //private priceMap: Map;
+    //private getPromotionPackQuery: Query;
 
+    /*
     protected initEntities() {
 
-        let { cUqProduct, cUqCustomerDiscount, cUqWarehouse, cUqPromotion } = this.cApp;
-        this.getCustomerDiscount = cUqCustomerDiscount.query("getdiscount");
+        let { product, customerDiscount, warehouse, promotion } = this.cApp.uqs;
+        this.getCustomerDiscount = customerDiscount.query("getdiscount");
         this.priceMap = cUqProduct.map('pricex');
         this.getPromotionPackQuery = cUqPromotion.query("getPromotionPack");
     }
+    */
 
     protected initData(): MainSubs<MainProductChemical, ProductPackRow> {
         return { main: {} as MainProductChemical, subs: [] as ProductPackRow[] };
     }
 
     protected async loadToData(productId: any, data: MainSubs<MainProductChemical, ProductPackRow>): Promise<void> {
-
+        let {customerDiscount, product, promotion} = this.cApp.uqs;
         let productLoader = new LoaderProductWithChemical(this.cApp);
         data.main = await productLoader.load(productId);
 
         let discount = 0;
         let { currentUser, currentSalesRegion, cart, currentLanguage } = this.cApp;
         if (currentUser.hasCustomer) {
-            let discountSetting = await this.getCustomerDiscount.obj({ brand: data.main.brand.id, customer: currentUser.currentCustomer });
+            let discountSetting = await customerDiscount.GetDiscount.obj({ brand: data.main.brand.id, customer: currentUser.currentCustomer });
             discount = discountSetting && discountSetting.discount;
         }
 
         let { id: currentSalesRegionId } = currentSalesRegion;
-        let prices = await this.priceMap.table({ product: productId, salesRegion: currentSalesRegionId });
+        let prices = await product.PriceX.table({ product: productId, salesRegion: currentSalesRegionId });
         data.subs = prices.filter(e => e.discountinued === 0 && e.expireDate > Date.now()).map(element => {
             let ret: any = {};
             ret.pack = element.pack;
@@ -111,7 +116,7 @@ export class LoaderProductChemicalWithPrices extends Loader<MainSubs<MainProduct
 
         let promises: PromiseLike<any>[] = [];
         data.subs.forEach(v => {
-            promises.push(this.getPromotionPackQuery.obj({ product: productId, pack: v.pack, salesRegion: currentSalesRegion, language: currentLanguage }));
+            promises.push(promotion.GetPromotionPack.obj({ product: productId, pack: v.pack, salesRegion: currentSalesRegion, language: currentLanguage }));
         })
         let results = await Promise.all(promises);
 
