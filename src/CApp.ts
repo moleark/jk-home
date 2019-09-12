@@ -1,4 +1,4 @@
-import { CAppBase, Controller, IConstructor, CUq, User, nav } from "tonva";
+import { CAppBase, IConstructor, User, nav } from "tonva";
 import { UQs } from "./uqs";
 import { Cart } from "./cart/Cart";
 import { WebUser } from "./CurrentUser";
@@ -23,24 +23,10 @@ export class CApp extends CAppBase {
     currentLanguage: any;
     currentUser: WebUser;
 
-    /*
-    cUqOrder: CUq;
-    cUqProduct: CUq;
-    cUqCommon: CUq;
-    cUqWebUser: CUq;
-    cUqCustomer: CUq;
-    cUqCustomerDiscount: CUq;
-    cUqPromotion: CUq;
-    cUqWarehouse: CUq;
-    cUqSalesTask: CUq;
-    cUqMember: CUq;
-    */
-
     cHome: CHome;
     cCart: CCart;
     cProduct: CProduct;
     cOrder: COrder;
-    //cSelectContact: CSelectContact;
     cProductCategory: CProductCategory;
     cMember: CMember;
     cMe: CMe;
