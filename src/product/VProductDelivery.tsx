@@ -25,10 +25,12 @@ export class VProductDelivery extends View<CProduct> {
         if (inventoryAllocation && inventoryAllocation.length > 0) {
             deliveryTimeUI = inventoryAllocation.map((v, index) => {
                 let { warehouse, quantity, deliveryTimeDescription } = v;
-                return <div key={index} className="text-success">
-                    {tv(warehouse, (values: any) => <>{values.name}</>)}: {quantity}
-                    {deliveryTimeDescription}
-                </div>
+                if (quantity > 0) {
+                    return <div key={index} className="text-success">
+                        {tv(warehouse, (values: any) => <span className="small">{values.name}</span>)}: {(quantity > 10 ? '>10' : quantity)}
+                        {deliveryTimeDescription}
+                    </div>
+                }
             });
         } else {
             deliveryTimeUI = <div>{futureDeliveryTimeDescription && '期货: ' + futureDeliveryTimeDescription}</div>;

@@ -94,6 +94,8 @@ export class CProduct extends CUqBase {
             if (futureDeliveryTime.length > 0) {
                 let { minValue, maxValue, unit, deliveryTimeDescription } = futureDeliveryTime[0];
                 this.futureDeliveryTimeDescriptionContainer[productId] = minValue + (maxValue > minValue ? '~' + maxValue : '') + ' ' + unit;
+            } else {
+                this.futureDeliveryTimeDescriptionContainer[productId] = null;
             }
         }
     }

@@ -90,7 +90,7 @@ export class LoaderProductChemicalWithPrices extends Loader<MainSubs<MainProduct
     }
 
     protected async loadToData(productId: any, data: MainSubs<MainProductChemical, ProductPackRow>): Promise<void> {
-        let {customerDiscount, product, promotion} = this.cApp.uqs;
+        let { customerDiscount, product, promotion } = this.cApp.uqs;
         let productLoader = new LoaderProductWithChemical(this.cApp);
         data.main = await productLoader.load(productId);
 
@@ -103,7 +103,7 @@ export class LoaderProductChemicalWithPrices extends Loader<MainSubs<MainProduct
 
         let { id: currentSalesRegionId } = currentSalesRegion;
         let prices = await product.PriceX.table({ product: productId, salesRegion: currentSalesRegionId });
-        data.subs = prices.filter(e => e.discountinued === 0 && e.expireDate > Date.now()).map(element => {
+        data.subs = prices.filter(e => e.discountinued === 0 && e.expireDate > Date.now()).sort((a, b) => a.retail - b.retail).map(element => {
             let ret: any = {};
             ret.pack = element.pack;
             ret.retail = element.retail;
