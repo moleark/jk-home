@@ -6,6 +6,7 @@ import { CApp } from 'CApp';
 import { appConfig } from 'index';
 
 //const tonvaApp = "bruce/TestApp";
+nav.setSettings(appConfig);
 
 class App extends React.Component {
 
