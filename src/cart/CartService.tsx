@@ -1,5 +1,4 @@
-//import { CCartApp } from 'CCartApp';
-import { Query, TuidDiv, Action } from 'tonva';
+/*
 import { CartViewModel, CartItem } from './Cart2';
 import { CartPackRow } from './Cart';
 import { LoaderProductWithChemical } from '../product/itemLoader';
@@ -62,8 +61,6 @@ export abstract class CartService {
                     quantity: quantity,
                     currency: currency,
                 };
-                packItem.inventoryAllocation =
-                    await this.cApp.uqs.warehouse.GetInventoryAllocation.table({ product: productId, pack: pack.id, salesRegion: this.cApp.currentSalesRegion })
                 cartItem.packs.push(packItem);
             }
         }
@@ -80,26 +77,8 @@ export abstract class CartService {
 }
 
 export class CartRemoteService extends CartService {
-    /*
-    private getCartQuery: Query;
-    private setCartAction: Action;
-    private removeFromCartAction: Action;
-    private mergeCartAction: Action;
-    */
 
     get isLocal(): boolean { return false }
-    
-    /*
-    constructor(cApp: CApp) {
-        super(cApp);
-
-        let { cUqOrder } = this.cApp;
-        this.getCartQuery = cUqOrder.query('getcart')
-        this.setCartAction = cUqOrder.action('setcart');
-        this.removeFromCartAction = cUqOrder.action('removefromcart');
-        this.mergeCartAction = cUqOrder.action('mergeCartAction');
-    }
-    */
 
     async load(): Promise<CartViewModel> {
         let cartData = await this.cApp.uqs.order.GetCart.page(undefined, 0, 100);
@@ -107,11 +86,6 @@ export class CartRemoteService extends CartService {
         return await this.generateCartItems(cartData2);
     }
 
-    /**
-     * 添加购物车
-     * @param pack 要添加到购物车中的包装
-     * @param quantity 要添加到购物车中包装的个数
-     */
     async addToCart(cartViewModel: CartViewModel, productId: number, packId: number, quantity: number, price: number, currency: any) {
         let param = {
             product: productId,
@@ -226,3 +200,4 @@ export class CartLocalService extends CartService {
     }
 
 }
+*/

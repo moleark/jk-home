@@ -1,3 +1,4 @@
+/*
 import { observable, autorun, IReactionDisposer } from 'mobx';
 import _ from 'lodash';
 import { CartPackRow } from './Cart';
@@ -95,7 +96,7 @@ export class CartViewModel {
         cartItemExists.$isDeleted = false;
         cartItemExists.$isSelected = true;
 
-        let { pack, price, currency, quantity, inventoryAllocation, futureDeliveryTimeDescription } = packs[0];
+        let { pack, price, currency, quantity } = packs[0];
         let piPack: CartPackRow = packsExists.find(v => v.pack.id === pack.id);
         if (piPack === undefined) {
             cartItemExists.packs.push(packs[0]);
@@ -104,8 +105,6 @@ export class CartViewModel {
             piPack.price = price;
             piPack.quantity = quantity;
             piPack.currency = currency;
-            piPack.futureDeliveryTimeDescription = futureDeliveryTimeDescription;
-            piPack.inventoryAllocation = inventoryAllocation;
         }
     }
 
@@ -127,3 +126,4 @@ export class CartViewModel {
         }
     }
 }
+*/

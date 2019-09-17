@@ -1,13 +1,11 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { VPage, Page, Form, ObjectSchema, NumSchema, ArrSchema, UiSchema, UiArr, FormField } from 'tonva';
-import { List, LMR, FA } from 'tonva';
-import { tv, BoxId } from 'tonva';
+import { FA } from 'tonva';
+import { tv } from 'tonva';
 import { MinusPlusWidget } from '../tools';
-//import { renderBrand, productPropItem } from '../product/CProduct';
-//import { ProductImage } from 'tools/productImage';
 import { CCart } from './CCart';
-import { CartPackRow } from './Cart';
+import { CartPackRow, CartItem2 } from './Cart';
 
 const cartSchema = [
     {
@@ -21,9 +19,7 @@ const cartSchema = [
                     { name: 'pack', type: 'object' } as ObjectSchema,
                     { name: 'price', type: 'number' } as NumSchema,
                     { name: 'quantity', type: 'number' } as NumSchema,
-                    { name: 'currency', type: 'object' } as ObjectSchema,
-                    { name: 'inventoryAllocation', type: 'object' } as ObjectSchema,
-                    { name: 'futureDeliveryTimeDescription', type: 'string' }
+                    { name: 'currency', type: 'object' } as ObjectSchema
                 ]
             }
         ],
@@ -52,7 +48,7 @@ export class VCart extends VPage<CCart> {
         return <this.tab />;
     }
 
-    private renderCartItem = (item: any) => {
+    private renderCartItem = (item: CartItem2) => {
         let { product } = item;
         let { controller } = this;
         let { onProductClick, renderCartProduct } = controller;
@@ -121,14 +117,6 @@ export class VCart extends VPage<CCart> {
     private empty() {
         return <div className="py-5 text-center bg-white">你的购物车空空如也</div>
     }
-
-    private test = () => {
-        let { cart: cartViewModel } = this.controller.cApp;
-        let row = cartViewModel.cartItems[0];
-        row.packs[0].quantity = row.packs[0].quantity + 1;
-    }
-
-    private testButton = () => <button onClick={() => this.test()}>test</button>;
 
     private page = observer((params: any): JSX.Element => {
         let { cart } = this.controller.cApp;

@@ -3,8 +3,6 @@ import { BoxId, Map, Query } from 'tonva';
 export interface PackRow {
     pack: BoxId;
     quantity: number;
-    futureDeliveryTimeDescription?: string;
-    inventoryAllocation?: any[];
 }
 
 export interface ProductPackRow extends PackRow {

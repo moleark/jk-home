@@ -47,7 +47,7 @@ export class CCart extends CUqBase {
         await this.doCheckOut();
     };
 
-    onProductClick(product: BoxId) {
+    onProductClick = (product: BoxId) => {
         let { cart, cProduct } = this.cApp;
         if (!cart.isDeleted(product.id)) {
             cProduct.showProductDetail(product);
