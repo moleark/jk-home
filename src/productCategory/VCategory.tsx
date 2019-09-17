@@ -60,7 +60,7 @@ export class VCategory extends VPage<CProductCategory> {
         return <div key={name}
             className="col-6 col-md-4 col-lg-3 cursor-pointer"
             onClick={() => this.categoryClick(item, parent, labelColor)}>
-            <div className="pt-1 pb-1 px-2"
+            <div className="py-2 px-2"
                 style={{ border: '1px solid #eeeeee', marginRight: '-1px', marginBottom: '-1px' }}
             >
                 <div style={titleTitle}>
