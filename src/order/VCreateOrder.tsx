@@ -63,23 +63,28 @@ export class VCreateOrder extends VPage<COrder> {
         } else {
             let { id, code, discount, preferential, validitydate, isValid } = couponData;
             let { couponOffsetAmount, couponRemitted } = param;
-            let offsetUI, remittedUI;
-            if (couponOffsetAmount) {
-                offsetUI = <div className="d-flex flex-row justify-content-between">
-                    <div className="text-muted">折扣:</div>
-                    <div className="text-right text-danger"><small>¥</small>{couponOffsetAmount}</div>
-                </div>
-            }
-            if (couponRemitted) {
-                remittedUI = <div className="d-flex flex-row justify-content-between">
-                    <div className="text-muted">抵扣:</div>
-                    <div className="text-right text-danger"><small>¥</small>{couponRemitted}</div>
-                </div>
+            let offsetUI, remittedUI, noOffsetUI;
+            if (couponOffsetAmount || couponRemitted) {
+                if (couponOffsetAmount) {
+                    offsetUI = <div className="d-flex flex-row justify-content-between">
+                        <div className="text-muted">折扣:</div>
+                        <div className="text-right text-danger"><small>¥</small>{couponOffsetAmount}</div>
+                    </div>
+                }
+                if (couponRemitted) {
+                    remittedUI = <div className="d-flex flex-row justify-content-between">
+                        <div className="text-muted">抵扣:</div>
+                        <div className="text-right text-danger"><small>¥</small>{couponRemitted}</div>
+                    </div>
+                }
+            } else {
+                noOffsetUI = <div>此单无优惠</div>;
             }
             return <div className="mr-2">
                 <div className="text-success">{code.substr(0, 4)} {code.substr(4)}</div>
                 {offsetUI}
                 {remittedUI}
+                {noOffsetUI}
             </div>
         }
     });

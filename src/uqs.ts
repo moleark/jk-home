@@ -29,7 +29,6 @@ export interface UqCommon {
     SalesRegion: Tuid;
     Language: Tuid;
     Address: Tuid;
-    InvoiceInfo: Tuid;
     InvoiceType: Tuid;
     GetCountryProvinces: Query;
     GetProvinceCities: Query;
@@ -46,6 +45,7 @@ export interface UqWebUser {
 
 export interface UqCustomer {
     Contact: Tuid;
+    InvoiceInfo: Tuid;
     CustomerContacts: Map;
     CustomerSetting: Map;
 }

@@ -175,15 +175,15 @@ export class COrder extends CUqBase {
                         for (let i = 0; i < orderItems.length; i++) {
                             let oi = orderItems[i];
                             let { product, packs } = oi;
-                            let eachAgentPrice = agentPrices[i];
+                            let eachProductAgentPrice = agentPrices[i];
                             for (let j = 0; j < packs.length; j++) {
                                 let pk = packs[j];
-                                let agentPrice: any = eachAgentPrice.find(
+                                let agentPrice: any = eachProductAgentPrice.find(
                                     p => p.product.id === product.id &&
                                         p.pack.id === pk.pack.id &&
                                         p.discountinued === 0 &&
                                         p.expireDate > Date.now());
-                                if (!agentPrices) break;
+                                if (!agentPrice) break;
                                 couponOffsetAmount += Math.min(pk.price - agentPrice.agentPrice, pk.price * discount) * -1;
                                 /*
                                 if (agentPrice) {
