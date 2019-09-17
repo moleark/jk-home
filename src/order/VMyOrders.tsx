@@ -3,11 +3,13 @@ import { VPage, Page } from 'tonva';
 import { COrder } from './COrder';
 import { List, EasyDate } from 'tonva';
 import { observable } from 'mobx';
+import { async } from 'q';
 
 export class VMyOrders extends VPage<COrder> {
 
     @observable private pendingOrders: any[];
-    @observable private allOrders: any[];
+    @observable private processingOrders: any[];
+    @observable private completedOrders: any[];
     private currentState: string;
     async open(param: any) {
         this.currentState = param;
@@ -36,14 +38,24 @@ export class VMyOrders extends VPage<COrder> {
                 this.pendingOrders = await this.controller.getMyOrders(this.currentState);
             }
         }, {
-            title: '所有订单',
+            title: '进行中',
             content: () => {
-                return <List items={this.allOrders} item={{ render: this.renderOrder }} none="你还没有订单" />
+                return <List items={this.processingOrders} item={{ render: this.renderOrder }} none="你还没有订单" />
             },
-            isSelected: this.currentState === 'all',
+            isSelected: this.currentState === 'processing',
             load: async () => {
-                this.currentState = 'all';
-                this.allOrders = await this.controller.getMyOrders(this.currentState);
+                this.currentState = 'processing';
+                this.processingOrders = await this.controller.getMyOrders(this.currentState);
+            }
+        }, {
+            title: '已完成',
+            content: () => {
+                return <List items={this.completedOrders} item={{ render: this.renderOrder }} none="还没有已完成的订单" />
+            },
+            isSelected: this.currentState === 'completed',
+            load: async () => {
+                this.currentState = 'completed';
+                this.completedOrders = await this.controller.getMyOrders(this.currentState);
             }
         }];
         return <Page header="我的订单" tabs={tabs} tabPosition="top" />

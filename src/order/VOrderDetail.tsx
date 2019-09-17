@@ -4,6 +4,7 @@ import { COrder } from './COrder';
 import { tv } from 'tonva';
 import { List, LMR } from 'tonva';
 import { renderProduct } from 'product';
+import { OrderItem } from './Order';
 
 export class VOrderDetail extends VPage<COrder> {
 
@@ -20,21 +21,22 @@ export class VOrderDetail extends VPage<COrder> {
             <div className="d-flex align-items-center">
                 <div className="flex-grow-1"><b>{tv(pack)}</b></div>
                 <div className="w-12c mr-4 text-right">
-                    <span className="text-danger h5"><small>¥</small>{price * quantity}</span> &nbsp;
-                    <small className="text-muted">(¥{price} × {quantity})</small>
+                    <span className="text-danger h5"><small>¥</small>{parseFloat((price * quantity).toFixed(2))}</span>
+                    <small className="text-muted">(¥{parseFloat(price.toFixed(2))} × {quantity})</small>
                 </div>
             </div>
         </div>;
     }
 
-    private renderOrderItem = (orderItem: any) => {
+    private renderOrderItem = (orderItem: OrderItem) => {
         let { product, packs } = orderItem;
+        let { controller, packsRow } = this;
         return <div>
             <div className="row p-1 my-1">
-                <div className="col-lg-6 pb-3">{renderProduct(product)}</div>
+                <div className="col-lg-6 pb-3">{controller.renderOrderItemProduct(product)}</div>
                 <div className="col-lg-6">{
                     packs.map((p, index) => {
-                        return this.packsRow(p, index);
+                        return packsRow(p, index);
                     })
                 }</div>
             </div>
@@ -45,7 +47,44 @@ export class VOrderDetail extends VPage<COrder> {
 
         let { brief, data } = order;
         let { id, no, state, description, date } = brief;
-        let { orderItems, currency, shippingContact, invoiceContact, invoiceType, invoiceInfo, amount, webUser } = data;
+        let { orderItems, currency, shippingContact, invoiceContact, invoiceType, invoiceInfo, amount, couponOffsetAmount, couponRemitted
+            , freightFee, freightFeeRemitted } = data;
+        let couponUI;
+        if (couponOffsetAmount || couponRemitted) {
+            let offsetUI, remittedUI;
+            if (couponOffsetAmount) {
+                offsetUI = <div className="d-flex flex-row justify-content-between">
+                    <div className="text-muted">折扣:</div>
+                    <div className="text-right text-danger"><small>¥</small>{couponOffsetAmount}</div>
+                </div>
+            }
+            if (couponRemitted) {
+                remittedUI = <div className="d-flex flex-row justify-content-between">
+                    <div className="text-muted">抵扣:</div>
+                    <div className="text-right text-danger"><small>¥</small>{couponRemitted}</div>
+                </div>
+            }
+            couponUI = <div className="bg-white row no-gutters p-3 my-1">
+                <div className="col-3 text-muted">优惠码:</div>
+                <div className="col-9">
+                    {offsetUI}
+                    {remittedUI}
+                </div>
+            </div>
+        }
+
+        let freightFeeUI, freightFeeRemittedUI;
+        if (freightFee) {
+            freightFeeUI = <>
+                <div className="text-right text-danger"><small>¥</small>{freightFee}</div>
+            </>
+            if (freightFeeRemitted) {
+                freightFeeRemittedUI = <>
+                    <div className="text-right text-danger"><small>¥</small>{freightFeeRemitted}(减免)</div>
+                </>
+            }
+        }
+
         let header = <>订单详情: {no}</>
         return <Page header={header}>
             <List items={orderItems} item={{ render: this.renderOrderItem }} />
@@ -61,6 +100,11 @@ export class VOrderDetail extends VPage<COrder> {
                 <div className="col-3 text-muted">发票信息:</div>
                 <div className="col-9">{invoiceTemplate(invoiceType, invoiceInfo)}</div>
             </div>
+            <div className="bg-white row no-gutters p-3 my-1">
+                <div className="col-3 text-muted">运费:</div>
+                <div className="col-9">{freightFeeUI}{freightFeeRemittedUI}</div>
+            </div>
+            {couponUI}
             <div className="bg-white p-3 my-1 text-right">
                 <span className="text-danger font-weight-bold">总金额: {amount}{tv(currency)}</span>
             </div>

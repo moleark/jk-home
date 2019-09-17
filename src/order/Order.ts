@@ -53,6 +53,8 @@ export class Order {
             invoiceInfo: this.invoiceInfo,
             amount: this.amount,
             currency: this.currency,
+            freightFee: this.freightFee,
+            freightFeeRemitted: this.freightFeeRemitted,
             coupon: this.coupon,
             couponOffsetAmount: this.couponOffsetAmount,
             couponRemitted: this.couponRemitted,

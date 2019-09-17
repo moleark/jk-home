@@ -234,8 +234,11 @@ export class COrder extends CUqBase {
             case 'pendingpayment':
                 return await this.uqs.order.GetPendingPayment.table(undefined);
                 break;
+            case 'processing':
+                return await this.uqs.order.Order.mySheets(undefined, 1, -20);
+                break;
             default:
-                return await this.uqs.order.Order.mySheets(undefined, 1, 20);
+                return await this.uqs.order.Order.mySheets("#", 1, -20)
                 break;
         }
     }

@@ -55,9 +55,13 @@ export class VMe extends VPage<CMe> {
                 <FA name="file-text-o" className="text-info fa-2x" />
                 <small>待付款</small>
             </div>
-            <div className="d-flex flex-column align-items-center" onClick={() => openMyOrders('all')}>
+            <div className="d-flex flex-column align-items-center" onClick={() => openMyOrders('processing')}>
                 <FA name="file-text-o" className="text-info fa-2x" />
-                <small>所有订单</small>
+                <small>进行中</small>
+            </div>
+            <div className="d-flex flex-column align-items-center" onClick={() => openMyOrders('completed')}>
+                <FA name="file-text-o" className="text-info fa-2x" />
+                <small>已完成</small>
             </div>
         </div>
     };
