@@ -2,8 +2,7 @@ import * as React from 'react';
 import { VPage, Page, BoxId } from 'tonva';
 import { COrder } from './COrder';
 import { tv } from 'tonva';
-import { List, LMR } from 'tonva';
-import { renderProduct } from 'product';
+import { List } from 'tonva';
 import { OrderItem } from './Order';
 
 export class VOrderDetail extends VPage<COrder> {

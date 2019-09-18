@@ -5,6 +5,8 @@ import { About } from './about';
 import { observer } from 'mobx-react';
 import { EditMeInfo } from './EditMeInfo';
 import { CMe } from './CMe';
+import { AboutThisApp } from './aboutThisApp';
+import { appConfig } from 'index';
 
 export class VMe extends VPage<CMe> {
 
@@ -17,6 +19,7 @@ export class VMe extends VPage<CMe> {
     }
 
     private about = () => nav.push(<About />);
+    private aboutThisApp = () => nav.push(<AboutThisApp />);
 
     private changePassword = async () => {
         await nav.changePassword();
@@ -76,6 +79,14 @@ export class VMe extends VPage<CMe> {
                 onClick: this.about
             },
             '',
+            {
+                type: 'component',
+                component: <div className="w-100 d-flex justify-content-between">
+                    <IconText iconClass="text-info mr-2" icon="smile-o" text="关于本APP" />
+                    <div className="py-2 small">V{appConfig.version}</div>
+                </div>,
+            },
+            ''
         ];
 
         let rows: Prop[];

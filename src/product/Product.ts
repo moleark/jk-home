@@ -1,4 +1,4 @@
-import { BoxId, Map, Query } from 'tonva';
+import { BoxId } from 'tonva';
 
 export interface PackRow {
     pack: BoxId;
