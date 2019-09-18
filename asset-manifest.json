@@ -1,7 +1,7 @@
 {
   "main.css": "./static/css/main.025e8821.chunk.css",
-  "main.js": "./static/js/main.860b495f.chunk.js",
-  "main.js.map": "./static/js/main.860b495f.chunk.js.map",
+  "main.js": "./static/js/main.b2218cbc.chunk.js",
+  "main.js.map": "./static/js/main.b2218cbc.chunk.js.map",
   "static/js/1.7d02d130.chunk.js": "./static/js/1.7d02d130.chunk.js",
   "static/js/1.7d02d130.chunk.js.map": "./static/js/1.7d02d130.chunk.js.map",
   "static/js/2.3996a63d.chunk.js": "./static/js/2.3996a63d.chunk.js",
@@ -19,9 +19,9 @@
   "static/media/OrganicChemistry.png": "./static/media/OrganicChemistry.6d56971c.png",
   "static/media/pig.png": "./static/media/pig.772a31a6.png",
   "static/media/logo.svg": "./static/media/logo.ee7cd8ed.svg",
-  "static/css/main.025e8821.chunk.css.map": "./static/css/main.025e8821.chunk.css.map",
   "static/css/3.5f0b3b23.chunk.css.map": "./static/css/3.5f0b3b23.chunk.css.map",
+  "static/css/main.025e8821.chunk.css.map": "./static/css/main.025e8821.chunk.css.map",
   "index.html": "./index.html",
-  "precache-manifest.b4cc664bafd12070c90e85ded88f2e2e.js": "./precache-manifest.b4cc664bafd12070c90e85ded88f2e2e.js",
+  "precache-manifest.aa7d8f9a7d54eb83ea41d30d6e8c55d2.js": "./precache-manifest.aa7d8f9a7d54eb83ea41d30d6e8c55d2.js",
   "service-worker.js": "./service-worker.js"
 }
