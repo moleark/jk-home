@@ -3,6 +3,7 @@ import { VPage, FA, Page } from 'tonva';
 import { CCoupon } from './CCoupon';
 import { observer } from 'mobx-react';
 import { observable } from 'mobx';
+import { GLOABLE } from 'ui';
 
 export class VCouponEdit extends VPage<CCoupon> {
 
@@ -39,6 +40,8 @@ export class VCouponEdit extends VPage<CCoupon> {
             default:
                 break;
         }
+        if (this.tips)
+            setTimeout(() => this.tips = undefined, GLOABLE.TIPDISPLAYTIME);
     }
 
     private page = observer(() => {

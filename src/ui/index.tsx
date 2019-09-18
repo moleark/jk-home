@@ -29,7 +29,8 @@ export const GLOABLE = {
             src: LabSupplies,
             labelColor: 'text-primary',
         },
-    }
+    },
+    TIPDISPLAYTIME: 2000
 }
 
 /*
@@ -58,6 +59,7 @@ export const GLOABLE = {
             src: LabSupplies,
             labelColor: 'text-primary',
         },
-    }
+    },
+    TIPDISPLAYTIME: 2000
 }
 */

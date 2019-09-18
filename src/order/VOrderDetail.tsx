@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { VPage, Page, BoxId } from 'tonva';
+import { VPage, Page, BoxId, EasyTime, EasyDate } from 'tonva';
 import { COrder } from './COrder';
 import { tv } from 'tonva';
 import { List } from 'tonva';
@@ -104,6 +104,10 @@ export class VOrderDetail extends VPage<COrder> {
                 <div className="col-9">{freightFeeUI}{freightFeeRemittedUI}</div>
             </div>
             {couponUI}
+            <div className="bg-white row no-gutters p-3 my-1">
+                <div className="col-3 text-muted">下单时间:</div>
+                <div className="col-9 text-right"><EasyDate date={date} /></div>
+            </div>
             <div className="bg-white p-3 my-1 text-right">
                 <span className="text-danger font-weight-bold">总金额: {amount}{tv(currency)}</span>
             </div>
