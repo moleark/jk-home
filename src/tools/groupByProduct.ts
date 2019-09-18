@@ -1,8 +1,8 @@
 
 export function groupByProduct(packItems: any[]) {
     let result: any[] = [];
-    for (let cd of packItems) {
-        let { product, pack, quantity, price, currency } = cd;
+    for (let packItem of packItems.sort((a, b) => a.price - b.price)) {
+        let { product, pack, quantity, price, currency } = packItem;
         let packRow: any = {
             pack: pack,
             price: price,

@@ -47,14 +47,12 @@ export class Cart {
         let count = 0, amount = 0;
         for (let cp of this.cartItems) {
             let { $isSelected, $isDeleted, packs } = cp;
-            if ($isDeleted === true) continue;
+            if ($isDeleted === true || !($isSelected === true)) continue;
             for (let pi of packs) {
                 let { price, quantity } = pi;
                 count += quantity;
                 if (price === Number.NaN || quantity === Number.NaN) continue;
-                if ($isSelected === true) {
-                    amount += quantity * price;
-                }
+                amount += quantity * price;
             }
         }
         this.count.set(count);
@@ -147,8 +145,19 @@ export class Cart {
                 packs.splice(0);
 
             let packExists: CartPackRow = packs.find(e => e.pack.id === pack.id);
-            if (packExists === undefined)
-                packs.push({ pack: pack, quantity: quantity, price: price, currency: currency });
+            if (packExists === undefined) {
+                let added = false;
+                for (let index = packs.length - 1; index >= 0; index--) {
+                    if (packs[index].price < price) {
+                        packs.splice(index + 1, 0, { pack: pack, quantity: quantity, price: price, currency: currency });
+                        added = true;
+                        break;
+                    }
+                }
+                if (!added)
+                    packs.unshift({ pack: pack, quantity: quantity, price: price, currency: currency })
+                // packs.push();
+            }
             else {
                 packExists.quantity = quantity;
                 packExists.price = price;

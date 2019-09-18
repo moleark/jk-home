@@ -10,6 +10,7 @@
 /build
 
 /node_modules
+/src/tonva
 
 # misc
 .DS_Store
