@@ -41,6 +41,7 @@ export class Order {
     @observable coupon: BoxId;
     @observable couponOffsetAmount: number;
     @observable couponRemitted: number;
+    salesRegion: BoxId;
 
     getDataForSave() {
         let orderItems: any[] = [];
@@ -69,6 +70,7 @@ export class Order {
             couponOffsetAmount: this.couponOffsetAmount,
             couponRemitted: this.couponRemitted,
             orderitems: orderItems, // 前面的必须是小写的orderitems
+            salesRegion: this.salesRegion,
         }
     }
 }

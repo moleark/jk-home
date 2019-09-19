@@ -29,8 +29,9 @@ export class COrder extends CUqBase {
     }
 
     private createOrderFromCart = async (cartItems: CartItem2[]) => {
-        let { currentUser } = this.cApp;
+        let { currentUser, currentSalesRegion } = this.cApp;
         this.orderData.webUser = currentUser.id;
+        this.orderData.salesRegion = currentSalesRegion.id;
         this.removeCoupon();
         if (currentUser.currentCustomer !== undefined) {
             this.orderData.customer = currentUser.currentCustomer.id;
