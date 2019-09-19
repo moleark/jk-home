@@ -1,7 +1,6 @@
 import { observable } from 'mobx';
 import { Sheet, BoxId, Query, Action, Tuid, Map } from 'tonva';
 import { Controller, nav } from 'tonva';
-//import { CCartApp } from 'CCartApp';
 import { CApp } from '../CApp';
 import { CUqBase } from '../CBase';
 import { VCreateOrder } from './VCreateOrder';
@@ -10,7 +9,6 @@ import { OrderSuccess } from './OrderSuccess';
 import { CSelectShippingContact, CSelectInvoiceContact, CSelectContact } from '../customer/CSelectContact';
 import { VMyOrders } from './VMyOrders';
 import { VOrderDetail } from './VOrderDetail';
-//import { WebUser } from '../CurrentUser';
 import { CInvoiceInfo } from '../customer/CInvoiceInfo';
 import { groupByProduct } from '../tools/groupByProduct';
 import { LoaderProductWithChemical } from '../product/itemLoader';
@@ -61,7 +59,10 @@ export class COrder extends CUqBase {
             this.orderData.orderItems = cartItems.map((element: any, index: number) => {
                 var item = new OrderItem();
                 item.product = element.product;
-                item.packs = element.packs.filter(v => v.quantity > 0);
+                item.packs = element.packs.filter(v => v.quantity > 0 && v.price);
+                item.packs.forEach((pk) => {
+                    pk.retail = pk.price;
+                })
                 return item;
             });
 
@@ -184,7 +185,8 @@ export class COrder extends CUqBase {
                                         p.discountinued === 0 &&
                                         p.expireDate > Date.now());
                                 if (!agentPrice) break;
-                                couponOffsetAmount += Math.min(pk.price - agentPrice.agentPrice, pk.price * discount) * -1;
+                                pk.price = Math.round(Math.max(agentPrice.agentPrice, pk.retail * discount));
+                                couponOffsetAmount += Math.round((pk.retail - pk.price) * -1);
                                 /*
                                 if (agentPrice) {
                                     pk.price = Math.round(agentPrice.retail * (1 - discount));
