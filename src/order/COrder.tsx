@@ -1,17 +1,16 @@
 import { observable } from 'mobx';
-import { Sheet, BoxId, Query, Action, Tuid, Map } from 'tonva';
-import { Controller, nav } from 'tonva';
+import { BoxId } from 'tonva';
+import { nav } from 'tonva';
 import { CApp } from '../CApp';
 import { CUqBase } from '../CBase';
 import { VCreateOrder } from './VCreateOrder';
 import { Order, OrderItem } from './Order';
 import { OrderSuccess } from './OrderSuccess';
-import { CSelectShippingContact, CSelectInvoiceContact, CSelectContact } from '../customer/CSelectContact';
+import { CSelectShippingContact, CSelectInvoiceContact } from '../customer/CSelectContact';
 import { VMyOrders } from './VMyOrders';
 import { VOrderDetail } from './VOrderDetail';
 import { CInvoiceInfo } from '../customer/CInvoiceInfo';
 import { groupByProduct } from '../tools/groupByProduct';
-import { LoaderProductWithChemical } from '../product/itemLoader';
 import { CCoupon } from './CCoupon';
 import { CartItem2 } from '../cart/Cart';
 
@@ -19,7 +18,6 @@ const FREIGHTFEEFIXED = 12;
 const FREIGHTFEEREMITTEDSTARTPOINT = 100;
 
 export class COrder extends CUqBase {
-    //private cApp: CCartApp;
     cApp: CApp;
     @observable orderData: Order = new Order();
     @observable couponData: any = {};
@@ -56,10 +54,10 @@ export class COrder extends CUqBase {
 
         if (cartItems !== undefined && cartItems.length > 0) {
             this.orderData.currency = cartItems[0].packs[0].currency;
-            this.orderData.orderItems = cartItems.map((element: any, index: number) => {
+            this.orderData.orderItems = cartItems.map((e: any) => {
                 var item = new OrderItem();
-                item.product = element.product;
-                item.packs = element.packs.filter(v => v.quantity > 0 && v.price);
+                item.product = e.product;
+                item.packs = e.packs.map((v) => { return { ...v } }).filter(v => v.quantity > 0 && v.price);
                 item.packs.forEach((pk) => {
                     pk.retail = pk.price;
                 })
@@ -168,7 +166,7 @@ export class COrder extends CUqBase {
                 if (orderItems !== undefined && orderItems.length > 0) {
                     let promises: PromiseLike<any>[] = [];
                     orderItems.forEach(e => {
-                        promises.push(this.uqs.product.AgentPrice.table({ product: e.product.id, salesRegion: 1 }));
+                        promises.push(this.uqs.product.AgentPrice.table({ product: e.product.id, salesRegion: this.cApp.currentSalesRegion.id }));
                     });
                     let agentPrices = await Promise.all(promises);
                     if (agentPrices && agentPrices.length > 0) {
@@ -185,8 +183,8 @@ export class COrder extends CUqBase {
                                         p.discountinued === 0 &&
                                         p.expireDate > Date.now());
                                 if (!agentPrice) break;
-                                pk.price = Math.round(Math.max(agentPrice.agentPrice, pk.retail * discount));
-                                couponOffsetAmount += Math.round((pk.retail - pk.price) * -1);
+                                pk.price = Math.round(Math.max(agentPrice.agentPrice, pk.retail * (1 - discount)));
+                                couponOffsetAmount += Math.round(pk.quantity * (pk.retail - pk.price) * -1);
                                 /*
                                 if (agentPrice) {
                                     pk.price = Math.round(agentPrice.retail * (1 - discount));
@@ -266,11 +264,6 @@ export class COrder extends CUqBase {
         let { data } = order;
         let { orderitems } = data;
         let orderItemsGrouped = groupByProduct(orderitems);
-        let loaderProduct = new LoaderProductWithChemical(this.cApp);
-        for (let i = 0; i < orderItemsGrouped.length; i++) {
-            let productId = orderItemsGrouped[i].product.id;
-            orderItemsGrouped[i].product = await loaderProduct.load(productId);
-        }
         data.orderItems = orderItemsGrouped;
         this.openVPage(VOrderDetail, order);
     }

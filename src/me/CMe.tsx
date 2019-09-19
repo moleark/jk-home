@@ -1,7 +1,5 @@
-import * as React from 'react';
 import _ from 'lodash';
-import { Controller, Context } from 'tonva';
-//import { CCartApp } from 'CCartApp';
+import { Context } from 'tonva';
 import { CApp } from '../CApp';
 import { CUqBase } from '../CBase';
 import { VMe } from './VMe';
@@ -12,16 +10,6 @@ import { CAddress } from '../customer/CAddress';
 
 export class CMe extends CUqBase {
     cApp: CApp;
-    /*
-    cApp: CCartApp;
-
-    constructor(cApp: CCartApp, res: any) {
-        super(res);
-
-        this.cApp = cApp;
-    }
-    */
-
     protected async internalStart() {
 
     }

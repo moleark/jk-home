@@ -33,8 +33,8 @@ export class VCart extends VPage<CCart> {
 
     protected CheckOutButton = observer(() => {
         let { checkOut, cApp } = this.controller;
-        let { cart: cartViewModel } = cApp;
-        let amount = cartViewModel.amount.get();
+        let { cart } = cApp;
+        let amount = cart.amount.get();
         let check = "去结算";
         let content = amount > 0 ?
             <>{check} (¥{amount})</> :
