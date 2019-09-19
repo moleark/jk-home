@@ -62,7 +62,7 @@ export class VCouponEdit extends VPage<CCoupon> {
                 </div>
                 <div className="row my-1">
                     <div className="col-12">
-                        <button className="btn btn-primary w-100" onClick={this.applyCoupon}>应用</button>
+                        <button className="btn btn-primary w-100" onClick={this.applyCoupon}>使用</button>
                     </div>
                 </div>
                 {tipsUI}

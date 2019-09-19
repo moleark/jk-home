@@ -60,11 +60,11 @@ export class VMe extends VPage<CMe> {
             </div>
             <div className="d-flex flex-column align-items-center" onClick={() => openMyOrders('processing')}>
                 <FA name="file-text-o" className="text-info fa-2x" />
-                <small>进行中</small>
+                <small>待审核</small>
             </div>
             <div className="d-flex flex-column align-items-center" onClick={() => openMyOrders('completed')}>
                 <FA name="file-text-o" className="text-info fa-2x" />
-                <small>已完成</small>
+                <small>处理中</small>
             </div>
         </div>
     };
