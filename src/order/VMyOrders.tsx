@@ -38,7 +38,7 @@ export class VMyOrders extends VPage<COrder> {
                 this.pendingOrders = await this.controller.getMyOrders(this.currentState);
             }
         }, {
-            title: '进行中',
+            title: '待审核',
             content: () => {
                 return <List items={this.processingOrders} item={{ render: this.renderOrder }} none="你还没有订单" />
             },
@@ -48,7 +48,7 @@ export class VMyOrders extends VPage<COrder> {
                 this.processingOrders = await this.controller.getMyOrders(this.currentState);
             }
         }, {
-            title: '已完成',
+            title: '处理中',
             content: () => {
                 return <List items={this.completedOrders} item={{ render: this.renderOrder }} none="还没有已完成的订单" />
             },

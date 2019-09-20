@@ -59,7 +59,7 @@ export class VCreateOrder extends VPage<COrder> {
     private renderCoupon = observer((param: any) => {
         let { couponData } = this.controller;
         if (couponData['id'] === undefined) {
-            return <span className="text-primary">填写优惠码</span>;
+            return <span className="text-primary">使用优惠码</span>;
         } else {
             let { id, code, discount, preferential, validitydate, isValid } = couponData;
             let { couponOffsetAmount, couponRemitted } = param;
