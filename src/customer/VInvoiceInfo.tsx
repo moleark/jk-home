@@ -129,6 +129,8 @@ export class VInvoiceInfo extends VPage<CInvoiceInfo> {
         if (invoiceInfo) {
             invoiceInfo.assure();
             this.invoiceInfoData = { ...invoiceInfo.obj };
+        } else {
+            this.invoiceInfoData = { 'title': this.controller.cApp.currentUser.defaultOrganizationName };
         }
         this.openPage(this.page);
     }

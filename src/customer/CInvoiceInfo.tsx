@@ -5,30 +5,7 @@ import { VInvoiceInfo } from './VInvoiceInfo';
 //import { Tuid } from 'tonva';
 
 export class CInvoiceInfo extends CUqBase {
-    //protected cApp: CCartApp;
-    //private invoiceTypeTuid: Tuid;
-    //private invoiceInfoTuid: Tuid;
     fromOrderCreation: boolean;
-    /*
-    constructor(cApp: CCartApp, res: any, fromOrderCreation: boolean) {
-        super(res);
-        this.cApp = cApp;
-
-        let { cUqCommon, cUqCustomer } = cApp;
-        this.invoiceTypeTuid = cUqCommon.tuid('invoiceType');
-        this.invoiceInfoTuid = cUqCustomer.tuid('invoiceInfo');
-        this.fromOrderCreation = fromOrderCreation;
-    }
-    */
-
-    /*
-    protected init() {
-        let { cUqCommon, cUqCustomer } = this.cApp;
-        this.invoiceTypeTuid = cUqCommon.tuid('invoiceType');
-        this.invoiceInfoTuid = cUqCustomer.tuid('invoiceInfo');
-        //this.fromOrderCreation = fromOrderCreation;
-    }
-    */
 
     async internalStart(origInvoice: any, fromOrderCreation: boolean) {
         this.fromOrderCreation = fromOrderCreation;

@@ -80,6 +80,8 @@ export class VContact extends VPage<CSelectContact> {
         let buttonDel: any;
         if (contactData !== undefined) {
             buttonDel = <button className="btn btn-sm btn-info" onClick={this.onDelContact}>删除</button>;
+        } else {
+            contactData = { 'organizationName': this.controller.cApp.currentUser.defaultOrganizationName };
         }
         let { fromOrderCreation } = this.controller;
         let footer = <button type="button"

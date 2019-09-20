@@ -10,30 +10,9 @@ import { VContact } from './VContact';
 import { CAddress } from './CAddress';
 
 export abstract class CSelectContact extends CUqBase {
-    //protected cApp: CCartApp;
-    //private contactTuid: Tuid;
     fromOrderCreation: boolean;
 
     @observable userContacts: BoxId[] = [];
-
-    /*
-    constructor(cApp: CCartApp, res: any, fromOrderCreation: boolean) {
-        super(res);
-        this.cApp = cApp;
-        let { cUqCustomer } = cApp;
-
-        this.contactTuid = cUqCustomer.tuid('contact');
-        this.fromOrderCreation = fromOrderCreation;
-    }
-    */
-    /*
-    protected init() {
-        let { cUqCustomer } = this.cApp;
-
-        this.contactTuid = cUqCustomer.tuid('contact');
-        //this.fromOrderCreation = fromOrderCreation;
-    }
-    */
 
     async internalStart(fromOrderCreation: boolean/*contactType: ContactType*/) {
         this.fromOrderCreation = fromOrderCreation;
@@ -79,7 +58,7 @@ export abstract class CSelectContact extends CUqBase {
     }
 
     saveContact = async (contact: any) => {
-        let {Contact:contactTuid} = this.uqs.customer;
+        let { Contact: contactTuid } = this.uqs.customer;
         let newContact = await contactTuid.save(undefined, contact);
         let { id: newContactId } = newContact;
         let contactBox = contactTuid.boxId(newContactId);

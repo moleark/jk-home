@@ -18,6 +18,17 @@ export class WebUser {
     @observable organizationName: string;
     departmentName: string;
 
+    get defaultOrganizationName(): string {
+        return this.organizationName ||
+            (this.webUserSettings &&
+                ((
+                    (this.webUserSettings.invoiceInfo && this.webUserSettings.invoiceInfo.obj['title'])
+                    || this.webUserSettings.shippingContact && this.webUserSettings.shippingContact.obj['organizationName'])
+                    || (this.webUserSettings.invoiceContact && this.webUserSettings.invoiceContact.obj['organizationName'])
+                )
+            );
+    }
+
     telephone: string;
     @observable mobile: string;
     email: string;

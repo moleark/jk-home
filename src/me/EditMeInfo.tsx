@@ -145,6 +145,7 @@ export function webUserContactUiSchema(pickAddress: any) {
                 widget: 'id', label: '所在地区',
                 pickId: async (context: Context, name: string, value: number) => await pickAddress(context, name, value),
                 Templet: (address: BoxId) => {
+                    if (!address) return <small className="text-muted">(无)</small>;
                     return tv(address, (addressValue) => {
                         let { country, province, city, county } = addressValue;
                         /* 下面这种在使用tv之前的一堆判断应该是tv或者什么的有bug, 应该让Henry改改 */
