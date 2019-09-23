@@ -10,8 +10,8 @@ import { CProductCategory } from "./productCategory/CProductCategory";
 import { CMember } from "./member";
 import { CMe } from "./me/CMe";
 import { CUqBase } from "./CBase";
-import { GLOABLE } from 'ui';
 import { VMain } from 'ui/main';
+import { GLOABLE } from 'configuration';
 
 export class CApp extends CAppBase {
     readonly uqs: UQs;

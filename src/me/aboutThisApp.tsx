@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Page } from 'tonva';
 import logo from '../images/logo.png';
-import { appConfig } from 'index';
+import { appConfig } from 'configuration';
 
 export class AboutThisApp extends React.Component {
     render() {

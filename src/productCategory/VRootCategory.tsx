@@ -3,7 +3,7 @@ import { View, tv } from 'tonva';
 import { CProductCategory } from './CProductCategory';
 import { FA } from 'tonva';
 import { observer } from 'mobx-react';
-import { GLOABLE } from 'ui';
+import { GLOABLE } from 'configuration';
 
 const imgStyle: React.CSSProperties = {
     height: '1.5rem', width: '1.5rem',

@@ -6,7 +6,7 @@ import { observer } from 'mobx-react';
 import { EditMeInfo } from './EditMeInfo';
 import { CMe } from './CMe';
 import { AboutThisApp } from './aboutThisApp';
-import { appConfig } from 'index';
+import { appConfig } from 'configuration';
 
 export class VMe extends VPage<CMe> {
 

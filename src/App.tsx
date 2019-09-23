@@ -3,7 +3,7 @@ import * as React from 'react';
 import './App.css';
 import { NavView, nav, Page, Tabs, start } from 'tonva';
 import { CApp } from 'CApp';
-import { appConfig } from 'index';
+import { appConfig } from 'configuration';
 
 //const tonvaApp = "bruce/TestApp";
 nav.setSettings(appConfig);

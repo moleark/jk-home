@@ -3,7 +3,7 @@ import { VPage, FA, Page } from 'tonva';
 import { CCoupon } from './CCoupon';
 import { observer } from 'mobx-react';
 import { observable } from 'mobx';
-import { GLOABLE } from 'ui';
+import { GLOABLE } from 'configuration';
 
 export class VCouponEdit extends VPage<CCoupon> {
 

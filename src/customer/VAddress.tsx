@@ -3,7 +3,7 @@ import { VPage, Page, BoxId } from 'tonva';
 import { tv } from 'tonva';
 import { List, FA } from 'tonva';
 import { CAddress } from './CAddress';
-import { GLOABLE } from 'ui';
+import { GLOABLE } from 'configuration';
 
 export class VAddress extends VPage<CAddress> {
     private provinceId: number;
