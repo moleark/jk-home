@@ -140,9 +140,13 @@ export class VProduct extends VPage<CProduct> {
         </Page>
 
         /*
+        下面的做法大概不行，因为嵌套的层次较深，且都是observer的，上层observable的变化会嵌套执行下层的代码，而下层代码的render
+        会操作数据库，得不偿失（和React的可能还不一样，React只会更新必要的html，不会再执行查询DB的操作）
+        let { controller, productBox } = this;
+        let { renderChemicalInfo, renderProductPrice } = controller;
         return <Page header={header} right={cartLabel}>
-            {tv(this.productBox, (value: any) => {
-                let { brand, description, descriptionC, origin, imageUrl, packx } = value;
+            {tv(productBox, (value: any) => {
+                let { id, brand, description, descriptionC, origin, imageUrl, packx } = value;
                 return <div className="p-2 bg-white mb-3">
                     <div className="mb-3 px-2">
                         <div className="py-2"><strong>{description}</strong></div>
@@ -154,21 +158,14 @@ export class VProduct extends VPage<CProduct> {
                             <div className="col-12 col-sm-9">
                                 <div className="row mx-3">
                                     {productPropItem('产品编号', origin, "font-weight-bold")}
-                                    {this.controller.renderChemicalInfo(product)}
+                                    {renderChemicalInfo(productBox)}
                                     {tv(brand, renderBrand)}
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div>
-                        {packx.map((v, index) => {
-                            return tv(v, (value: any) => {
-                                return <>
-                                    <div className="sep-product-select" />
-                                    <Form className="mx-3" schema={schema} uiSchema={this.uiSchema} formData={pack} />
-                                </>
-                            })
-                        })}
+                        {renderProductPrice(productBox)}
                     </div>
                 </div>
             })}

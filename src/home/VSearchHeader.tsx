@@ -16,7 +16,7 @@ export class VSearchHeader extends View<CHome> {
 
     render(param: 'home' | 'insearch' | 'productdetail') {
         let size: any = param === 'home' ? "md" : 'sm';
-        return <SearchBox className="px-1 w-100"
+        return <SearchBox className="w-100"
             size={size}
             onSearch={(key: string) => this.onSearch(key, param)}
             placeholder="搜索品名、编号、CAS、MDL等" />

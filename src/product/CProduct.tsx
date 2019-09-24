@@ -12,7 +12,7 @@ import { VProductList } from './VProductList';
 import { LoaderProductChemicalWithPrices } from './itemLoader';
 import { ProductImage } from '../tools/productImage';
 import { VProductDelivery } from './VProductDelivery';
-import { VCartProuductView } from './VProductView';
+import { VCartProuductView, VProductPrice } from './VProductView';
 import { VChemicalInfo } from './VChemicalInfo';
 
 class PageProducts extends PageItems<any> {
@@ -46,6 +46,7 @@ export class CProduct extends CUqBase {
     @observable inventoryAllocationContainer: { [packId: number]: any[] } = {};
     @observable futureDeliveryTimeDescriptionContainer: { [productId: number]: string } = {};
     @observable chemicalInfoContainer: { [productId: number]: any } = {};
+    @observable productPriceContainer: { [identity: string]: any } = {};
 
     protected async internalStart(param: any) {
         this.searchByKey(param);
@@ -75,8 +76,17 @@ export class CProduct extends CUqBase {
         this.openVPage(VProduct, { productData, product });
     }
 
-    renderPrice = async (productId: number, packId: BoxId, salesRegion: number) => {
+    renderProductPrice = (product: BoxId) => {
+        return this.renderView(VProductPrice, product);
+    }
 
+    getProductPrice = async (productId: number, salesRegionId: number) => {
+        if (this.productPriceContainer[productId + '-' + salesRegionId] === undefined) {
+            this.productPriceContainer[productId + '-' + salesRegionId] = await this.uqs.product.PriceX.table({ product: productId, salesRegion: salesRegionId });
+            setTimeout(() => {
+                delete this.productPriceContainer[productId + '-' + salesRegionId];
+            }, 300000);
+        }
     }
 
     renderDeliveryTime = (pack: BoxId) => {
@@ -84,8 +94,12 @@ export class CProduct extends CUqBase {
     }
 
     getInventoryAllocation = async (productId: number, packId: number, salesRegionId: number) => {
-        if (this.inventoryAllocationContainer[packId] === undefined)
+        if (this.inventoryAllocationContainer[packId] === undefined) {
             this.inventoryAllocationContainer[packId] = await this.uqs.warehouse.GetInventoryAllocation.table({ product: productId, pack: packId, salesRegion: this.cApp.currentSalesRegion });
+            setTimeout(() => {
+                delete this.inventoryAllocationContainer[packId];
+            }, 60000);
+        }
     }
 
     getFutureDeliveryTimeDescription = async (productId: number, salesRegionId: number) => {

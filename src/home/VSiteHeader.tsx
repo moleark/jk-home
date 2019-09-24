@@ -7,10 +7,7 @@ import { CHome } from './CHome';
 export class VSiteHeader extends View<CHome> {
     render() {
         let currentSalesRegion = <FA name="globe" />
-        let login = <div>
-            登录
-        </div>
-        let left = <img className="m-1" src={logo} alt="logo" style={{height: "3rem", width: "3rem"}} />;
+        let left = <img className="m-1" src={logo} alt="logo" style={{ height: "3rem", width: "3rem" }} />;
         //let cart = this.controller.cApp.cCart.renderCartLabel();
         let right = undefined;
         /*
@@ -21,7 +18,7 @@ export class VSiteHeader extends View<CHome> {
         return <LMR
             className="mb-3 align-items-center bg-white"
             left={left} right={right}>
-            <div className="">
+            <div className="px-3 py-4">
                 {this.controller.renderSearchHeader('md')}
             </div>
         </LMR>
