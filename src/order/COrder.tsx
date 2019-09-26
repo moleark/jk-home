@@ -153,7 +153,7 @@ export class COrder extends CUqBase {
     }
 
     /**
-     * 使用优惠码后计算折扣金额和抵扣额
+     * 使用优惠券后计算折扣金额和抵扣额
      */
     applyCoupon = async (coupon: any) => {
 
@@ -208,7 +208,7 @@ export class COrder extends CUqBase {
     }
 
     /**
-     * 删除优惠码
+     * 删除优惠券
      */
     removeCoupon = () => {
         this.orderData.coupon = undefined;

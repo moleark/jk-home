@@ -32,10 +32,13 @@ export class VCouponEdit extends VPage<CCoupon> {
             case 2:
             case 3:
             case 5:
-                this.tips = '优惠码无效，请重新输入或与您的专属销售人员联系。';
+                this.tips = '优惠券无效，请重新输入或与您的专属销售人员联系。';
+                break;
+            case 6:
+                this.tips = '不允许使用本人优惠券！';
                 break;
             case 4:
-                this.tips = '该优惠码已经被使用过了，不允许重复使用。';
+                this.tips = '该优惠券已经被使用过了，不允许重复使用。';
                 break;
             default:
                 break;
@@ -52,10 +55,10 @@ export class VCouponEdit extends VPage<CCoupon> {
                 {this.tips}
             </div>
         }
-        return <Page header="填写优惠码">
+        return <Page header="填写优惠券">
             <div className="px-2 bg-white">
                 <div className="row py-3 pr-3 my-1">
-                    <div className="col-4 col-sm-2 pb-2 text-muted">优惠码:</div>
+                    <div className="col-4 col-sm-2 pb-2 text-muted">优惠券:</div>
                     <div className="col-8 col-sm-10 d-flex">
                         <input ref={v => this.couponInput = v} type="number" className="form-control"></input>
                     </div>
