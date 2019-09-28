@@ -3,8 +3,12 @@ import { observable } from 'mobx';
 import { ItemSchema, Page, Edit, VPage, FA } from 'tonva';
 import { CMe } from './CMe';
 import { webUserSchema, webUserUiSchema, webUserContactSchema, webUserContactUiSchema } from './EditMeInfo';
+import { observer } from 'mobx-react';
+import { GLOABLE } from 'configuration';
 
 export class EditMeInfoFirstOrder extends VPage<CMe>{
+
+    @observable tips: JSX.Element;
 
     async open(param: any) {
         this.openPage(this.page);
@@ -17,7 +21,8 @@ export class EditMeInfoFirstOrder extends VPage<CMe>{
         super(props);
 
         let { cApp } = this.controller;
-        let { firstName, gender, salutation, organizationName, departmentName, telephone, mobile, email } = cApp.currentUser;
+        let { firstName, gender, salutation, organizationName, departmentName, telephone
+            , mobile, email, fax, address, addressString, zipCode } = cApp.currentUser;
         this.webUserData = {
             firstName: firstName,
             gender: gender,
@@ -29,7 +34,11 @@ export class EditMeInfoFirstOrder extends VPage<CMe>{
         this.webUserContactData = {
             telephone: telephone,
             mobile: mobile,
-            email: email
+            email: email,
+            fax: fax,
+            address: address,
+            addressString: addressString,
+            zipCode: zipCode
         }
     }
 
@@ -45,8 +54,30 @@ export class EditMeInfoFirstOrder extends VPage<CMe>{
         await this.controller.changeWebUserContact(this.webUserContactData);
     }
 
-    private page = () => {
-        return <Page header="首次下单补充个人信息">
+    private checkOut = async () => {
+        let { currentUser } = this.controller.cApp;
+        if (currentUser.allowOrdering) {
+            this.closePage();
+            await currentUser.addContactFromAccount();
+            await this.controller.doCheckout();
+        } else {
+            this.tips = <>以上带有 <span className='text-danger'>*</span> 的内容均须填写！</>;
+            setTimeout(() => {
+                this.tips = undefined;
+            }, GLOABLE.TIPDISPLAYTIME);
+        }
+    }
+
+    private page = observer(() => {
+
+        let tipsUI = <></>;
+        if (this.tips) {
+            tipsUI = <div className="alert alert-primary" role="alert">
+                <FA name="exclamation-circle" className="text-warning float-left mr-3" size="2x"></FA>
+                {this.tips}
+            </div>
+        }
+        return <Page header="首次下单须补充账户信息">
             <div className="alert alert-primary small" role="alert">
                 <FA name="exclamation-circle" className="text-warning mr-3 my-1 float-left" size="3x" />
                 化学品是受国家安全法规限制的特殊商品，百灵威提供技术咨询、资料以及化学产品的对象必须是具有化学管理和应用能力的专业单位（非个人）。
@@ -59,8 +90,9 @@ export class EditMeInfoFirstOrder extends VPage<CMe>{
                 data={this.webUserContactData}
                 onItemChanged={this.onWebUserContactChanged} />
             <div className="p-3 bg-white">
-                <button type="button" className="btn btn-primary w-100" onClick={() => this.backPage()}>保存并返回</button>
+                {tipsUI}
+                <button type="button" className="btn btn-primary w-100" onClick={() => this.checkOut()}>下一步</button>
             </div>
         </Page>;
-    }
+    });
 }

@@ -42,7 +42,7 @@ export class CCart extends CUqBase {
         await cApp.currentUser.setUser(user);
         await cApp.loginCallBack(user);
         this.closePage(1);
-        await this.doCheckOut();
+        await this.doFirstOrderChecking();
     };
 
     onProductClick = (product: BoxId) => {
@@ -59,14 +59,23 @@ export class CCart extends CUqBase {
         if (!this.isLogined) {
             nav.showLogin(this.loginCallback, true);
         } else {
-            this.doCheckOut();
+            this.doFirstOrderChecking();
+        }
+    }
+
+    private doFirstOrderChecking = async () => {
+        let { cMe, currentUser } = this.cApp;
+        if (!currentUser.allowOrdering) {
+            cMe.openMeInfoFirstOrder();
+        } else {
+            await this.doCheckOut();
         }
     }
 
     /**
      * 导航到CheckOut界面
      */
-    private doCheckOut = async () => {
+    doCheckOut = async () => {
 
         let { cOrder } = this.cApp;
         if (this.selectedCartItems === undefined) return;

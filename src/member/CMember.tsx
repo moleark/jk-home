@@ -17,31 +17,11 @@ export class CMember extends CUqBase {
     cApp: CApp;
     @observable member: any;
     private referrer: BoxId;
-    //private memberAction: Action;
-    //private memberRecommenverMap: Map;
-
-    /*
-    constructor(cApp: CCartApp, res: any) {
-        super(res);
-
-        this.cApp = cApp;
-        let { cUqMember } = cApp;
-        this.memberAction = cUqMember.action('MemberAction');
-        this.memberRecommenverMap = cUqMember.map('MemberRecommender');
-    }
-    */
-    /*
-    protected init() {
-        let { cUqMember } = this.cApp;
-        this.memberAction = cUqMember.action('MemberAction');
-        this.memberRecommenverMap = cUqMember.map('MemberRecommender');
-    }
-    */
 
     protected async internalStart(param: any) {
 
         if (this.isLogined) {
-            let {member} = this.uqs;
+            let { member } = this.uqs;
             let { id: currentUserId } = this.user;
             let promises: PromiseLike<any>[] = [];
             promises.push(member.MemberAction.submit({}));

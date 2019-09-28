@@ -49,6 +49,11 @@ export class CMe extends CUqBase {
         await this.openVPage(EditMeInfoFirstOrder);
     }
 
+    doCheckout = async () => {
+        let { cCart } = this.cApp;
+        await cCart.doCheckOut();
+    }
+
     pickAddress = async (context: Context, name: string, value: number): Promise<number> => {
         let cAddress = this.newC(CAddress); // new CAddress(this.cApp, undefined);
         return await cAddress.call<number>();

@@ -1,19 +1,10 @@
 import _ from 'lodash';
-//import { Tuid, TuidDiv, Map, Query } from 'tonva';
 import { ProductPackRow } from './Product';
 import { Loader } from '../mainSubs/loader';
 import { MainSubs, MainProductChemical, MainBrand } from '../mainSubs';
 import { LoaderProductChemical } from '../tools/productChemical';
 
 export class LoaderBrand extends Loader<MainBrand> {
-    /*
-    private brandTuid: Tuid;
-
-    protected initEntities() {
-        let { cUqProduct } = this.cApp;
-        this.brandTuid = cUqProduct.tuid('brand');
-    }
-    */
     protected async loadToData(brandId: number, data: MainBrand): Promise<void> {
         let brand = await this.cApp.uqs.product.Brand.load(brandId);
         data.id = brand.id;
@@ -26,15 +17,6 @@ export class LoaderBrand extends Loader<MainBrand> {
 }
 
 export class LoaderProductWithChemical extends Loader<MainProductChemical> {
-    /*
-    private productTuid: Tuid;
-
-    protected initEntities() {
-
-        let { cUqProduct } = this.cApp;
-        this.productTuid = cUqProduct.tuid('productx');
-    }
-    */
 
     protected async loadToData(productId: number, data: MainProductChemical): Promise<void> {
 
@@ -70,20 +52,6 @@ export class LoaderProductWithChemical extends Loader<MainProductChemical> {
 }
 
 export class LoaderProductChemicalWithPrices extends Loader<MainSubs<MainProductChemical, ProductPackRow>> {
-
-    //private getCustomerDiscount: Query;
-    //private priceMap: Map;
-    //private getPromotionPackQuery: Query;
-
-    /*
-    protected initEntities() {
-
-        let { product, customerDiscount, warehouse, promotion } = this.cApp.uqs;
-        this.getCustomerDiscount = customerDiscount.query("getdiscount");
-        this.priceMap = cUqProduct.map('pricex');
-        this.getPromotionPackQuery = cUqPromotion.query("getPromotionPack");
-    }
-    */
 
     protected initData(): MainSubs<MainProductChemical, ProductPackRow> {
         return { main: {} as MainProductChemical, subs: [] as ProductPackRow[] };
@@ -128,43 +96,3 @@ export class LoaderProductChemicalWithPrices extends Loader<MainSubs<MainProduct
         }
     }
 }
-
-/*
-// 拟用 LoaderProduct 替换
-export class ProductService {
-
-    private cApp: CCartApp;
-    private productTuid: TuidMain;
-    private productChemicalMap: Map;
-
-    constructor(cApp: CCartApp) {
-        this.cApp = cApp;
-        this.initEntities();
-    }
-
-    protected initEntities() {
-
-        let { cUqProduct, cUqCustomerDiscount, cUqWarehouse } = this.cApp;
-        this.productTuid = cUqProduct.tuid('productx');
-        this.productChemicalMap = cUqProduct.map('productChemical');
-    }
-
-    async loadProductChemical(productId: number): Promise<MainProductChemical> {
-
-        let result: MainProductChemical;
-        let product = await this.productTuid.load(productId);
-        result = {...product };
-
-        let productChemical = await this.productChemicalMap.obj({ product: productId });
-        if (productChemical) {
-            let { chemical, purity, CAS, molecularFomula, molecularWeight } = productChemical;
-            result.chemical = chemical;
-            result.purity = purity;
-            result.CAS = CAS;
-            result.molecularFomula = molecularFomula;
-            result.molecularWeight = molecularWeight;
-        }
-        return result;
-    }
-}
-*/
