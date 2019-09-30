@@ -2,28 +2,41 @@ import * as React from 'react';
 import { tv, View } from 'tonva';
 import { CProduct } from './CProduct';
 import { observer } from 'mobx-react';
+import { observable } from 'mobx';
 
 export class VProductDelivery extends View<CProduct> {
+
+    @observable private inventoryAllocation: any[];
+    @observable private futureDeliveryTimeDescription: string;
 
     render(param: any): JSX.Element {
         let { obj: packObj, id: packId } = param;
         let { owner: productId } = packObj;
         let { controller } = this;
         let { currentSalesRegion } = controller.cApp;
-        controller.getInventoryAllocation(productId, packId, currentSalesRegion);
-        controller.getFutureDeliveryTimeDescription(productId, currentSalesRegion);
-        return <this.content packId={packId} productId={productId} />;
+        return <this.content packId={packId} productId={productId} currentSalesRegion={currentSalesRegion} />;
+    }
+
+    private initInventoryAllocation = async (productId: number, packId: number, salesRegionId: number) => {
+        if (this.inventoryAllocation === undefined)
+            this.inventoryAllocation = await this.controller.getInventoryAllocation(productId, packId, salesRegionId);
+    }
+
+    private initFutureDeliveryTimeDescription = async (productId: number, salesRegionId: number) => {
+        if (this.futureDeliveryTimeDescription === undefined)
+            this.futureDeliveryTimeDescription = await this.controller.getFutureDeliveryTimeDescription(productId, salesRegionId);
     }
 
     private content = observer((param: any) => {
 
         let deliveryTimeUI;
-        let { packId, productId } = param;
-        let { inventoryAllocationContainer, futureDeliveryTimeDescriptionContainer } = this.controller;
-        let inventoryAllocation = inventoryAllocationContainer[packId];
-        let futureDeliveryTimeDescription = futureDeliveryTimeDescriptionContainer[productId];
-        if (inventoryAllocation && inventoryAllocation.length > 0) {
-            deliveryTimeUI = inventoryAllocation.map((v, index) => {
+        let { packId, productId, currentSalesRegion } = param;
+        this.initInventoryAllocation(productId, packId, currentSalesRegion);
+        this.initFutureDeliveryTimeDescription(productId, currentSalesRegion);
+        if (this.inventoryAllocation === undefined || this.futureDeliveryTimeDescription === undefined)
+            return null;
+        if (this.inventoryAllocation && this.inventoryAllocation.length > 0) {
+            deliveryTimeUI = this.inventoryAllocation.map((v, index) => {
                 let { warehouse, quantity, deliveryTimeDescription } = v;
                 if (quantity > 0) {
                     return <div key={index} className="text-success">
@@ -33,7 +46,7 @@ export class VProductDelivery extends View<CProduct> {
                 }
             });
         } else {
-            deliveryTimeUI = <div>{futureDeliveryTimeDescription && '期货: ' + futureDeliveryTimeDescription}</div>;
+            deliveryTimeUI = <div>{this.futureDeliveryTimeDescription && '期货: ' + this.futureDeliveryTimeDescription}</div>;
         }
         return deliveryTimeUI;
     })

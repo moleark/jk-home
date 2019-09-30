@@ -4,6 +4,7 @@ import { CProduct, productPropItem, renderBrand } from './CProduct';
 import { ProductImage } from 'tools/productImage';
 import { observer } from 'mobx-react';
 import { MinusPlusWidget } from 'tools';
+import { observable } from 'mobx';
 
 export class VCartProuductView extends View<CProduct> {
 
@@ -102,22 +103,30 @@ export class VProductPrice extends View<CProduct> {
         }
     }
 
+    @observable private prices: any;
+    private initPrices = async (productId: number, salesRegionId: number) => {
+        if (this.prices === undefined)
+            this.prices = this.controller.getProductPrice(productId, salesRegionId);
+    }
+
     private product: BoxId;
     render(param: any): JSX.Element {
         this.product = param;
         let productId = param.id;
         let { currentSalesRegion } = this.controller.cApp;
         this.controller.getProductPrice(productId, currentSalesRegion);
-        return <this.content productSalesRegion={productId + '-' + currentSalesRegion} />;
+        return <this.content productId={productId} SalesRegionId={currentSalesRegion} />;
     }
 
     private content = observer((param?: any) => {
         let priceUI;
-        let { productSalesRegion } = param;
-        let { productPriceContainer, renderDeliveryTime } = this.controller;
-        let prices = productPriceContainer[productSalesRegion];
-        if (prices && prices.length > 0) {
-            priceUI = prices.filter(e => e.discountinued === 0 && e.expireDate > Date.now()).map((v, index) => {
+        let { productId, SalesRegionId } = param;
+
+        let { renderDeliveryTime } = this.controller;
+        // let prices = productPriceContainer[productSalesRegion];
+        this.initPrices(productId, SalesRegionId);
+        if (this.prices && this.prices.length > 0) {
+            priceUI = this.prices.filter(e => e.discountinued === 0 && e.expireDate > Date.now()).map((v, index) => {
                 let { pack, retail } = v;
                 if (retail) {
                     return <div className="px-2" key={pack.id}>

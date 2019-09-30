@@ -43,10 +43,8 @@ export class CProduct extends CUqBase {
     cApp: CApp;
     pageProducts: PageProducts;
 
-    @observable inventoryAllocationContainer: { [packId: number]: any[] } = {};
-    @observable futureDeliveryTimeDescriptionContainer: { [productId: number]: string } = {};
+    @observable futureDeliveryTimeDescriptionContainer: { [cacheId: string]: string } = {};
     @observable chemicalInfoContainer: { [productId: number]: any } = {};
-    @observable productPriceContainer: { [identity: string]: any } = {};
 
     protected async internalStart(param: any) {
         this.searchByKey(param);
@@ -81,12 +79,7 @@ export class CProduct extends CUqBase {
     }
 
     getProductPrice = async (productId: number, salesRegionId: number) => {
-        if (this.productPriceContainer[productId + '-' + salesRegionId] === undefined) {
-            this.productPriceContainer[productId + '-' + salesRegionId] = await this.uqs.product.PriceX.table({ product: productId, salesRegion: salesRegionId });
-            setTimeout(() => {
-                delete this.productPriceContainer[productId + '-' + salesRegionId];
-            }, 300000);
-        }
+        return await this.uqs.product.PriceX.table({ product: productId, salesRegion: salesRegionId });
     }
 
     renderDeliveryTime = (pack: BoxId) => {
@@ -94,24 +87,21 @@ export class CProduct extends CUqBase {
     }
 
     getInventoryAllocation = async (productId: number, packId: number, salesRegionId: number) => {
-        if (this.inventoryAllocationContainer[packId] === undefined) {
-            this.inventoryAllocationContainer[packId] = await this.uqs.warehouse.GetInventoryAllocation.table({ product: productId, pack: packId, salesRegion: this.cApp.currentSalesRegion });
-            setTimeout(() => {
-                delete this.inventoryAllocationContainer[packId];
-            }, 60000);
-        }
+        return await this.uqs.warehouse.GetInventoryAllocation.table({ product: productId, pack: packId, salesRegion: this.cApp.currentSalesRegion });
     }
 
     getFutureDeliveryTimeDescription = async (productId: number, salesRegionId: number) => {
-        if (this.futureDeliveryTimeDescriptionContainer[productId] === undefined) {
+        let cacheId = productId + '_' + salesRegionId;
+        if (this.futureDeliveryTimeDescriptionContainer[cacheId] === undefined) {
             let futureDeliveryTime = await this.uqs.product.GetFutureDeliveryTime.table({ product: productId, salesRegion: salesRegionId });
             if (futureDeliveryTime.length > 0) {
                 let { minValue, maxValue, unit, deliveryTimeDescription } = futureDeliveryTime[0];
-                this.futureDeliveryTimeDescriptionContainer[productId] = minValue + (maxValue > minValue ? '~' + maxValue : '') + ' ' + unit;
+                this.futureDeliveryTimeDescriptionContainer[cacheId] = minValue + (maxValue > minValue ? '~' + maxValue : '') + ' ' + unit;
             } else {
-                this.futureDeliveryTimeDescriptionContainer[productId] = null;
+                this.futureDeliveryTimeDescriptionContainer[cacheId] = null;
             }
         }
+        return this.futureDeliveryTimeDescriptionContainer[cacheId];
     }
 
     renderChemicalInfo = (product: BoxId) => {
