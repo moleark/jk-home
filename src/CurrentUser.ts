@@ -98,7 +98,7 @@ export class WebUser {
                 this.organizationName = organizationName;
                 this.departmentName = departmentName;
             }
-            let contact = await this.uqs.webuser.WebUserContact.obj({ webUser: this.id });
+            let contact = await this.uqs.webuser.WebUserContact.obj({ "webUser": id });
             if (contact) {
                 let { telephone, mobile, email, fax, address, addressString, zipCode } = contact;
                 this.telephone = telephone;
@@ -109,8 +109,8 @@ export class WebUser {
                 this.addressString = addressString;
                 this.zipCode = zipCode;
             }
-            this.webUserSettings = await this.uqs.webuser.WebUserSetting.obj({ webUser: this.id }) || { webUser: this.id };
-            let value = await this.uqs.webuser.WebUserCustomer.obj({ webUser: this.id });
+            this.webUserSettings = await this.uqs.webuser.WebUserSetting.obj({ webUser: id }) || { webUser: id };
+            let value = await this.uqs.webuser.WebUserCustomer.obj({ webUser: id });
             if (value != undefined) {
                 this.currentCustomer = new Customer(value.customer, this.uqs);
                 await this.currentCustomer.init();
