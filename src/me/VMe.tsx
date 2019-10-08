@@ -81,7 +81,7 @@ export class VMe extends VPage<CMe> {
             '',
             {
                 type: 'component',
-                component: <div className="w-100 d-flex justify-content-between">
+                component: <div className="w-100 d-flex justify-content-between" onClick={this.aboutThisApp}>
                     <IconText iconClass="text-info mr-2" icon="smile-o" text="关于本APP" />
                     <div className="py-2 small">V{appConfig.version}</div>
                 </div>,
