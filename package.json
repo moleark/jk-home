@@ -15,7 +15,7 @@
     "fontawesome": "^4.7.2",
     "gh-pages": "^2.0.1",
     "jwt-decode": "^2.2.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "mobx": "^5.13.0",
     "mobx-react": "^5.4.4",
     "react": "^16.9.0",
